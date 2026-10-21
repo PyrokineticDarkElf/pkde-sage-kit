@@ -5,7 +5,7 @@
 @php($viewTitle = ['sale' => __('Sale', 'sage'), 'new' => __('New', 'sage')][sanitize_key(is_string($_GET['sage_view'] ?? null) ? $_GET['sage_view'] : '')] ?? null)
 @include('pkde-kit::partials.page-header', $viewTitle ? ['title' => $viewTitle] : [])
 
-<div class="mx-auto max-w-6xl px-6 pt-8">
+<div class="{{ \App\container_class('mx-auto max-w-6xl px-6 pt-8', 'shop-archive') }}">
   @include('pkde-kit::partials.woocommerce-notices')
 </div>
 

@@ -29,6 +29,11 @@ In the theme's `composer.json`: `"repositories": [{"type": "vcs", "url": "https:
 
 Override one view: copy it to `resources/views/vendor/pkde-kit/<same path>` in the theme. See the template's guide.
 
+## Make it fit a site without overriding markup
+
+* **Containers.** `add_filter('pkde_kit/container_class', fn ($class, $context) => $context === 'sage/hero' ? 'site-container' : $class, 10, 2);` Contexts: `sage/hero`, `sage/hero-slide`, `sage/loop-section`, `page-header`, `post-grid`, `content-single`, `shop-archive`, `shop-archive-body`. The default classes and the HTML are unchanged when no filter acts. Tailwind generates only classes it can read in a source file, so a replacement class must appear in the site's own files. `pkde_kit/section_class` does the same for the themed loop sections' wrapper classes.
+* **Wording and punctuation.** Every user-facing string goes through gettext with the text domain `sage` (block titles and descriptions too: each `block.json` has `textdomain`). Change one with a `gettext` filter (`add_filter('gettext', ...)`, and `i18n.gettext` in the block editor) or a translation file; the default wording does not change.
+
 ## Develop and release
 
 * `composer install`, `composer lint`, `composer test`. The tests need no WordPress: pure functions in `helpers.php` and a check that every `pkde-kit::` view a file names exists.

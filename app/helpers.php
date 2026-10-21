@@ -101,6 +101,24 @@ function logo_sizes(int $width, int $height, int $smallHeight = 32, int $largeHe
 }
 
 /**
+ * The classes of a content container the kit prints (the inner column of Hero and Hero Slide, the wrapper of a themed loop section,
+ * the page header, post grid, single post and shop containers). A site whose container class is its own (a `.site-container` that
+ * is not `mx-auto max-w-content px-6`) filters it instead of overriding the markup, so the page keeps the kit's structure:
+ *
+ *   add_filter('pkde_kit/container_class', fn ($class, $context) => $context === 'sage/hero' ? 'site-container' : $class, 10, 2);
+ *
+ * $context names the place: `sage/hero`, `sage/hero-slide`, `sage/loop-section`, `page-header`, `post-grid`,
+ * `content-single`, `shop-archive`, `shop-archive-body`. A filter that returns anything but a string is
+ * ignored. Tailwind only generates a class it can read in a source file, so a replacement must appear in the site's own files.
+ */
+function container_class(string $default = 'mx-auto w-full max-w-content px-6', string $context = ''): string
+{
+    $class = function_exists('apply_filters') ? apply_filters('pkde_kit/container_class', $default, $context) : $default;
+
+    return is_string($class) && $class !== '' ? $class : $default;
+}
+
+/**
  * Output formats for generated image sub-sizes: PNG sub-sizes are saved as WebP (an uploaded logo-on-photo PNG's
  * medium_large size is hundreds of KB as PNG, a fraction of that as WebP). The uploaded original is never touched.
  */

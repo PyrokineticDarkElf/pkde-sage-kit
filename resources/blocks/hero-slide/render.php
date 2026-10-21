@@ -43,7 +43,7 @@ $slide_attributes += \App\next_hero_slide_number() === 1
     <?php echo \App\block_image($image_id, $image_url, $image_alt, 'full', $slide_attributes); ?>
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-neutral-950 via-neutral-950/55 to-neutral-950/10"></div>
 
-    <div class="mx-auto w-full max-w-content px-6">
+    <div class="<?php echo esc_attr(\App\container_class('mx-auto w-full max-w-content px-6', 'sage/hero-slide')); ?>">
         <div class="max-w-2xl">
             <?php if ($heading) : ?>
                 <<?php echo $heading_level; ?> class="font-display text-3xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-4xl lg:text-5xl"><?php echo wp_kses_post($heading); ?></<?php echo $heading_level; ?>>

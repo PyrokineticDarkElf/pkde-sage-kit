@@ -3,6 +3,7 @@
 // helpers.php defines its functions and returns early outside WordPress, so it loads here without WordPress.
 require_once dirname(__DIR__, 2) . '/app/helpers.php';
 
+use function App\container_class;
 use function App\iframe_titles;
 use function App\logo_sizes;
 use function App\next_hero_slide_number;
@@ -58,4 +59,45 @@ it('gives an embed iframe a title only when it has none', function () {
     expect(iframe_titles('<p>No frame</p>', 'Map'))->toBe('<p>No frame</p>')
         ->and(iframe_titles('<iframe src="a"></iframe><iframe src="b" title="B"></iframe>', 'Map'))
         ->toBe('<iframe title="Map" src="a"></iframe><iframe src="b" title="B"></iframe>');
+});
+
+it('returns the default container classes without WordPress and when no filter changes them', function () {
+    expect(container_class())->toBe('mx-auto w-full max-w-content px-6')
+        ->and(container_class('mx-auto max-w-7xl px-6', 'partials.page-header'))->toBe('mx-auto max-w-7xl px-6');
+});
+
+it('lets a site replace a container class through the pkde_kit/container_class filter, per place, and ignores a bad answer', function () {
+    $GLOBALS['pkde_test_filters'] = [];
+    if (! function_exists('apply_filters')) {
+        function apply_filters(string $hook, $value, ...$args)
+        {
+            foreach ($GLOBALS['pkde_test_filters'][$hook] ?? [] as $callback) {
+                $value = $callback($value, ...$args);
+            }
+
+            return $value;
+        }
+    }
+
+    $GLOBALS['pkde_test_filters']['pkde_kit/container_class'][] = fn($class, $context) => $context === 'sage/hero' ? 'site-container' : $class;
+    expect(container_class('mx-auto w-full max-w-content px-6', 'sage/hero'))->toBe('site-container')
+        ->and(container_class('mx-auto w-full max-w-content px-6', 'sage/hero-slide'))->toBe('mx-auto w-full max-w-content px-6');
+
+    $GLOBALS['pkde_test_filters']['pkde_kit/container_class'] = [fn() => ['not a string']];
+    expect(container_class('default-class', 'sage/hero'))->toBe('default-class');
+    $GLOBALS['pkde_test_filters']['pkde_kit/container_class'] = [fn() => ''];
+    expect(container_class('default-class', 'sage/hero'))->toBe('default-class');
+    $GLOBALS['pkde_test_filters'] = [];
+});
+
+it('prints every container through container_class: no hard-coded content container is left in a block render or kit view', function () {
+    $root = dirname(__DIR__, 2);
+    $offenders = [];
+    foreach (['resources/blocks/hero/render.php', 'resources/blocks/hero-slide/render.php', 'resources/views/partials/page-header.blade.php', 'resources/views/partials/post-grid.blade.php', 'resources/views/partials/content-single.blade.php', 'resources/views/partials/shop-archive.blade.php'] as $file) {
+        if (preg_match('/class="mx-auto[^"]*"/', file_get_contents("$root/$file"))) {
+            $offenders[] = $file;
+        }
+    }
+
+    expect($offenders)->toBe([]);
 });

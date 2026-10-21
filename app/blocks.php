@@ -52,7 +52,7 @@ function pkde_loop_theme_classes(string $theme): string
         return '';
     }
 
-    return 'pkde-section pkde-loop-panel theme-' . sanitize_html_class($theme) . ' py-10 sm:py-14 lg:py-16';
+    return apply_filters('pkde_kit/section_class', 'pkde-section pkde-loop-panel theme-' . sanitize_html_class($theme) . ' py-10 sm:py-14 lg:py-16', $theme);
 }
 
 /**
@@ -71,7 +71,7 @@ function pkde_loop_theme_classes(string $theme): string
  */
 function pkde_loop_theme_content_open(string $theme): string
 {
-    return $theme ? '<div class="mx-auto w-full max-w-content px-6">' : '';
+    return $theme ? '<div class="' . esc_attr(container_class('mx-auto w-full max-w-content px-6', 'sage/loop-section')) . '">' : '';
 }
 
 function pkde_loop_theme_content_close(string $theme): string

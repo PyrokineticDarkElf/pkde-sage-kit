@@ -145,7 +145,7 @@ class ShopFilters
 
         if (($query['min_price'] ?? '') !== '' || ($query['max_price'] ?? '') !== '') {
             $chips[] = [
-                'label' => __('Price', 'sage') . ': ' . trim(($query['min_price'] ?? '') !== '' ? wc_price((float) $query['min_price']) : '', ' ') . ' – ' . (($query['max_price'] ?? '') !== '' ? wc_price((float) $query['max_price']) : __('any', 'sage')),
+                'label' => __('Price', 'sage') . ': ' . trim(($query['min_price'] ?? '') !== '' ? wc_price((float) $query['min_price']) : '', ' ') . _x(' – ', 'separator between the minimum and the maximum price in an active filter chip', 'sage') . (($query['max_price'] ?? '') !== '' ? wc_price((float) $query['max_price']) : __('any', 'sage')),
                 'url' => $urlWithout(['min_price', 'max_price']),
             ];
         }
