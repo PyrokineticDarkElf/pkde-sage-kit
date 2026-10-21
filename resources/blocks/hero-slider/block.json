@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/hero-slider",
+  "title": "Hero Slider",
+  "category": "design",
+  "icon": "cover-image",
+  "description": "A collection of miniature hero sections you swipe or scroll between — add a Hero Slide block for each one.",
+  "keywords": ["hero", "slider", "carousel", "banner"],
+  "textdomain": "sage",
+  "attributes": {
+    "showArrows": {
+      "type": "boolean",
+      "default": true
+    },
+    "showDots": {
+      "type": "boolean",
+      "default": true
+    },
+    "loop": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 5000
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

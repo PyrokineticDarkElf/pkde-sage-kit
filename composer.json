@@ -1,0 +1,45 @@
+{
+  "name": "pkde/sage-kit",
+  "description": "PKDE Sage kit: the shared theme code of every PKDE site (helpers, native blocks, WooCommerce integration, editor fixes, shared JS/CSS and views under the pkde-kit:: namespace) as an Acorn package.",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.3",
+    "roots/acorn": "^6.0"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.0",
+    "pestphp/pest": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Pkde\\SageKit\\": "src/"
+    },
+    "files": [
+      "app/setup.php",
+      "app/filters.php",
+      "app/blocks.php",
+      "app/woocommerce.php",
+      "app/helpers.php"
+    ]
+  },
+  "extra": {
+    "acorn": {
+      "providers": [
+        "Pkde\\SageKit\\KitServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "scripts": {
+    "lint": "pint --test",
+    "lint:fix": "pint",
+    "test": "pest"
+  }
+}

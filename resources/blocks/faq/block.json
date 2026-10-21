@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/faq",
+  "title": "FAQs",
+  "category": "widgets",
+  "icon": "editor-help",
+  "description": "A frequently-asked-questions section — add an Accordion Item block for each question. Also outputs FAQPage structured data for search engines.",
+  "keywords": ["faq", "questions", "accordion", "schema"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Frequently asked questions"
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "columnThreshold": {
+      "type": "number",
+      "default": 5
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/carousel",
+  "title": "Image Carousel",
+  "category": "widgets",
+  "icon": "images-alt2",
+  "description": "A horizontally scrolling, swipeable, loopable set of images with optional arrows, dots, and a click-to-enlarge lightbox.",
+  "keywords": ["carousel", "slider", "images", "swipe"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "images": {
+      "type": "array",
+      "default": []
+    },
+    "aspectRatio": {
+      "type": "string",
+      "default": "video"
+    },
+    "showArrows": {
+      "type": "boolean",
+      "default": true
+    },
+    "showDots": {
+      "type": "boolean",
+      "default": true
+    },
+    "loop": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 5000
+    },
+    "enableLightbox": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

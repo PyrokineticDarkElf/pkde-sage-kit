@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/latest-posts",
+  "title": "Recent Posts (Grid)",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "A grid of the most recent items from any post type (blog posts by default), optionally filtered to one category.",
+  "keywords": ["posts", "blog", "recent", "latest"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Recent Posts"
+    },
+    "description": {
+      "type": "string",
+      "default": "The most recent blog posts, in a grid."
+    },
+    "count": {
+      "type": "number",
+      "default": 3
+    },
+    "postType": {
+      "type": "string",
+      "default": "post"
+    },
+    "categoryId": {
+      "type": "number",
+      "default": 0
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

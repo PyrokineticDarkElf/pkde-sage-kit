@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/shop-products",
+  "title": "Shop products",
+  "category": "widgets",
+  "icon": "products",
+  "description": "The shop's product list, with its filters, sorting and pages, where this block sits on the Shop page. It shows nothing on other pages.",
+  "keywords": ["shop", "products", "catalog"],
+  "textdomain": "sage",
+  "supports": {
+    "html": false,
+    "multiple": false,
+    "reusable": false
+  },
+  "render": "file:./render.php"
+}

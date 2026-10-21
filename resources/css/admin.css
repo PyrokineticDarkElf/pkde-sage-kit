@@ -1,0 +1,21 @@
+/* Editorial list-table cues, scoped away from frontend and plugin tables. */
+table.posts tr.status-publish > th,
+table.posts tr.status-publish > td { background-color: #f0fdf4; }
+
+table.posts tr.status-pending > th,
+table.posts tr.status-pending > td { background-color: #fffbeb; }
+
+table.posts tr.status-draft > th,
+table.posts tr.status-draft > td { background-color: #fff1f2; }
+
+table.posts tr.status-publish:hover > th,
+table.posts tr.status-publish:hover > td { background-color: #dcfce7; }
+
+table.posts tr.status-pending:hover > th,
+table.posts tr.status-pending:hover > td { background-color: #fef3c7; }
+
+table.posts tr.status-draft:hover > th,
+table.posts tr.status-draft:hover > td { background-color: #ffe4e6; }
+
+th.column-rank_math_seo_details,
+td.column-rank_math_seo_details { width: 200px; }

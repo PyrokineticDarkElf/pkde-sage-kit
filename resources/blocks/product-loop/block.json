@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/product-loop",
+  "title": "Product Loop",
+  "category": "widgets",
+  "icon": "products",
+  "description": "A grid of WooCommerce products: choose how many, in what order, and which categories to include or leave out. Uses the shop's own product cards.",
+  "keywords": ["woocommerce", "shop", "products", "loop", "grid"],
+  "textdomain": "sage",
+  "attributes": {
+    "limit": { "type": "number", "default": 8 },
+    "columns": { "type": "number", "default": 4 },
+    "orderby": { "type": "string", "default": "menu_order" },
+    "order": { "type": "string", "default": "ASC" },
+    "categories": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "excludeCategories": { "type": "array", "items": { "type": "string" }, "default": [] }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

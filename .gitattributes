@@ -1,0 +1,14 @@
+# What `composer install` puts into the theme's vendor/pkde/sage-kit/ (inside the docroot, so docs and tests must not ship).
+/tests export-ignore
+/docs export-ignore
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/phpunit.xml export-ignore
+/pint.json export-ignore
+/composer.lock export-ignore
+/bin/release.sh export-ignore
+/README.md export-ignore
+/CHANGELOG.md export-ignore
+/resources/blocks/README.md export-ignore
+/composer.json export-ignore

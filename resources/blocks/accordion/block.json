@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/accordion",
+  "title": "Accordion",
+  "category": "widgets",
+  "icon": "list-view",
+  "description": "A stack of collapsible items — add an Accordion Item block for each one.",
+  "keywords": ["accordion", "collapse", "toggle"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "columnThreshold": {
+      "type": "number",
+      "default": 5
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

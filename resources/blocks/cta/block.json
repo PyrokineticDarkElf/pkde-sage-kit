@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/cta",
+  "title": "CTA",
+  "category": "widgets",
+  "icon": "megaphone",
+  "description": "A call-to-action section — heading, text, and up to two buttons. Two styles: a full section, or a compact banner strip.",
+  "keywords": ["cta", "call to action", "banner"],
+  "textdomain": "sage",
+  "attributes": {
+    "style": {
+      "type": "string",
+      "default": "section"
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "content": {
+      "type": "string",
+      "default": ""
+    },
+    "primaryButtonText": {
+      "type": "string",
+      "default": ""
+    },
+    "primaryButtonUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "secondaryButtonText": {
+      "type": "string",
+      "default": ""
+    },
+    "secondaryButtonUrl": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

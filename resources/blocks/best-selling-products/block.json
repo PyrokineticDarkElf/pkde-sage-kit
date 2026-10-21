@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/best-selling-products",
+  "title": "Best Selling Products (Grid)",
+  "category": "widgets",
+  "icon": "chart-bar",
+  "description": "A grid of WooCommerce's best-selling products, by total sales. Does nothing if WooCommerce isn't active.",
+  "keywords": ["woocommerce", "shop", "best selling", "products"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Best Selling Products"
+    },
+    "description": {
+      "type": "string",
+      "default": "Products ordered by total sales."
+    },
+    "count": {
+      "type": "number",
+      "default": 4
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

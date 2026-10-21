@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/product-categories",
+  "title": "Product Categories",
+  "category": "widgets",
+  "icon": "category",
+  "description": "A grid of WooCommerce product categories, as cards (default) or photograph tiles. Optionally choose which categories to include or leave out, in your order, with label overrides and extra tiles that link anywhere. Does nothing if WooCommerce isn't active.",
+  "keywords": ["woocommerce", "shop", "categories", "products"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Product Categories"
+    },
+    "description": {
+      "type": "string",
+      "default": "A card grid of WooCommerce product categories."
+    },
+    "count": {
+      "type": "number",
+      "default": 0
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "layout": {
+      "type": "string",
+      "default": "cards"
+    },
+    "include": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "exclude": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "labels": {
+      "type": "object",
+      "default": {}
+    },
+    "extra": {
+      "type": "array",
+      "items": { "type": "object" },
+      "default": []
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

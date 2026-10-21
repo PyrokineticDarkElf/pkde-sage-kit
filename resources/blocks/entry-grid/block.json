@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/entry-grid",
+  "title": "Entry Grid (all entries of a post type)",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "A card grid of every published entry of any post type (blog posts by default), ordered by each entry's Order field then title. For listing pages such as Portfolio or Services; use Recent Posts for a 'latest N' teaser.",
+  "keywords": ["entries", "grid", "listing", "portfolio", "services", "archive"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "postType": {
+      "type": "string",
+      "default": "post"
+    },
+    "count": {
+      "type": "number",
+      "default": 0
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

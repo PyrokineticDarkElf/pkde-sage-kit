@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/gallery",
+  "title": "Image Gallery",
+  "category": "widgets",
+  "icon": "grid-view",
+  "description": "A static grid of images with a consistent aspect ratio, configurable columns, and an optional click-to-enlarge lightbox.",
+  "keywords": ["gallery", "images", "grid", "photos"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "images": {
+      "type": "array",
+      "default": []
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    },
+    "aspectRatio": {
+      "type": "string",
+      "default": "video"
+    },
+    "enableLightbox": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

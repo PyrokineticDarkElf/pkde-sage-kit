@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/brands",
+  "title": "Brands",
+  "category": "widgets",
+  "icon": "tag",
+  "description": "A card grid of WooCommerce product brands. Does nothing if WooCommerce isn't active. The same grid used by the standalone Brands directory page — droppable on any page.",
+  "keywords": ["woocommerce", "shop", "brands", "products"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Brands"
+    },
+    "description": {
+      "type": "string",
+      "default": "A card grid of WooCommerce product brands."
+    },
+    "count": {
+      "type": "number",
+      "default": 0
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/section",
+  "title": "Section",
+  "category": "design",
+  "icon": "align-wide",
+  "description": "A full-width band of the page. Its content keeps the page width and side margins. Background, text and link colour, border, padding and gap are the usual block settings.",
+  "keywords": ["section", "band", "container"],
+  "textdomain": "sage",
+  "attributes": {
+    "align": {
+      "type": "string",
+      "default": "full"
+    }
+  },
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["full"],
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true,
+      "gradients": false
+    },
+    "spacing": {
+      "padding": true,
+      "blockGap": true,
+      "margin": false
+    },
+    "layout": {
+      "default": { "type": "constrained" },
+      "allowSwitching": false
+    },
+    "__experimentalBorder": {
+      "color": true,
+      "width": true,
+      "style": true,
+      "radius": false
+    }
+  }
+}

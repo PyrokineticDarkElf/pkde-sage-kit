@@ -1,0 +1,38 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/recent-products",
+  "title": "Recent Products",
+  "category": "widgets",
+  "icon": "clock",
+  "description": "A grid of the most recently added WooCommerce products. Does nothing if WooCommerce isn't active.",
+  "keywords": ["woocommerce", "shop", "recent", "products"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Recent Products"
+    },
+    "description": {
+      "type": "string",
+      "default": "The most recently added products."
+    },
+    "count": {
+      "type": "number",
+      "default": 4
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

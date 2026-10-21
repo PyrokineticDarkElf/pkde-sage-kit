@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/featured-products",
+  "title": "Featured Products",
+  "category": "widgets",
+  "icon": "star-filled",
+  "description": "A grid of highlighted products — either whatever is marked \"Featured\" on the product itself, or a manually chosen set by SKU. Does nothing if WooCommerce isn't active.",
+  "keywords": ["woocommerce", "shop", "featured", "products"],
+  "textdomain": "sage",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Featured Products"
+    },
+    "description": {
+      "type": "string",
+      "default": "Products marked \"Featured\" (or a manually chosen set by SKU)."
+    },
+    "source": {
+      "type": "string",
+      "default": "featured"
+    },
+    "count": {
+      "type": "number",
+      "default": 4
+    },
+    "skus": {
+      "type": "string",
+      "default": ""
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "render": "file:./render.php"
+}

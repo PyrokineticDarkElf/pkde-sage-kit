@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/accordion-item",
+  "title": "Accordion Item",
+  "category": "widgets",
+  "icon": "list-view",
+  "description": "One collapsible question/answer or heading/content pair. Only usable inside an Accordion or FAQs block.",
+  "keywords": ["accordion", "faq", "collapse", "toggle"],
+  "textdomain": "sage",
+  "parent": ["sage/accordion", "sage/faq"],
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "open": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "render": "file:./render.php"
+}

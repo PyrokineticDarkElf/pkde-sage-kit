@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/hero-slide",
+  "title": "Hero Slide",
+  "category": "widgets",
+  "icon": "cover-image",
+  "description": "One slide of a Hero Slider — its own heading, supporting text, background image, and button. Only usable inside a Hero Slider block.",
+  "keywords": ["hero", "slider", "slide"],
+  "textdomain": "sage",
+  "parent": ["sage/hero-slider"],
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Your heading here"
+    },
+    "headingLevel": {
+      "type": "string",
+      "default": "h2"
+    },
+    "content": {
+      "type": "string",
+      "default": "A short supporting sentence goes here."
+    },
+    "buttonText": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageId": {
+      "type": "number"
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "render": "file:./render.php"
+}

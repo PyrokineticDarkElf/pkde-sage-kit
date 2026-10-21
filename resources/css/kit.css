@@ -1,0 +1,1075 @@
+
+/**
+ * Default --pkde-theme-* values — the "no theme-{name}/theme-{alias} class"
+ * look every themeable component (see .pkde-btn/.pkde-btn-alt below, and the
+ * hero block) must render correctly against on its own, before any section
+ * theme from generated/section-themes.css overrides it. Matches this
+ * template's existing dark hero/CTA look exactly, so components built
+ * against these tokens are a no-op migration from their old hardcoded
+ * classes — see resources/blocks/hero/render.php.
+ */
+:root {
+  --pkde-theme-background: var(--color-neutral-950);
+  --pkde-theme-content: var(--color-white);
+  --pkde-theme-highlight: var(--color-white);
+  --pkde-theme-btn-bg: var(--color-white);
+  --pkde-theme-btn-text: var(--color-neutral-950);
+  --pkde-theme-btn-border: var(--color-white);
+  --pkde-theme-alt-btn-bg: transparent;
+  --pkde-theme-alt-btn-text: var(--color-white);
+  --pkde-theme-alt-btn-border: var(--color-white);
+  --pkde-theme-border: var(--color-neutral-800);
+
+  /**
+   * Header styling hooks (sections/header.blade.php). The defaults are today's look; a site overrides any of them
+   * in its own CSS (e.g. `:root { --header-logo-h: 2.5rem; --nav-weight: 600; --nav-transform: uppercase; }`)
+   * without touching the template. Logo height is per breakpoint (below / from `sm`).
+   */
+  --header-logo-h: 2rem;
+  --header-logo-h-sm: 2.5rem;
+  --nav-weight: 500;
+  --nav-transform: none;
+  --nav-tracking: normal;
+
+  /**
+   * Default --pkde-card-* values — the plain white "card surface" every
+   * post/product card already gets when its loop block is themed (see
+   * .pkde-section :where(article, .woocommerce ul.products > .product)
+   * below), reframed as tokens instead of hardcoded white/neutral-950 so
+   * "white" is just what these three variables happen to say by default,
+   * not a special case — generated/card-themes.css overrides them the same
+   * way generated/section-themes.css overrides --pkde-theme-* above, but
+   * only for a card actually marked .pkde-card-tinted/.pkde-card-bold (see
+   * that file's own comment, buildCardThemesCss() in
+   * bin/generate-theme-tokens.mjs, and docs/planning/themed-cards-reference.md).
+   */
+  --pkde-card-background: var(--color-white);
+  --pkde-card-content: var(--color-neutral-950);
+  --pkde-card-accent: var(--color-brand-700);
+}
+
+/**
+ * Minimal typographic defaults for WP-generated content (the_content, the_excerpt)
+ * where we can't add utility classes directly to each element. Kept intentionally
+ * small — swap for @tailwindcss/typography if a client build needs more.
+ */
+@layer components {
+  /**
+   * Every custom block declares `"align": ["wide", "full"]` support (see
+   * add_theme_support('align-wide') in app/setup.php for the other half —
+   * without it the editor never shows the Wide/Full toolbar buttons at
+   * all). A content wrapper that needs to host wide/full blocks — right now
+   * that's content-page.blade.php and content-page-wide.blade.php — adds
+   * the `content-grid` class; its direct children then place themselves via
+   * `grid-column` alone (`.alignwide`/`.alignfull` classes are what
+   * Gutenberg core already adds based on each block's own `align`
+   * attribute, so nothing per-block is needed beyond that).
+   *
+   * This replaced an earlier `width:100vw` + `transform:translateX(-50%)`
+   * approach — technically correct (it does center a capped box), but with
+   * two real problems: `100vw` includes the vertical scrollbar's own width
+   * on desktop browsers with a classic (non-overlay) scrollbar, so an
+   * element sized to exactly `100vw` renders a few pixels *wider* than the
+   * actually-visible page — a permanent, unwanted horizontal scrollbar,
+   * confirmed as the actual cause after switching to this grid and watching
+   * it disappear. And every consumer still had to separately reapply
+   * matching horizontal padding (`px-6` here, `padding: 1.5rem` there) with
+   * nothing tying the two together, which is exactly how they drifted out
+   * of sync by 24px in the first place. Grid track sizing here uses this
+   * element's own genuinely-available width, never a raw viewport unit, and
+   * the padding *is* the gutter track — one definition, not two.
+   *
+   * `min(<ideal>, 90%)` on both the content and wide tracks, not a bare
+   * length — the 90% cap is what stops content ever touching the screen
+   * edges on anything narrower than the ideal width; a fixed rem value
+   * alone has no such floor once the viewport drops below it. `--content-grid-width`
+   * is the one thing each consumer overrides (content-page.blade.php sets
+   * `min(48rem, 90%)` to keep its prose column reading-width; content-page-wide.blade.php
+   * sets `min(80rem, 90%)` to match the site's shared content width) — the
+   * `wide` track stays fixed at that same shared 80rem regardless, per this
+   * theme's own convention (see theme.css's `--container-content`), so on a
+   * page whose own content width already *is* 80rem, `wide` and `content`
+   * end up the same width, which is correct, not a bug.
+   *
+   * The outer gutter tracks are `minmax(0, 1fr)`, not `minmax(1.5rem, 1fr)`
+   * — a fixed minimum there fights the 90% cap instead of working with it.
+   * At a 375px viewport, `min(80rem, 90%)` alone is already 337.5px; add a
+   * *guaranteed* 1.5rem on each side on top of that and the total (385.5px)
+   * no longer fits in 375px at all — confirmed directly as real overflow
+   * (`scrollWidth` past `clientWidth`), not a rounding artifact. The 90% cap
+   * is already the full safety net (it *is* a 5%-per-side gutter at any
+   * size); `minmax(0, 1fr)` just lets the gutter tracks take whatever's
+   * actually left over, so the total can never exceed the container's own
+   * width — no fixed floor left to conflict with anything.
+   */
+  .content-grid {
+    --content-grid-width: min(48rem, 90%);
+    display: grid;
+    grid-template-columns:
+      [full-start] minmax(0, 1fr)
+      [wide-start] minmax(0, calc((var(--container-content) - var(--content-grid-width)) / 2))
+      [content-start] var(--content-grid-width)
+      [content-end] minmax(0, calc((var(--container-content) - var(--content-grid-width)) / 2))
+      [wide-end] minmax(0, 1fr)
+      [full-end];
+  }
+  .content-grid > * {
+    grid-column: content;
+  }
+  .content-grid > .alignwide {
+    grid-column: wide;
+  }
+  .content-grid > .alignfull {
+    grid-column: full;
+  }
+  /**
+   * A themed loop block (Recent Posts, Brands, ...) forces itself into the
+   * full-bleed track regardless of whatever align (wide/full) its own
+   * `align` attribute/toolbar choice set — see App\pkde_loop_theme_classes()'s
+   * own comment (app/blocks.php) for why this is a dedicated class rather
+   * than the block also just carrying a literal `alignfull` class. Three
+   * classes of specificity here beats `.content-grid > .alignwide`/
+   * `.alignfull`'s two, so this wins deterministically regardless of
+   * declaration order, unlike two equal-specificity rules would.
+   */
+  .content-grid > .pkde-loop-panel {
+    grid-column: full;
+  }
+
+  /**
+   * Text needs its own breathing room beyond wherever a track happens to
+   * end — the same reason page-header.blade.php and every other full-width
+   * section apply `px-6` *inside* their own `mx-auto max-w-7xl`, not just
+   * the centering margin alone. `.alignfull`/`.pkde-loop-panel` are
+   * deliberately excluded: a full-bleed block's background should reach the
+   * true viewport edge with nothing eating into it, and each one already
+   * manages its own inner spacing itself (e.g. the Hero block's own
+   * `px-6 sm:px-10 lg:px-16`, or a themed loop block's own
+   * App\pkde_loop_theme_content_open() wrapper).
+   */
+  .content-grid > *:not(.alignfull):not(.pkde-loop-panel) {
+    padding-inline: 1.5rem;
+  }
+
+  /**
+   * Section-theme-aware buttons — consume only the --pkde-theme-* tokens
+   * (see :root's defaults above and generated/section-themes.css's
+   * per-colour overrides), never a hardcoded colour directly, so a button
+   * automatically re-skins with whichever theme-{name}/theme-{alias} class
+   * its section carries. .pkde-btn is the primary action; .pkde-btn-alt is
+   * the secondary/outline one — same pairing as the reference "Buttons"/
+   * "Multiple Buttons" rules this system is based on.
+   */
+  /**
+   * A themeable section panel — background/text colour only, everything
+   * else (padding, radius, layout) stays as ordinary Tailwind utilities on
+   * the same element. Add a theme-{name}/theme-{alias} class alongside this
+   * one (or leave it off for the :root default look above) to re-skin the
+   * whole panel and everything inside it that also reads --pkde-theme-*.
+   */
+  .pkde-section {
+    background-color: var(--pkde-theme-background);
+    color: var(--pkde-theme-content);
+  }
+
+  .pkde-btn,
+  .pkde-btn-alt {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border-width: 2px;
+    border-style: solid;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .pkde-btn {
+    background-color: var(--pkde-theme-btn-bg);
+    color: var(--pkde-theme-btn-text);
+    border-color: var(--pkde-theme-btn-border);
+  }
+  .pkde-btn-alt {
+    background-color: var(--pkde-theme-alt-btn-bg);
+    color: var(--pkde-theme-alt-btn-text);
+    border-color: var(--pkde-theme-alt-btn-border);
+  }
+  .pkde-btn:hover,
+  .pkde-btn-alt:hover {
+    opacity: 0.85;
+  }
+  .pkde-btn:focus-visible,
+  .pkde-btn-alt:focus-visible {
+    outline: 2px solid var(--pkde-theme-btn-border);
+    outline-offset: 2px;
+  }
+
+  /**
+   * Post/product cards (partials/content.blade.php,
+   * woocommerce/content-product.blade.php) are designed to float directly
+   * on a plain white page — their own text (text-neutral-900/600/500) has
+   * no background of its own, only the thumbnail does (bg-neutral-100).
+   * Dropped straight onto a .pkde-section's saturated theme colour (a loop
+   * block with a Section theme picked — see App\pkde_loop_theme_classes(),
+   * app/blocks.php), that text would have poor-to-no contrast. Rather than
+   * threading a $themed prop through both templates (one of them
+   * WooCommerce's own loop markup), this scopes a "card surface" onto
+   * whichever of the two shapes a themed loop block actually produces —
+   * genuinely unreachable if .pkde-section is never present, so Hero/CTA
+   * (which also use .pkde-section but contain neither) and every unthemed
+   * card everywhere else on the site are completely unaffected.
+   *
+   * Reads --pkde-card-* rather than hardcoding white/neutral-950 directly —
+   * :root's own defaults just above give every card this exact white
+   * surface by default (the `cardStyle` attribute's "White" option, and the
+   * only behaviour that existed before card-themes.css did), but a card
+   * additionally marked .pkde-card-tinted/.pkde-card-bold picks up that
+   * variant's own generated override instead (buildCardThemesCss() in
+   * bin/generate-theme-tokens.mjs, docs/planning/themed-cards-reference.md).
+   * Category/Brand cards (partials/blocks/category-cards.blade.php,
+   * brand-cards.blade.php) deliberately aren't included here — a Category
+   * card's text overlays its own image with a built-in dark gradient, and a
+   * Brand card is either a bare logo image or a name centered in its own
+   * bg-neutral-100 box — both already self-contained/legible against any
+   * section background on their own, without needing this treatment.
+   */
+  .pkde-section :where(article, .woocommerce ul.products > .product) {
+    background-color: var(--pkde-card-background);
+    color: var(--pkde-card-content);
+    border-radius: var(--radius-2xl);
+    padding: 1rem;
+  }
+
+  .prose-content > * + * {
+    margin-top: 1em;
+  }
+  /* CookieYes-generated legal pages nest their text in wrapper divs, which the direct-child
+     spacing above never reaches, and Tailwind's reset removes list markers. */
+  .prose-content :is(.policy-content, .cookie-policy-p) p,
+  .prose-content :is(.policy-content, .cookie-policy-p) :is(ul, ol) {
+    margin-top: 1em;
+  }
+  /* The CookieYes cookie policy also leaves some paragraphs in classless divs, and repeats the
+     page title as its own h1 under the page-header banner's h1. */
+  .prose-content div:not([class]) p {
+    margin-top: 1em;
+  }
+  .prose-content .cookie-policy-h1 {
+    display: none;
+  }
+  .prose-content .policy-content :is(ul, ol) {
+    padding-left: 1.5rem;
+  }
+  .prose-content .policy-content ul { list-style: disc; }
+  .prose-content .policy-content ol { list-style: decimal; }
+  .prose-content .policy-content ol[type="a"] { list-style: lower-alpha; }
+  .prose-content h1,
+  .prose-content h2,
+  .prose-content h3,
+  .prose-content h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin-top: 1.5em;
+  }
+  .prose-content h1 { font-size: 2rem; }
+  .prose-content h2 { font-size: 1.5rem; }
+  .prose-content h3 { font-size: 1.25rem; }
+  .prose-content h2,
+  .prose-content h3,
+  .prose-content h4,
+  .prose-content h5,
+  .prose-content h6 {
+    scroll-margin-top: 7rem;
+  }
+  .heading-anchor-copy {
+    display: inline-flex;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    border-radius: 0.375rem;
+    color: var(--color-neutral-400);
+    opacity: 0;
+    transition: color 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+  }
+  .heading-anchor-copy svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.75;
+  }
+  .prose-content h2:hover .heading-anchor-copy,
+  .prose-content h3:hover .heading-anchor-copy,
+  .prose-content h4:hover .heading-anchor-copy,
+  .prose-content h5:hover .heading-anchor-copy,
+  .prose-content h6:hover .heading-anchor-copy,
+  .heading-anchor-copy:focus-visible,
+  .heading-anchor-copy[data-copied='true'] {
+    opacity: 1;
+  }
+  .heading-anchor-copy:hover,
+  .heading-anchor-copy:focus-visible,
+  .heading-anchor-copy[data-copied='true'] {
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+  }
+  .heading-anchor-copy:focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+  .prose-content a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  /**
+   * `>` (direct children only), not a bare descendant selector — a bare
+   * `.prose-content ul` also matches any <ul> buried inside a block
+   * rendered within .prose-content, like WooCommerce's `<ul class="products">`
+   * grid (see partials/blocks/product-grid.blade.php) — which isn't a
+   * bulleted list and shouldn't get list-item indentation. Confirmed as a
+   * real, visible bug: that grid was picking up an unwanted 24px
+   * margin-left before this was scoped.
+   */
+  .prose-content > ul,
+  .prose-content > ol {
+    margin-left: 1.5em;
+  }
+  .prose-content > ul { list-style-type: disc; }
+  .prose-content > ol { list-style-type: decimal; }
+  .prose-content img {
+    max-width: 100%;
+    height: auto;
+  }
+  .prose-content blockquote {
+    border-left: 2px solid var(--color-neutral-300);
+    padding-left: 1em;
+    font-style: italic;
+    color: var(--color-neutral-600);
+  }
+
+  /* WP's comment_form() markup — predictable class names, not editable via Blade */
+  .comment-form p { margin-top: 1em; }
+  .comment-form label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-neutral-900);
+  }
+  .comment-form input[type="text"],
+  .comment-form input[type="email"],
+  .comment-form input[type="url"],
+  .comment-form textarea {
+    margin-top: 0.25rem;
+    width: 100%;
+    max-width: 32rem;
+    border: 1px solid var(--color-neutral-300);
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+  .comment-form #submit {
+    margin-top: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: var(--color-neutral-900);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: white;
+  }
+
+  /**
+   * WooCommerce (optional — see bin/setup's "online store" prompt). Classic
+   * templates only: woocommerce_enqueue_styles is disabled in app/woocommerce.php
+   * so these rules are the only styling those templates get. Block-based
+   * Cart/Checkout keep WC Blocks' own default stylesheet — it isn't covered
+   * by that filter and is reasonable out of the box, so it's left alone.
+   */
+  .woocommerce-content .page-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+
+  .woocommerce ul.products {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.25rem;
+    list-style: none;
+    margin-top: 2rem;
+  }
+  @media (min-width: 40rem) {
+    .woocommerce ul.products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 64rem) {
+    .woocommerce ul.products { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  /**
+   * partials/blocks/product-grid.blade.php (recent/best-selling/featured
+   * products) — 4 items by default, not 3, and no sidebar competing for
+   * width, so it gets its own column count instead of the Shop archive's.
+   */
+  @media (min-width: 64rem) {
+    .woocommerce.product-grid--4up ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .woocommerce ul.products li.product {
+    display: flex;
+    flex-direction: column;
+  }
+  .woocommerce ul.products li.product img {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    object-fit: cover;
+    background-color: var(--color-neutral-100);
+  }
+  .woocommerce ul.products li.product .woocommerce-loop-product__title {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-neutral-900);
+  }
+  .woocommerce .price {
+    color: var(--color-neutral-600);
+  }
+  .woocommerce .price ins {
+    color: var(--color-brand-700);
+    text-decoration: none;
+  }
+  .woocommerce .price del {
+    color: var(--color-neutral-400);
+  }
+
+  .woocommerce .button,
+  .woocommerce a.button,
+  .woocommerce button.button,
+  .woocommerce input.button,
+  .woocommerce #respond input#submit {
+    display: inline-block;
+    margin-top: 0.75rem;
+    border-radius: var(--radius-xl);
+    background-color: var(--color-brand-900);
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: white;
+    transition: background-color 0.2s;
+  }
+  .woocommerce .button:hover,
+  .woocommerce a.button:hover,
+  .woocommerce button.button:hover {
+    background-color: var(--color-brand-700);
+  }
+
+  /* Store feedback: WC emits these for cart changes, coupon validation,
+     checkout issues, and extension messages. Kept deliberately quiet but
+     unmistakable, with the primary action aligned to the right on wide views. */
+  .woocommerce-notices-wrapper > .woocommerce-message,
+  .woocommerce-notices-wrapper > .woocommerce-info,
+  .woocommerce-notices-wrapper > .woocommerce-error,
+  .woocommerce .woocommerce-message,
+  .woocommerce .woocommerce-info,
+  .woocommerce .woocommerce-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 0 0 1rem;
+    border: 1px solid var(--color-neutral-200);
+    border-left: 3px solid var(--color-brand-600);
+    border-radius: var(--radius-2xl);
+    background: var(--color-neutral-50);
+    padding: 1rem 1.125rem;
+    color: var(--color-neutral-700);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    list-style: none;
+  }
+  .woocommerce-notices-wrapper > .woocommerce-error,
+  .woocommerce .woocommerce-error {
+    border-left-color: #dc2626;
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  .woocommerce-notices-wrapper > .woocommerce-info,
+  .woocommerce .woocommerce-info {
+    border-left-color: var(--color-brand-600);
+  }
+  .woocommerce-notices-wrapper .woocommerce-message .button,
+  .woocommerce .woocommerce-message .button {
+    order: 2;
+    margin: -0.25rem 0 -0.25rem auto;
+    white-space: nowrap;
+  }
+  .woocommerce-notices-wrapper .woocommerce-error li,
+  .woocommerce .woocommerce-error li {
+    margin: 0;
+  }
+  @media (max-width: 40rem) {
+    .woocommerce-notices-wrapper > .woocommerce-message,
+    .woocommerce-notices-wrapper > .woocommerce-info,
+    .woocommerce-notices-wrapper > .woocommerce-error,
+    .woocommerce .woocommerce-message,
+    .woocommerce .woocommerce-info,
+    .woocommerce .woocommerce-error {
+      flex-direction: column;
+    }
+    .woocommerce-notices-wrapper .woocommerce-message .button,
+    .woocommerce .woocommerce-message .button {
+      order: 0;
+      margin: 0;
+    }
+  }
+
+  /*
+   * div.product's direct children are the gallery, .summary, then — as
+   * further siblings, not nested inside either of those — .woocommerce-tabs,
+   * .upsells and .related (see WC's content-single-product.php). Grid the
+   * whole thing so gallery+summary sit side by side, then pull the later
+   * sections back to full width rather than squeezing them into a column.
+   */
+  .woocommerce div.product {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    .woocommerce div.product {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+  .woocommerce div.product > .woocommerce-tabs,
+  .woocommerce div.product > .upsells,
+  .woocommerce div.product > .related {
+    grid-column: 1 / -1;
+  }
+  .woocommerce div.product .woocommerce-product-gallery img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background-color: var(--color-neutral-100);
+  }
+  .woocommerce div.product .product_title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.875rem;
+    color: var(--color-neutral-900);
+  }
+  .woocommerce div.product p.price,
+  .woocommerce div.product span.price {
+    font-size: 1.25rem;
+    margin: 0.5rem 0;
+  }
+  .woocommerce div.product form.cart .quantity input {
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-xl);
+    padding: 0.5rem;
+    width: 4rem;
+  }
+  .woocommerce .woocommerce-tabs ul.tabs {
+    display: flex;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--color-neutral-200);
+    margin-top: 2rem;
+    list-style: none;
+  }
+  .woocommerce .woocommerce-tabs ul.tabs li {
+    padding-bottom: 0.75rem;
+    font-weight: 600;
+  }
+  .woocommerce .woocommerce-tabs .panel {
+    padding-top: 1.5rem;
+  }
+
+  .woocommerce table.shop_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+  }
+  .woocommerce table.shop_table th,
+  .woocommerce table.shop_table td {
+    border-bottom: 1px solid var(--color-neutral-200);
+    padding: 0.75rem;
+    text-align: left;
+  }
+
+  /* Additional information tab — otherwise unstyled browser-default table borders. */
+  .woocommerce table.shop_attributes {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+  .woocommerce table.shop_attributes tr {
+    border-bottom: 1px solid var(--color-neutral-200);
+  }
+  .woocommerce table.shop_attributes th {
+    width: 33%;
+    padding: 0.75rem 1rem 0.75rem 0;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-neutral-900);
+  }
+  .woocommerce table.shop_attributes td {
+    padding: 0.75rem 0;
+    color: var(--color-neutral-600);
+  }
+  .woocommerce table.shop_attributes td p {
+    margin: 0;
+  }
+
+  /*
+   * Shop sidebar filters (partials/sidebar-shop.blade.php) — WooCommerce's
+   * layered-nav widgets render plain <a>/<span> term lists, not real <input
+   * type="checkbox"> elements (this is a reload-based filter: each click is
+   * its own request, not a form submitted after multi-selecting). Styling
+   * them to look like checkboxes — a box that fills in via the widget's own
+   * "chosen"/"--chosen" class on the currently-applied term — gives the same
+   * at-a-glance state without rebuilding the filtering mechanism itself.
+   * Covers both WC_Widget_Layered_Nav (attributes) and WC_Widget_Brand_Nav,
+   * which use slightly different class names for the same list-item shape.
+   */
+  .woocommerce .woocommerce-widget-layered-nav-list__item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 0.125rem 0;
+  }
+  .woocommerce .wc-layered-nav-term {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    padding: 0.125rem 0;
+  }
+  .woocommerce .woocommerce-widget-layered-nav-list__item a,
+  .woocommerce .woocommerce-widget-layered-nav-list__item span:not(.count),
+  .woocommerce .wc-layered-nav-term a,
+  .woocommerce .wc-layered-nav-term span:not(.count) {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+  .woocommerce .woocommerce-widget-layered-nav-list__item a::before,
+  .woocommerce .woocommerce-widget-layered-nav-list__item span:not(.count)::before,
+  .woocommerce .wc-layered-nav-term a::before,
+  .woocommerce .wc-layered-nav-term span:not(.count)::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--color-neutral-300);
+    border-radius: 0.25rem;
+    background-color: var(--color-white);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 0.65rem;
+  }
+  .woocommerce .woocommerce-widget-layered-nav-list__item--chosen a::before,
+  .woocommerce .wc-layered-nav-term.chosen a::before {
+    background-color: var(--color-neutral-900);
+    border-color: var(--color-neutral-900);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m3 8 3.5 3.5L13 5'/%3E%3C/svg%3E");
+  }
+  .woocommerce .woocommerce-widget-layered-nav-list__item--chosen a,
+  .woocommerce .wc-layered-nav-term.chosen a {
+    font-weight: 600;
+    color: var(--color-neutral-900);
+  }
+
+  /* Price widget: WooCommerce supplies the functionality; these rules provide
+     the missing controls once its default stylesheet has been disabled. */
+  .woocommerce .widget_price_filter form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+  .woocommerce .widget_price_filter .price_slider_wrapper {
+    display: grid;
+    gap: 1rem;
+  }
+  .woocommerce .widget_price_filter .price_slider {
+    position: relative;
+    height: 0.25rem;
+    margin: 0.625rem 0;
+    border-radius: 9999px;
+    background: var(--color-neutral-200);
+  }
+  .woocommerce .widget_price_filter .ui-slider-range {
+    position: absolute;
+    z-index: 1;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-neutral-950);
+  }
+  .woocommerce .widget_price_filter .ui-slider-handle {
+    position: absolute;
+    z-index: 2;
+    width: 1rem;
+    height: 1rem;
+    margin: -0.375rem 0 0 -0.5rem;
+    border: 2px solid var(--color-neutral-950);
+    border-radius: 9999px;
+    background: white;
+    cursor: grab;
+  }
+  .woocommerce .widget_price_filter .price_slider_amount {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .woocommerce .widget_price_filter input[type="text"] {
+    display: block !important;
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--color-neutral-300);
+    border-radius: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  .woocommerce .widget_price_filter .price_label {
+    grid-column: 1 / -1;
+    order: -1;
+    color: var(--color-neutral-600);
+    font-size: 0.8125rem;
+  }
+  .woocommerce .widget_price_filter .button {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin: 0;
+    border-radius: 9999px;
+    padding: 0.625rem 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .woocommerce .woocommerce-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+  .woocommerce .woocommerce-pagination ul.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .woocommerce .woocommerce-pagination ul.page-numbers li {
+    margin: 0;
+  }
+  .woocommerce .woocommerce-pagination .page-numbers {
+    display: inline-flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    color: var(--color-neutral-600);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .woocommerce .woocommerce-pagination a.page-numbers:hover,
+  .woocommerce .woocommerce-pagination .page-numbers.current {
+    background: var(--color-neutral-950);
+    color: white;
+  }
+
+  .woocommerce div.product .woocommerce-product-gallery {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .woocommerce div.product .woocommerce-product-gallery .flex-viewport {
+    overflow: hidden;
+    border-radius: var(--radius-2xl);
+    background: var(--color-neutral-100);
+  }
+  .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs li {
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: var(--color-neutral-100);
+    cursor: pointer;
+  }
+  .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs img {
+    display: block;
+    aspect-ratio: 1;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+  }
+  .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs img.flex-active,
+  .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs img:hover {
+    opacity: 1;
+  }
+
+  .woocommerce-form-login,
+  .woocommerce-form-register {
+    max-width: 28rem;
+  }
+  .woocommerce form .form-row label {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .woocommerce form .form-row input.input-text,
+  .woocommerce form .form-row textarea {
+    margin-top: 0.25rem;
+    width: 100%;
+    border: 1px solid var(--color-neutral-300);
+    border-radius: var(--radius-xl);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .woocommerce-MyAccount-navigation ul {
+    list-style: none;
+  }
+  .woocommerce-MyAccount-navigation li {
+    border-bottom: 1px solid var(--color-neutral-200);
+  }
+  .woocommerce-MyAccount-navigation li a {
+    display: block;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .woocommerce-MyAccount-navigation li.is-active a {
+    color: var(--color-brand-700);
+  }
+}
+
+/**
+ * Accordion Item's <details>/<summary> (accordion-item/render.php, used by
+ * both the Accordion and FAQs blocks) read plain, hardcoded neutral classes
+ * (border-neutral-200, text-neutral-950, text-neutral-400 on the plus
+ * icon, no background at all) — correct for the default plain-page look. A
+ * themed Accordion/FAQs block (accordion/render.php, faq/render.php — the
+ * same conditional .pkde-section theme-{name} panel Hero/CTA use, see those
+ * two files' own comments) gives every item inside it its own "card"
+ * surface instead — the same --pkde-card-* tokens post/product cards
+ * already read (see the .pkde-section :where(article, ...) rule above),
+ * not --pkde-theme-content/-border, since a toggle sitting directly on the
+ * section's own saturated background needs the same white-by-default
+ * surface a post card gets, not just contrast-matched text with no
+ * background at all. The border-b divider between items becomes the gap
+ * between cards instead — two colour-filled toggles touching edge to edge
+ * with no border between them would read as one merged block, not two.
+ *
+ * Neither block passes anything down to its Accordion Item children for
+ * this — a completely separate block instance, not a template include, so
+ * there's no PHP-level "pass a $cardStyle prop down" available the way
+ * accordion-layout.blade.php's own heading/description gets one. Instead,
+ * App\pkde_card_style_wrapper_open() wraps the *parent* block's own inner
+ * content in one `.pkde-card-{style}` marker div — buildCardThemesCss()'s
+ * generated `.theme-{name} .pkde-card-{style}` rule sets the --pkde-card-*
+ * custom properties there, and every descendant (every Accordion Item
+ * inside it) picks them up automatically via ordinary CSS inheritance, no
+ * per-item coordination needed at all.
+ *
+ * Deliberately OUTSIDE @layer components (unlike every other rule in this
+ * file): Tailwind's own utility classes live in its own `utilities` layer,
+ * declared *after* `components` — meaning a components-layer rule loses to
+ * a conflicting utility class regardless of selector specificity, by CSS
+ * cascade-layer rules, not by specificity at all (confirmed directly: this
+ * rule silently did nothing while still inside @layer components, despite
+ * comfortably out-specificity-ing text-neutral-950/border-neutral-200).
+ * Unlayered CSS always wins over every layered rule regardless of
+ * specificity, which is exactly what overriding a utility class needs
+ * here. Scoped by the block's own auto-generated wrapper class, not the
+ * bare `details` tag, so this can't accidentally catch an unrelated
+ * <details> element elsewhere on a themed page.
+ */
+.pkde-section .wp-block-sage-accordion-item {
+  background-color: var(--pkde-card-background);
+  color: var(--pkde-card-content);
+  border-radius: var(--radius-xl);
+  border-bottom-width: 0;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.pkde-section .wp-block-sage-accordion-item:last-of-type {
+  margin-bottom: 0;
+}
+.pkde-section .wp-block-sage-accordion-item summary {
+  color: var(--pkde-card-content);
+}
+.pkde-section .wp-block-sage-accordion-item svg {
+  color: var(--pkde-card-content);
+  opacity: 0.5;
+}
+
+/**
+ * Contact Form 7's own generated markup (template-contact.blade.php renders
+ * [contact-form-7 id="..."] once bin/setup's opt-in "Add a contact form"
+ * step has wired one up — see App bootstrap_contact_form()). CF7 ships its
+ * own base stylesheet (behavioural only: hides the honeypot fields, toggles
+ * .wpcf7-response-output's visibility by form state, the submit spinner) —
+ * this only adds the visual layer to match the rest of the site's inputs.
+ *
+ * Deliberately OUTSIDE @layer components, same reasoning as the Accordion
+ * Item rule above: CF7's own stylesheet sets `border` directly on
+ * `.wpcf7-response-output` as a plain, unlayered rule, which would beat a
+ * `@layer components` version of the same property regardless of
+ * specificity — confirmed by checking contact-form-7/includes/css/styles.css
+ * directly rather than assuming, after getting caught by exactly this once
+ * already in this same file.
+ */
+.wpcf7-form {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .wpcf7-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.wpcf7-form p {
+  margin: 0;
+}
+.wpcf7-form p:has(textarea[name="your-message"]),
+.wpcf7-form p:has(.wpcf7-submit) {
+  grid-column: 1 / -1;
+}
+.wpcf7-form label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-neutral-900);
+}
+.wpcf7-form-control-wrap {
+  display: block;
+  margin-top: 0.5rem;
+}
+.wpcf7-form-control {
+  width: 100%;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-white);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+.wpcf7-form-control:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: var(--color-brand-600);
+  box-shadow: 0 0 0 2px var(--color-brand-100);
+}
+.wpcf7-submit {
+  /* .wpcf7-form-control's own width: 100% above also applies here — CF7
+     puts that class on every field, submit included — so it's undone
+     explicitly rather than left to stretch full-width like a text input. */
+  width: auto;
+  display: inline-flex;
+  border-radius: 9999px;
+  background-color: var(--color-neutral-950);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-white);
+  cursor: pointer;
+}
+.wpcf7-submit:hover {
+  background-color: var(--color-brand-700);
+}
+.wpcf7-not-valid-tip {
+  margin-top: 0.375rem;
+  font-size: 0.75rem;
+}
+.wpcf7-response-output {
+  grid-column: 1 / -1;
+  border-radius: var(--radius-xl) !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem;
+}
+
+/* Cloudflare Turnstile (simple-cloudflare-turnstile plugin) is a direct child of this grid. Left alone it is
+   auto-placed into the narrow second column, so its 300px box spills out of the card. Give it a full row, undo the
+   plugin's inline negative bottom margin (hence !important), and hide the stray <br> CF7's autop leaves beside it. */
+.wpcf7-form .cf7-cf-turnstile {
+  grid-column: 1 / -1;
+  margin: 0 !important;
+}
+.wpcf7-form > br {
+  display: none;
+}
+
+/**
+ * Menu call-to-action button. Give one menu item the CSS class `nav-cta` (Appearance > Menus; enable "CSS Classes" under
+ * Screen Options) and it renders as a solid brand button in both the desktop and the mobile menu. Targets the <a> inside the
+ * <li> by the two menu ids, so an unrelated `.nav-cta` elsewhere is untouched. Deliberately OUTSIDE @layer components: the
+ * link text sits in a <span class="... hover:text-..."> (link_before in sections/header.blade.php), and an unlayered rule
+ * beats those utility classes, so the label keeps the button's colour on hover. 
+ */
+#primary-menu li.nav-cta > a,
+#primary-menu-mobile li.nav-cta > a {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background-color: var(--color-brand-600);
+  padding: 0.5rem 1.25rem;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+#primary-menu li.nav-cta > a:hover,
+#primary-menu-mobile li.nav-cta > a:hover {
+  background-color: var(--color-brand-700);
+}
+#primary-menu li.nav-cta > a span,
+#primary-menu-mobile li.nav-cta > a span {
+  color: inherit;
+}
+
+/**
+ * Animation settings (a block's Animation panel, resources/js/animation.jsx; classes added in app/blocks.php). Movement only for
+ * visitors who have not asked their system to reduce it. Fade up uses the browser's scroll-driven animations, so browsers without
+ * them simply show the block. No JavaScript on the front end.
+ */
+.pkde-hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.pkde-hover-lift:is(:hover, :focus-within) {
+  box-shadow: 0 14px 30px -20px rgb(0 0 0 / 0.35);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pkde-hover-lift:is(:hover, :focus-within) {
+    transform: translateY(-3px);
+  }
+  @supports (animation-timeline: view()) {
+    .pkde-entrance-fade-up {
+      animation: pkde-fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}
+@keyframes pkde-fade-up {
+  from {
+    opacity: 0;
+    translate: 0 2rem;
+  }
+}
+
+/* An embedded map or video must show where keyboard focus is (WCAG 2.4.7); the frame's own content cannot be styled from here. */
+iframe:focus-visible {
+  outline: 2px solid var(--color-brand-600, currentColor);
+  outline-offset: 2px;
+}
