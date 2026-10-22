@@ -767,7 +767,18 @@ const sectionThemesCss = buildSectionThemesCss(palette.colors);
 const cardThemesCss = buildCardThemesCss(palette.colors);
 const themeOptions = buildThemeOptions(palette.colors);
 const headerOptions = buildHeaderOptions(header);
-const themeJson = withPalette(fs.readFileSync(themeJsonPath, 'utf8'), palette.colors);
+// --check compares the parsed palette, not the text, so a tool that re-saves theme.json in another layout (json.dump, an editor's
+// formatter) does not fail it; only generating needs the layout withPalette() looks for.
+const themeJson = options.check ? null : withPalette(fs.readFileSync(themeJsonPath, 'utf8'), palette.colors);
+
+function themeJsonPaletteUpToDate() {
+  try {
+    const have = JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')).settings?.color?.palette;
+    return JSON.stringify(have) === JSON.stringify(JSON.parse(`[${buildPalette(palette.colors)}]`));
+  } catch {
+    return false;
+  }
+}
 
 if (options.check) {
   const upToDate = (file, expected) => fs.existsSync(file) && fs.readFileSync(file, 'utf8') === expected;
@@ -778,7 +789,7 @@ if (options.check) {
       && upToDate(themeOptionsOutputPath, themeOptions.js)
       && upToDate(themeOptionsPhpOutputPath, themeOptions.php)
       && upToDate(headerOptionsOutputPath, headerOptions)
-      && upToDate(themeJsonPath, themeJson)
+      && themeJsonPaletteUpToDate()
       ? 0
       : 1,
   );

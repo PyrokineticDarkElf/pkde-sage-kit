@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.22
+
+- `generate-theme-tokens.mjs --check` (`npm run theme:check`) compares the parsed `settings.color.palette` of `theme.json` with the generated one instead of comparing bytes, so re-saving `theme.json` in another layout (Python's `json.dump`, an editor's formatter) no longer fails it; a real palette difference still does. Generating still expects the layout it writes, so keep `theme.json` in that layout when the generator is run.
+
 ## 2026.10.21.1
 
 - Filterable containers: `\App\container_class($default, $context)` runs the `pkde_kit/container_class` filter, and Hero, Hero Slide, the themed loop-section wrapper and the page header, post grid, single post and shop containers use it, so a site with its own container class changes it in one filter instead of overriding markup (the default classes and the HTML are unchanged). New `pkde_kit/section_class` filter for the themed loop-section classes.
