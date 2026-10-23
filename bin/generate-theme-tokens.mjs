@@ -782,17 +782,21 @@ function themeJsonPaletteUpToDate() {
 
 if (options.check) {
   const upToDate = (file, expected) => fs.existsSync(file) && fs.readFileSync(file, 'utf8') === expected;
-  process.exit(
-    upToDate(outputPath, css)
-      && upToDate(sectionThemesOutputPath, sectionThemesCss)
-      && upToDate(cardThemesOutputPath, cardThemesCss)
-      && upToDate(themeOptionsOutputPath, themeOptions.js)
-      && upToDate(themeOptionsPhpOutputPath, themeOptions.php)
-      && upToDate(headerOptionsOutputPath, headerOptions)
-      && themeJsonPaletteUpToDate()
-      ? 0
-      : 1,
-  );
+  const rel = (file) => path.relative(themeDirectory, file);
+  const stale = [
+    [rel(outputPath), upToDate(outputPath, css)],
+    [rel(sectionThemesOutputPath), upToDate(sectionThemesOutputPath, sectionThemesCss)],
+    [rel(cardThemesOutputPath), upToDate(cardThemesOutputPath, cardThemesCss)],
+    [rel(themeOptionsOutputPath), upToDate(themeOptionsOutputPath, themeOptions.js)],
+    [rel(themeOptionsPhpOutputPath), upToDate(themeOptionsPhpOutputPath, themeOptions.php)],
+    [rel(headerOptionsOutputPath), upToDate(headerOptionsOutputPath, headerOptions)],
+    [`${rel(themeJsonPath)} (settings.color.palette)`, themeJsonPaletteUpToDate()],
+  ].filter(([, ok]) => !ok).map(([label]) => label);
+  if (stale.length) {
+    process.stderr.write(`Out of date with config/brand-palette.json (or missing):\n${stale.map((file) => `  - ${file}`).join('\n')}\nRun \`npm run theme:generate\` and commit the result.\n`);
+    process.exit(1);
+  }
+  process.exit(0);
 }
 if (options.dryRun) {
   process.stdout.write(`${css}\n/* --- ${path.basename(sectionThemesOutputPath)} --- */\n\n${sectionThemesCss}\n/* --- ${path.basename(cardThemesOutputPath)} --- */\n\n${cardThemesCss}`);

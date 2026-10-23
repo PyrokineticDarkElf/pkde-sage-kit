@@ -61,3 +61,14 @@ it('keeps no un-namespaced partial or component reference that would resolve onl
 
     expect($legacy)->toBe([]);
 });
+
+it('marks the Sale and New badge links nofollow, so crawlers do not follow every card into the same filtered views', function () {
+    $view = file_get_contents(dirname(__DIR__, 2) . '/resources/views/woocommerce/content-product.blade.php');
+
+    preg_match_all("/<a href=\"\{\{ add_query_arg\('sage_view', '(?:sale|new)'[^>]*>/", $view, $links);
+
+    expect($links[0])->toHaveCount(2);
+    foreach ($links[0] as $link) {
+        expect($link)->toContain('rel="nofollow"');
+    }
+});
