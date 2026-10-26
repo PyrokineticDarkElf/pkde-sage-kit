@@ -123,3 +123,24 @@ it('lists the social profiles that have a valid URL, in a fixed order', function
     $GLOBALS['pkde_test_options'] = [];
     expect(\App\social_links())->toBe([]);
 });
+
+it('maps the shop sort choices to the meta fields Relevanssi sorts by', function () {
+    expect(\App\search_sort_field('price'))->toBe('_price')
+        ->and(\App\search_sort_field('popularity'))->toBe('total_sales')
+        ->and(\App\search_sort_field('rating'))->toBe('_wc_average_rating')
+        ->and(\App\search_sort_field('date'))->toBeNull()
+        ->and(\App\search_sort_field(null))->toBeNull();
+});
+
+it('keeps the header breakpoint at sm unless a filter says otherwise, with every breakpoint written out as literal classes', function () {
+    $default = \App\nav_classes();
+
+    expect($default)->toBe(['nav' => 'hidden sm:block', 'hideAbove' => 'sm:hidden', 'gap' => 'gap-4 sm:gap-8', 'menuGap' => 'sm:gap-8'])
+        ->and(\App\header_search_enabled())->toBeFalse();
+
+    $source = file_get_contents(dirname(__DIR__, 2) . '/app/helpers.php');
+    foreach (['sm', 'md', 'lg', 'xl', '2xl'] as $breakpoint) {
+        expect($source)->toContain("'nav' => 'hidden $breakpoint:block'")
+            ->and($source)->toContain("'hideAbove' => '$breakpoint:hidden'");
+    }
+});

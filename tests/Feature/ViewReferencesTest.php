@@ -187,3 +187,37 @@ it('draws the unselected review stars in neutral-500, a control needing 3:1, and
         ->and($picker)->toContain('var(--color-amber-700)')
         ->and($css)->toContain('.star-rating::before {' . "\n" . '  background: var(--color-neutral-200);');
 });
+
+it('titles a product search "Search Results", not "Shop": the composer checks is_search() before is_archive()', function () {
+    $source = file_get_contents(dirname(__DIR__, 2) . '/app/View/Composers/Post.php');
+    $title = substr($source, strpos($source, 'public function title()'));
+
+    expect(strpos($title, 'is_search()'))->toBeInt()
+        ->and(strpos($title, 'is_search()'))->toBeLessThan(strpos($title, 'is_archive()'));
+});
+
+it('ships the optional Relevanssi live search: filters, results template, form, styles and settings script', function () {
+    $root = dirname(__DIR__, 2);
+    $search = file_get_contents("$root/app/search.php");
+
+    expect($search)->toContain("'relevanssi_modify_wp_query'")
+        ->and($search)->toContain("'relevanssi_live_search_results_template'")
+        ->and($search)->toContain("'search_template_hierarchy'")
+        ->and($search)->toContain("'relevanssi-live-search'")
+        ->and(file_get_contents("$root/composer.json"))->toContain('"app/search.php"')
+        ->and(file_get_contents("$root/resources/live-search/search-results.php"))->toContain("pkde-kit::partials.live-search-results")
+        ->and(file_get_contents("$root/resources/views/partials/product-search.blade.php"))->toContain('data-rlvlive="true"')
+        ->and(file_get_contents("$root/resources/views/partials/product-search.blade.php"))->toContain('name="post_type" value="product"')
+        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./live-search.css";')
+        ->and(file_exists("$root/bin/relevanssi-settings.php"))->toBeTrue();
+});
+
+it('has an opt-in header search whose icon and panel are wired by kit.js', function () {
+    $root = dirname(__DIR__, 2);
+    $partial = file_get_contents("$root/resources/views/partials/header-search.blade.php");
+
+    expect($partial)->toContain('\App\header_search_enabled()')
+        ->and($partial)->toContain('data-search-toggle')
+        ->and($partial)->toContain('aria-controls="header-search-panel"')
+        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('[data-search-toggle]');
+});

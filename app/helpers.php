@@ -62,6 +62,43 @@ function social_links(): array
 }
 
 /**
+ * The meta field a WooCommerce sort choice orders by when Relevanssi answers the query (price, popularity, rating), or null.
+ */
+function search_sort_field(?string $orderby): ?string
+{
+    return ['price' => '_price', 'popularity' => 'total_sales', 'rating' => '_wc_average_rating'][$orderby ?? ''] ?? null;
+}
+
+/**
+ * The header's breakpoint classes: from which Tailwind breakpoint the menu shows in the bar and the menu button disappears. Default `sm`
+ * (the template's layout); a site with a long menu sets `add_filter('pkde_kit/nav_breakpoint', fn () => 'xl')` (sm, md, lg, xl or 2xl).
+ * Every class is a literal string below on purpose: Tailwind only generates classes it can find as text in a scanned file.
+ *
+ * @return array{nav: string, hideAbove: string, gap: string, menuGap: string}
+ */
+function nav_classes(): array
+{
+    $sets = [
+        'sm' => ['nav' => 'hidden sm:block', 'hideAbove' => 'sm:hidden', 'gap' => 'gap-4 sm:gap-8', 'menuGap' => 'sm:gap-8'],
+        'md' => ['nav' => 'hidden md:block', 'hideAbove' => 'md:hidden', 'gap' => 'gap-4 md:gap-8', 'menuGap' => 'md:gap-8'],
+        'lg' => ['nav' => 'hidden lg:block', 'hideAbove' => 'lg:hidden', 'gap' => 'gap-4 lg:gap-8', 'menuGap' => 'lg:gap-8'],
+        'xl' => ['nav' => 'hidden xl:block', 'hideAbove' => 'xl:hidden', 'gap' => 'gap-4 xl:gap-8', 'menuGap' => 'xl:gap-8'],
+        '2xl' => ['nav' => 'hidden 2xl:block', 'hideAbove' => '2xl:hidden', 'gap' => 'gap-4 2xl:gap-8', 'menuGap' => '2xl:gap-8'],
+    ];
+    $breakpoint = function_exists('apply_filters') ? (string) apply_filters('pkde_kit/nav_breakpoint', 'sm') : 'sm';
+
+    return $sets[$breakpoint] ?? $sets['sm'];
+}
+
+/**
+ * Does the header show the search icon that opens a panel under the bar? Opt-in: `add_filter('pkde_kit/header_search', '__return_true')`.
+ */
+function header_search_enabled(): bool
+{
+    return function_exists('apply_filters') && (bool) apply_filters('pkde_kit/header_search', false) && class_exists('WooCommerce');
+}
+
+/**
  * The full-size URL a block image should link or load: the attachment's own (absolute) URL when `$id` is a real
  * attachment, otherwise the stored URL made absolute.
  */

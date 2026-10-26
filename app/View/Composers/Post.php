@@ -38,16 +38,17 @@ class Post extends Composer
             return __('Latest Posts', 'sage');
         }
 
-        if (is_archive()) {
-            return get_the_archive_title();
-        }
-
+        // A search comes first: a product search (?s=...&post_type=product) is also a post type archive and would be titled "Shop".
         if (is_search()) {
             return sprintf(
                 /* translators: %s is replaced with the search query */
                 __('Search Results for %s', 'sage'),
                 get_search_query(),
             );
+        }
+
+        if (is_archive()) {
+            return get_the_archive_title();
         }
 
         if (is_404()) {

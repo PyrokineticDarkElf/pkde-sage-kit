@@ -1,0 +1,148 @@
+/**
+ * Product search with live results (Relevanssi Live Ajax Search): the form (partials/product-search.blade.php), the results list
+ * (partials/live-search-results.blade.php) and the panel the header's search icon opens (partials/header-search.blade.php). Ported from tcs and
+ * bb; kit tokens only. Inert while the search partials are not printed.
+ */
+.site-search {
+  position: relative;
+}
+.site-search__input {
+  width: 9.5rem;
+  padding: 0.35rem 0.1rem;
+  border: 0;
+  border-bottom: 1px solid var(--color-neutral-400);
+  background: transparent;
+  color: var(--color-neutral-900);
+  font-size: 0.9rem;
+}
+.site-search__input::placeholder {
+  color: var(--color-neutral-600);
+  opacity: 0.85;
+}
+.site-search__input:focus {
+  border-bottom-color: var(--color-neutral-900);
+  outline: none;
+}
+.site-search__input:focus-visible {
+  box-shadow: 0 2px 0 0 var(--color-neutral-900);
+}
+
+/* The panel under the header bar: a full-width field. */
+.header-search-panel {
+  padding-block: 0.75rem 1rem;
+}
+.header-search-panel .site-search__input {
+  width: 100%;
+  padding-block: 0.6rem;
+  font-size: 1rem;
+}
+
+/* The plugin's results box, restyled (it sets its position inline, hence !important on the two offsets). */
+.site-search__results .relevanssi-live-search-results {
+  top: calc(100% + 0.75rem) !important;
+  right: 0;
+  left: auto !important;
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: min(32rem, 70vh);
+  padding: 0.5rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1rem;
+  background: var(--color-white);
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.35);
+}
+.header-search-panel .site-search__results .relevanssi-live-search-results {
+  right: 0;
+  left: 0 !important;
+  width: auto;
+}
+@media (min-width: 1024px) {
+  .header-search-panel .site-search__results .relevanssi-live-search-results {
+    left: auto !important;
+    width: min(32rem, 100%);
+  }
+}
+.site-search__results :is(.live-search__status, .live-search__none) {
+  margin: 0.25rem 0.5rem 0.5rem;
+  font-size: 0.8rem;
+}
+.live-search__link {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.45rem 0.5rem;
+  border-radius: 0.75rem;
+  color: var(--color-neutral-900);
+  text-decoration: none;
+}
+.live-search__img {
+  width: 3.25rem;
+  height: 3.25rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  background: var(--color-neutral-100);
+}
+.live-search__title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-family: var(--font-display, inherit);
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+.live-search__price {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.live-search__price del {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+.live-search__price ins {
+  text-decoration: none;
+}
+.live-search__all {
+  display: block;
+  margin-top: 0.25rem;
+  padding: 0.75rem 0.5rem;
+  border-top: 1px solid var(--color-neutral-200);
+  color: var(--color-neutral-900);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+:is(.live-search__link, .live-search__all):hover {
+  background: var(--color-neutral-100);
+}
+.relevanssi-live-search-result--focused :is(.live-search__link, .live-search__all) {
+  background: var(--color-neutral-100);
+  box-shadow: inset 0 0 0 2px var(--color-brand-600);
+}
+.site-search__results .live-ajax-messages {
+  display: flex;
+  justify-content: center;
+}
+.site-search__results .rlv-has-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.75rem;
+  border: 2px solid var(--color-neutral-200);
+  border-top-color: var(--color-neutral-900);
+  border-radius: 50%;
+  animation: pkde-live-search-spin 0.8s linear infinite;
+}
+@keyframes pkde-live-search-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-search__results .rlv-has-spinner {
+    animation: none;
+  }
+}

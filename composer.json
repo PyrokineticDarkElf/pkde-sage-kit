@@ -21,6 +21,7 @@
       "app/filters.php",
       "app/blocks.php",
       "app/woocommerce.php",
+      "app/search.php",
       "app/helpers.php"
     ]
   },

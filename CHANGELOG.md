@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.10.26.9
+
+- Fix (bb, tcs): a product search results page was titled "Shop" because the page-header composer checked `is_archive()` before `is_search()`; the search comes first now. A test pins the order.
+- Optional shared search (tcs and bb carried the same code): Relevanssi with live results. `app/search.php` (sort choices handed to Relevanssi as meta fields, the plugin's stylesheet dequeued, six results, the kit's results template through `relevanssi_live_search_results_template` unless the theme has its own, product searches in the shop's template), the partials `product-search` and `live-search-results`, `resources/css/live-search.css`, and `bin/relevanssi-settings.php` (`wp eval-file`). Inert while the plugins are inactive. The free editions of both plugins are what tcs and bb use. Documented in `docs/woocommerce-templates.md` ("Search"). Verified in Chrome on a dev stack with WooCommerce, Relevanssi 4.28 and Live Ajax Search 2.6.
+- Header options, both opt-in: a search icon that opens a panel under the bar (`pkde_kit/header_search` filter, `partials/header-search`, toggle in `kit.js`), and a configurable breakpoint for the mobile menu (`pkde_kit/nav_breakpoint` filter: sm default, md, lg, xl, 2xl; `App\nav_classes()`).
+- Tests: the search filters and files, the sort-field map, the breakpoint sets, the header search partial.
+
 ## 2026.10.26.8
 
 - Accessibility (bb): the unselected stars of the review-form star picker are neutral-500 (about 5:1 on white) instead of the pale neutral-200 track; they are controls, so WCAG 1.4.11 asks for 3:1. The selected stars stay amber-700, and the read-only rating keeps its pale track. A Pest test pins the colours and a node test checks neutral-500 against white and neutral-50 for the generated palette.

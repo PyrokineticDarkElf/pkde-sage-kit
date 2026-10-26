@@ -170,3 +170,31 @@ document.querySelectorAll('[data-shop-filters]').forEach((form) => {
     input.addEventListener('change', () => form.requestSubmit());
   });
 });
+
+// Header search, opt-in (partials/header-search.blade.php): the search icon opens a panel under the bar (the menu panel closes first), the
+// cursor goes into its field, and Escape closes it again and returns focus to the icon.
+const searchToggle = document.querySelector('[data-search-toggle]');
+const searchPanel = searchToggle && document.getElementById(searchToggle.getAttribute('aria-controls'));
+
+if (searchPanel) {
+  const setSearch = (open) => {
+    searchToggle.setAttribute('aria-expanded', String(open));
+    searchPanel.classList.toggle('hidden', !open);
+  };
+
+  searchToggle.addEventListener('click', () => {
+    const open = searchToggle.getAttribute('aria-expanded') !== 'true';
+    const menuButton = document.querySelector('[data-nav-toggle][aria-expanded="true"]');
+
+    if (open && menuButton) menuButton.click();
+    setSearch(open);
+    if (open) searchPanel.querySelector('input[type="search"]')?.focus();
+  });
+  document.querySelector('[data-nav-toggle]')?.addEventListener('click', () => setSearch(false));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && searchToggle.getAttribute('aria-expanded') === 'true') {
+      setSearch(false);
+      searchToggle.focus();
+    }
+  });
+}
