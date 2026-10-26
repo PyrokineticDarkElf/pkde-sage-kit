@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.26.8
+
+- Accessibility (bb): the unselected stars of the review-form star picker are neutral-500 (about 5:1 on white) instead of the pale neutral-200 track; they are controls, so WCAG 1.4.11 asks for 3:1. The selected stars stay amber-700, and the read-only rating keeps its pale track. A Pest test pins the colours and a node test checks neutral-500 against white and neutral-50 for the generated palette.
+
 ## 2026.10.26.7
 
 - Fix (bb): `.prose-content > * + * { margin-top: 1em }` no longer opens a 16px white stripe between full-width Sections (`.prose-content > .wp-block-sage-section { margin-top: 0 }`).

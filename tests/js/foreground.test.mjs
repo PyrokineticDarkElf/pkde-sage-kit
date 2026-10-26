@@ -99,3 +99,10 @@ test('acceptLowContrast skips a colour on purpose', () => {
   assert.equal(check.status, 0, check.stderr);
   assert.doesNotMatch(check.stderr, /Neither white/);
 });
+
+test('the neutral-500 step used for the unselected review stars keeps 3:1 against white and the neutral-50 card', () => {
+  const t = tokens(generate(COLORS).css);
+
+  assert.ok(wcagContrast(t['neutral-500'], '#ffffff') >= 3, 'neutral-500 on white');
+  assert.ok(wcagContrast(t['neutral-500'], t['neutral-50']) >= 3, 'neutral-500 on neutral-50');
+});

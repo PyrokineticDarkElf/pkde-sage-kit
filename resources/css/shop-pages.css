@@ -301,7 +301,7 @@
 }
 
 /* The star picker in the review form: five stars, filled up to the one under the pointer or chosen. WooCommerce adds the links and the
-   `selected` and `active` classes; its own star font is not loaded, so the stars are drawn here. The link text (1 to 5) stays for assistive technology. */
+   `selected` and `active` classes; its own star font is not loaded, so the stars are drawn here. They are controls, so the unselected ones are neutral-500 (about 5:1 on white; WCAG 1.4.11 asks for 3:1), not the pale track of the read-only rating. The link text (1 to 5) stays for assistive technology. */
 .woocommerce-Reviews p.stars,
 .woocommerce-Reviews p.stars > span {
   display: flex;
@@ -314,7 +314,7 @@
   overflow: hidden;
   font-size: 0;
   text-indent: 0;
-  background: var(--color-neutral-200);
+  background: var(--color-neutral-500);
   -webkit-mask: var(--pkde-star-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.2l2.95 6.55 7.15.7-5.4 4.75 1.6 7.05L12 17.6l-6.3 3.65 1.6-7.05L1.9 9.45l7.15-.7z'/%3E%3C/svg%3E")) center / 1.6rem no-repeat;
   mask: var(--pkde-star-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.2l2.95 6.55 7.15.7-5.4 4.75 1.6 7.05L12 17.6l-6.3 3.65 1.6-7.05L1.9 9.45l7.15-.7z'/%3E%3C/svg%3E")) center / 1.6rem no-repeat;
 }
@@ -327,7 +327,7 @@
 }
 .woocommerce-Reviews p.stars.selected a.active ~ a,
 .woocommerce-Reviews p.stars a:hover ~ a {
-  background: var(--color-neutral-200);
+  background: var(--color-neutral-500);
 }
 .woocommerce-Reviews p.stars a:focus-visible {
   outline: 2px solid var(--color-brand-600);

@@ -177,3 +177,13 @@ it('has no white stripe between Sections, a drawn zoom button, four-across relat
         ->and($shop)->toContain('.woocommerce-Reviews #review_form_wrapper')
         ->and($shop)->toContain('img.avatar');
 });
+
+it('draws the unselected review stars in neutral-500, a control needing 3:1, and keeps neutral-200 for the read-only rating track only', function () {
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
+    $picker = substr($css, strpos($css, '/* The star picker in the review form'), strpos($css, "/* The product's long description") - strpos($css, '/* The star picker in the review form'));
+
+    expect($picker)->toContain('var(--color-neutral-500)')
+        ->and($picker)->not->toContain('var(--color-neutral-200)')
+        ->and($picker)->toContain('var(--color-amber-700)')
+        ->and($css)->toContain('.star-rating::before {' . "\n" . '  background: var(--color-neutral-200);');
+});
