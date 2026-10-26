@@ -214,20 +214,21 @@ files plus the two theme-options files) are actually in sync with `config/brand-
 useful in CI or before a commit, since nothing else catches a hand-edited generated file or a
 config change nobody regenerated for.
 
-**White text on `brand-600` must reach 4.5:1.** The 600 step keeps a brand colour's own lightness (clamped to a band), and
-`bg-brand-600 text-white` is the primary button and section look, so a light brand colour fails WCAG AA (bb's `#7C988F` gives 3.7:1).
-`brand` and `accent` are checked: `npm run theme:generate` prints a warning and `npm run theme:check` FAILS (and with it the deploy
-workflow's token step), naming the measured ratio and a darker hex of the same hue that passes (`#7C988F` suggests `#607b73`). Fix it by
-darkening the colour in `config/brand-palette.json`; if the light colour is deliberate (for example white text is never used on it),
-list its name in `"acceptLowContrast": ["brand"]` at the top level of that file and the check stops reporting it.
+**Text on `brand-600` must be readable.** The 600 step keeps a brand colour's own lightness (clamped to a band), so a light brand colour
+can have too little contrast with white (bb's `#7C988F` gives 3.7:1 white-on-600). The kit sets its own text on brand and accent
+backgrounds with the foreground tokens below (white or near-black, whichever reads), so that alone is fine. `brand` and `accent` are
+checked on the 600 step: `npm run theme:check` FAILS (and with it the deploy workflow's token step) only when NEITHER white nor
+near-black reaches 4.5:1, a narrow mid-tone band; the message names both ratios and a darker hex of the same hue that passes. When only
+white fails, `theme:generate` and `theme:check` print a note and still pass: your own views and CSS should then use `text-brand-600-fg`
+instead of `text-white`. A colour that is deliberate even so goes in `"acceptLowContrast": ["brand"]` at the top level of
+`config/brand-palette.json` and is skipped.
 
 **Foreground tokens: text on a brand or accent background.** For every step of every colour the generator also emits
 `--color-{name}-{step}-fg` (and `--color-{name}-fg` for the 600 step, `--color-action-fg`, `--color-action-hover-fg`, `--color-highlight-fg`):
 white when it reaches 4.5:1 on that step, otherwise whichever of white and near-black (`#0a0a0a`) measures higher. Tailwind turns them into
 utilities, `text-brand-600-fg`, so a badge reads `bg-brand-600 text-brand-600-fg` and stays readable whatever brand colour a client has. The
 kit's own components (post and product badges, the menu button, the contact and WooCommerce buttons on hover) use them, and a kit test fails
-on a new `bg-brand-N` with a hard-coded `text-white`; do the same in a site's views. With them, `acceptLowContrast` is only needed for a site's
-OWN use of white on a light 600 step. After a kit bump the generated `brand-tokens.css` changes: run `npm run theme:generate` and commit it
+on a new `bg-brand-N` with a hard-coded `text-white`; do the same in a site's views. With them, `acceptLowContrast` stays an escape hatch for the rare colour where no text colour works. After a kit bump the generated `brand-tokens.css` changes: run `npm run theme:generate` and commit it
 (`theme:check` fails until you do).
 
 ## Section theme roles and styles

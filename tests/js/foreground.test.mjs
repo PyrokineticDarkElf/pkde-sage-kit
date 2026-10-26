@@ -2,7 +2,7 @@
 // on that step, otherwise whichever of white and near-black measures higher. Runs the real generator on a throwaway theme directory.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -11,15 +11,16 @@ import { wcagContrast } from 'culori';
 
 const generator = fileURLToPath(new URL('../../bin/generate-theme-tokens.mjs', import.meta.url));
 
-function generate(colors) {
+function generate(colors, extra = {}) {
   const root = mkdtempSync(join(tmpdir(), 'pkde-kit-'));
   const theme = join(root, 'web/app/themes/sage');
   mkdirSync(join(root, 'config'), { recursive: true });
   mkdirSync(theme, { recursive: true });
-  writeFileSync(join(root, 'config/brand-palette.json'), JSON.stringify({ colors, fonts: { display: 'Poppins', sans: 'Inter' } }));
+  writeFileSync(join(root, 'config/brand-palette.json'), JSON.stringify({ colors, fonts: { display: 'Poppins', sans: 'Inter' }, ...extra }));
   writeFileSync(join(theme, 'theme.json'), '{\n  "settings": {\n    "color": {\n      "palette": [\n      ]\n    }\n  }\n}\n');
-  const run = (...args) => execFileSync('node', [generator, ...args], { env: { ...process.env, PKDE_THEME_DIR: theme }, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-  run();
+  const run = (...args) => spawnSync('node', [generator, ...args], { env: { ...process.env, PKDE_THEME_DIR: theme }, encoding: 'utf8' });
+  const first = run();
+  assert.equal(first.status, 0, first.stderr);
 
   return { css: readFileSync(join(theme, 'resources/css/generated/brand-tokens.css'), 'utf8'), run };
 }
@@ -70,4 +71,31 @@ test('the foreground is never worse than 4.5:1 on a step where either white or n
     const reachable = Math.max(wcagContrast(value, '#ffffff'), wcagContrast(value, '#0a0a0a')) >= 4.5;
     if (reachable) assert.ok(wcagContrast(value, t[`${name}-fg`]) >= 4.5, `${name} has no readable foreground`);
   }
+});
+
+test('theme:check passes with a note when only white fails on the 600 step (the kit uses the dark foreground there)', () => {
+  const { run } = generate(COLORS);
+  const check = run('--check');
+
+  assert.equal(check.status, 0, check.stderr);
+  assert.match(check.stderr, /Note, colour contrast/);
+  assert.match(check.stderr, /brand-600-fg/);
+});
+
+test('theme:check fails only when neither white nor dark text reaches 4.5:1 on the 600 step', () => {
+  const { run } = generate([{ name: 'brand', hex: '#787878', role: 'brand' }, { name: 'accent', hex: '#334155', role: 'accent' }, { name: 'ink', hex: '#334155' }]);
+  const check = run('--check');
+
+  assert.equal(check.status, 1);
+  assert.match(check.stderr, /Neither white \(.*\) nor dark text \(.*\) reaches 4\.5:1 on brand-600/);
+  assert.doesNotMatch(check.stderr, /accent-600/);
+});
+
+test('acceptLowContrast skips a colour on purpose', () => {
+  const colors = [{ name: 'brand', hex: '#787878', role: 'brand' }, { name: 'accent', hex: '#334155', role: 'accent' }, { name: 'ink', hex: '#334155' }];
+  const { run } = generate(colors, { acceptLowContrast: ['brand'] });
+  const check = run('--check');
+
+  assert.equal(check.status, 0, check.stderr);
+  assert.doesNotMatch(check.stderr, /Neither white/);
 });

@@ -787,9 +787,14 @@ if (header) palette.header = header;
 else delete palette.header;
 palette.fonts = validateFonts(palette.fonts);
 
-// White text on a colour's 600 step (bg-brand-600 text-white: the primary button and section look) needs 4.5:1. A light brand hex is kept
-// as it is at 600 (the step is only clamped to a band), so it can fail (#7C988F gives 3.7:1). brand and accent are checked; a colour
-// name in palette.acceptLowContrast (config/brand-palette.json) is accepted on purpose. generate warns, --check fails.
+// Text on a colour's 600 step (bg-brand-600: the primary button and section look) needs 4.5:1. The kit sets its own text with the
+// foreground tokens (text-brand-600-fg, white or near-black, see foregroundFor), so a light brand colour is fine for the kit. What can
+// still go wrong:
+//   - NEITHER white nor near-black reaches 4.5:1 on the 600 step (a narrow mid-tone band): no text colour can be readable there, so
+//     theme:check FAILS and theme:generate warns;
+//   - white fails but the dark text passes (#7C988F gives white 3.7:1): only a note, because a site's own `text-white` on that
+//     colour would be unreadable; it should use text-brand-600-fg.
+// brand and accent are checked; a name in palette.acceptLowContrast (config/brand-palette.json) is accepted on purpose and skipped.
 function darkerHexForWhiteText(color) {
   const base = toOklch(color.hex);
   for (let l = Math.min(SIX_HUNDRED_MAX, Math.max(SIX_HUNDRED_MIN, base.l)); l >= 0.3; l -= 0.005) {
@@ -798,16 +803,24 @@ function darkerHexForWhiteText(color) {
   }
   return null;
 }
-const contrastProblems = palette.colors
-  .filter((color) => ['brand', 'accent'].includes(color.role) && !(palette.acceptLowContrast ?? []).includes(color.name))
-  .map((color) => ({ color, ratio: wcagContrast(shade(color, 600), '#ffffff') }))
-  .filter(({ ratio }) => ratio < 4.5)
-  .map(({ color, ratio }) => {
+const contrastProblems = [];
+const contrastNotes = [];
+for (const color of palette.colors) {
+  if (!['brand', 'accent'].includes(color.role) || (palette.acceptLowContrast ?? []).includes(color.name)) continue;
+  const background = shade(color, 600);
+  const white = wcagContrast(background, '#ffffff');
+  const dark = wcagContrast(background, FOREGROUND_DARK);
+  if (Math.max(white, dark) < 4.5) {
     const darker = darkerHexForWhiteText(color);
-    return `White text on ${color.name}-600 measures ${ratio.toFixed(2)}:1 (needs 4.5:1); ${color.name} (${color.hex}) is too light for bg-${color.name}-600 text-white.`
-      + (darker ? ` Use a darker ${color.name} of the same hue, such as ${darker},` : ' Use a darker colour,')
-      + ` or put the name in "acceptLowContrast" in config/brand-palette.json if it is deliberate.`;
-  });
+    contrastProblems.push(
+      `Neither white (${white.toFixed(2)}:1) nor dark text (${dark.toFixed(2)}:1) reaches 4.5:1 on ${color.name}-600 (${color.hex}), so no text on bg-${color.name}-600 can be readable.`
+      + (darker ? ` Use a darker ${color.name} of the same hue, such as ${darker},` : ' Use a different colour,')
+      + ` or put the name in "acceptLowContrast" in config/brand-palette.json if it is deliberate.`,
+    );
+  } else if (white < 4.5) {
+    contrastNotes.push(`White text on ${color.name}-600 measures ${white.toFixed(2)}:1; the kit uses text-${color.name}-600-fg (${foregroundFor(background) === '#ffffff' ? 'white' : 'dark'}) there. Do the same for your own text on bg-${color.name}-600 instead of text-white.`);
+  }
+}
 
 const css = buildCss(palette.colors);
 const sectionThemesCss = buildSectionThemesCss(palette.colors);
@@ -845,10 +858,13 @@ if (options.check) {
   if (contrastProblems.length) {
     process.stderr.write(`Colour contrast:\n${contrastProblems.map((problem) => `  - ${problem}`).join('\n')}\n`);
   }
+  if (contrastNotes.length) {
+    process.stderr.write(`Note, colour contrast (does not fail the check):\n${contrastNotes.map((note) => `  - ${note}`).join('\n')}\n`);
+  }
   process.exit(stale.length || contrastProblems.length ? 1 : 0);
 }
-if (contrastProblems.length && !options.dryRun) {
-  process.stderr.write(`Warning, colour contrast:\n${contrastProblems.map((problem) => `  - ${problem}`).join('\n')}\n`);
+if ((contrastProblems.length || contrastNotes.length) && !options.dryRun) {
+  process.stderr.write(`Warning, colour contrast:\n${[...contrastProblems, ...contrastNotes].map((line) => `  - ${line}`).join('\n')}\n`);
 }
 if (options.dryRun) {
   process.stdout.write(`${css}\n/* --- ${path.basename(sectionThemesOutputPath)} --- */\n\n${sectionThemesCss}\n/* --- ${path.basename(cardThemesOutputPath)} --- */\n\n${cardThemesCss}`);

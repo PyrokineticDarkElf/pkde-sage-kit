@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.26.2
+
+- `theme:check` fails on the 600 step of `brand`/`accent` only when NEITHER white nor near-black text reaches 4.5:1 (a narrow mid-tone band). When only white fails, both commands print a note ("use `text-brand-600-fg` for your own text on it") and the check passes, since the kit's own components use the foreground tokens. `acceptLowContrast` stays as an escape hatch. Sites that listed it only to get `theme:check` green can remove it. Tests cover the note, the failure and the escape hatch.
+
 ## 2026.10.26.1
 
 - Foreground tokens (js): the generator emits `--color-{name}-{step}-fg` for every step of every colour (white when it reaches 4.5:1, otherwise the better of white and near-black), plus `--color-{name}-fg`, `--color-action-fg`, `--color-action-hover-fg`, `--color-highlight-fg`, as Tailwind utilities `text-brand-600-fg` and so on. The kit's components that put text on a brand colour use them instead of a hard-coded `text-white`: the post and product badges, the hover colour of the product-card button, the menu call-to-action, the Contact Form 7 submit and WooCommerce buttons on hover. A site with a light brand colour no longer has to override them; `acceptLowContrast` only covers a site's own white-on-brand uses. After the bump run `npm run theme:generate` and commit the regenerated `brand-tokens.css`.
