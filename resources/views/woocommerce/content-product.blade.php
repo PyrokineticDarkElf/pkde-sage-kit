@@ -55,7 +55,7 @@
 
   <div class="flex flex-col gap-1.5">
     @if (wc_review_ratings_enabled() && $product->get_rating_count() > 0)
-      <div class="text-xs text-amber-500">
+      <div class="text-xs text-amber-700">
         {!! wc_get_rating_html($product->get_average_rating()) !!}
       </div>
     @endif

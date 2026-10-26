@@ -214,6 +214,13 @@ files plus the two theme-options files) are actually in sync with `config/brand-
 useful in CI or before a commit, since nothing else catches a hand-edited generated file or a
 config change nobody regenerated for.
 
+**White text on `brand-600` must reach 4.5:1.** The 600 step keeps a brand colour's own lightness (clamped to a band), and
+`bg-brand-600 text-white` is the primary button and section look, so a light brand colour fails WCAG AA (bb's `#7C988F` gives 3.7:1).
+`brand` and `accent` are checked: `npm run theme:generate` prints a warning and `npm run theme:check` FAILS (and with it the deploy
+workflow's token step), naming the measured ratio and a darker hex of the same hue that passes (`#7C988F` suggests `#607b73`). Fix it by
+darkening the colour in `config/brand-palette.json`; if the light colour is deliberate (for example white text is never used on it),
+list its name in `"acceptLowContrast": ["brand"]` at the top level of that file and the check stops reporting it.
+
 ## Section theme roles and styles
 
 Each colour in `config/brand-palette.json` looks like this once the generator has run at least

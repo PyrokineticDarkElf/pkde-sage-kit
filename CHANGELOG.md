@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.26
+
+- Accessibility (bb audit): the product-card rating stars use `text-amber-700` (5.0:1 on white; amber-500 gave 2.1:1 and axe flagged every card), and the Featured-post badge is `bg-amber-700` under its white icon. A test fails if a view uses an amber step lighter than 700 for text or a white-on-amber marker.
+- `generate-theme-tokens.mjs` checks white text on the `brand-600` and `accent-600` steps: below 4.5:1, `theme:generate` warns and `theme:check` fails, naming the ratio and a darker hex of the same hue. A deliberate exception goes in `"acceptLowContrast": ["brand"]` in `config/brand-palette.json`. Documented in `docs/branding-tokens.md`.
+
 ## 2026.10.23
 
 - `theme:check` says what is wrong: when a generated file (or the `theme.json` palette) differs from `config/brand-palette.json` it lists the files on stderr and tells you to run `npm run theme:generate`, instead of exiting 1 silently.

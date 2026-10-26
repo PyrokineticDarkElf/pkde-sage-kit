@@ -36,7 +36,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { converter, wcagContrast } from 'culori';
+import { converter, formatHex, wcagContrast } from 'culori';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
 // or PKDE_THEME_DIR. Never a path relative to this file, which lives in vendor/.
@@ -762,6 +762,28 @@ if (header) palette.header = header;
 else delete palette.header;
 palette.fonts = validateFonts(palette.fonts);
 
+// White text on a colour's 600 step (bg-brand-600 text-white: the primary button and section look) needs 4.5:1. A light brand hex is kept
+// as it is at 600 (the step is only clamped to a band), so it can fail (#7C988F gives 3.7:1). brand and accent are checked; a colour
+// name in palette.acceptLowContrast (config/brand-palette.json) is accepted on purpose. generate warns, --check fails.
+function darkerHexForWhiteText(color) {
+  const base = toOklch(color.hex);
+  for (let l = Math.min(SIX_HUNDRED_MAX, Math.max(SIX_HUNDRED_MIN, base.l)); l >= 0.3; l -= 0.005) {
+    const candidate = formatHex({ mode: 'oklch', l, c: base.c, h: base.h ?? 0 });
+    if (wcagContrast(candidate, '#ffffff') >= 4.5) return candidate;
+  }
+  return null;
+}
+const contrastProblems = palette.colors
+  .filter((color) => ['brand', 'accent'].includes(color.role) && !(palette.acceptLowContrast ?? []).includes(color.name))
+  .map((color) => ({ color, ratio: wcagContrast(shade(color, 600), '#ffffff') }))
+  .filter(({ ratio }) => ratio < 4.5)
+  .map(({ color, ratio }) => {
+    const darker = darkerHexForWhiteText(color);
+    return `White text on ${color.name}-600 measures ${ratio.toFixed(2)}:1 (needs 4.5:1); ${color.name} (${color.hex}) is too light for bg-${color.name}-600 text-white.`
+      + (darker ? ` Use a darker ${color.name} of the same hue, such as ${darker},` : ' Use a darker colour,')
+      + ` or put the name in "acceptLowContrast" in config/brand-palette.json if it is deliberate.`;
+  });
+
 const css = buildCss(palette.colors);
 const sectionThemesCss = buildSectionThemesCss(palette.colors);
 const cardThemesCss = buildCardThemesCss(palette.colors);
@@ -794,9 +816,14 @@ if (options.check) {
   ].filter(([, ok]) => !ok).map(([label]) => label);
   if (stale.length) {
     process.stderr.write(`Out of date with config/brand-palette.json (or missing):\n${stale.map((file) => `  - ${file}`).join('\n')}\nRun \`npm run theme:generate\` and commit the result.\n`);
-    process.exit(1);
   }
-  process.exit(0);
+  if (contrastProblems.length) {
+    process.stderr.write(`Colour contrast:\n${contrastProblems.map((problem) => `  - ${problem}`).join('\n')}\n`);
+  }
+  process.exit(stale.length || contrastProblems.length ? 1 : 0);
+}
+if (contrastProblems.length && !options.dryRun) {
+  process.stderr.write(`Warning, colour contrast:\n${contrastProblems.map((problem) => `  - ${problem}`).join('\n')}\n`);
 }
 if (options.dryRun) {
   process.stdout.write(`${css}\n/* --- ${path.basename(sectionThemesOutputPath)} --- */\n\n${sectionThemesCss}\n/* --- ${path.basename(cardThemesOutputPath)} --- */\n\n${cardThemesCss}`);

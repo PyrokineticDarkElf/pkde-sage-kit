@@ -21,7 +21,7 @@
   <div class="absolute right-3 top-3 z-10 flex items-center gap-2">
     @if (is_sticky(get_the_ID()))
       <span
-        class="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-white"
+        class="flex h-6 w-6 items-center justify-center rounded-full bg-amber-700 text-white"
         role="img"
         title="{{ __('Featured post', 'sage') }}"
         aria-label="{{ __('Featured post', 'sage') }}"

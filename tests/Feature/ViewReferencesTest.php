@@ -72,3 +72,14 @@ it('marks the Sale and New badge links nofollow, so crawlers do not follow every
         expect($link)->toContain('rel="nofollow"');
     }
 });
+
+it('keeps amber text and white-on-amber markers at 700 or darker, the lightest step that clears 4.5:1 on a white or light card', function () {
+    $offenders = [];
+    foreach (glob(dirname(__DIR__, 2) . '/resources/views/{,*/,*/*/}*.blade.php', GLOB_BRACE) as $file) {
+        if (preg_match('/\b(?:text|bg)-amber-(?:[1-6]00|50)\b/', file_get_contents($file))) {
+            $offenders[] = basename($file);
+        }
+    }
+
+    expect($offenders)->toBe([]);
+});
