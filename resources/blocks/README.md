@@ -178,7 +178,7 @@ never shows up.
 
 **An `alignfull` block's background should reach the viewport edge, but its own content shouldn't**
 — it should still line up with the `content`/`wide` column every other section's content uses (see
-the Hero block's inner `mx-auto w-full max-w-content px-6` wrapper, one level in from the block's
+the Hero block's inner `mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]` wrapper, one level in from the block's
 own full-bleed root). `max-w-content`/`w-content` (from `theme.css`'s `--container-content` token,
 the same value the `wide` grid track caps at) is the right tool for this kind of simple single-level
 centering — it doesn't need a breakout grid of its own, since it isn't escaping a narrower ancestor
@@ -305,7 +305,7 @@ own comment for why this is a dedicated class rather than the block also carryin
 same element, decided only by CSS source order). The heading/description/card grid inside still
 needs to line up with the rest of the site's content column despite that unbounded background —
 `App\pkde_loop_theme_content_open()`/`_content_close()` wrap them in the same
-`mx-auto w-full max-w-content px-6` pattern Hero's own inner wrapper uses, only when actually themed
+`mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]` pattern Hero's own inner wrapper uses, only when actually themed
 (an unthemed loop block gets the same inset for free from content-grid's own padding rule instead).
 
 A background colour on its own isn't enough for contrast, either — `partials/blocks/section-header.blade.php`'s

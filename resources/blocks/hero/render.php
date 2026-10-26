@@ -43,13 +43,13 @@ $wrapper_attributes = get_block_wrapper_attributes([
     <?php /*
      * alignfull only breaks the *background* out to the viewport edge — the
      * content itself should still line up with the rest of the site's
-     * content column (mx-auto max-w-content px-6, the same width+padding
+     * content column (mx-auto max-w-content px-[var(--page-gutter,1.5rem)], the same width+padding
      * page-header.blade.php and every other full-width section center on),
      * not just sit at whatever this section's own edge padding happens to
      * be. Without this wrapper the heading/text/button drift noticeably out
      * of line with every other section's content on wide screens.
      */ ?>
-    <div class="<?php echo esc_attr(\App\container_class('mx-auto w-full max-w-content px-6', 'sage/hero')); ?>">
+    <div class="<?php echo esc_attr(\App\container_class('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]', 'sage/hero')); ?>">
         <div class="max-w-2xl">
             <?php if ($heading) : ?>
                 <h2 class="font-display text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl"><?php echo wp_kses_post($heading); ?></h2>

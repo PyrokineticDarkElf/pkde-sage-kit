@@ -58,7 +58,7 @@ function pkde_loop_theme_classes(string $theme): string
 /**
  * Opening/closing half of the inner content wrapper a themed loop block
  * needs — same two-layer pattern as hero/render.php's own
- * `mx-auto w-full max-w-content px-6` wrapper (see that file's comment):
+ * `mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]` wrapper (see that file's comment):
  * the *background* is full-bleed (pkde_loop_theme_classes()'s `alignfull`),
  * but the heading/description/"View all" link and the card grid inside
  * still need to line up with every other section's content column, not
@@ -71,7 +71,7 @@ function pkde_loop_theme_classes(string $theme): string
  */
 function pkde_loop_theme_content_open(string $theme): string
 {
-    return $theme ? '<div class="' . esc_attr(container_class('mx-auto w-full max-w-content px-6', 'sage/loop-section')) . '">' : '';
+    return $theme ? '<div class="' . esc_attr(container_class('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]', 'sage/loop-section')) . '">' : '';
 }
 
 function pkde_loop_theme_content_close(string $theme): string

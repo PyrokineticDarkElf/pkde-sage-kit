@@ -50,17 +50,17 @@ The editor must show what the page prints.
 
 ## One page measure: header, Section and shop line up
 
-The header, page header, footer and the kit's page containers (single post, shop archive and body, post grid) are `max-w-content px-6`: the
+The header, page header, footer and the kit's page containers (single post, shop archive and body, post grid) are `max-w-content px-[var(--page-gutter,1.5rem)]`: the
 `--container-content` token (theme.css, 80rem by default) with a 1.5rem gutter, so their content spans `--container-content - 3rem` (1232px).
 A Section block sizes its children with theme.json's `layout.contentSize` instead, which is a 48rem reading width on most sites, so its content is
 narrower than the header. To line them up, a site sets one variable in its `theme.css` and one preset in `theme.json`:
 
 ```css
-:root { --pkde-section-measure: calc(var(--container-content) - 3rem); }   /* theme.css, inside @theme or :root */
+:root { --page-gutter: 1.5rem; --pkde-section-measure: calc(var(--container-content) - 2 * var(--page-gutter)); }   /* theme.css */
 ```
 
 ```json
-{ "slug": "gutter", "name": "Page gutter", "size": "1.5rem" }              /* theme.json settings.spacing.spacingSizes */
+{ "slug": "gutter", "name": "Page gutter", "size": "var(--page-gutter)" }     /* theme.json settings.spacing.spacingSizes */
 ```
 
 The template ships both. Reading-width text inside a Section is a nested constrained Group with its own width (for example 46rem), which keeps

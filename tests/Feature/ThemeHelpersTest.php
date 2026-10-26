@@ -62,7 +62,7 @@ it('gives an embed iframe a title only when it has none', function () {
 });
 
 it('returns the default container classes without WordPress and when no filter changes them', function () {
-    expect(container_class())->toBe('mx-auto w-full max-w-content px-6')
+    expect(container_class())->toBe('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]')
         ->and(container_class('mx-auto max-w-7xl px-6', 'partials.page-header'))->toBe('mx-auto max-w-7xl px-6');
 });
 
@@ -80,8 +80,8 @@ it('lets a site replace a container class through the pkde_kit/container_class f
     }
 
     $GLOBALS['pkde_test_filters']['pkde_kit/container_class'][] = fn($class, $context) => $context === 'sage/hero' ? 'site-container' : $class;
-    expect(container_class('mx-auto w-full max-w-content px-6', 'sage/hero'))->toBe('site-container')
-        ->and(container_class('mx-auto w-full max-w-content px-6', 'sage/hero-slide'))->toBe('mx-auto w-full max-w-content px-6');
+    expect(container_class('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]', 'sage/hero'))->toBe('site-container')
+        ->and(container_class('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]', 'sage/hero-slide'))->toBe('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]');
 
     $GLOBALS['pkde_test_filters']['pkde_kit/container_class'] = [fn() => ['not a string']];
     expect(container_class('default-class', 'sage/hero'))->toBe('default-class');

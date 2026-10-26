@@ -124,7 +124,7 @@ function logo_sizes(int $width, int $height, int $smallHeight = 32, int $largeHe
 /**
  * The classes of a content container the kit prints (the inner column of Hero and Hero Slide, the wrapper of a themed loop section,
  * the page header, post grid, single post and shop containers). A site whose container class is its own (a `.site-container` that
- * is not `mx-auto max-w-content px-6`) filters it instead of overriding the markup, so the page keeps the kit's structure:
+ * is not `mx-auto max-w-content px-[var(--page-gutter,1.5rem)]`) filters it instead of overriding the markup, so the page keeps the kit's structure:
  *
  *   add_filter('pkde_kit/container_class', fn ($class, $context) => $context === 'sage/hero' ? 'site-container' : $class, 10, 2);
  *
@@ -132,7 +132,7 @@ function logo_sizes(int $width, int $height, int $smallHeight = 32, int $largeHe
  * `content-single`, `shop-archive`, `shop-archive-body`. A filter that returns anything but a string is
  * ignored. Tailwind only generates a class it can read in a source file, so a replacement must appear in the site's own files.
  */
-function container_class(string $default = 'mx-auto w-full max-w-content px-6', string $context = ''): string
+function container_class(string $default = 'mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]', string $context = ''): string
 {
     $class = function_exists('apply_filters') ? apply_filters('pkde_kit/container_class', $default, $context) : $default;
 

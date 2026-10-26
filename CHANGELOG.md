@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.26.5
+
+- One gutter token (bb): every kit page container pads its sides with `px-[var(--page-gutter,1.5rem)]` instead of a fixed `px-6` (page header, post grid, single post, shop archive and body, the Hero and Hero Slide wrappers, the themed loop sections, `container_class()`'s default), so a site changes the page gutter in ONE place (`--page-gutter` in its theme.css, 1.5rem unset). The Section opt-in measure is derived from it: `--pkde-section-measure: calc(var(--container-content) - 2 * var(--page-gutter))`, and the `gutter` spacing preset in theme.json is `var(--page-gutter)`. Same 1.5rem by default, so nothing moves. A test fails on a fixed `px-6` next to `max-w-content`.
+- The product's long description (`.single-product .woocommerce-Tabs-panel`) keeps a 46rem reading width instead of the full page measure.
+
 ## 2026.10.26.4
 
 - Shop polish (bb, tcs; `resources/css/shop-pages.css`, imported by `kit.css`): rating stars drawn with a mask in place of the "Rated 5.00 out of 5" text (the label stays for screen readers, amber-700 for contrast); equal-height product cards with the button at the bottom and "View cart" as a text link instead of a second pill; a product category's description in a closed `<details>` accordion ("About {category}", first page, `app/woocommerce/display.php`); basket, checkout and account styling for the classic shortcode pages (5.5rem thumbnails, items beside a sticky totals card, cross-sells under the items, the order review beside the billing details, cards on phones), on the page measure instead of the 48rem reading column. All on kit tokens, scoped by body class, `:where()` for easy overrides.

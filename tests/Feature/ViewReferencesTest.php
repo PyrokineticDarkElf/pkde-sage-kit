@@ -138,3 +138,18 @@ it('has a social links partial that prints nothing without profiles and labels e
         ->and($view)->toContain('aria-label="{{ $link[\'label\'] }}"')
         ->and($view)->toContain('aria-hidden="true"');
 });
+
+it('gives every page container the shared gutter token, not a fixed px-6', function () {
+    $offenders = [];
+    foreach (glob(dirname(__DIR__, 2) . '/{resources/views,app,resources/blocks}/{,*/,*/*/,*/*/*/}*.php', GLOB_BRACE) as $file) {
+        if (preg_match('/max-w-content[^"\']*\bpx-6\b|\bpx-6\b[^"\']*max-w-content/', file_get_contents($file))) {
+            $offenders[] = basename($file);
+        }
+    }
+
+    expect($offenders)->toBe([]);
+});
+
+it('gives the product description a reading width', function () {
+    expect(file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css'))->toContain('.single-product .woocommerce-Tabs-panel');
+});

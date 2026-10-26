@@ -113,6 +113,11 @@
   margin-block: 0 0.75rem;
 }
 
+/* The product's long description (and the other tabs) is flowing text: it keeps a reading width instead of the page measure. */
+.single-product .woocommerce-Tabs-panel {
+  max-width: 46rem;
+}
+
 /* Basket, checkout and account: classic shortcode markup, CSS only. */
 :is(body.woocommerce-cart, body.woocommerce-checkout, body.woocommerce-account) .woocommerce {
   --pkde-line: var(--color-neutral-200);
