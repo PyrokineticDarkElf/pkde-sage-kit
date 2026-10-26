@@ -1,0 +1,519 @@
+/**
+ * WooCommerce shop polish, all CSS (no template overrides): rating stars, equal-height product cards, the category description accordion, and
+ * the basket, checkout and account pages. Kit tokens only (neutral, brand and their -fg text colours), so a site's palette carries through.
+ * The cart, checkout and account rules are scoped to those pages' body classes, so the shop archive and product pages are never touched, and
+ * use :where() so a site overrides any of them with one plain selector. Ported from tcs's approach (classic shortcode markup, CSS only)
+ * through bb's site CSS.
+ */
+
+/* Ratings as stars, not words. WooCommerce prints "Rated 5.00 out of 5" and relies on its own star font, which the kit does not load. The
+   element already carries role="img" and an aria-label, so the words are only hidden visually; the fill is the share the inline width gives. */
+.star-rating {
+  --pkde-star: 1.05rem;
+  --pkde-star-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.2l2.95 6.55 7.15.7-5.4 4.75 1.6 7.05L12 17.6l-6.3 3.65 1.6-7.05L1.9 9.45l7.15-.7z'/%3E%3C/svg%3E");
+  position: relative;
+  display: block;
+  width: calc(5 * var(--pkde-star));
+  height: var(--pkde-star);
+  overflow: hidden;
+  line-height: 1;
+  color: transparent;
+}
+.star-rating::before,
+.star-rating > span::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(5 * var(--pkde-star));
+  height: var(--pkde-star);
+  -webkit-mask: var(--pkde-star-mask) repeat-x left center / var(--pkde-star) var(--pkde-star);
+  mask: var(--pkde-star-mask) repeat-x left center / var(--pkde-star) var(--pkde-star);
+}
+.star-rating::before {
+  background: var(--color-neutral-200);
+}
+.star-rating > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  font-size: 0;
+}
+/* amber-700 reaches 5.0:1 on white (the amber-500 of WooCommerce's default gives 2.1:1). */
+.star-rating > span::before {
+  background: var(--color-amber-700);
+}
+
+/* Product cards: equal height in a row, the button always at the bottom of its card, and "View cart" beside it as a link, not a second black
+   pill (WooCommerce adds it after an AJAX add to cart, inside the card's button area). */
+.woocommerce ul.products li.product > div:last-child {
+  flex: 1 1 auto;
+}
+.woocommerce ul.products li.product > div:last-child > div:last-child {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+.woocommerce ul.products li.product a.added_to_cart {
+  background: transparent !important;
+  color: var(--color-neutral-700) !important;
+  padding: 0.5rem 0 !important;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.woocommerce ul.products li.product a.added_to_cart:hover {
+  color: var(--color-brand-700) !important;
+}
+
+/* A category's description in a closed accordion above the products (app/woocommerce/display.php prints the <details>). */
+.pkde-term-description {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.pkde-term-description summary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  font-family: var(--font-display, inherit);
+  font-size: 1.25rem;
+}
+.pkde-term-description summary::-webkit-details-marker {
+  display: none;
+}
+.pkde-term-description summary::after {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pkde-term-description[open] summary::after {
+  transform: rotate(-135deg);
+}
+.pkde-term-description summary:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+.pkde-term-description .term-description {
+  padding-bottom: 1.25rem;
+}
+.pkde-term-description .term-description p {
+  margin-block: 0 0.75rem;
+}
+
+/* Basket, checkout and account: classic shortcode markup, CSS only. */
+:is(body.woocommerce-cart, body.woocommerce-checkout, body.woocommerce-account) .woocommerce {
+  --pkde-line: var(--color-neutral-200);
+
+  :where(button.button, a.button, input.button, button[type="submit"]) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0 1.75rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-neutral-950);
+    color: var(--color-white);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  :where(button.button, a.button, input.button, button[type="submit"]):hover {
+    background: var(--color-brand-700);
+    color: var(--color-brand-700-fg);
+  }
+  a.checkout-button,
+  #place_order {
+    width: 100%;
+    min-height: 3.25rem;
+    background: var(--color-brand-600);
+    color: var(--color-brand-600-fg);
+  }
+  a.checkout-button:hover,
+  #place_order:hover {
+    background: var(--color-brand-800);
+    color: var(--color-brand-800-fg);
+  }
+
+  :where(input[type="text"], input[type="email"], input[type="tel"], input[type="password"], input[type="number"], select, textarea) {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--pkde-line);
+    border-radius: 0.875rem;
+    background: var(--color-white);
+    color: var(--color-neutral-900);
+    font: inherit;
+  }
+  :where(input, select, textarea):focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 1px;
+  }
+  label {
+    font-size: 0.875rem;
+  }
+  .form-row {
+    margin: 0 0 1rem;
+  }
+
+  table.shop_table {
+    margin: 0;
+    border: 0;
+    border-collapse: collapse;
+  }
+  table.shop_table :where(th, td) {
+    padding: 1.1rem 0.75rem;
+    border: 0;
+    border-bottom: 1px solid var(--pkde-line);
+    vertical-align: middle;
+  }
+  table.shop_table th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  /* The items: small thumbnails, name, price, quantity, subtotal. */
+  table.cart img {
+    width: 5.5rem;
+    height: 5.5rem;
+    object-fit: cover;
+    border-radius: 0.875rem;
+    background: var(--color-white);
+  }
+  table.cart td.product-name a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  table.cart td.product-name a:hover {
+    color: var(--color-brand-700);
+  }
+  table.cart td.product-remove a {
+    display: grid;
+    width: 1.75rem;
+    height: 1.75rem;
+    place-items: center;
+    border-radius: 50%;
+    color: inherit;
+    text-decoration: none;
+  }
+  table.cart td.product-remove a:hover {
+    background: var(--color-neutral-100);
+  }
+  table.cart .quantity input {
+    width: 4.5rem;
+    padding-inline: 0.5rem;
+    text-align: center;
+  }
+
+  /* Coupon and update on one row (floats: a table cell cannot be a flex box). */
+  table.cart td.actions {
+    padding: 1.25rem 0 0;
+  }
+  table.cart td.actions::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  table.cart td.actions .coupon {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    float: left;
+    width: min(100%, 28rem);
+    margin: 0 0 0.75rem;
+  }
+  table.cart td.actions .coupon label {
+    display: none;
+  }
+  table.cart td.actions .coupon input#coupon_code {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+  table.cart td.actions :where(button, input[type="submit"]) {
+    margin: 0;
+    white-space: nowrap;
+  }
+  table.cart td.actions button[name="update_cart"] {
+    float: right;
+    background: transparent;
+    color: inherit;
+    box-shadow: inset 0 0 0 1px currentColor;
+  }
+  table.cart td.actions button[name="update_cart"]:hover {
+    background: var(--color-neutral-950);
+    color: var(--color-white);
+  }
+
+  /* Items left, totals card right. */
+  .cart-collaterals {
+    margin: 0;
+  }
+  .cart_totals {
+    float: none;
+    width: 100%;
+    padding: 1.75rem;
+    border-radius: 1.5rem;
+    background: var(--color-neutral-50);
+  }
+  .cart_totals h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.6rem;
+  }
+  .cart_totals table.shop_table :where(th, td) {
+    padding: 0.9rem 0;
+    vertical-align: top;
+    background: transparent;
+  }
+  .cart_totals table.shop_table th {
+    width: 5.5rem;
+    padding-right: 0.75rem;
+  }
+  .cart_totals ul#shipping_method {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cart_totals ul#shipping_method li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--pkde-line);
+    border-radius: 0.875rem;
+    background: var(--color-white);
+    line-height: 1.35;
+  }
+  .cart_totals ul#shipping_method li:has(input:checked) {
+    border-color: var(--color-neutral-900);
+  }
+  .cart_totals ul#shipping_method input[type="radio"] {
+    flex: none;
+    width: 1.1rem;
+    min-height: 0;
+    margin: 0;
+    accent-color: var(--color-brand-600);
+  }
+  .cart_totals ul#shipping_method label {
+    flex: 1;
+    margin: 0;
+    cursor: pointer;
+  }
+  .cart_totals .woocommerce-shipping-destination {
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+  }
+  .cart_totals .shipping-calculator-button {
+    text-underline-offset: 0.2em;
+  }
+  .wc-proceed-to-checkout {
+    padding: 0.5rem 0 0;
+  }
+
+  /* Notices. */
+  .woocommerce-message,
+  .woocommerce-info,
+  .woocommerce-error {
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 0;
+    border-radius: 0.875rem;
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-950);
+    list-style: none;
+  }
+  .woocommerce-error {
+    background: #fbe9e7;
+  }
+  .woocommerce-message::before,
+  .woocommerce-info::before,
+  .woocommerce-error::before {
+    display: none;
+  }
+
+  /* Checkout: details left, the order and payment right. */
+  form.checkout {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  form.checkout h3 {
+    margin: 0 0 1rem;
+    font-size: 1.6rem;
+  }
+  #payment {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: var(--color-neutral-50);
+  }
+  #payment ul.payment_methods {
+    padding: 0;
+    list-style: none;
+    border: 0;
+  }
+  #payment div.payment_box {
+    background: var(--color-white);
+    border-radius: 0.75rem;
+  }
+  #payment div.payment_box::before {
+    display: none;
+  }
+
+  .woocommerce-MyAccount-navigation ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    margin: 0 0 2rem;
+    padding: 0 0 1rem;
+    border-bottom: 1px solid var(--pkde-line);
+    list-style: none;
+  }
+  .woocommerce-MyAccount-navigation a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .woocommerce-MyAccount-navigation .is-active a {
+    border-bottom: 2px solid var(--color-brand-600);
+  }
+}
+
+/* These pages hold a classic shortcode inside the page template's 48rem reading column, far too narrow for a table beside a totals card.
+   They get the page measure instead (the header's content width), with the column's own px-6 keeping the edges on the header's. */
+:is(body.woocommerce-cart, body.woocommerce-checkout, body.woocommerce-account) .content-grid {
+  --content-grid-width: min(var(--container-content), 100%);
+}
+
+body.woocommerce-cart .woocommerce:has(> .woocommerce-cart-form) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+body.woocommerce-cart .woocommerce > .woocommerce-notices-wrapper {
+  grid-column: 1 / -1;
+}
+/* The collaterals' children (cross-sells, totals) take part in the page grid: totals beside the items, cross-sells under them. */
+body.woocommerce-cart .woocommerce > .cart-collaterals {
+  display: contents;
+}
+body.woocommerce-cart .cart-collaterals .cross-sells {
+  float: none;
+  width: 100%;
+  margin: 0;
+  order: 3;
+}
+body.woocommerce-cart .cart-collaterals .cart_totals {
+  order: 2;
+}
+@media (min-width: 1024px) {
+  body.woocommerce-cart .woocommerce:has(> .woocommerce-cart-form) {
+    grid-template-columns: minmax(0, 1fr) 24rem;
+  }
+  body.woocommerce-cart .woocommerce > .woocommerce-cart-form {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  body.woocommerce-cart .cart-collaterals .cart_totals {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+    position: sticky;
+    top: 6rem;
+  }
+  body.woocommerce-cart .cart-collaterals .cross-sells {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+@media (min-width: 900px) {
+  body.woocommerce-checkout .woocommerce form.checkout {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    row-gap: 1rem;
+    align-items: start;
+  }
+  /* The details span the left column; the "Your order" heading and the order review stack in the right one. */
+  body.woocommerce-checkout .woocommerce form.checkout #customer_details {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  body.woocommerce-checkout .woocommerce form.checkout #order_review_heading {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+  }
+  body.woocommerce-checkout .woocommerce form.checkout #order_review {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* Phones: the cart table becomes a list of cards. */
+@media (max-width: 767px) {
+  :is(body.woocommerce-cart, body.woocommerce-checkout, body.woocommerce-account) .woocommerce {
+    table.shop_table_responsive thead {
+      display: none;
+    }
+    table.shop_table_responsive,
+    table.shop_table_responsive tbody {
+      display: block;
+    }
+    table.shop_table_responsive tr {
+      display: block;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--pkde-line);
+    }
+    table.shop_table_responsive :where(td, th) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.4rem 0;
+      border: 0;
+      text-align: right;
+    }
+    table.shop_table_responsive td::before {
+      content: attr(data-title);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: left;
+    }
+    table.shop_table_responsive td.product-thumbnail,
+    table.shop_table_responsive td.product-remove {
+      justify-content: flex-start;
+    }
+    table.shop_table_responsive td.product-thumbnail::before,
+    table.shop_table_responsive td.product-remove::before {
+      display: none;
+    }
+    table.cart td.actions {
+      display: block;
+    }
+    table.cart td.actions .coupon,
+    table.cart td.actions button[name="update_cart"] {
+      float: none;
+      width: 100%;
+    }
+    table.cart td.actions button[name="update_cart"] {
+      display: flex;
+    }
+  }
+}

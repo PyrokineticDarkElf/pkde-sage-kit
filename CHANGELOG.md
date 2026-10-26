@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.10.26.4
+
+- Shop polish (bb, tcs; `resources/css/shop-pages.css`, imported by `kit.css`): rating stars drawn with a mask in place of the "Rated 5.00 out of 5" text (the label stays for screen readers, amber-700 for contrast); equal-height product cards with the button at the bottom and "View cart" as a text link instead of a second pill; a product category's description in a closed `<details>` accordion ("About {category}", first page, `app/woocommerce/display.php`); basket, checkout and account styling for the classic shortcode pages (5.5rem thumbnails, items beside a sticky totals card, cross-sells under the items, the order review beside the billing details, cards on phones), on the page measure instead of the 48rem reading column. All on kit tokens, scoped by body class, `:where()` for easy overrides.
+- Social icons: `App\social_links()` (options `client_facebook`, `client_instagram`, `client_linkedin`, `client_x`, `client_youtube`) and the `pkde-kit::partials.social-links` partial print 44px round icon links with an `aria-label` each; nothing when none is set. Documented in `docs/woocommerce-templates.md`.
+- Tests: social link listing (valid URLs, fixed order), the shop CSS import and its key rules, the partial's labels.
+
 ## 2026.10.26.3
 
 - Layout (bb): the page containers of the single post, the shop archive and its body, the page header and the post grid use `max-w-content` (the `--container-content` token the header and footer use) instead of `max-w-6xl`/`max-w-7xl`, so the shop and product pages are as wide as the header (1152px against 1232px of content before). One token moves all of them. A test fails on a fixed `max-w-6xl`/`max-w-7xl` in a kit view.

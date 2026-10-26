@@ -101,3 +101,25 @@ it('prints every container through container_class: no hard-coded content contai
 
     expect($offenders)->toBe([]);
 });
+
+if (! function_exists('get_option')) {
+    function get_option(string $name, $default = false)
+    {
+        return $GLOBALS['pkde_test_options'][$name] ?? $default;
+    }
+}
+
+it('lists the social profiles that have a valid URL, in a fixed order', function () {
+    $GLOBALS['pkde_test_options'] = [
+        'client_youtube' => 'https://www.youtube.com/@example',
+        'client_facebook' => 'https://www.facebook.com/example',
+        'client_instagram' => 'not a url',
+        'client_x' => '',
+    ];
+
+    expect(array_keys(\App\social_links()))->toBe(['facebook', 'youtube'])
+        ->and(\App\social_links()['facebook'])->toBe(['label' => 'Facebook', 'url' => 'https://www.facebook.com/example']);
+
+    $GLOBALS['pkde_test_options'] = [];
+    expect(\App\social_links())->toBe([]);
+});

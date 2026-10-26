@@ -43,6 +43,32 @@ add_filter('woocommerce_show_page_title', '__return_false');
 // above the product list is removed. A category's description stays WooCommerce's own.
 remove_action('woocommerce_archive_description', 'woocommerce_product_archive_description', 10);
 
+// A product category's description goes into a closed <details> accordion (resources/css/shop-pages.css) instead of a long block above the
+// products. The text is WooCommerce's own term description, unchanged; only the wrapper is new, and it shows on the first page only.
+add_action('wp', function () {
+    if (! function_exists('is_product_taxonomy')) {
+        return;
+    }
+
+    remove_action('woocommerce_archive_description', 'woocommerce_taxonomy_archive_description', 10);
+    add_action('woocommerce_archive_description', function () {
+        if (! is_product_taxonomy() || (int) get_query_var('paged') > 0) {
+            return;
+        }
+
+        $term = get_queried_object();
+        if (! $term || trim((string) $term->description) === '') {
+            return;
+        }
+
+        printf(
+            '<details class="pkde-term-description"><summary>%s</summary><div class="term-description">%s</div></details>',
+            esc_html(sprintf(__('About %s', 'sage'), $term->name)),
+            wc_format_content(wp_kses_post($term->description)),
+        );
+    }, 10);
+});
+
 // The product card (resources/views/woocommerce/content-product.blade.php, loaded through the theme's woocommerce/content-product.php)
 // draws these itself and fires the five card hooks in their usual places so plugins can still add to it. WooCommerce's own output
 // on those hooks is removed here, apart from the add-to-cart button, which the last hook prints.

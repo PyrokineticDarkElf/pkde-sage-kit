@@ -8,6 +8,8 @@
  * against these tokens are a no-op migration from their old hardcoded
  * classes — see resources/blocks/hero/render.php.
  */
+@import "./shop-pages.css";
+
 :root {
   --pkde-theme-background: var(--color-neutral-950);
   --pkde-theme-content: var(--color-white);

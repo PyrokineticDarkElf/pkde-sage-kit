@@ -41,6 +41,27 @@ function contact_lines(): array
 }
 
 /**
+ * The social profiles a site has set (options `client_facebook`, `client_instagram`, `client_linkedin`, `client_x`, `client_youtube`, the
+ * same `client_*` convention as contact_lines()), as [network => ['label' => ..., 'url' => ...]] in a fixed order. Only profiles with a
+ * URL are listed; the footer prints icons for them through the pkde-kit::partials.social-links partial.
+ */
+function social_links(): array
+{
+    $networks = ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'x' => 'X', 'youtube' => 'YouTube'];
+    $links = [];
+
+    foreach ($networks as $key => $label) {
+        $url = trim((string) get_option("client_$key"));
+
+        if ($url !== '' && filter_var($url, FILTER_VALIDATE_URL)) {
+            $links[$key] = ['label' => $label, 'url' => $url];
+        }
+    }
+
+    return $links;
+}
+
+/**
  * The full-size URL a block image should link or load: the attachment's own (absolute) URL when `$id` is a real
  * attachment, otherwise the stored URL made absolute.
  */

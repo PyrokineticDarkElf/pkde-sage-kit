@@ -84,3 +84,14 @@ the seeded data above: correct markup, correct `wc_single_product_params` config
 correctly). It just can't be visually demonstrated in a background browser pane during
 development, the same limitation as the ToC scroll-spy noted in
 [single-post-layout.md](single-post-layout.md).
+
+## Shop polish: stars, equal cards, category accordion, basket and checkout (`resources/css/shop-pages.css`)
+
+All CSS, imported by `kit.css`; the tokens are the kit's own (neutral, brand and their `-fg` text colours), so a site's palette carries through.
+
+* **Rating stars.** WooCommerce prints "Rated 5.00 out of 5" and relies on its star font, which the kit does not load. `.star-rating` is now five mask-drawn stars (`--pkde-star` sets the size), amber-700 on a neutral-200 track (5.0:1 against white), filled to the rating by WooCommerce's own inline width. The element keeps `role="img"` and its `aria-label`; the words are only hidden visually.
+* **Equal-height product cards.** The card's text block grows and the button area sits at the bottom of every card in a row; "View cart" (`a.added_to_cart`) after an AJAX add is a text link next to the button, not a second black pill.
+* **Category description accordion.** `app/woocommerce/display.php` prints a product category's description as a closed `<details class="pkde-term-description">` ("About {category}") above the products, first page only; the text is WooCommerce's own, unchanged.
+* **Basket, checkout and account** (classic shortcode pages, scoped to the `woocommerce-cart`, `woocommerce-checkout` and `woocommerce-account` body classes, `:where()` so a site overrides with one selector): items left and a sticky totals card right with cross-sells under the items, a 5.5rem thumbnail, coupon and update on one row, the order review beside the billing details, a card list on phones. These pages get the page measure instead of the 48rem reading column (the column's own `px-6` keeps the edges on the header's). Block-based Cart and Checkout (WooCommerce's default for a new store) have their own markup and are not touched.
+
+Social profiles: the footer prints round icon links through `pkde-kit::partials.social-links` for the options `client_facebook`, `client_instagram`, `client_linkedin`, `client_x` and `client_youtube` (full URLs; set with `wp option update`). Nothing is printed when none is set.

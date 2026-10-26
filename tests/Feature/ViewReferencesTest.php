@@ -119,3 +119,22 @@ it('lets a site opt the Section block into the page measure with one variable, u
         ->and($css)->toContain('var(--pkde-section-measure, var(--wp--style--global--content-size))')
         ->and($css)->toContain('var(--pkde-section-measure, var(--wp--style--global--wide-size))');
 });
+
+it('imports the shop CSS from kit.css and keeps the rating stars readable', function () {
+    $kit = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $shop = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
+
+    expect($kit)->toContain('@import "./shop-pages.css";')
+        ->and($shop)->toContain('.star-rating > span::before')
+        ->and($shop)->toContain('var(--color-amber-700)')
+        ->and($shop)->toContain('.woocommerce ul.products li.product a.added_to_cart')
+        ->and($shop)->toContain('body.woocommerce-cart');
+});
+
+it('has a social links partial that prints nothing without profiles and labels every link', function () {
+    $view = file_get_contents(dirname(__DIR__, 2) . '/resources/views/partials/social-links.blade.php');
+
+    expect($view)->toContain('App\\social_links()')
+        ->and($view)->toContain('aria-label="{{ $link[\'label\'] }}"')
+        ->and($view)->toContain('aria-hidden="true"');
+});
