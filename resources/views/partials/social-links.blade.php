@@ -1,11 +1,13 @@
 {{--
   Round icon links to the site's social profiles (App\social_links(): the client_facebook, client_instagram, client_linkedin, client_x and
   client_youtube options). Prints nothing when none is set. 44px targets, an aria-label per link, decorative icons. Colours follow the
-  surrounding text (currentColor), so it sits on the dark footer or a light band alike: pass `class` to change the ring/colour.
+  surrounding text (currentColor), so it sits on the dark footer or a light band alike: pass `class` to change the ring/colour. The list
+  always carries the class `pkde-social-links` (and an aria-label) so a site can scope a footer rule around it, for example
+  `.content-info li:not(.pkde-social-links li) a { display: inline-block }`, since its links are display:grid on purpose.
 --}}
 @php($socialLinks = \App\social_links())
 @if ($socialLinks)
-  <ul class="{{ $class ?? 'flex flex-wrap gap-3 pt-1' }}" aria-label="{{ __('Social media', 'sage') }}">
+  <ul class="pkde-social-links {{ $class ?? 'flex flex-wrap gap-3 pt-1' }}" aria-label="{{ __('Social media', 'sage') }}">
     @foreach ($socialLinks as $network => $link)
       <li>
         <a href="{{ $link['url'] }}" rel="noopener" aria-label="{{ $link['label'] }}" class="grid h-11 w-11 place-items-center rounded-full border border-current/25 transition hover:border-current">

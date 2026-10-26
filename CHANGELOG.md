@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.26.6
+
+- Checkout polish (bb): shipping methods are bordered selectable rows on the checkout as well as the basket (the native radio stays, the whole row is its label), and "Ship to a different address?" is styled as a section heading with its checkbox, instead of a small form label.
+- The social-links partial's list always carries the class `pkde-social-links` (next to its `aria-label`), so a site can scope a footer rule around it; its links are `display: grid` on purpose, and a rule like `.content-info li a { display: inline-block }` breaks them. Documented in `docs/woocommerce-templates.md`.
+
 ## 2026.10.26.5
 
 - One gutter token (bb): every kit page container pads its sides with `px-[var(--page-gutter,1.5rem)]` instead of a fixed `px-6` (page header, post grid, single post, shop archive and body, the Hero and Hero Slide wrappers, the themed loop sections, `container_class()`'s default), so a site changes the page gutter in ONE place (`--page-gutter` in its theme.css, 1.5rem unset). The Section opt-in measure is derived from it: `--pkde-section-measure: calc(var(--container-content) - 2 * var(--page-gutter))`, and the `gutter` spacing preset in theme.json is `var(--page-gutter)`. Same 1.5rem by default, so nothing moves. A test fails on a fixed `px-6` next to `max-w-content`.

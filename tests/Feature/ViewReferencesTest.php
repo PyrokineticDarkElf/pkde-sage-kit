@@ -153,3 +153,13 @@ it('gives every page container the shared gutter token, not a fixed px-6', funct
 it('gives the product description a reading width', function () {
     expect(file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css'))->toContain('.single-product .woocommerce-Tabs-panel');
 });
+
+it('gives the social links list a stable class a site can scope rules around, and styles the checkout shipping rows and heading', function () {
+    $view = file_get_contents(dirname(__DIR__, 2) . '/resources/views/partials/social-links.blade.php');
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
+
+    expect($view)->toContain('<ul class="pkde-social-links ')
+        ->and($css)->toContain('ul#shipping_method li:has(input:checked)')
+        ->and($css)->not->toContain('.cart_totals ul#shipping_method')
+        ->and($css)->toContain('#ship-to-different-address');
+});
