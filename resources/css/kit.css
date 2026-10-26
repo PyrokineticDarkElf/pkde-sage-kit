@@ -1076,3 +1076,19 @@ iframe:focus-visible {
   outline: 2px solid var(--color-brand-600, currentColor);
   outline-offset: 2px;
 }
+
+/**
+ * The Section block's content measure, opt-in. WordPress sizes a constrained layout's children with the theme.json
+ * `layout.contentSize` (48rem here, a reading width), so a Section's content is narrower than the header, the page header and the
+ * footer, which are `max-w-content` with a 1.5rem gutter. A site (or the template, for new sites) that wants Section content to line up
+ * with them sets ONE variable, `--pkde-section-measure: calc(var(--container-content) - 3rem);` in its theme.css, and sets the `gutter`
+ * spacing preset to 1.5rem in theme.json. Unset, nothing changes. It only reaches the Section's direct children: a nested
+ * Group keeps its own measure, which is how reading-width text sits inside a full-width Section. Deliberately OUTSIDE @layer: WordPress's
+ * layout rule is unlayered, and a layered rule would lose to it whatever its specificity.
+ */
+.wp-block-sage-section.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: var(--pkde-section-measure, var(--wp--style--global--content-size));
+}
+.wp-block-sage-section.is-layout-constrained > .alignwide {
+  max-width: var(--pkde-section-measure, var(--wp--style--global--wide-size));
+}

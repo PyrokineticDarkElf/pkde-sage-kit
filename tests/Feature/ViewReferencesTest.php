@@ -100,3 +100,22 @@ it('sets text on a brand or accent background with the foreground token, never a
 
     expect($offenders)->toBe([]);
 });
+
+it('sizes page containers with max-w-content, the one token the header and footer use, never a fixed Tailwind width', function () {
+    $offenders = [];
+    foreach (glob(dirname(__DIR__, 2) . '/resources/views/{,*/,*/*/,*/*/*/}*.blade.php', GLOB_BRACE) as $file) {
+        if (preg_match('/\bmax-w-(?:6xl|7xl)\b/', file_get_contents($file))) {
+            $offenders[] = basename($file);
+        }
+    }
+
+    expect($offenders)->toBe([]);
+});
+
+it('lets a site opt the Section block into the page measure with one variable, unlayered, falling back to the layout sizes', function () {
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+
+    expect($css)->toContain('.wp-block-sage-section.is-layout-constrained')
+        ->and($css)->toContain('var(--pkde-section-measure, var(--wp--style--global--content-size))')
+        ->and($css)->toContain('var(--pkde-section-measure, var(--wp--style--global--wide-size))');
+});

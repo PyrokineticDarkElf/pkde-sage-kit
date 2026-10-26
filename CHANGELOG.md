@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.26.3
+
+- Layout (bb): the page containers of the single post, the shop archive and its body, the page header and the post grid use `max-w-content` (the `--container-content` token the header and footer use) instead of `max-w-6xl`/`max-w-7xl`, so the shop and product pages are as wide as the header (1152px against 1232px of content before). One token moves all of them. A test fails on a fixed `max-w-6xl`/`max-w-7xl` in a kit view.
+- The Section block's content measure is opt-in with ONE variable: `--pkde-section-measure` (for example `calc(var(--container-content) - 3rem)` in the theme's `theme.css`) sizes the Section's direct children and its wide ones instead of theme.json's `contentSize`, which is a 48rem reading width on most sites and left Section content narrower than the header. Unset, nothing changes. The rule is unlayered on purpose (WordPress's own layout rule is). Set the `gutter` spacing preset to 1.5rem in theme.json as well so the Section's padding equals the header's `px-6`. A nested Group keeps its own measure, which is how reading-width text sits in a full-width Section.
+
 ## 2026.10.26.2
 
 - `theme:check` fails on the 600 step of `brand`/`accent` only when NEITHER white nor near-black text reaches 4.5:1 (a narrow mid-tone band). When only white fails, both commands print a note ("use `text-brand-600-fg` for your own text on it") and the check passes, since the kit's own components use the foreground tokens. `acceptLowContrast` stays as an escape hatch. Sites that listed it only to get `theme:check` green can remove it. Tests cover the note, the failure and the escape hatch.

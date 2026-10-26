@@ -47,3 +47,24 @@ The editor must show what the page prints.
 * `resources/css/site.css` is the home of a site's own design CSS. `app.css` and `editor.css` both import it, so the canvas gets it too. `resources/css/editor-canvas.css` is editor-only (dashed outlines around groups and columns); it is never printed.
 * The front end wraps a page's content in `.page-content` (`partials/content-page*.blade.php`). The canvas root gets the same class for pages, and `.is-front-page` on the page set as the front page (`frontPageId` is added to the editor settings in `app/setup.php`; `resources/js/editor.js` toggles the classes). Scope a site's design to those classes and it renders the same in both places. The template's own front page is a Blade skeleton, not `the_content()`, so it does not print `.is-front-page` itself; a site that builds its home page from blocks adds the class to its wrapper.
 * A click guard (`editor.js`) stops links in the canvas from navigating it.
+
+## One page measure: header, Section and shop line up
+
+The header, page header, footer and the kit's page containers (single post, shop archive and body, post grid) are `max-w-content px-6`: the
+`--container-content` token (theme.css, 80rem by default) with a 1.5rem gutter, so their content spans `--container-content - 3rem` (1232px).
+A Section block sizes its children with theme.json's `layout.contentSize` instead, which is a 48rem reading width on most sites, so its content is
+narrower than the header. To line them up, a site sets one variable in its `theme.css` and one preset in `theme.json`:
+
+```css
+:root { --pkde-section-measure: calc(var(--container-content) - 3rem); }   /* theme.css, inside @theme or :root */
+```
+
+```json
+{ "slug": "gutter", "name": "Page gutter", "size": "1.5rem" }              /* theme.json settings.spacing.spacingSizes */
+```
+
+The template ships both. Reading-width text inside a Section is a nested constrained Group with its own width (for example 46rem), which keeps
+its own measure because the variable only reaches the Section's direct children. Unset, the Section keeps `contentSize`. Check the result with
+the layout fingerprint (header, page-header title, Section content, shop list and footer start and end at the same x at 390, 768, 1024, 1440
+and 1920). A site that changes `--container-content` moves every container together; derive other measures from it instead of repeating
+`max-w-6xl`.

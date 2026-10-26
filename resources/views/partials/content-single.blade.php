@@ -6,7 +6,7 @@
   --}}
   @php($toc = \App\TableOfContents::fromContent(apply_filters('the_content', get_the_content())))
 
-  <div class="{{ \App\container_class('mx-auto max-w-6xl px-6 py-12 lg:grid lg:grid-cols-12 lg:gap-12 lg:py-16', 'content-single') }}">
+  <div class="{{ \App\container_class('mx-auto max-w-content px-6 py-12 lg:grid lg:grid-cols-12 lg:gap-12 lg:py-16', 'content-single') }}">
     <div class="lg:col-span-8">
       <header>
         @include('pkde-kit::partials.breadcrumbs')

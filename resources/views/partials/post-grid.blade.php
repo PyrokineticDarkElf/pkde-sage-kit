@@ -1,4 +1,4 @@
-<div class="{{ \App\container_class('mx-auto max-w-7xl px-6 py-20 lg:py-24', 'post-grid') }}">
+<div class="{{ \App\container_class('mx-auto max-w-content px-6 py-20 lg:py-24', 'post-grid') }}">
   @if (! have_posts())
     <x-pkde-kit::alert type="warning">
       {!! __('Sorry, no results were found.', 'sage') !!}
