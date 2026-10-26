@@ -467,6 +467,7 @@
   .woocommerce a.button:hover,
   .woocommerce button.button:hover {
     background-color: var(--color-brand-700);
+    color: var(--color-brand-700-fg);
   }
 
   /* Store feedback: WC emits these for cart changes, coupon validation,
@@ -989,6 +990,7 @@
 }
 .wpcf7-submit:hover {
   background-color: var(--color-brand-700);
+  color: var(--color-brand-700-fg);
 }
 .wpcf7-not-valid-tip {
   margin-top: 0.375rem;
@@ -1026,12 +1028,13 @@
   border-radius: 9999px;
   background-color: var(--color-brand-600);
   padding: 0.5rem 1.25rem;
-  color: #fff;
+  color: var(--color-brand-600-fg, #fff);
   transition: background-color 0.2s;
 }
 #primary-menu li.nav-cta > a:hover,
 #primary-menu-mobile li.nav-cta > a:hover {
   background-color: var(--color-brand-700);
+  color: var(--color-brand-700-fg, #fff);
 }
 #primary-menu li.nav-cta > a span,
 #primary-menu-mobile li.nav-cta > a span {

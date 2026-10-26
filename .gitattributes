@@ -12,3 +12,5 @@
 /CHANGELOG.md export-ignore
 /resources/blocks/README.md export-ignore
 /composer.json export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore

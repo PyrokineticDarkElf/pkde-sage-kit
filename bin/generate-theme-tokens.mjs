@@ -364,6 +364,19 @@ function backfillStyles(colors) {
   return colors;
 }
 
+/**
+ * The text colour for a background: white when it reaches 4.5:1 (the look the kit always had), otherwise whichever of white and
+ * near-black measures higher. Emitted as --color-{name}-{step}-fg (text-brand-600-fg), so a component that sets text on a brand or
+ * accent background never needs a hard-coded text-white that a light colour would turn unreadable.
+ */
+function foregroundFor(background) {
+  const white = wcagContrast(background, '#ffffff');
+  if (white >= 4.5) return '#ffffff';
+
+  return wcagContrast(background, FOREGROUND_DARK) > white ? FOREGROUND_DARK : '#ffffff';
+}
+const FOREGROUND_DARK = '#0a0a0a';
+
 function buildCss(colors) {
   const colourNames = colors.map((color) => color.name);
   const lines = [
@@ -377,6 +390,10 @@ function buildCss(colors) {
   for (const color of colors) {
     lines.push(`  /* ${color.name}: ${color.hex} */`);
     for (const step of steps) lines.push(`  --color-${color.name}-${step}: ${shade(color, step)};`);
+    if (color.role !== 'black' && color.role !== 'white') {
+      for (const step of steps) lines.push(`  --color-${color.name}-${step}-fg: ${foregroundFor(shade(color, step))};`);
+      lines.push(`  --color-${color.name}-fg: ${foregroundFor(shade(color, 600))};`);
+    }
     // The bare --color-{name} alias (a stand-in for "the" swatch, at step
     // 600) only makes sense for a normal colour, where 600 is close to what
     // a human actually picked. For role black/white it's actively wrong —
@@ -407,7 +424,8 @@ function buildCss(colors) {
   const roleAliases = [];
   for (const [role, color] of [['brand', brand], ['accent', accent]]) {
     if (color.name === role) continue;
-    for (const step of steps) lines.push(`  --color-${role}-${step}: var(--color-${color.name}-${step});`);
+    for (const step of steps) lines.push(`  --color-${role}-${step}: var(--color-${color.name}-${step});`, `  --color-${role}-${step}-fg: var(--color-${color.name}-${step}-fg);`);
+    lines.push(`  --color-${role}-fg: var(--color-${color.name}-fg);`);
     lines.push(`  --color-${role}: var(--color-${color.name});`, `  --color-${role}-exact: var(--color-${color.name}-exact);`, '');
     roleAliases.push(role);
   }
@@ -418,16 +436,23 @@ function buildCss(colors) {
   const tint = Math.min(0.02, (brandOklch?.c ?? 0) * 0.12);
   const tintHue = (brandOklch?.h ?? 0).toFixed(2);
   lines.push('  /* neutral: brand-tinted replacement for Tailwind\'s grey scale */');
-  for (const step of steps) lines.push(`  --color-neutral-${step}: oklch(${neutralLightness[step]} ${tint.toFixed(3)} ${tintHue});`);
+  for (const step of steps) {
+    const neutral = `oklch(${neutralLightness[step]} ${tint.toFixed(3)} ${tintHue})`;
+    lines.push(`  --color-neutral-${step}: ${neutral};`, `  --color-neutral-${step}-fg: ${foregroundFor(neutral)};`);
+  }
   lines.push('');
 
   lines.push(
     `  --color-action: ${shade(brand, 600)};`,
     `  --color-action-hover: ${shade(brand, 700)};`,
     `  --color-highlight: ${shade(accent, 600)};`,
+    `  --color-action-fg: ${foregroundFor(shade(brand, 600))};`,
+    `  --color-action-hover-fg: ${foregroundFor(shade(brand, 700))};`,
+    `  --color-highlight-fg: ${foregroundFor(shade(accent, 600))};`,
     '}',
     '',
     `@source inline("{bg,text,border,ring,fill,stroke,outline}-{${colourNames.concat(roleAliases).join(',')}}-{50,100,200,300,400,500,600,700,800,900,950}");`,
+    `@source inline("text-{${colourNames.concat(roleAliases).join(',')}}-{50,100,200,300,400,500,600,700,800,900,950}-fg");`,
     `@source inline("{bg,text,border,ring,fill,stroke,outline}-{${colourNames.concat(roleAliases).join(',')}}");`,
     `@source inline("{bg,text,border,ring,fill,stroke,outline}-{${colourNames.concat(roleAliases).join(',')}}-exact");`,
     '@source inline("{bg,text,border,ring,fill,stroke,outline}-{action,action-hover,highlight}");',

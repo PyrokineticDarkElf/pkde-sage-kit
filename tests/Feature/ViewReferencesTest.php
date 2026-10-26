@@ -83,3 +83,20 @@ it('keeps amber text and white-on-amber markers at 700 or darker, the lightest s
 
     expect($offenders)->toBe([]);
 });
+
+it('sets text on a brand or accent background with the foreground token, never a hard-coded white', function () {
+    $offenders = [];
+    foreach (glob(dirname(__DIR__, 2) . '/resources/views/{,*/,*/*/,*/*/*/}*.blade.php', GLOB_BRACE) as $file) {
+        preg_match_all('/class="([^"]*)"/', file_get_contents($file), $attributes);
+
+        foreach ($attributes[1] as $classes) {
+            // A brand/accent background next to text-white, unless the same attribute already uses a -fg token (a dark button that
+            // only turns brand on hover keeps its white text and sets the foreground token for the hover).
+            if (preg_match('/\bbg-(?:brand|accent)-\d+\b/', $classes) && preg_match('/\btext-white\b/', $classes) && ! str_contains($classes, '-fg')) {
+                $offenders[] = basename($file);
+            }
+        }
+    }
+
+    expect($offenders)->toBe([]);
+});

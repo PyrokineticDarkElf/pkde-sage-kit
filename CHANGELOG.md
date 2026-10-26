@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.10.26.1
+
+- Foreground tokens (js): the generator emits `--color-{name}-{step}-fg` for every step of every colour (white when it reaches 4.5:1, otherwise the better of white and near-black), plus `--color-{name}-fg`, `--color-action-fg`, `--color-action-hover-fg`, `--color-highlight-fg`, as Tailwind utilities `text-brand-600-fg` and so on. The kit's components that put text on a brand colour use them instead of a hard-coded `text-white`: the post and product badges, the hover colour of the product-card button, the menu call-to-action, the Contact Form 7 submit and WooCommerce buttons on hover. A site with a light brand colour no longer has to override them; `acceptLowContrast` only covers a site's own white-on-brand uses. After the bump run `npm run theme:generate` and commit the regenerated `brand-tokens.css`.
+- Tests: node:test cases (`npm test`, run in CI) run the real generator on a throwaway theme with a light, an amber and a dark colour and check every foreground token; a Pest test fails on a `bg-brand-N` or `bg-accent-N` with a hard-coded `text-white` in a view.
+
 ## 2026.10.26
 
 - Accessibility (bb audit): the product-card rating stars use `text-amber-700` (5.0:1 on white; amber-500 gave 2.1:1 and axe flagged every card), and the Featured-post badge is `bg-amber-700` under its white icon. A test fails if a view uses an amber step lighter than 700 for text or a white-on-amber marker.

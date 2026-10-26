@@ -221,6 +221,15 @@ workflow's token step), naming the measured ratio and a darker hex of the same h
 darkening the colour in `config/brand-palette.json`; if the light colour is deliberate (for example white text is never used on it),
 list its name in `"acceptLowContrast": ["brand"]` at the top level of that file and the check stops reporting it.
 
+**Foreground tokens: text on a brand or accent background.** For every step of every colour the generator also emits
+`--color-{name}-{step}-fg` (and `--color-{name}-fg` for the 600 step, `--color-action-fg`, `--color-action-hover-fg`, `--color-highlight-fg`):
+white when it reaches 4.5:1 on that step, otherwise whichever of white and near-black (`#0a0a0a`) measures higher. Tailwind turns them into
+utilities, `text-brand-600-fg`, so a badge reads `bg-brand-600 text-brand-600-fg` and stays readable whatever brand colour a client has. The
+kit's own components (post and product badges, the menu button, the contact and WooCommerce buttons on hover) use them, and a kit test fails
+on a new `bg-brand-N` with a hard-coded `text-white`; do the same in a site's views. With them, `acceptLowContrast` is only needed for a site's
+OWN use of white on a light 600 step. After a kit bump the generated `brand-tokens.css` changes: run `npm run theme:generate` and commit it
+(`theme:check` fails until you do).
+
 ## Section theme roles and styles
 
 Each colour in `config/brand-palette.json` looks like this once the generator has run at least

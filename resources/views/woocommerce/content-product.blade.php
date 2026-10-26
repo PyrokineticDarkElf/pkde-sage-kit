@@ -35,9 +35,9 @@
 
     @if (\App\RecentContent::isNew($productId, 'product'))
       @if ($badgeLinks)
-        <a href="{{ add_query_arg('sage_view', 'new', wc_get_page_permalink('shop')) }}" rel="nofollow" aria-label="{{ sprintf(__('%1$s: %2$s (see the newest products)', 'sage'), __('New', 'sage'), $product->get_name()) }}" class="absolute right-3 top-3 z-10 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-white">{{ __('New', 'sage') }}</a>
+        <a href="{{ add_query_arg('sage_view', 'new', wc_get_page_permalink('shop')) }}" rel="nofollow" aria-label="{{ sprintf(__('%1$s: %2$s (see the newest products)', 'sage'), __('New', 'sage'), $product->get_name()) }}" class="absolute right-3 top-3 z-10 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">{{ __('New', 'sage') }}</a>
       @else
-        <span class="absolute right-3 top-3 z-10 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-white">{{ __('New', 'sage') }}<span class="sr-only">: {{ $product->get_name() }}</span></span>
+        <span class="absolute right-3 top-3 z-10 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">{{ __('New', 'sage') }}<span class="sr-only">: {{ $product->get_name() }}</span></span>
       @endif
     @endif
 
@@ -72,7 +72,7 @@
     </div>
     @php(do_action('woocommerce_after_shop_loop_item_title'))
 
-    <div class="flex [&_a]:inline-flex [&_a]:rounded-full [&_a]:bg-neutral-950 [&_a]:px-4 [&_a]:py-2 [&_a]:text-xs [&_a]:font-semibold [&_a]:text-white [&_a]:transition [&_a:hover]:bg-brand-700">
+    <div class="flex [&_a]:inline-flex [&_a]:rounded-full [&_a]:bg-neutral-950 [&_a]:px-4 [&_a]:py-2 [&_a]:text-xs [&_a]:font-semibold [&_a]:text-white [&_a]:transition [&_a:hover]:bg-brand-700 [&_a:hover]:text-brand-700-fg">
       @php(do_action('woocommerce_after_shop_loop_item'))
     </div>
   </div>

@@ -33,7 +33,7 @@
     @endif
 
     @if (\App\RecentContent::isNew(get_the_ID()))
-      <span class="rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-white">
+      <span class="rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">
         {{ __('New', 'sage') }}
       </span>
     @endif

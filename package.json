@@ -1,0 +1,12 @@
+{
+  "name": "pkde-sage-kit-tests",
+  "private": true,
+  "description": "Only for the kit's own JavaScript tests (the token generator); nothing here ships to a site.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/js/*.test.mjs"
+  },
+  "devDependencies": {
+    "culori": "4.0.2"
+  }
+}
