@@ -245,6 +245,10 @@
   .prose-content > * + * {
     margin-top: 1em;
   }
+  /* Full-width Sections butt up against each other: the 1em gap above would show as a white stripe between two coloured bands. */
+  .prose-content > .wp-block-sage-section {
+    margin-top: 0;
+  }
   /* CookieYes-generated legal pages nest their text in wrapper divs, which the direct-child
      spacing above never reaches, and Tailwind's reset removes list markers. */
   .prose-content :is(.policy-content, .cookie-policy-p) p,

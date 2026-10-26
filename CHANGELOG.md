@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.10.26.7
+
+- Fix (bb): `.prose-content > * + * { margin-top: 1em }` no longer opens a 16px white stripe between full-width Sections (`.prose-content > .wp-block-sage-section { margin-top: 0 }`).
+- Product page (`resources/css/shop-pages.css`): the gallery zoom trigger is a round white button over the top-right of the main image with a drawn magnifier, its screen-reader label kept (the emoji link is gone); related products and upsells are two across on a phone, three from 640px and four from 1024px; the Reviews tab shows the reviews as quiet cards without the grey avatar placeholders beside a card holding the form, and the star picker is five drawn stars (WooCommerce's star font is not loaded, so it was blank), filled up to the one under the pointer or chosen. The product's reading width (46rem) applies to the Description and Additional information tabs, not to Reviews. Checked in Chrome with WooCommerce 11.2.1 at 1440 and 390.
+- Not a kit change: the kit's carousel keeps its pause control (WCAG 2.2.2) as the default; a site that prefers dots without a pause button overrides it on its own.
+
 ## 2026.10.26.6
 
 - Checkout polish (bb): shipping methods are bordered selectable rows on the checkout as well as the basket (the native radio stays, the whole row is its label), and "Ship to a different address?" is styled as a section heading with its checkbox, instead of a small form label.

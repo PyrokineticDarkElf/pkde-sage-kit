@@ -151,7 +151,7 @@ it('gives every page container the shared gutter token, not a fixed px-6', funct
 });
 
 it('gives the product description a reading width', function () {
-    expect(file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css'))->toContain('.single-product .woocommerce-Tabs-panel');
+    expect(file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css'))->toContain('.single-product .woocommerce-Tabs-panel:not(.woocommerce-Tabs-panel--reviews)');
 });
 
 it('gives the social links list a stable class a site can scope rules around, and styles the checkout shipping rows and heading', function () {
@@ -162,4 +162,18 @@ it('gives the social links list a stable class a site can scope rules around, an
         ->and($css)->toContain('ul#shipping_method li:has(input:checked)')
         ->and($css)->not->toContain('.cart_totals ul#shipping_method')
         ->and($css)->toContain('#ship-to-different-address');
+});
+
+it('has no white stripe between Sections, a drawn zoom button, four-across related products and a drawn review star picker', function () {
+    $kit = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $shop = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
+
+    expect($kit)->toContain('.prose-content > .wp-block-sage-section')
+        ->and($shop)->toContain('.woocommerce-product-gallery__trigger::before')
+        ->and($shop)->toContain('.woocommerce-product-gallery__trigger span')
+        ->and($shop)->toContain('.woocommerce div.product .related ul.products')
+        ->and($shop)->toContain('repeat(4, minmax(0, 1fr))')
+        ->and($shop)->toContain('.woocommerce-Reviews p.stars a')
+        ->and($shop)->toContain('.woocommerce-Reviews #review_form_wrapper')
+        ->and($shop)->toContain('img.avatar');
 });

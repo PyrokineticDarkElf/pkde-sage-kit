@@ -113,8 +113,229 @@
   margin-block: 0 0.75rem;
 }
 
+/* Product gallery: WooCommerce prints the zoom trigger as an emoji link above the picture. It is a round white button over the top-right
+   corner of the main image instead, with a drawn magnifier; the link's own text (a screen-reader label) stays for assistive technology. */
+.woocommerce div.product div.images {
+  position: relative;
+}
+.woocommerce-product-gallery__trigger {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 9;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-neutral-900);
+  font-size: 0;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 8px 18px -8px rgb(0 0 0 / 0.3);
+  transition: background-color 0.2s;
+}
+.woocommerce-product-gallery__trigger:hover {
+  background: var(--color-neutral-100);
+}
+.woocommerce-product-gallery__trigger:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+.woocommerce-product-gallery__trigger span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.woocommerce-product-gallery__trigger::before {
+  content: "";
+  width: 1.25rem;
+  height: 1.25rem;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Related products and upsells: two across on a phone, three from 640px, four from 1024px. */
+.woocommerce div.product .related ul.products,
+.woocommerce div.product .upsells ul.products {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 640px) {
+  .woocommerce div.product .related ul.products,
+  .woocommerce div.product .upsells ul.products {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .woocommerce div.product .related ul.products,
+  .woocommerce div.product .upsells ul.products {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Reviews tab: the reviews as quiet cards (no grey placeholder avatars) beside a card holding the form. */
+.woocommerce-Reviews {
+  display: grid;
+  gap: 2.5rem;
+}
+@media (min-width: 1024px) {
+  .woocommerce-Reviews {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+.woocommerce-Reviews-title {
+  margin-bottom: 1.25rem;
+  font-family: var(--font-display, inherit);
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+.woocommerce-Reviews ol.commentlist {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.woocommerce-Reviews ol.commentlist li.review {
+  margin: 0;
+}
+.woocommerce-Reviews .comment_container {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: var(--color-neutral-50);
+}
+.woocommerce-Reviews .comment_container img.avatar {
+  display: none;
+}
+.woocommerce-Reviews .comment-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.woocommerce-Reviews .comment-text .star-rating {
+  order: 1;
+}
+.woocommerce-Reviews .comment-text .meta {
+  order: 2;
+  margin: 0;
+  font-size: 0.9rem;
+}
+.woocommerce-Reviews .comment-text .meta .woocommerce-review__author {
+  font-family: var(--font-display, inherit);
+  font-size: 1.15rem;
+}
+.woocommerce-Reviews .comment-text .meta .woocommerce-review__dash {
+  display: none;
+}
+.woocommerce-Reviews .comment-text .meta time {
+  display: block;
+  opacity: 0.8;
+}
+.woocommerce-Reviews .comment-text .description {
+  order: 3;
+}
+.woocommerce-Reviews .comment-text .description p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.woocommerce-Reviews #review_form_wrapper {
+  padding: 1.75rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1.25rem;
+  background: var(--color-white);
+}
+.woocommerce-Reviews #reply-title {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display, inherit);
+  font-size: 1.5rem;
+}
+.woocommerce-Reviews #respond form {
+  display: grid;
+  gap: 1rem;
+}
+.woocommerce-Reviews #respond form p {
+  margin: 0;
+}
+.woocommerce-Reviews #respond label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.woocommerce-Reviews #respond :is(input[type="text"], input[type="email"], textarea) {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0.75rem;
+  background: var(--color-white);
+  font: inherit;
+}
+.woocommerce-Reviews #respond :is(input, textarea):focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+.woocommerce-Reviews #respond .comment-form-cookies-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.woocommerce-Reviews #respond .comment-form-cookies-consent label {
+  margin: 0;
+  font-weight: 400;
+}
+.woocommerce-Reviews #respond input[type="submit"] {
+  width: auto;
+  justify-self: start;
+}
+
+/* The star picker in the review form: five stars, filled up to the one under the pointer or chosen. WooCommerce adds the links and the
+   `selected` and `active` classes; its own star font is not loaded, so the stars are drawn here. The link text (1 to 5) stays for assistive technology. */
+.woocommerce-Reviews p.stars,
+.woocommerce-Reviews p.stars > span {
+  display: flex;
+}
+.woocommerce-Reviews p.stars a {
+  position: relative;
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  font-size: 0;
+  text-indent: 0;
+  background: var(--color-neutral-200);
+  -webkit-mask: var(--pkde-star-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.2l2.95 6.55 7.15.7-5.4 4.75 1.6 7.05L12 17.6l-6.3 3.65 1.6-7.05L1.9 9.45l7.15-.7z'/%3E%3C/svg%3E")) center / 1.6rem no-repeat;
+  mask: var(--pkde-star-mask, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.2l2.95 6.55 7.15.7-5.4 4.75 1.6 7.05L12 17.6l-6.3 3.65 1.6-7.05L1.9 9.45l7.15-.7z'/%3E%3C/svg%3E")) center / 1.6rem no-repeat;
+}
+.woocommerce-Reviews p.stars a::before {
+  content: none;
+}
+.woocommerce-Reviews p.stars.selected a,
+.woocommerce-Reviews p.stars:hover a {
+  background: var(--color-amber-700);
+}
+.woocommerce-Reviews p.stars.selected a.active ~ a,
+.woocommerce-Reviews p.stars a:hover ~ a {
+  background: var(--color-neutral-200);
+}
+.woocommerce-Reviews p.stars a:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: -2px;
+}
+
 /* The product's long description (and the other tabs) is flowing text: it keeps a reading width instead of the page measure. */
-.single-product .woocommerce-Tabs-panel {
+.single-product .woocommerce-Tabs-panel:not(.woocommerce-Tabs-panel--reviews) {
   max-width: 46rem;
 }
 
