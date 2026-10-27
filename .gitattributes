@@ -14,3 +14,4 @@
 /composer.json export-ignore
 /package.json export-ignore
 /package-lock.json export-ignore
+/renovate.json export-ignore
