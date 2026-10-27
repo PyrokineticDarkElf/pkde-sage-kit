@@ -221,3 +221,19 @@ it('has an opt-in header search whose icon and panel are wired by kit.js', funct
         ->and($partial)->toContain('aria-controls="header-search-panel"')
         ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('[data-search-toggle]');
 });
+
+it('ships the phone picker without a third-party host: self-hosted utils, a dynamic import, inert without the platform module', function () {
+    $root = dirname(__DIR__, 2);
+    $js = file_get_contents("$root/resources/js/phone.js");
+
+    expect(file_get_contents("$root/resources/js/kit.js"))->toContain("import './phone.js';")
+        ->and($js)->toContain('window.pkdePhone')
+        ->and($js)->toContain("import('intl-tel-input')")
+        ->and($js)->toContain("loadUtils: () => import('intl-tel-input/utils')")
+        ->and($js)->toContain('/cdn-cgi/trace')
+        ->and($js)->toContain('pkde_user_data')
+        ->and($js)->toContain("event: 'generate_lead'")
+        ->and($js)->not->toMatch('~https?://~i')
+        ->and($js)->not->toMatch('/jsdelivr|unpkg|cdnjs/i')
+        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('.wpcf7 .iti');
+});

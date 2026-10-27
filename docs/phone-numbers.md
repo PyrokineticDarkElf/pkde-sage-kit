@@ -1,0 +1,11 @@
+# Phone numbers: the country picker (`resources/js/phone.js`)
+
+The kit half of the platform's `phone-e164` module (opt-in by `PHONE_DEFAULT_REGION` in `.env`; see the platform's `docs/modules.md`). The server is the guarantee: it parses every phone with libphonenumber, rejects an invalid one with a message that names the country, and stores and mails E.164. The picker only helps a visitor type a number the way they normally would.
+
+* **When it runs.** Only when the platform printed `window.pkdePhone = {region, preferred}` (which it does where Contact Form 7's script is) AND the page has a `.wpcf7 input[type="tel"]`. The library is a dynamic import, so a page without a phone field downloads none of it; its number data (`intl-tel-input/utils`) is a separate chunk of the same build, loaded after the page.
+* **Privacy.** Bundled by Vite and self-hosted: no CDN (a test fails on any `http(s)://` or CDN name in the script). The visitor's country comes from Cloudflare's same-origin `/cdn-cgi/trace` when the site is behind Cloudflare, else `PHONE_DEFAULT_REGION`; nothing leaves the site.
+* **Country.** The "+" and code the visitor types always wins. The country picked in the dropdown travels as the hidden field `<field>-country` (added to the form; Contact Form 7 ignores it, the platform reads it). `PHONE_PREFERRED_COUNTRIES` (for example `GB,IE,US`) lists the countries the dropdown shows first.
+* **Accessibility.** intl-tel-input's own: a labelled button ("Change country for phone number, currently selected United Kingdom (+44)"), a searchable country list that opens with the keyboard (Enter or Space on the button, type to search, arrows, Enter, Escape), and no motion to turn off.
+* **Data layer.** After a sent form the platform's response carries `pkde_user_data` (E.164 phone and email); `phone.js` pushes `{event: 'generate_lead', user_data: {email, phone_number}}`. Google hashes it in the tag.
+* **Theme requirement.** The theme's `package.json` must list `intl-tel-input` (exact `29.5.4`, a release more than two weeks old; Renovate bumps it): `npm install --save-exact intl-tel-input@29.5.4`. Without it the Vite build stops with "Failed to resolve import".
+* **Styling.** `.wpcf7 .iti` fills the column (kit.css); the rest is intl-tel-input's own stylesheet, imported by the script.

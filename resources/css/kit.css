@@ -1100,3 +1100,11 @@ iframe:focus-visible {
 .wp-block-sage-section.is-layout-constrained > .alignwide {
   max-width: var(--pkde-section-measure, var(--wp--style--global--wide-size));
 }
+
+/**
+ * The phone field's country picker (resources/js/phone.js, intl-tel-input): its wrapper fills the form's column like every other field, and its
+ * stylesheet is imported by the script itself, so a page without a phone field loads none of it.
+ */
+.wpcf7 .iti {
+  width: 100%;
+}

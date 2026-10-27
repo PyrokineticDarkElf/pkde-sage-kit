@@ -1,5 +1,6 @@
 import './carousel.js';
 import './lightbox.js';
+import './phone.js';
 
 const toc = document.querySelector('[data-toc]');
 
