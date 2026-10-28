@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.10.28
+
+- **Fleet-wide layout-shift fix (tcs, TCS-87):** removed `add_filter('should_load_separate_core_block_assets', '__return_false')` from `app/setup.php`. On WordPress 6.9+ it disabled the on-demand block styles of classic themes, so every block's CSS loaded and the block-supports CSS printed after the footer: cumulative layout shift 0.36 to 0.42 on tcs staging, 0 after the removal, with computed styles identical on seven page types and about 20 KB less `wp-block-library`. A test fails if the filter comes back. **Adopt:** bump the kit; a site whose own `app/setup.php` still has the line (copied from the Sage starter) deletes it.
+
 ## 2026.10.27
 
 - Phone numbers (TPL-77, MGR-35): `resources/js/phone.js`, imported by `kit.js`: the country picker (intl-tel-input 29.5.4, bundled and self-hosted, utils loaded by Vite, no CDN) on `.wpcf7 input[type="tel"]`, a hidden `<field>-country` the platform's `phone-e164` module reads, the visitor's country from Cloudflare's same-origin `/cdn-cgi/trace` else `PHONE_DEFAULT_REGION`, and a `generate_lead` data-layer push with the E.164 phone and email the server returned. Does nothing without the platform module's `window.pkdePhone`; a page without a phone field downloads none of the library. **After the bump the theme's `package.json` must list `intl-tel-input`** (`npm install --save-exact intl-tel-input@29.5.4`), or the Vite build fails with "Failed to resolve import". Documented in `docs/phone-numbers.md`; a test pins the no-CDN rule.

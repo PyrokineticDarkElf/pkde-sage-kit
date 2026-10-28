@@ -237,3 +237,9 @@ it('ships the phone picker without a third-party host: self-hosted utils, a dyna
         ->and($js)->not->toMatch('/jsdelivr|unpkg|cdnjs/i')
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('.wpcf7 .iti');
 });
+
+it('does not force every block stylesheet to load (on-demand block assets stay on, TCS-87)', function () {
+    foreach (kitSourceFiles() as $file) {
+        expect(file_get_contents($file))->not->toMatch("/add_filter\\(\\s*'should_load_separate_core_block_assets'/");
+    }
+});

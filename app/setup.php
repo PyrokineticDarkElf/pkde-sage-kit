@@ -95,11 +95,10 @@ add_filter('theme_file_path', function ($path, $file) {
 }, 10, 2);
 
 /**
- * Disable on-demand block asset loading.
- *
- * @link https://core.trac.wordpress.org/ticket/61965
+ * Block assets stay on demand (WordPress's default for classic themes since 6.9). Sage used to force
+ * `should_load_separate_core_block_assets` to false, which loads every block's CSS and prints the block-supports CSS after the
+ * footer: a layout shift of 0.36 to 0.42 on tcs, 0 once removed (TCS-87), and about 20 KB less wp-block-library.
  */
-add_filter('should_load_separate_core_block_assets', '__return_false');
 
 /**
  * Register the initial theme setup.
