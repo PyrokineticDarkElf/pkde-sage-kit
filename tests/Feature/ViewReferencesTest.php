@@ -112,12 +112,13 @@ it('sizes page containers with max-w-content, the one token the header and foote
     expect($offenders)->toBe([]);
 });
 
-it('lets a site opt the Section block into the page measure with one variable, unlayered, falling back to the layout sizes', function () {
+it('sizes the Section block like the header by default: unlayered, from the container and gutter tokens, overridable with one variable', function () {
     $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
 
     expect($css)->toContain('.wp-block-sage-section.is-layout-constrained')
-        ->and($css)->toContain('var(--pkde-section-measure, var(--wp--style--global--content-size))')
-        ->and($css)->toContain('var(--pkde-section-measure, var(--wp--style--global--wide-size))');
+        ->and($css)->toContain('max-width: var(--pkde-section-measure, calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)));')
+        ->and($css)->toContain('--wp--preset--spacing--gutter: var(--page-gutter, 1.5rem);')
+        ->and($css)->not->toContain('var(--pkde-section-measure, var(--wp--style--global--content-size))');
 });
 
 it('imports the shop CSS from kit.css and keeps the rating stars readable', function () {
@@ -242,4 +243,14 @@ it('does not force every block stylesheet to load (on-demand block assets stay o
     foreach (kitSourceFiles() as $file) {
         expect(file_get_contents($file))->not->toMatch("/add_filter\\(\\s*'should_load_separate_core_block_assets'/");
     }
+});
+
+it('caps the page content grid at 100% and the gutter token, never a second 90% gutter (MGR-62)', function () {
+    $root = dirname(__DIR__, 2);
+    $css = file_get_contents("$root/resources/css/kit.css");
+
+    expect($css)->toContain('--content-grid-width: min(48rem, 100%);')
+        ->and($css)->toContain('padding-inline: var(--page-gutter, 1.5rem);')
+        ->and($css)->not->toContain('min(48rem, 90%);')
+        ->and(file_get_contents("$root/resources/views/partials/content-page-wide.blade.php"))->not->toContain('90%)"');
 });

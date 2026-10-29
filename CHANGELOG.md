@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.10.29
+
+- **One width system (MGR-62; owner: the 404 and most sections/rows were narrower than the header on nearly every site, and each site patched it differently).** Root causes found and fixed in the kit:
+  1. **Page content grid used a 90% cap.** `.content-grid` (every page's `the_content()`) capped its tracks at `min(<ideal>, 90%)` AND padded each child by 1.5rem, so text started 19px to 75px inside the header's content edge between 390px and 1400px. Now `min(<ideal>, 100%)`; the child's `padding-inline: var(--page-gutter, 1.5rem)` is the only gutter, the header's. `content-page-wide` uses `min(var(--container-content, 80rem), 100%)`.
+  2. **Section blocks sized by theme.json `contentSize` (48rem) and padded by the `gutter` preset.** The Section's content measure was opt-in (`--pkde-section-measure`). It is now the default: `calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem))` for direct children and wide children, and the Section's own `--wp--preset--spacing--gutter` is `var(--page-gutter, 1.5rem)`. Set `--pkde-section-measure` to any length to override (e.g. `var(--wp--style--global--content-size)` for the old reading width).
+  A test fails if the 90% cap or the opt-in fallback comes back. `docs/native-blocks.md` "One page measure" rewritten. **Adopt:** bump the kit and the template's views/theme.json (see the template entry); delete local width hacks (a `.site-wrap`, `.rp-container`, a Section override, a `--pkde-section-measure` line that only restates the default). Check with `fingerprint.sh edges` (pkde-deploy). Visible change: a Section's content is now as wide as the header's, and page text lines up with it at tablet and phone widths.
+
 ## 2026.10.28
 
 - **Fleet-wide layout-shift fix (tcs, TCS-87):** removed `add_filter('should_load_separate_core_block_assets', '__return_false')` from `app/setup.php`. On WordPress 6.9+ it disabled the on-demand block styles of classic themes, so every block's CSS loaded and the block-supports CSS printed after the footer: cumulative layout shift 0.36 to 0.42 on tcs staging, 0 after the removal, with computed styles identical on seven page types and about 20 KB less `wp-block-library`. A test fails if the filter comes back. **Adopt:** bump the kit; a site whose own `app/setup.php` still has the line (copied from the Sage starter) deletes it.

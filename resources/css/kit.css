@@ -82,31 +82,22 @@
    * element's own genuinely-available width, never a raw viewport unit, and
    * the padding *is* the gutter track — one definition, not two.
    *
-   * `min(<ideal>, 90%)` on both the content and wide tracks, not a bare
-   * length — the 90% cap is what stops content ever touching the screen
-   * edges on anything narrower than the ideal width; a fixed rem value
-   * alone has no such floor once the viewport drops below it. `--content-grid-width`
-   * is the one thing each consumer overrides (content-page.blade.php sets
-   * `min(48rem, 90%)` to keep its prose column reading-width; content-page-wide.blade.php
-   * sets `min(80rem, 90%)` to match the site's shared content width) — the
-   * `wide` track stays fixed at that same shared 80rem regardless, per this
-   * theme's own convention (see theme.css's `--container-content`), so on a
-   * page whose own content width already *is* 80rem, `wide` and `content`
-   * end up the same width, which is correct, not a bug.
+   * `min(<ideal>, 100%)` on both the content and wide tracks. `--content-grid-width` is the one thing each consumer overrides
+   * (content-page.blade.php keeps `min(48rem, 100%)`, the prose reading width; content-page-wide.blade.php sets
+   * `min(var(--container-content), 100%)`, the site's shared page width). The wide track is the same shared page width (the
+   * `--container-content` token), so on a page whose own content width already *is* that width, `wide` and `content` end up the same
+   * width, which is correct, not a bug.
    *
-   * The outer gutter tracks are `minmax(0, 1fr)`, not `minmax(1.5rem, 1fr)`
-   * — a fixed minimum there fights the 90% cap instead of working with it.
-   * At a 375px viewport, `min(80rem, 90%)` alone is already 337.5px; add a
-   * *guaranteed* 1.5rem on each side on top of that and the total (385.5px)
-   * no longer fits in 375px at all — confirmed directly as real overflow
-   * (`scrollWidth` past `clientWidth`), not a rounding artifact. The 90% cap
-   * is already the full safety net (it *is* a 5%-per-side gutter at any
-   * size); `minmax(0, 1fr)` just lets the gutter tracks take whatever's
-   * actually left over, so the total can never exceed the container's own
-   * width — no fixed floor left to conflict with anything.
+   * MGR-62: the cap is 100%, not 90%. The side gutter is the `--page-gutter` padding on each child (below), exactly the header's, so
+   * at every viewport width a child's text starts and ends where the header's content does. A 90% cap added a second, different gutter
+   * (5% a side) that put page text 19px to 75px inside the header's edge between 390px and 1400px, and it was one of the competing
+   * width rules every site patched. The padding sits INSIDE the track (border-box), so nothing can overflow at 375px.
+   *
+   * The outer gutter tracks are `minmax(0, 1fr)`: they take whatever is left over, so the total can never exceed the container's
+   * own width.
    */
   .content-grid {
-    --content-grid-width: min(48rem, 90%);
+    --content-grid-width: min(48rem, 100%);
     display: grid;
     grid-template-columns:
       [full-start] minmax(0, 1fr)
@@ -151,7 +142,7 @@
    * App\pkde_loop_theme_content_open() wrapper).
    */
   .content-grid > *:not(.alignfull):not(.pkde-loop-panel) {
-    padding-inline: 1.5rem;
+    padding-inline: var(--page-gutter, 1.5rem);
   }
 
   /**
@@ -1085,20 +1076,27 @@ iframe:focus-visible {
 }
 
 /**
- * The Section block's content measure, opt-in. WordPress sizes a constrained layout's children with the theme.json
- * `layout.contentSize` (48rem here, a reading width), so a Section's content is narrower than the header, the page header and the
- * footer, which are `max-w-content` with a 1.5rem gutter. A site (or the template, for new sites) that wants Section content to line up
- * with them sets ONE variable, `--pkde-section-measure: calc(var(--container-content) - 2 * var(--page-gutter));` in its theme.css (the gutter is
- * the `--page-gutter` token, 1.5rem, that every kit container uses as its side padding), and sets the `gutter` spacing preset to
- * `var(--page-gutter)` in theme.json. Unset, nothing changes. It only reaches the Section's direct children: a nested
- * Group keeps its own measure, which is how reading-width text sits inside a full-width Section. Deliberately OUTSIDE @layer: WordPress's
- * layout rule is unlayered, and a layered rule would lose to it whatever its specificity.
+ * The Section block's content measure and gutter: the header's, by default (MGR-62, ADR 0008 amended).
+ *
+ * WordPress sizes a constrained layout's children with the theme.json `layout.contentSize` (a 48rem reading width on the template), and pads
+ * a Section with the `gutter` spacing preset, so a Section's content used to be narrower than the header, the page header and the footer,
+ * which are `max-w-content` with the `--page-gutter` side padding: every site patched it differently. ONE rule now ties them together,
+ * from the same two tokens the containers use, with no setup:
+ *
+ *   measure = --pkde-section-measure, else --container-content less two --page-gutter (the header's content width)
+ *   gutter  = --page-gutter (1.5rem), through the Section's own `gutter` preset variable
+ *
+ * A site that wants something else sets `--pkde-section-measure` (any length; `var(--wp--style--global--content-size)` brings back the
+ * theme.json reading width) in its theme.css. It only reaches the Section's direct children: a nested Group keeps its own measure, which
+ * is how reading-width text sits inside a full-width Section. Deliberately OUTSIDE @layer: WordPress's layout rule is unlayered, and a
+ * layered rule would lose to it whatever its specificity.
  */
-.wp-block-sage-section.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
-  max-width: var(--pkde-section-measure, var(--wp--style--global--content-size));
+.wp-block-sage-section {
+  --wp--preset--spacing--gutter: var(--page-gutter, 1.5rem);
 }
+.wp-block-sage-section.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)),
 .wp-block-sage-section.is-layout-constrained > .alignwide {
-  max-width: var(--pkde-section-measure, var(--wp--style--global--wide-size));
+  max-width: var(--pkde-section-measure, calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)));
 }
 
 /**

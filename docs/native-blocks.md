@@ -48,23 +48,18 @@ The editor must show what the page prints.
 * The front end wraps a page's content in `.page-content` (`partials/content-page*.blade.php`). The canvas root gets the same class for pages, and `.is-front-page` on the page set as the front page (`frontPageId` is added to the editor settings in `app/setup.php`; `resources/js/editor.js` toggles the classes). Scope a site's design to those classes and it renders the same in both places. The template's own front page is a Blade skeleton, not `the_content()`, so it does not print `.is-front-page` itself; a site that builds its home page from blocks adds the class to its wrapper.
 * A click guard (`editor.js`) stops links in the canvas from navigating it.
 
-## One page measure: header, Section and shop line up
+## One page measure: header, Section and shop line up (by default)
 
-The header, page header, footer and the kit's page containers (single post, shop archive and body, post grid) are `max-w-content px-[var(--page-gutter,1.5rem)]`: the
+The header, page header, footer and the kit's page containers (single post, shop archive and body, post grid, 404, search, archive) are `max-w-content px-[var(--page-gutter,1.5rem)]`: the
 `--container-content` token (theme.css, 80rem by default) with a 1.5rem gutter, so their content spans `--container-content - 3rem` (1232px).
-A Section block sizes its children with theme.json's `layout.contentSize` instead, which is a 48rem reading width on most sites, so its content is
-narrower than the header. To line them up, a site sets one variable in its `theme.css` and one preset in `theme.json`:
+A Section block's children are sized by the kit, from the same two tokens, with no setup (kit 2026.10.29 and later; before that a site had to opt in):
 
-```css
-:root { --page-gutter: 1.5rem; --pkde-section-measure: calc(var(--container-content) - 2 * var(--page-gutter)); }   /* theme.css */
-```
+* **Measure:** `max-width: var(--pkde-section-measure, calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)))` on the Section's direct children and its wide children.
+* **Gutter:** the Section's own `--wp--preset--spacing--gutter` is `var(--page-gutter, 1.5rem)`, so its side padding matches whatever theme.json says.
 
-```json
-{ "slug": "gutter", "name": "Page gutter", "size": "var(--page-gutter)" }     /* theme.json settings.spacing.spacingSizes */
-```
-
-The template ships both. Reading-width text inside a Section is a nested constrained Group with its own width (for example 46rem), which keeps
-its own measure because the variable only reaches the Section's direct children. Unset, the Section keeps `contentSize`. Check the result with
-the layout fingerprint (header, page-header title, Section content, shop list and footer start and end at the same x at 390, 768, 1024, 1440
-and 1920). A site that changes `--container-content` moves every container together; derive other measures from it instead of repeating
-`max-w-6xl`.
+To change the page width, change `--container-content` (and, if wanted, `--page-gutter`) in `theme.css`: every container, the Section and the footer move
+together. To give Sections a different measure on one site, set `--pkde-section-measure` to any length; `var(--wp--style--global--content-size)` brings back
+theme.json's reading width. Reading-width text inside a Section is a nested constrained Group with its own width (for example 46rem), which keeps
+its own measure because the rule only reaches the Section's direct children. Check the result with `fingerprint.sh edges` (header, page-header title,
+Section content and footer start and end at the same x at 390 and 1440) or the layout fingerprint. Derive other measures from the tokens instead of
+repeating `max-w-6xl`. A site that wrote its own width rules for this (a `.site-wrap`, `.rp-container`, a Section override) can delete them after the bump.
