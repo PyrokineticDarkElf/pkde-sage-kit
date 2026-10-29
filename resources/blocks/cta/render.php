@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * CTA block frontend output. Two styles share this one block rather than
  * being separate blocks (docs/planning/block-ideas.md's original "Banner

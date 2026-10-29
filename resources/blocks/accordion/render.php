@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Accordion block frontend output. Purely visual — see the FAQs block for
  * the same rendering plus JSON-LD FAQPage structured data; they're kept as

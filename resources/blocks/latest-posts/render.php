@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Latest Posts block frontend output.
  *

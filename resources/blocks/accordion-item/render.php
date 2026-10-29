@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Accordion Item block frontend output — a single <details>/<summary> pair.
  * Only ever rendered as a child of Accordion or FAQs — native HTML handles

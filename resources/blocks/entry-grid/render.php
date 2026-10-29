@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Entry Grid block frontend output: a card grid of every published entry of one post type (any registered, public
  * post type, blog posts by default). It reuses the partials every other loop block uses (partials.blocks.post-grid,

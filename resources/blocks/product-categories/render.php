@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Product Categories block frontend output. No-ops entirely when
  * WooCommerce isn't active — the taxonomy simply doesn't exist.

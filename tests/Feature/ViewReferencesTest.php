@@ -254,3 +254,24 @@ it('caps the page content grid at 100% and the gutter token, never a second 90% 
         ->and($css)->not->toContain('min(48rem, 90%);')
         ->and(file_get_contents("$root/resources/views/partials/content-page-wide.blade.php"))->not->toContain('90%)"');
 });
+
+it('ships a cached oEmbed helper that never fetches a non-http URL and remembers failures briefly', function () {
+    $helpers = file_get_contents(dirname(__DIR__, 2) . '/app/helpers.php');
+
+    expect($helpers)->toContain('function cached_oembed(string $url, array $args = []): string')
+        ->and($helpers)->toContain("preg_match('#^https?://#i', \$url)")
+        ->and($helpers)->toContain('set_transient($key, $html, $html === \'\' ? 10 * MINUTE_IN_SECONDS : 12 * HOUR_IN_SECONDS)');
+});
+
+it('guards every block render.php against a direct request, and the shop page content against drafts and passwords (MGR-67)', function () {
+    $root = dirname(__DIR__, 2);
+    $unguarded = [];
+    foreach (glob("$root/resources/blocks/*/render.php") as $file) {
+        if (! str_contains(file_get_contents($file), "if (! defined('ABSPATH'))")) {
+            $unguarded[] = basename(dirname($file));
+        }
+    }
+
+    expect($unguarded)->toBe([])
+        ->and(file_get_contents("$root/app/View/Composers/ProductArchive.php"))->toContain("post_password_required(\$page)")->toContain("\$page->post_status !== 'publish'");
+});

@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Shop products: the shop's own product archive (filters, sorting, pagination) on the Shop page; nothing anywhere else.
  *

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.10.29.1
+
+ADOPT ALL audit-fix batch (MGR-67, TPL-138). **Adopt:** bump the kit; a site that calls `wp_oembed_get()` in its own views switches to `\App\cached_oembed()`.
+
+- **`\App\cached_oembed($url, $args)` (js audit):** `wp_oembed_get()` fetches the provider on every call; this keeps the HTML 12 hours and a failed fetch 10 minutes (so a down provider is not retried on every page view), and never fetches a non-http(s) URL.
+- **Shop page content respects status and passwords (tcs audit):** the plain shop page prints the Shop page's content only when it is published (or the viewer may read it) and not password-protected; otherwise the standard archive layout is used.
+- **Block `render.php` files exit when requested directly (el audit):** an `ABSPATH` guard in every block (the deploy tools also deny theme PHP at the server since 2026.10.29).
+- Triaged and not changed: `TableOfContents` has no final `wp_kses_post` pass (bp hardening note). The content is the output of `the_content`, already filtered on save for users without `unfiltered_html` (which only Administrators have since platform 2026.10.29); a kses pass over the output would strip the embeds (iframes) and forms that Administrators legitimately put in posts. Accepted, recorded in the template's ADR. The live search's result count is fixed by the kit's filter (`pkde_kit/live_search_results`), not read from the request.
+
 ## 2026.10.29
 
 - **One width system (MGR-62; owner: the 404 and most sections/rows were narrower than the header on nearly every site, and each site patched it differently).** Root causes found and fixed in the kit:

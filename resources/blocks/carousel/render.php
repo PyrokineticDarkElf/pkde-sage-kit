@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Image Carousel block frontend output. The track/drag/loop/snap mechanics
  * are handled by Embla (resources/js/carousel.js) — see that file's own

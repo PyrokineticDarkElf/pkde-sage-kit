@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Recent Products block frontend output. No-ops entirely when WooCommerce
  * isn't active.

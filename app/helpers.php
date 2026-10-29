@@ -19,6 +19,38 @@ function absolute_url(?string $url): string
 }
 
 /**
+ * oEmbed HTML for a URL, cached. wp_oembed_get() fetches the provider's endpoint over HTTP on EVERY call (WordPress caches only what
+ * the_content's own embeds store in post meta), so a template that embeds a video on each page view makes a remote request per visit: slow
+ * for the visitor, and a way to tie up PHP workers when the provider is slow. This keeps the HTML (12 hours) and, for a failed fetch, an
+ * empty result for 10 minutes so a down provider is not retried on every request. The key is the URL and the arguments; a URL that is not
+ * http(s) is never fetched. Returns '' when there is nothing to embed.
+ *
+ * @param  array<string, mixed>  $args  passed to wp_oembed_get() (width, height, ...)
+ */
+function cached_oembed(string $url, array $args = []): string
+{
+    $url = trim($url);
+
+    if (! preg_match('#^https?://#i', $url) || ! function_exists('wp_oembed_get')) {
+        return '';
+    }
+
+    $key = 'pkde_oembed_' . md5($url . serialize($args));
+    $cached = get_transient($key);
+
+    if (is_string($cached)) {
+        return $cached;
+    }
+
+    $html = wp_oembed_get($url, $args);
+    $html = is_string($html) ? $html : '';
+
+    set_transient($key, $html, $html === '' ? 10 * MINUTE_IN_SECONDS : 12 * HOUR_IN_SECONDS);
+
+    return $html;
+}
+
+/**
  * The client's contact details that are set (an unset option is simply absent), keyed email / phone / address,
  * each with its value and a link (mailto:, tel:, or null for the address). Shared by the footer and Contact page.
  */

@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Hero Slide block frontend output — one slide inside a Hero Slider,
  * visually identical to the standalone Hero block (see hero/render.php for

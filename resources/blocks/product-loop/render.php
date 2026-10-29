@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Product Loop block output: the shop's own [products] loop, so cards look and behave exactly as everywhere else. Does nothing
  * when WooCommerce is not active.

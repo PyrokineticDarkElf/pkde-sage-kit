@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * FAQs block frontend output. Visually identical to the Accordion block
  * (same markup shape, same partials/blocks/accordion-layout.blade.php) —

@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Best Selling Products block frontend output. No-ops entirely when
  * WooCommerce isn't active.

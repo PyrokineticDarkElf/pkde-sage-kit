@@ -1,5 +1,9 @@
 <?php
 
+if (! defined('ABSPATH')) {
+    exit; // never run when requested directly
+}
+
 /**
  * Hero Slider block frontend output. Wraps its already-rendered Hero Slide
  * children (each one flex-none, full width, via hero-slide/render.php) in
