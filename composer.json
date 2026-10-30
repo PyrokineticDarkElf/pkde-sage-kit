@@ -20,6 +20,7 @@
       "app/setup.php",
       "app/filters.php",
       "app/blocks.php",
+      "app/block-assets.php",
       "app/woocommerce.php",
       "app/search.php",
       "app/template-folders.php",

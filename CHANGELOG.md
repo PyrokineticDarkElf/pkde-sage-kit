@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.10.31.1
+
+- **Block style variations no longer fatal with block assets loaded on demand (el, EL-13).** A page with an `is-style-*` block (the outline button) raised "`block-style-variation-styles` was enqueued with dependencies that are not registered: `global-styles`" (an error page in development; in production the variation CSS could drop). Cause: with on-demand assets WordPress renders the content before `wp_enqueue_scripts`, so the variation handle is registered, and core enqueues it at `wp_enqueue_scripts` priority 1; its dependency `global-styles` is, for a classic theme, registered only in `wp_footer` (priority 1) and hoisted into the head, so in the head the dependency does not exist yet. New `app/block-assets.php` moves that one enqueue to `wp_footer` priority 2 for a classic theme loading on demand, so it runs after `global-styles` exists and its CSS is hoisted into the head with the other late styles, in the same cascade position (verified: global styles then the variation styles, both in `<head>`; the page was a 500, now 200). Registering `global-styles` early is not a fix (the head would print the empty handle as a dependency and the real global styles would never print), and `should_load_separate_core_block_assets` stays untouched: the layout-shift fix (TCS-87) is kept.
+- Tests for the rule and the guard that nothing turns separate block assets off again. The template's block demo now carries a filled and an outline button; if `/block-demo/` returns 500 the clash is back.
+**Adopt:** bump the kit. el deletes its `should_load_separate_core_block_assets => false` workaround in `ThemeServiceProvider` (and any early `global-styles` registration).
+
 ## 2026.10.31
 
 - **The page header is a brand-coloured band by default, themed with variables (owner, from bb's site.css; MGR page-header).** `partials/page-header.blade.php` no longer hard-codes `bg-neutral-50 border-neutral-200`, `text-neutral-950` and `font-semibold`; new `resources/css/page-header.css` (imported by `kit.css`) styles `.page-header` from CSS custom properties with palette-derived defaults:
