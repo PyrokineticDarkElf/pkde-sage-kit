@@ -13,6 +13,7 @@ class ProductArchive extends Composer
      */
     protected static $views = [
         'archive-product',
+        'shop.archive-product',
     ];
 
     /**

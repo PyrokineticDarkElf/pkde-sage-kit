@@ -22,6 +22,7 @@
       "app/blocks.php",
       "app/woocommerce.php",
       "app/search.php",
+      "app/template-folders.php",
       "app/helpers.php"
     ]
   },

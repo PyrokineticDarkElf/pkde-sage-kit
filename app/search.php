@@ -53,7 +53,7 @@ add_filter('relevanssi_live_search_results_template', function ($located) {
 // product cards. Other searches keep search.php.
 add_filter('search_template_hierarchy', function (array $templates): array {
     if (function_exists('is_post_type_archive') && is_post_type_archive('product')) {
-        array_unshift($templates, 'archive-product.php');
+        array_unshift($templates, 'archive-product.php', 'shop/archive-product.php');
     }
 
     return $templates;

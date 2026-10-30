@@ -53,7 +53,7 @@ add_action('init', function () {
 add_filter('taxonomy_template_hierarchy', function (array $templates): array {
     if (is_product_taxonomy()) {
         $at = array_search('taxonomy.php', $templates, true);
-        array_splice($templates, $at === false ? count($templates) : $at, 0, ['archive-product.php']);
+        array_splice($templates, $at === false ? count($templates) : $at, 0, ['archive-product.php', 'shop/archive-product.php']);
     }
 
     return $templates;

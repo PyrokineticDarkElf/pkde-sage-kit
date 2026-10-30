@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.10.30.1
+
+- **Views grouped by use, and default archive templates (owner request via tcs, TPL-140).** New `app/template-folders.php`: WordPress's template hierarchy names (`category.php`, `taxonomy-product_cat.php`, `archive-product.php` ...) get the folder file added right after the flat one (`blog/category.php`, `shop/taxonomy-product_cat.php`, `pages/page.php`), so the template can keep its default views in `resources/views/blog/`, `shop/` and `pages/`, and a site's flat view always wins. Page templates chosen in the editor, custom post types and other taxonomies stay flat. `docs/view-folders.md` has the table and the rules.
+- New partial `pkde-kit::partials.term-description` (a category or tag description under the title, through `wp_kses_post`), used by the template's new `blog/category` and `blog/tag`.
+- The product archive composer and the product search/taxonomy routing know the `shop.archive-product` view name and the `shop/archive-product.php` candidate.
+- Tests for the folder mapping (`category`, `category-news`, `taxonomy-product_cat-shoes`, ... and what stays flat) and the order (flat first).
+**Adopt:** bump the kit. A site keeps working unchanged (flat views win). To use the default archive views, take the template's `blog/`, `shop/` and `pages/` views (or leave yours); to override one archive add one flat file.
+
 ## 2026.10.30
 
 - **The page gutter moves from padding on every child into the content grid's tracks (bp, MGR-62 follow-up).** Kit 2026.10.29 padded each direct child of `.content-grid` by `--page-gutter`: text and images lined up with the header, but anything PAINTED (a border, a background, a card, a stat strip) was 24px wider each side than the text, and an absolutely positioned child (`md:absolute md:inset-x-8` inside a `relative` block) was measured from the padded box, so a card sat 8px from the image edge instead of 32px. Now the grid defines `--content-grid-measure` (the header's content width, `--container-content` less two gutters, or the container less two gutters on a narrow screen), the wide track is that measure, the content track is `--content-grid-width` (48rem, never wider than the measure), and the child padding rule is gone. A child's box is its track: text, images, borders and backgrounds all start where the header's content does (104..1336 at 1440, 24..366 at 390). `content-page-wide` and the cart/checkout/account pages set `--content-grid-width: var(--content-grid-measure)`.
