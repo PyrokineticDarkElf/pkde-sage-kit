@@ -113,7 +113,7 @@ it('sizes page containers with max-w-content, the one token the header and foote
 });
 
 it('sizes the Section block like the header by default: unlayered, from the container and gutter tokens, overridable with one variable', function () {
-    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/page-measure.css');
 
     expect($css)->toContain('.wp-block-sage-section.is-layout-constrained')
         ->and($css)->toContain('max-width: var(--pkde-section-measure, calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)));')
@@ -276,4 +276,20 @@ it('guards every block render.php against a direct request, and the shop page co
 
     expect($unguarded)->toBe([])
         ->and(file_get_contents("$root/app/View/Composers/ProductArchive.php"))->toContain("post_password_required(\$page)")->toContain("\$page->post_status !== 'publish'");
+});
+
+it('shows the editor canvas at the page width: the Section rules and the wide page template come from files the theme imports (MGR-62 editor parity)', function () {
+    $root = dirname(__DIR__, 2);
+    $kit = file_get_contents("$root/resources/css/kit.css");
+    $measure = file_get_contents("$root/resources/css/page-measure.css");
+    $editor = file_get_contents("$root/resources/css/editor-width.css");
+
+    expect($kit)->toContain('@import "./page-measure.css";')
+        ->and($kit)->not->toContain('.wp-block-sage-section.is-layout-constrained')
+        ->and($measure)->toContain('max-width: var(--pkde-section-measure, calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)));')
+        ->and($editor)->toContain('@import "./page-measure.css";')
+        ->and($editor)->toContain('.is-wide-page .editor-styles-wrapper')
+        ->and($editor)->toContain('--wp--style--global--content-size: calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem));')
+        ->and(file_get_contents("$root/resources/js/kit-editor.js"))->toContain("classList.toggle('is-wide-page'")
+        ->and(file_get_contents("$root/app/setup.php"))->toContain("'pkde_kit/wide_page_templates'");
 });

@@ -25,6 +25,10 @@ add_filter('block_editor_settings_all', function ($settings) {
     // Lets resources/js/editor.js give the canvas the front page's wrapper class (editor parity, docs/native-blocks.md).
     $settings['frontPageId'] = (int) get_option('page_on_front');
 
+    // Page templates whose view prints the page at the whole page measure (content-page-wide), not the 48rem reading width: the canvas gets the
+    // same width (resources/css/editor-width.css). A site with its own wide template adds its file name with this filter.
+    $settings['pkdeWideTemplates'] = array_values((array) apply_filters('pkde_kit/wide_page_templates', ['template-wide-content.blade.php']));
+
     $settings['styles'][] = [
         'css' => "@import url('{$style}')",
     ];

@@ -1,0 +1,19 @@
+/**
+ * The block editor canvas at the page's width (import this from the theme's editor.css, below site.css).
+ *
+ * 1. The Section block follows the header's measure and gutter in the canvas as it does on the page (page-measure.css, the same file kit.css imports).
+ * 2. A page that uses a wide page template (a view built on content-page-wide: the "Wide Content" template) prints its text column at the whole
+ *    page measure, not the 48rem reading width; WordPress's canvas root sizes its blocks by `--wp--style--global--content-size`, so kit-editor.js
+ *    gives the canvas root `.is-wide-page` for those templates and the variable is the page measure here. Wide and full blocks already match
+ *    (`wideSize` is the same measure in theme.json).
+ */
+@import "./page-measure.css";
+
+.is-wide-page .editor-styles-wrapper {
+  --wp--style--global--content-size: calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem));
+}
+/* WordPress prints the root's width as a literal (`max-width: 48rem`) in its own layout rule, not through the variable, so the root needs the rule too;
+   the extra class beats it. On a canvas narrower than the measure the gutter keeps the text off the edges, as the page does. A Section's children use the variable and follow it. */
+.is-wide-page .editor-styles-wrapper .block-editor-block-list__layout.is-root-container > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: min(var(--wp--style--global--content-size), calc(100% - 2 * var(--page-gutter, 1.5rem)));
+}

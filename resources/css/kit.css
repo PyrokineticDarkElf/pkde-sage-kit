@@ -8,6 +8,7 @@
  * against these tokens are a no-op migration from their old hardcoded
  * classes — see resources/blocks/hero/render.php.
  */
+@import "./page-measure.css";
 @import "./shop-pages.css";
 @import "./live-search.css";
 
@@ -1058,30 +1059,6 @@
 iframe:focus-visible {
   outline: 2px solid var(--color-brand-600, currentColor);
   outline-offset: 2px;
-}
-
-/**
- * The Section block's content measure and gutter: the header's, by default (MGR-62, ADR 0008 amended).
- *
- * WordPress sizes a constrained layout's children with the theme.json `layout.contentSize` (a 48rem reading width on the template), and pads
- * a Section with the `gutter` spacing preset, so a Section's content used to be narrower than the header, the page header and the footer,
- * which are `max-w-content` with the `--page-gutter` side padding: every site patched it differently. ONE rule now ties them together,
- * from the same two tokens the containers use, with no setup:
- *
- *   measure = --pkde-section-measure, else --container-content less two --page-gutter (the header's content width)
- *   gutter  = --page-gutter (1.5rem), through the Section's own `gutter` preset variable
- *
- * A site that wants something else sets `--pkde-section-measure` (any length; `var(--wp--style--global--content-size)` brings back the
- * theme.json reading width) in its theme.css. It only reaches the Section's direct children: a nested Group keeps its own measure, which
- * is how reading-width text sits inside a full-width Section. Deliberately OUTSIDE @layer: WordPress's layout rule is unlayered, and a
- * layered rule would lose to it whatever its specificity.
- */
-.wp-block-sage-section {
-  --wp--preset--spacing--gutter: var(--page-gutter, 1.5rem);
-}
-.wp-block-sage-section.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)),
-.wp-block-sage-section.is-layout-constrained > .alignwide {
-  max-width: var(--pkde-section-measure, calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)));
 }
 
 /**

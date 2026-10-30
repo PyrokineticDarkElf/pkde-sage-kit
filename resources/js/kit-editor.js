@@ -43,6 +43,9 @@ domReady(() => {
     const frontPageId = editor?.getEditorSettings?.()?.frontPageId;
     doc.documentElement.classList.toggle('page-content', editor?.getCurrentPostType() === 'page');
     doc.documentElement.classList.toggle('is-front-page', !!frontPageId && frontPageId === editor?.getCurrentPostId());
+    // A wide page template prints its text at the whole page measure: the canvas root says so, so editor-width.css can match it.
+    const wideTemplates = editor?.getEditorSettings?.()?.pkdeWideTemplates ?? [];
+    doc.documentElement.classList.toggle('is-wide-page', wideTemplates.includes(editor?.getEditedPostAttribute?.('template')));
 
     if (doc.canvasGuard) return;
 

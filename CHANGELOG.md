@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.10.30.2
+
+- **The block editor canvas shows the page at its real width (owner: the editor area was far narrower than the front end).** Two causes, both in the editor only:
+  1. The theme's `editor.css` never imported the kit, so the Section block's measure and gutter rules did not exist in the canvas: a Section's content was sized by `max-width: var(--wp--style--global--content-size)`, the 48rem reading width, where the page prints the header's 77rem. The rules moved into `resources/css/page-measure.css` (imported by `kit.css`, unchanged on the front end) and the new `resources/css/editor-width.css` imports the same file for the canvas.
+  2. A page that uses a wide page template (the template's "Wide Content", which prints its text at the whole page measure through `content-page-wide`) was edited at 48rem. `kit-editor.js` marks the canvas root `.is-wide-page` for those templates (the list is `pkdeWideTemplates` in the editor settings, filter `pkde_kit/wide_page_templates`, default `template-wide-content.blade.php`) and `editor-width.css` sets the root's content width to the page measure (WordPress prints the root's width as a literal `48rem`, so the root needs its own rule), with the gutter on a canvas narrower than the measure.
+  Verified in the real editor (local): a wide-template page's root paragraph and a Section's content both at the page measure with the 24px gutter (24..1136 on a 1160px canvas); a default page keeps its 48rem reading column for root text and the measure for a Section's content.
+**Adopt:** bump the kit and add ONE line to the theme's `resources/css/editor.css`, below the theme import and above `site.css`: `@import "../../vendor/pkde/sage-kit/resources/css/editor-width.css";`. A site with its own page template that uses `content-page-wide` adds its file name: `add_filter('pkde_kit/wide_page_templates', fn ($t) => [...$t, 'template-landing.blade.php']);`.
+
 ## 2026.10.30.1
 
 - **Views grouped by use, and default archive templates (owner request via tcs, TPL-140).** New `app/template-folders.php`: WordPress's template hierarchy names (`category.php`, `taxonomy-product_cat.php`, `archive-product.php` ...) get the folder file added right after the flat one (`blog/category.php`, `shop/taxonomy-product_cat.php`, `pages/page.php`), so the template can keep its default views in `resources/views/blog/`, `shop/` and `pages/`, and a site's flat view always wins. Page templates chosen in the editor, custom post types and other taxonomies stay flat. `docs/view-folders.md` has the table and the rules.
