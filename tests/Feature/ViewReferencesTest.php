@@ -293,3 +293,20 @@ it('shows the editor canvas at the page width: the Section rules and the wide pa
         ->and(file_get_contents("$root/resources/js/kit-editor.js"))->toContain("classList.toggle('is-wide-page'")
         ->and(file_get_contents("$root/app/setup.php"))->toContain("'pkde_kit/wide_page_templates'");
 });
+
+it('themes the page header band with variables instead of hard-coded neutral classes', function () {
+    $root = dirname(__DIR__, 2);
+    $css = file_get_contents("$root/resources/css/page-header.css");
+    $view = file_get_contents("$root/resources/views/partials/page-header.blade.php");
+
+    foreach (['bg', 'border', 'title', 'crumb', 'title-font', 'title-weight', 'title-tracking'] as $name) {
+        expect($css)->toContain("--pkde-page-header-$name:");
+    }
+
+    expect(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./page-header.css";')
+        ->and($view)->not->toContain('bg-neutral-50')
+        ->and($view)->not->toContain('border-neutral-200')
+        ->and($view)->not->toContain('text-neutral-950')
+        ->and($view)->not->toContain('font-semibold')
+        ->and(file_get_contents("$root/bin/generate-theme-tokens.mjs"))->toContain('page header band');
+});

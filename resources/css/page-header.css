@@ -1,0 +1,44 @@
+/**
+ * The page header band (partials/page-header.blade.php): the title band under the site header on pages, posts' archives, the shop, the cart
+ * and checkout. A brand-coloured band out of the box, themed by variables (MGR page-header, from bb's site.css): a site changes the look by setting
+ * these in its own CSS, never by rewriting the rules.
+ *
+ *   --pkde-page-header-bg            band background        default: the palette's lightest brand tint (brand-100)
+ *   --pkde-page-header-border        the line under it      default: brand-200
+ *   --pkde-page-header-title         the H1 colour          default: near-black ink (neutral-950)
+ *   --pkde-page-header-crumb         breadcrumb text        default: neutral-700
+ *   --pkde-page-header-title-font    the H1 font            default: the display font (--font-display)
+ *   --pkde-page-header-title-weight  the H1 weight          default: 600 (a one-weight serif sets 400)
+ *   --pkde-page-header-title-tracking                       default: -0.04em
+ *
+ * Contrast: the title and breadcrumbs must reach 4.5:1 on the band. The defaults are checked by `npm run theme:check` for the palette's brand
+ * colour; a site that sets its own band colour checks its own text. Unlayered on purpose, like the other kit rules that must beat Tailwind
+ * utilities and sit before the site's own CSS.
+ */
+:root {
+  --pkde-page-header-bg: var(--color-brand-100, var(--color-neutral-50));
+  --pkde-page-header-border: var(--color-brand-200, var(--color-neutral-200));
+  --pkde-page-header-title: var(--color-neutral-950);
+  --pkde-page-header-crumb: var(--color-neutral-700);
+  --pkde-page-header-title-font: var(--font-display, var(--font-sans, inherit));
+  --pkde-page-header-title-weight: 600;
+  --pkde-page-header-title-tracking: -0.04em;
+}
+
+.page-header {
+  background-color: var(--pkde-page-header-bg);
+  border-bottom: 1px solid var(--pkde-page-header-border);
+}
+.page-header h1 {
+  color: var(--pkde-page-header-title);
+  font-family: var(--pkde-page-header-title-font);
+  font-weight: var(--pkde-page-header-title-weight);
+  letter-spacing: var(--pkde-page-header-title-tracking);
+}
+.page-header .breadcrumbs,
+.page-header .breadcrumbs a {
+  color: var(--pkde-page-header-crumb);
+}
+.page-header .breadcrumbs a:hover {
+  color: var(--pkde-page-header-title);
+}

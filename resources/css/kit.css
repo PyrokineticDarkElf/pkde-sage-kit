@@ -9,6 +9,7 @@
  * classes — see resources/blocks/hero/render.php.
  */
 @import "./page-measure.css";
+@import "./page-header.css";
 @import "./shop-pages.css";
 @import "./live-search.css";
 

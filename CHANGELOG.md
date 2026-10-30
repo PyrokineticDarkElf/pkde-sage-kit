@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026.10.31
+
+- **The page header is a brand-coloured band by default, themed with variables (owner, from bb's site.css; MGR page-header).** `partials/page-header.blade.php` no longer hard-codes `bg-neutral-50 border-neutral-200`, `text-neutral-950` and `font-semibold`; new `resources/css/page-header.css` (imported by `kit.css`) styles `.page-header` from CSS custom properties with palette-derived defaults:
+
+  | Variable | Default |
+  |---|---|
+  | `--pkde-page-header-bg` | `var(--color-brand-100)` (the palette's light brand tint; neutral-50 when the palette has no brand) |
+  | `--pkde-page-header-border` | `var(--color-brand-200)` |
+  | `--pkde-page-header-title` | `var(--color-neutral-950)` (ink) |
+  | `--pkde-page-header-crumb` | `var(--color-neutral-700)` |
+  | `--pkde-page-header-title-font` | the display font |
+  | `--pkde-page-header-title-weight` | `600` (a one-weight serif sets `400`) |
+  | `--pkde-page-header-title-tracking` | `-0.04em` |
+
+  Every site gets a brand-coloured band under the header, on pages, archives, the shop, the cart and checkout (everything that includes `pkde-kit::partials.page-header`). A site changes the look by setting variables in its own CSS, never by rewriting rules.
+- **Contrast is checked (`npm run theme:check`, also on generate):** for every brand colour, the default title (neutral-950) and breadcrumbs (neutral-700) must reach 4.5:1 on its 100 step; a failure names the band and the fix. Verified for light and dark brand colours in a test.
+- Layout fingerprint of the template before and after: identical (10 page/width combinations, 1512 elements): the change is colour only.
+**Adopt:** bump the kit. DELETE site CSS that only restyles the band or the title (bb `site.css` 45-46: `.page-header h1 { font-family; font-weight: 400; letter-spacing; color }` and `.page-header { background; border-color }`; tcs `site.css` ~593-616), then set the variables only where the default does not suit, for bb: `:root { --pkde-page-header-title-weight: 400; --pkde-page-header-title-tracking: -0.02em; --pkde-page-header-bg: var(--wp--preset--color--sage-200); --pkde-page-header-border: var(--wp--preset--color--sage-200); --pkde-page-header-title: var(--wp--preset--color--slate-800); }`. A site's own copy of `page-header.blade.php` keeps its markup; take the kit's classes out of it if it should follow the variables.
+
 ## 2026.10.30.2
 
 - **The block editor canvas shows the page at its real width (owner: the editor area was far narrower than the front end).** Two causes, both in the editor only:

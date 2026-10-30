@@ -822,6 +822,23 @@ for (const color of palette.colors) {
   }
 }
 
+// The page header band (resources/css/page-header.css) is the brand colour's 100 step with near-black title text and neutral-700 breadcrumbs.
+// Both must reach 4.5:1 on it, for every brand colour (a band that is not light enough for dark text fails here, not in a browser).
+const PAGE_HEADER_INK = '#0a0a0a'; // --color-neutral-950, the default --pkde-page-header-title
+const PAGE_HEADER_CRUMB = '#404040'; // --color-neutral-700, the default --pkde-page-header-crumb
+for (const color of palette.colors) {
+  if (color.role !== 'brand' || (palette.acceptLowContrast ?? []).includes(color.name)) continue;
+  const band = shade(color, 100);
+  const title = wcagContrast(band, PAGE_HEADER_INK);
+  const crumb = wcagContrast(band, PAGE_HEADER_CRUMB);
+  if (Math.min(title, crumb) < 4.5) {
+    contrastProblems.push(
+      `The page header band (${color.name}-100, ${band}) is too dark for its default text: title ${title.toFixed(2)}:1, breadcrumbs ${crumb.toFixed(2)}:1 (need 4.5:1).`
+      + ` Set --pkde-page-header-bg to a lighter colour (or --pkde-page-header-title and --pkde-page-header-crumb to light text) in the site's CSS and put "${color.name}" in "acceptLowContrast" in config/brand-palette.json, or use a lighter ${color.name}.`,
+    );
+  }
+}
+
 const css = buildCss(palette.colors);
 const sectionThemesCss = buildSectionThemesCss(palette.colors);
 const cardThemesCss = buildCardThemesCss(palette.colors);

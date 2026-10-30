@@ -106,3 +106,14 @@ test('the neutral-500 step used for the unselected review stars keeps 3:1 agains
   assert.ok(wcagContrast(t['neutral-500'], '#ffffff') >= 3, 'neutral-500 on white');
   assert.ok(wcagContrast(t['neutral-500'], t['neutral-50']) >= 3, 'neutral-500 on neutral-50');
 });
+
+test('the page header band (brand-100) reads with the default title and breadcrumb colours, for light and dark brand colours alike', () => {
+  for (const hex of ['#7c988f', '#0b2a4a', '#f2c200', '#8a1c1c']) {
+    const { css, run } = generate([{ name: 'brand', hex, role: 'brand' }, { name: 'accent', hex: '#edb500', role: 'accent' }, { name: 'ink', hex: '#334155' }]);
+    const t = tokens(css);
+
+    assert.ok(wcagContrast(t['brand-100'], '#0a0a0a') >= 4.5, `title on brand-100 for ${hex}`);
+    assert.ok(wcagContrast(t['brand-100'], '#404040') >= 4.5, `breadcrumbs on brand-100 for ${hex}`);
+    assert.doesNotMatch(run('--check').stderr, /page header band/);
+  }
+});
