@@ -1,10 +1,10 @@
 {{--
   content-grid (see app.css) — same breakout mechanism as content-page.blade.php,
   but --content-grid-width is overridden to the site's shared content width
-  (min(var(--container-content), 100%)) instead of the narrower prose default, since this
+  (the whole page measure) instead of the narrower prose default, since this
   template is for pages that are mostly wide/full blocks, not body text.
 --}}
-<div class="page-content prose-content content-grid py-16" style="--content-grid-width: min(var(--container-content, 80rem), 100%)">
+<div class="page-content prose-content content-grid py-16" style="--content-grid-width: var(--content-grid-measure)">
   @php(the_content())
 
   @if ($pagination())

@@ -64,7 +64,7 @@ function pkde_loop_theme_classes(string $theme): string
  * still need to line up with every other section's content column, not
  * spill to the true viewport edge. Only needed when actually themed —
  * an unthemed loop block already gets this same horizontal inset for free,
- * from content-grid's own `.content-grid > *:not(.alignfull)` padding rule,
+ * from content-grid's own gutter tracks,
  * since it isn't `alignfull` at all in that case. Returns '' from both when
  * $theme is empty, so every loop block's render.php can echo these
  * unconditionally around its existing section-header + grid output.

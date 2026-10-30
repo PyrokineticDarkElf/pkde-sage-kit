@@ -245,14 +245,16 @@ it('does not force every block stylesheet to load (on-demand block assets stay o
     }
 });
 
-it('caps the page content grid at 100% and the gutter token, never a second 90% gutter (MGR-62)', function () {
+it('puts the page gutter in the content grid tracks, not in padding on every child (MGR-62)', function () {
     $root = dirname(__DIR__, 2);
     $css = file_get_contents("$root/resources/css/kit.css");
 
-    expect($css)->toContain('--content-grid-width: min(48rem, 100%);')
-        ->and($css)->toContain('padding-inline: var(--page-gutter, 1.5rem);')
-        ->and($css)->not->toContain('min(48rem, 90%);')
-        ->and(file_get_contents("$root/resources/views/partials/content-page-wide.blade.php"))->not->toContain('90%)"');
+    expect($css)->toContain('--content-grid-measure: min(calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)), calc(100% - 2 * var(--page-gutter, 1.5rem)));')
+        ->and($css)->toContain('--content-grid-width: min(48rem, var(--content-grid-measure));')
+        ->and($css)->not->toContain('.content-grid > *:not(.alignfull):not(.pkde-loop-panel) {')
+        ->and($css)->not->toContain('min(48rem, 90%)')
+        ->and(file_get_contents("$root/resources/views/partials/content-page-wide.blade.php"))->toContain('--content-grid-width: var(--content-grid-measure)')
+        ->and(file_get_contents("$root/resources/css/shop-pages.css"))->toContain('--content-grid-width: var(--content-grid-measure);');
 });
 
 it('ships a cached oEmbed helper that never fetches a non-http URL and remembers failures briefly', function () {

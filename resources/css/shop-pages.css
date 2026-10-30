@@ -645,9 +645,9 @@
 }
 
 /* These pages hold a classic shortcode inside the page template's 48rem reading column, far too narrow for a table beside a totals card.
-   They get the page measure instead (the header's content width), with the column's own px-6 keeping the edges on the header's. */
+   They get the page measure instead (the header's content width). */
 :is(body.woocommerce-cart, body.woocommerce-checkout, body.woocommerce-account) .content-grid {
-  --content-grid-width: min(var(--container-content), 100%);
+  --content-grid-width: var(--content-grid-measure);
 }
 
 body.woocommerce-cart .woocommerce:has(> .woocommerce-cart-form) {

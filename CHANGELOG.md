@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.10.30
+
+- **The page gutter moves from padding on every child into the content grid's tracks (bp, MGR-62 follow-up).** Kit 2026.10.29 padded each direct child of `.content-grid` by `--page-gutter`: text and images lined up with the header, but anything PAINTED (a border, a background, a card, a stat strip) was 24px wider each side than the text, and an absolutely positioned child (`md:absolute md:inset-x-8` inside a `relative` block) was measured from the padded box, so a card sat 8px from the image edge instead of 32px. Now the grid defines `--content-grid-measure` (the header's content width, `--container-content` less two gutters, or the container less two gutters on a narrow screen), the wide track is that measure, the content track is `--content-grid-width` (48rem, never wider than the measure), and the child padding rule is gone. A child's box is its track: text, images, borders and backgrounds all start where the header's content does (104..1336 at 1440, 24..366 at 390). `content-page-wide` and the cart/checkout/account pages set `--content-grid-width: var(--content-grid-measure)`.
+- **Visible changes by design:** wide/painted blocks are 24px narrower each side (they used to reach into the gutter); the prose text column is the full 48rem (it was 45rem: 48rem less the child padding). A site that patched this locally (bp's `body.home` CSS, a `margin-inline` rule on `.content-grid > *`) deletes the patch; a block with its own `px-*` keeps it.
+- Test: the grid defines the measure token and no longer pads its children.
+**Adopt:** bump the kit; check with `fingerprint.sh edges` (pkde-deploy 2026.10.30 also checks the painted box of blocks that span the measure).
+
 ## 2026.10.29.1
 
 ADOPT ALL audit-fix batch (MGR-67, TPL-138). **Adopt:** bump the kit; a site that calls `wp_oembed_get()` in its own views switches to `\App\cached_oembed()`.

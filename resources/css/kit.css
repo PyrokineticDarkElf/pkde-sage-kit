@@ -80,30 +80,30 @@
    * nothing tying the two together, which is exactly how they drifted out
    * of sync by 24px in the first place. Grid track sizing here uses this
    * element's own genuinely-available width, never a raw viewport unit, and
-   * the padding *is* the gutter track — one definition, not two.
+   * the gutter is part of the track sizing — one definition, not two.
    *
-   * `min(<ideal>, 100%)` on both the content and wide tracks. `--content-grid-width` is the one thing each consumer overrides
-   * (content-page.blade.php keeps `min(48rem, 100%)`, the prose reading width; content-page-wide.blade.php sets
-   * `min(var(--container-content), 100%)`, the site's shared page width). The wide track is the same shared page width (the
-   * `--container-content` token), so on a page whose own content width already *is* that width, `wide` and `content` end up the same
-   * width, which is correct, not a bug.
+   * MGR-62: the page measure is one token pair, `--container-content` and `--page-gutter`, the header's. The wide track is the measure
+   * (the header's content width: `--container-content` less two gutters, or the container less two gutters on a narrow screen); the
+   * content track is the prose reading width (`--content-grid-width`, 48rem, never wider than the measure); the outer tracks take the rest.
+   * The gutter is therefore in the TRACKS, not in padding on each child: a child's box is its track, so text, images, borders and
+   * backgrounds all start and end where the header's content does, and an absolutely positioned child is measured from that same box.
+   * (An earlier version padded every child by 1.5rem: text lined up, but anything painted, a card, a bordered list, a filled strip,
+   * was 24px wider each side than the text, and a 90% cap before that put the text itself 19px to 75px inside the header's edge.)
+   * content-page-wide.blade.php sets `--content-grid-width: var(--content-grid-measure)` so its content track is the whole measure.
    *
-   * MGR-62: the cap is 100%, not 90%. The side gutter is the `--page-gutter` padding on each child (below), exactly the header's, so
-   * at every viewport width a child's text starts and ends where the header's content does. A 90% cap added a second, different gutter
-   * (5% a side) that put page text 19px to 75px inside the header's edge between 390px and 1400px, and it was one of the competing
-   * width rules every site patched. The padding sits INSIDE the track (border-box), so nothing can overflow at 375px.
-   *
-   * The outer gutter tracks are `minmax(0, 1fr)`: they take whatever is left over, so the total can never exceed the container's
-   * own width.
+   * The outer tracks are `minmax(0, 1fr)`: they take whatever is left over, so the total can never exceed the container's own
+   * width, and the padding-free children cannot overflow at 375px.
    */
   .content-grid {
-    --content-grid-width: min(48rem, 100%);
+    /* The page measure: the header's content width, never wider than the container less its two gutters. */
+    --content-grid-measure: min(calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)), calc(100% - 2 * var(--page-gutter, 1.5rem)));
+    --content-grid-width: min(48rem, var(--content-grid-measure));
     display: grid;
     grid-template-columns:
       [full-start] minmax(0, 1fr)
-      [wide-start] minmax(0, calc((var(--container-content) - var(--content-grid-width)) / 2))
+      [wide-start] minmax(0, calc((var(--content-grid-measure) - var(--content-grid-width)) / 2))
       [content-start] var(--content-grid-width)
-      [content-end] minmax(0, calc((var(--container-content) - var(--content-grid-width)) / 2))
+      [content-end] minmax(0, calc((var(--content-grid-measure) - var(--content-grid-width)) / 2))
       [wide-end] minmax(0, 1fr)
       [full-end];
   }
@@ -128,21 +128,6 @@
    */
   .content-grid > .pkde-loop-panel {
     grid-column: full;
-  }
-
-  /**
-   * Text needs its own breathing room beyond wherever a track happens to
-   * end — the same reason page-header.blade.php and every other full-width
-   * section apply `px-6` *inside* their own `mx-auto max-w-7xl`, not just
-   * the centering margin alone. `.alignfull`/`.pkde-loop-panel` are
-   * deliberately excluded: a full-bleed block's background should reach the
-   * true viewport edge with nothing eating into it, and each one already
-   * manages its own inner spacing itself (e.g. the Hero block's own
-   * `px-6 sm:px-10 lg:px-16`, or a themed loop block's own
-   * App\pkde_loop_theme_content_open() wrapper).
-   */
-  .content-grid > *:not(.alignfull):not(.pkde-loop-panel) {
-    padding-inline: var(--page-gutter, 1.5rem);
   }
 
   /**
