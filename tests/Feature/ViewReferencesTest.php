@@ -128,7 +128,7 @@ it('imports the shop CSS from kit.css and keeps the rating stars readable', func
     expect($kit)->toContain('@import "./shop-pages.css";')
         ->and($shop)->toContain('.star-rating > span::before')
         ->and($shop)->toContain('var(--color-amber-700)')
-        ->and($shop)->toContain('.woocommerce ul.products li.product a.added_to_cart')
+        ->and($shop)->toContain('.pkde-product-actions--default > a.added_to_cart')
         ->and($shop)->toContain('body.woocommerce-cart');
 });
 
