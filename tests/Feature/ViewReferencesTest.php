@@ -310,3 +310,19 @@ it('themes the page header band with variables instead of hard-coded neutral cla
         ->and($view)->not->toContain('font-semibold')
         ->and(file_get_contents("$root/bin/generate-theme-tokens.mjs"))->toContain('page header band');
 });
+
+it('draws the product card action row from classes: one aligned row for the button and View basket, level cards, a layout class a site can reuse (tcs)', function () {
+    $root = dirname(__DIR__, 2);
+    $view = file_get_contents("$root/resources/views/woocommerce/content-product.blade.php");
+    $css = file_get_contents("$root/resources/css/shop-pages.css");
+
+    expect($view)->toContain('pkde-product-actions pkde-product-actions--default')
+        ->and($view)->toContain('pkde-product-card__body flex flex-1 flex-col')
+        ->and($view)->not->toContain('[&_a]:')
+        ->and($css)->toContain('.pkde-product-actions {')
+        ->and($css)->toContain('flex-wrap: wrap;')
+        ->and($css)->toContain('margin-top: auto;')
+        ->and($css)->toContain('min-height: 2.5rem;')
+        ->and($css)->toContain('.pkde-product-actions--default > a.added_to_cart')
+        ->and($css)->not->toContain('li.product > div:last-child');
+});

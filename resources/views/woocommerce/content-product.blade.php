@@ -18,7 +18,7 @@
   $cardStyle = $GLOBALS['pkde_product_card_style'] ?? 'white';
 @endphp
 
-<li @php(wc_product_class(trim('group relative flex flex-col gap-3 ' . ($cardStyle !== 'white' ? "pkde-card-{$cardStyle}" : '')), $product))>
+<li @php(wc_product_class(trim('pkde-product-card group relative flex flex-col gap-3 ' . ($cardStyle !== 'white' ? "pkde-card-{$cardStyle}" : '')), $product))>
   @php(do_action('woocommerce_before_shop_loop_item'))
 
   {{-- The badges are links on archives, so they sit beside the picture link, not inside it. --}}
@@ -53,7 +53,7 @@
     </a>
   </div>
 
-  <div class="flex flex-col gap-1.5">
+  <div class="pkde-product-card__body flex flex-1 flex-col gap-1.5">
     @if (wc_review_ratings_enabled() && $product->get_rating_count() > 0)
       <div class="text-xs text-amber-700">
         {!! wc_get_rating_html($product->get_average_rating()) !!}
@@ -72,7 +72,9 @@
     </div>
     @php(do_action('woocommerce_after_shop_loop_item_title'))
 
-    <div class="flex [&_a]:inline-flex [&_a]:rounded-full [&_a]:bg-neutral-950 [&_a]:px-4 [&_a]:py-2 [&_a]:text-xs [&_a]:font-semibold [&_a]:text-white [&_a]:transition [&_a:hover]:bg-brand-700 [&_a:hover]:text-brand-700-fg">
+    {{-- The action row (pkde-product-actions, resources/css/shop-pages.css): the add-to-cart button, and "View basket" (a.added_to_cart.wc-forward),
+         which WooCommerce inserts after it once an AJAX add to cart succeeds. One row at the bottom of the card, whatever the link does. --}}
+    <div class="pkde-product-actions pkde-product-actions--default">
       @php(do_action('woocommerce_after_shop_loop_item'))
     </div>
   </div>

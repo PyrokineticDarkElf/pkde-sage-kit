@@ -46,28 +46,68 @@
   background: var(--color-amber-700);
 }
 
-/* Product cards: equal height in a row, the button always at the bottom of its card, and "View cart" beside it as a link, not a second black
-   pill (WooCommerce adds it after an AJAX add to cart, inside the card's button area). */
-.woocommerce ul.products li.product > div:last-child {
-  flex: 1 1 auto;
+/* Product cards (MGR product-card actions, tcs): equal height in a row, and ONE aligned action row at the bottom of the card, whatever is in the card above
+   it (a title of one or three lines, the stars). The row holds the add-to-cart button and, once an AJAX add to cart succeeds, "View basket"
+   (WooCommerce inserts a.added_to_cart.wc-forward after the button). Both are as tall as a touch target (2.5rem) and centred, side by side when
+   the card is wide enough, stacked at full width when it is not (a two-column phone grid); the card never changes height beside its neighbours
+   because the grid row stretches every card to the tallest one and the row sits at the bottom of each.
+   Two classes: `pkde-product-actions` is the ROW (layout only: wrap, gap, equal heights, no stray margins); `pkde-product-actions--default` is the
+   kit's LOOK (the black pill and the text link). A site with its own card view adds `pkde-product-actions` to its action wrapper to get the aligned
+   row and keeps its own look; one that likes the kit's look adds both. */
+.woocommerce ul.products li.product.pkde-product-card {
+  display: flex;
+  flex-direction: column;
 }
-.woocommerce ul.products li.product > div:last-child > div:last-child {
+.pkde-product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
   margin-top: auto;
   padding-top: 0.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1rem;
 }
-.woocommerce ul.products li.product a.added_to_cart {
-  background: transparent !important;
-  color: var(--color-neutral-700) !important;
-  padding: 0.5rem 0 !important;
+.pkde-product-actions > a {
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  margin: 0; /* the generic `.woocommerce .button` rule gives a button a top margin, which would make the row taller than the button */
+  text-align: center;
+}
+.pkde-product-actions--default > a {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
   font-weight: 600;
+  text-decoration: none;
+}
+/* The kit's look. The add-to-cart button: the pill. */
+.pkde-product-actions--default > a:not(.added_to_cart) {
+  border-radius: 9999px;
+  background: var(--color-neutral-950);
+  color: var(--color-white);
+  transition: background-color 0.15s, color 0.15s;
+}
+.pkde-product-actions--default > a:not(.added_to_cart):hover {
+  background: var(--color-brand-700);
+  color: var(--color-brand-700-fg);
+}
+/* "View basket": a link beside the button, not a second black pill; same height and centre line as the button. */
+.pkde-product-actions--default > a.added_to_cart {
+  background: transparent;
+  color: var(--color-neutral-700);
   text-decoration: underline;
   text-underline-offset: 0.25em;
 }
-.woocommerce ul.products li.product a.added_to_cart:hover {
-  color: var(--color-brand-700) !important;
+.pkde-product-actions--default > a.added_to_cart:hover {
+  color: var(--color-brand-700);
+}
+/* WooCommerce also adds a loading/added indicator pseudo element to the button; it must not push the label off centre. */
+.pkde-product-actions > a.loading::after,
+.pkde-product-actions > a.added::after {
+  position: static;
+  margin-left: 0.4em;
 }
 
 /* A category's description in a closed accordion above the products (app/woocommerce/display.php prints the <details>). */
