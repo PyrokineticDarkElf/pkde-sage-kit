@@ -110,6 +110,89 @@
   margin-left: 0.4em;
 }
 
+/* Grid / list view toggle (app/woocommerce/view-toggle.php, MGR-70). The toolbar holds WooCommerce's result count and sort, and the two buttons. The
+   view is html[data-pkde-view="list"] (set by the head script and shop-view.js from the visitor's saved choice); grid is the default. */
+.pkde-shop-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+.pkde-shop-toolbar .woocommerce-result-count,
+.pkde-shop-toolbar .woocommerce-ordering {
+  float: none;
+  margin: 0;
+}
+.pkde-shop-toolbar .woocommerce-result-count {
+  margin-right: auto;
+}
+.pkde-view-toggle {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+.pkde-view-toggle__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0.5rem;
+  background: var(--color-white);
+  color: var(--color-neutral-700);
+  cursor: pointer;
+}
+.pkde-view-toggle__button:hover {
+  border-color: var(--color-neutral-500);
+}
+.pkde-view-toggle__button[aria-pressed="true"] {
+  border-color: var(--color-neutral-950);
+  background: var(--color-neutral-950);
+  color: var(--color-white);
+}
+.pkde-view-toggle__button:focus-visible {
+  outline: 2px solid var(--color-brand-600, currentColor);
+  outline-offset: 2px;
+}
+/* The short description belongs to the list card only. */
+.pkde-product-card__excerpt {
+  display: none;
+}
+/* List view: one product per row, image left, details right; below 40rem the card stacks like the grid card (and shows the description). */
+html[data-pkde-view="list"] .woocommerce ul.products {
+  grid-template-columns: minmax(0, 1fr);
+}
+html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card .pkde-product-card__excerpt {
+  display: block;
+}
+@media (min-width: 40rem) {
+  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card {
+    display: grid;
+    grid-template-columns: minmax(8rem, 14rem) minmax(0, 1fr);
+    align-items: start;
+    gap: 0 1.5rem;
+  }
+  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card > * {
+    grid-column: 2;
+  }
+  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card > .pkde-product-card__media {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+  }
+  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card > .pkde-product-card__body {
+    grid-row: 1 / span 3;
+    align-self: stretch;
+  }
+  /* In the row the buttons keep their natural width and sit at the start of the details. */
+  html[data-pkde-view="list"] .pkde-product-actions {
+    padding-top: 0.75rem;
+  }
+  html[data-pkde-view="list"] .pkde-product-actions > a {
+    flex: 0 0 auto;
+  }
+}
+
 /* A category's description in a closed accordion above the products (app/woocommerce/display.php prints the <details>). */
 .pkde-term-description {
   margin-bottom: 1.5rem;

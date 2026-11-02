@@ -22,7 +22,7 @@
   @php(do_action('woocommerce_before_shop_loop_item'))
 
   {{-- The badges are links on archives, so they sit beside the picture link, not inside it. --}}
-  <div class="relative block overflow-hidden rounded-2xl bg-neutral-100">
+  <div class="pkde-product-card__media relative block overflow-hidden rounded-2xl bg-neutral-100">
     @php(do_action('woocommerce_before_shop_loop_item_title'))
 
     @if ($product->is_on_sale())
@@ -71,6 +71,12 @@
       {!! $product->get_price_html() !!}
     </div>
     @php(do_action('woocommerce_after_shop_loop_item_title'))
+
+    {{-- The short description: only the list view shows it (shop-pages.css); the grid card hides it. --}}
+    @php($excerpt = trim(wp_strip_all_tags((string) $product->get_short_description())))
+    @if ($excerpt !== '')
+      <p class="pkde-product-card__excerpt text-sm text-neutral-600">{{ wp_trim_words($excerpt, 30) }}</p>
+    @endif
 
     {{-- The action row (pkde-product-actions, resources/css/shop-pages.css): the add-to-cart button, and "View basket" (a.added_to_cart.wc-forward),
          which WooCommerce inserts after it once an AJAX add to cart succeeds. One row at the bottom of the card, whatever the link does. --}}

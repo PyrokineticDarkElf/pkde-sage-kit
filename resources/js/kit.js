@@ -1,6 +1,7 @@
 import './carousel.js';
 import './lightbox.js';
 import './phone.js';
+import './shop-view.js';
 
 const toc = document.querySelector('[data-toc]');
 
