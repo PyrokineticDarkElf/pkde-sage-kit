@@ -93,14 +93,37 @@
   background: var(--color-brand-700);
   color: var(--color-brand-700-fg);
 }
-/* "View basket": a link beside the button, not a second black pill; same height and centre line as the button. */
+/* "View basket" (TCS-103, from tcs): a basket icon in a 2.5rem square, the same height as the button, beside it. The words stay in the link at zero
+   size, so the accessible name (and WooCommerce's tooltip) is still "View basket"; the icon takes the link's colour. At the ROW level, so a site's own
+   card look gets it too; the default look adds the round outline below. Keyboard focus shows a 2px ring. */
+.pkde-product-actions > a.added_to_cart {
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  padding: 0;
+  border-bottom: 0;
+  font-size: 0;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+.pkde-product-actions > a.added_to_cart::before {
+  content: "";
+  width: 1.25rem;
+  height: 1.25rem;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.pkde-product-actions > a.added_to_cart:focus-visible {
+  outline: 2px solid var(--color-neutral-950, currentColor);
+  outline-offset: 2px;
+}
 .pkde-product-actions--default > a.added_to_cart {
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 9999px;
   background: transparent;
-  color: var(--color-neutral-700);
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
+  color: var(--color-neutral-950);
 }
 .pkde-product-actions--default > a.added_to_cart:hover {
+  border-color: var(--color-brand-700);
   color: var(--color-brand-700);
 }
 /* WooCommerce also adds a loading/added indicator pseudo element to the button; it must not push the label off centre. */
@@ -159,36 +182,38 @@
 .pkde-product-card__excerpt {
   display: none;
 }
-/* List view: one product per row, image left, details right; below 40rem the card stacks like the grid card (and shows the description). */
+/* List view on the grid's OWN columns (TCS-102, from tcs): the list keeps the grid's tracks and gap, so the product picture is the same box in both
+   views at every width. Each product spans the row as a subgrid: the image in the first column, the details (title, rating, description, price, the
+   action row at the bottom) across the rest. Whether the row has room is decided by the list's own width (a container query: a sidebar changes
+   it), not the viewport; below 28rem the card stacks as in grid view and shows the description. */
 html[data-pkde-view="list"] .woocommerce ul.products {
-  grid-template-columns: minmax(0, 1fr);
+  container-type: inline-size;
 }
 html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card .pkde-product-card__excerpt {
   display: block;
 }
-@media (min-width: 40rem) {
-  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card {
+@container (min-width: 28rem) {
+  html[data-pkde-view="list"] .woocommerce ul.products > li.product.pkde-product-card {
     display: grid;
-    grid-template-columns: minmax(8rem, 14rem) minmax(0, 1fr);
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    gap: 0 normal; /* normal = the list's own column gap */
     align-items: start;
-    gap: 0 1.5rem;
   }
-  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card > * {
-    grid-column: 2;
-  }
-  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card > .pkde-product-card__media {
+  html[data-pkde-view="list"] .woocommerce ul.products > li.product.pkde-product-card > .pkde-product-card__media {
     grid-column: 1;
-    grid-row: 1 / span 3;
+    grid-row: 1;
   }
-  html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card > .pkde-product-card__body {
-    grid-row: 1 / span 3;
+  html[data-pkde-view="list"] .woocommerce ul.products > li.product.pkde-product-card > .pkde-product-card__body {
+    grid-column: 2 / -1;
+    grid-row: 1;
     align-self: stretch;
   }
   /* In the row the buttons keep their natural width and sit at the start of the details. */
   html[data-pkde-view="list"] .pkde-product-actions {
     padding-top: 0.75rem;
   }
-  html[data-pkde-view="list"] .pkde-product-actions > a {
+  html[data-pkde-view="list"] .pkde-product-actions > a:not(.added_to_cart) {
     flex: 0 0 auto;
   }
 }

@@ -73,9 +73,10 @@
     @php(do_action('woocommerce_after_shop_loop_item_title'))
 
     {{-- The short description: only the list view shows it (shop-pages.css); the grid card hides it. --}}
-    @php($excerpt = trim(wp_strip_all_tags((string) $product->get_short_description())))
+    {{-- Decoded before trimming: wp_trim_words() appends an HTML entity and a short description can hold others (&amp;, &#039;), which Blade's {{ }} would escape a second time (tcs). --}}
+    @php($excerpt = trim(html_entity_decode(wp_strip_all_tags((string) $product->get_short_description()), ENT_QUOTES | ENT_HTML5, 'UTF-8')))
     @if ($excerpt !== '')
-      <p class="pkde-product-card__excerpt text-sm text-neutral-600">{{ wp_trim_words($excerpt, 30) }}</p>
+      <p class="pkde-product-card__excerpt text-sm text-neutral-600">{{ wp_trim_words($excerpt, 30, '…') }}</p>
     @endif
 
     {{-- The action row (pkde-product-actions, resources/css/shop-pages.css): the add-to-cart button, and "View basket" (a.added_to_cart.wc-forward),

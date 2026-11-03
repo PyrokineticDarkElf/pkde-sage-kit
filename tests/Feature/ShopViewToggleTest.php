@@ -53,9 +53,24 @@ it('draws the list card from the same markup: image left, details and the action
 
     expect($css)->toContain('html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card')
         ->and($css)->toContain('.pkde-product-card__excerpt {')
-        ->and($css)->toContain('@media (min-width: 40rem)')
+        ->and($css)->toContain('@container (min-width: 28rem)')
+        ->and($css)->toContain('grid-template-columns: subgrid;')
+        ->and($css)->not->toContain('minmax(8rem, 14rem)')
         ->and($css)->toContain('.pkde-view-toggle__button[aria-pressed="true"]')
         ->and($card)->toContain('pkde-product-card__media')
         ->and($card)->toContain('pkde-product-card__excerpt')
         ->and($card)->toContain('pkde-product-actions pkde-product-actions--default');
+});
+
+it('turns View basket into an icon button the height of the add-to-cart button, named View basket, with a focus ring (TCS-103)', function () {
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
+    $card = file_get_contents(dirname(__DIR__, 2) . '/resources/views/woocommerce/content-product.blade.php');
+
+    expect($css)->toContain('.pkde-product-actions > a.added_to_cart {')
+        ->and($css)->toContain('font-size: 0;')
+        ->and($css)->toContain('.pkde-product-actions > a.added_to_cart::before')
+        ->and($css)->toContain('.pkde-product-actions > a.added_to_cart:focus-visible')
+        ->and($css)->toContain('flex: 0 0 2.5rem;')
+        ->and($card)->toContain("html_entity_decode(wp_strip_all_tags((string) \$product->get_short_description())")
+        ->and($card)->toContain("wp_trim_words(\$excerpt, 30, '…')");
 });
