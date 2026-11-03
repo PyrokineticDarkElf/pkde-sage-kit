@@ -1,12 +1,34 @@
 <?php
 
 // app/woocommerce/cart-count.php defines pure functions and returns early outside WordPress, so it loads here without WordPress.
+if (! function_exists('_n')) {
+    function _n($single, $plural, $number, $domain = null)
+    {
+        return $number === 1 ? $single : $plural;
+    }
+}
+// The same stubs as ShopViewToggleTest, under the same guard, so either file can load first.
+if (! function_exists('esc_attr')) {
+    function esc_attr($text)
+    {
+        return htmlspecialchars((string) $text, ENT_QUOTES);
+    }
+    function esc_html($text)
+    {
+        return htmlspecialchars((string) $text, ENT_QUOTES);
+    }
+    function __($text, $domain = null)
+    {
+        return $text;
+    }
+}
 require_once dirname(__DIR__, 2) . '/app/woocommerce/cart-count.php';
 
 use function App\cart_count_markup;
 
-it('prints the number of items, and nothing at 0 so the badge hides itself', function () {
-    expect(cart_count_markup(3))->toBe('<span class="pkde-cart-count">3</span>')
+it('prints the number for sight and ", N items" for screen readers, and nothing at 0 so the badge hides itself', function () {
+    expect(cart_count_markup(3))->toBe('<span class="pkde-cart-count"><span aria-hidden="true">3</span><span class="sr-only">, 3 items</span></span>')
+        ->and(cart_count_markup(1))->toContain('<span class="sr-only">, 1 item</span>')
         ->and(cart_count_markup(0))->toBe('<span class="pkde-cart-count"></span>');
 });
 
