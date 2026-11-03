@@ -218,6 +218,12 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   }
 }
 
+/* The header's basket badge (app/woocommerce/cart-count.php): hidden while the count is empty, so it appears at the first AJAX add to basket
+   without a reload. Unlayered, so a display utility on the badge (flex) cannot win over it. */
+[data-pkde-cart-badge]:has(> .pkde-cart-count:empty) {
+  display: none;
+}
+
 /* A category's description in a closed accordion above the products (app/woocommerce/display.php prints the <details>). */
 .pkde-term-description {
   margin-bottom: 1.5rem;

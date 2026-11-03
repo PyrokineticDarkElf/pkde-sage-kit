@@ -1,3 +1,4 @@
+import './cart-count.js';
 import './carousel.js';
 import './lightbox.js';
 import './phone.js';

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.04.1
+
+- **The header's basket count is live (owner, TPL-147).** New `app/woocommerce/cart-count.php` (loaded with WooCommerce only): `\App\cart_count_html()` prints `<span class="pkde-cart-count">N</span>` (empty at 0) and registers it as a WooCommerce cart fragment, so WooCommerce's own add-to-cart script swaps in the new number after every AJAX add to basket (product cards, related products), with no reload and no extra script. On the basket page WooCommerce's cart script refreshes only the table, so `resources/js/cart-count.js` asks for the fresh fragments after `updated_cart_totals` and `wc_cart_emptied` (quantity changes, removals, emptying). `shop-pages.css` hides a badge marked `data-pkde-cart-badge` while its count is empty (unlayered, so a `flex` utility on the badge cannot win), so the badge appears at the first add. Checked on a real WooCommerce site (tcs, local) at 1440 and 390: 0 (hidden) -> 1 -> 2 on AJAX adds, 4 after a quantity change on the basket page, 1 after a removal, hidden when emptied, no console errors.
+**Adopt:** bump the kit. A site on the template's header takes the template's header change (2026.11.04.1). A site with its OWN header prints its badge always, marked `data-pkde-cart-badge`, with `{!! \App\cart_count_html() !!}` inside in place of its own count and `@if`: `<span data-pkde-cart-badge class="...its badge classes...">{!! \App\cart_count_html() !!}</span>`.
+
 ## 2026.11.04
 
 From tcs's own work (owner: make both kit defaults; TCS-102, TCS-103, and two kit notes). **Adopt:** bump the kit; tcs deletes its local versions (below).
