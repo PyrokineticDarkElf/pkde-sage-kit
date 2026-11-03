@@ -571,6 +571,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   table.cart img {
     width: 5.5rem;
     height: 5.5rem;
+    max-width: none; /* the table sizes its columns automatically: long product names would otherwise squeeze the thumbnail (53x88) */
     object-fit: cover;
     border-radius: 0.875rem;
     background: var(--color-white);
@@ -901,6 +902,11 @@ body.woocommerce-cart .cart-collaterals .cart_totals {
     table.shop_table_responsive td.product-thumbnail,
     table.shop_table_responsive td.product-remove {
       justify-content: flex-start;
+    }
+    /* The shipping row holds the methods, a note and the calculator link: it wraps instead of pushing the link past the card (1.5px
+       horizontal scroll on a 390px phone with a full basket). */
+    tr.woocommerce-shipping-totals td {
+      flex-wrap: wrap;
     }
     table.shop_table_responsive td.product-thumbnail::before,
     table.shop_table_responsive td.product-remove::before {

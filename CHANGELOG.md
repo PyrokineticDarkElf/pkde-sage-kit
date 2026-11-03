@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.04.3
+
+- **Fix: basket thumbnails squeezed by long product names (owner via tcs, TPL-149).** The basket table sizes its columns automatically, so long product names squeezed the thumbnail column and the generic `img { max-width: 100% }` let the 5.5rem thumbnail shrink with it (tcs, 1440, three long names: a 53x88 strip). `table.cart img` now has `max-width: none`: the thumbnail is always 88x88 and the name column wraps instead. Checked on tcs at 1440, 1024, 768 and 390 with three long names and with one short one: 88x88 everywhere, the table inside its container.
+- **Fix: a phone's shipping row no longer pushes the "Calculate shipping" link past the totals card.** Below 768px every totals row is a non-wrapping flex row; with two shipping methods and the note, the calculator link ended 1.5px outside the card (a horizontal scroll at 390). `tr.woocommerce-shipping-totals td` now wraps, so the link sits on its own line.
+**Adopt:** bump the kit. Nothing else.
+
 ## 2026.11.04.2
 
 - **The header's basket link is named with the count (owner, TPL-148).** `\App\cart_count_markup()` now prints the number for sight (`aria-hidden`) and a visually hidden ", N items" (`_n()`, translatable) inside the same `.pkde-cart-count` fragment, so it stays live through the AJAX swap. Still empty at 0 (the badge hides). With the header naming its link with visually hidden text instead of `aria-label` (which overrides the content), the link's accessible name is "Cart" when the basket is empty and "Cart, 2 items" otherwise. Checked in Chrome's accessibility tree on tcs at 1440 and 390: "Cart" -> "Cart, 1 item" -> "Cart, 2 items" on AJAX adds, "Cart, 4 items" after a basket-page quantity change, "Cart, 1 item" after a removal, "Cart" when emptied; the visible badge is pixel-identical.
