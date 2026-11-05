@@ -349,14 +349,18 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   width: auto;
   margin: 0;
 }
-/* Pagination in one row, centred. The kit's generic pagination is a flex container, which would shrink the list to one item wide here. */
-.shop-archive__results .woocommerce-pagination {
+/* Pagination in one row, centred: the shop's (WooCommerce's <nav class="woocommerce-pagination">) and the blog's (partials/post-grid prints
+   <nav class="pkde-pagination"> around paginate_links()), one look. The kit's generic pagination is a flex container, which would shrink the
+   list to one item wide here. The blog's previous and next hold a screen-reader label beside the arrow, so its pills are the direct a / span. */
+.shop-archive__results .woocommerce-pagination,
+.pkde-pagination {
   display: block;
   width: 100%;
   margin-top: 3rem;
 }
 .shop-archive__results .woocommerce-pagination ul,
-.shop-archive__results .woocommerce-pagination ul.page-numbers {
+.shop-archive__results .woocommerce-pagination ul.page-numbers,
+.pkde-pagination ul.page-numbers {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -366,13 +370,15 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   padding: 0;
   list-style: none;
 }
-.shop-archive__results .woocommerce-pagination ul.page-numbers li {
+.shop-archive__results .woocommerce-pagination ul.page-numbers li,
+.pkde-pagination ul.page-numbers li {
   display: block;
   margin: 0;
   padding: 0;
   border: 0;
 }
-.shop-archive__results .woocommerce-pagination :where(a, span) {
+.shop-archive__results .woocommerce-pagination :where(a, span),
+.pkde-pagination :where(a.page-numbers, span.page-numbers) {
   display: grid;
   min-width: 2.5rem;
   height: 2.5rem;
@@ -384,10 +390,16 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   text-decoration: none;
   font-size: 0.85rem;
 }
-.shop-archive__results .woocommerce-pagination .current {
+.shop-archive__results .woocommerce-pagination .current,
+.pkde-pagination .page-numbers.current,
+.pkde-pagination a.page-numbers:hover {
   background: var(--pkde-shop-ink, var(--color-neutral-950));
   border-color: var(--pkde-shop-ink, var(--color-neutral-950));
   color: var(--pkde-shop-surface, var(--color-white));
+}
+.pkde-pagination a.page-numbers:focus-visible {
+  outline: 2px solid var(--pkde-shop-accent, var(--color-brand-600));
+  outline-offset: 2px;
 }
 
 /* Product gallery: WooCommerce prints the zoom trigger as an emoji link above the picture. It is a round white button over the top-right

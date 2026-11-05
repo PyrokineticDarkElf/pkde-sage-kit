@@ -12,9 +12,6 @@
       @endwhile
     </div>
 
-    <nav class="page-nav mt-16 flex items-center justify-between border-t border-neutral-200 pt-7 text-sm font-semibold [&_a]:transition [&_a:hover]:text-brand-700" aria-label="{{ __('Posts navigation', 'sage') }}">
-      <div>{!! get_previous_posts_link('&larr; '.__('Newer', 'sage')) !!}</div>
-      <div>{!! get_next_posts_link(__('Older', 'sage').' &rarr;') !!}</div>
-    </nav>
+    @include('pkde-kit::partials.pagination')
   @endif
 </div>

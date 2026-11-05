@@ -24,7 +24,9 @@ class KitServiceProvider extends ServiceProvider
         $views = dirname(__DIR__) . '/resources/views';
 
         $this->loadViewsFrom($views, 'pkde-kit');
-        $this->callAfterResolving('view', fn($view) => $view->getFinder()->addLocation($views));
+        // On the finder itself (not the view factory), so Sage's template lookup sees it too: it builds WordPress's template list from the finder's
+        // paths, and the kit's archive views (home, category, archive-product ...) must be in that list.
+        $this->callAfterResolving('view.finder', fn($finder) => $finder->addLocation($views));
 
         // <x-pkde-kit::alert> resolves to the view pkde-kit::components.alert, so a vendor/pkde-kit override applies to components too.
         Blade::anonymousComponentNamespace('components', 'pkde-kit');
