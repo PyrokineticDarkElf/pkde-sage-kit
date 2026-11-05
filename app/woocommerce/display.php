@@ -43,30 +43,43 @@ add_filter('woocommerce_show_page_title', '__return_false');
 // above the product list is removed. A category's description stays WooCommerce's own.
 remove_action('woocommerce_archive_description', 'woocommerce_product_archive_description', 10);
 
-// A product category's description goes into a closed <details> accordion (resources/css/shop-pages.css) instead of a long block above the
-// products. The text is WooCommerce's own term description, unchanged; only the wrapper is new, and it shows on the first page only.
+// A product category's description goes into a closed <details> toggle (resources/css/shop-pages.css) instead of a long block above the
+// products. The text is the term's own description, unchanged; only the wrapper is new. In the list it shows on the first page only; the standard
+// archive prints it on every page, as tcs did.
+// The standard archive (partials/shop-archive) prints the toggle itself, above the filters and the products, and removes this in-list copy;
+// a site's own taxonomy view that calls woocommerce_content() directly still gets it here.
+
+/**
+ * The toggle for a term's description: '' when the term has none. $summary is trusted HTML (the heading in the <summary>); the default is
+ * "About <term>". The text is the term's own description as WordPress prints it (term_description()), limited to what a post may contain.
+ */
+function term_toggle(?\WP_Term $term, string $summary = ''): string
+{
+    if (! $term || trim((string) $term->description) === '') {
+        return '';
+    }
+
+    return sprintf(
+        '<details class="pkde-term-description"><summary>%s</summary><div class="term-description">%s</div></details>',
+        $summary !== '' ? $summary : '<h2>' . esc_html(sprintf(__('About %s', 'sage'), $term->name)) . '</h2>',
+        wp_kses_post(term_description($term)),
+    );
+}
+
+function print_term_toggle(): void
+{
+    $term = function_exists('is_product_taxonomy') && is_product_taxonomy() && (int) get_query_var('paged') < 1 ? get_queried_object() : null;
+
+    echo term_toggle($term instanceof \WP_Term ? $term : null); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped in term_toggle()
+}
+
 add_action('wp', function () {
     if (! function_exists('is_product_taxonomy')) {
         return;
     }
 
     remove_action('woocommerce_archive_description', 'woocommerce_taxonomy_archive_description', 10);
-    add_action('woocommerce_archive_description', function () {
-        if (! is_product_taxonomy() || (int) get_query_var('paged') > 0) {
-            return;
-        }
-
-        $term = get_queried_object();
-        if (! $term || trim((string) $term->description) === '') {
-            return;
-        }
-
-        printf(
-            '<details class="pkde-term-description"><summary>%s</summary><div class="term-description">%s</div></details>',
-            esc_html(sprintf(__('About %s', 'sage'), $term->name)),
-            wc_format_content(wp_kses_post($term->description)),
-        );
-    }, 10);
+    add_action('woocommerce_archive_description', __NAMESPACE__ . '\\print_term_toggle', 10);
 });
 
 // The product card (resources/views/woocommerce/content-product.blade.php, loaded through the theme's woocommerce/content-product.php)

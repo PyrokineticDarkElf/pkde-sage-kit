@@ -140,7 +140,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 .pkde-shop-toolbar .woocommerce-result-count,
 .pkde-shop-toolbar .woocommerce-ordering {
@@ -160,9 +160,9 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 0.5rem;
-  background: var(--color-white);
+  border: 1px solid var(--pkde-shop-line, var(--color-neutral-300));
+  border-radius: var(--pkde-shop-radius, 999px);
+  background: var(--pkde-shop-surface, var(--color-white));
   color: var(--color-neutral-700);
   cursor: pointer;
 }
@@ -224,10 +224,14 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   display: none;
 }
 
-/* A category's description in a closed accordion above the products (app/woocommerce/display.php prints the <details>). */
+/* A term's description in a closed toggle (app/woocommerce/display.php term_toggle(); partials/shop-archive prints it above the filters and
+   the products, from tcs). The look follows these variables, each with a kit-token fallback, so a site sets a few on :root instead of
+   restyling: --pkde-shop-line (rules and borders), --pkde-shop-muted (body text), --pkde-shop-ink (headings, the current page),
+   --pkde-shop-accent (the + / - mark and the filters heading), --pkde-shop-surface (panels and pills), --pkde-shop-radius (pills),
+   --pkde-shop-panel-radius (the filter panels), --pkde-shop-gap (between products and columns), --pkde-shop-filters-width (the filter column), --pkde-shop-sticky-top (where the filter column sticks). */
 .pkde-term-description {
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-neutral-200);
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border-block: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
 }
 .pkde-term-description summary {
   display: flex;
@@ -236,35 +240,154 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.9rem 0;
-  font-family: var(--font-display, inherit);
-  font-size: 1.25rem;
+  padding: 1.1rem 0;
 }
 .pkde-term-description summary::-webkit-details-marker {
   display: none;
 }
 .pkde-term-description summary::after {
-  content: "";
-  width: 0.6rem;
-  height: 0.6rem;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  transform: rotate(45deg);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  content: "+";
+  font-size: 1.4rem;
+  font-weight: 200;
+  color: var(--pkde-shop-accent, var(--color-brand-700));
 }
 .pkde-term-description[open] summary::after {
-  transform: rotate(-135deg);
+  content: "\2013";
+}
+.pkde-term-description summary > :where(h2, h3, h4) {
+  margin: 0;
+  font: 400 0.78rem / 1.3 var(--font-display, inherit), system-ui, sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 .pkde-term-description summary:focus-visible {
-  outline: 2px solid var(--color-brand-600);
+  outline: 2px solid var(--pkde-shop-accent, var(--color-brand-600));
   outline-offset: 2px;
-  border-radius: 0.25rem;
 }
 .pkde-term-description .term-description {
-  padding-bottom: 1.25rem;
+  padding: 0.5rem 0 2rem;
+  color: var(--pkde-shop-muted, var(--color-neutral-600));
+  line-height: 1.85;
 }
 .pkde-term-description .term-description p {
-  margin-block: 0 0.75rem;
+  margin: 0.4rem 0;
+}
+.pkde-term-description .term-description :where(h2, h3, h4) {
+  margin: 1.75rem 0 0.5rem;
+  font-weight: 300;
+  color: var(--pkde-shop-ink, var(--color-neutral-950));
+}
+/* Descriptions pasted with their own colours read in the theme colour. */
+.pkde-term-description .term-description [style*="color"] {
+  color: inherit !important;
+}
+
+/* The standard product archive (partials/shop-archive and shop-archive-body, from tcs): the filters in a column beside the results from 1024px,
+   stacked below it. The results column holds the toolbar (count, sort, grid / list), the product grid and the pagination. */
+.shop-archive {
+  display: grid;
+  gap: 2rem;
+  padding-block: 1rem clamp(3rem, 7vw, 6rem);
+}
+@media (min-width: 1024px) {
+  .shop-archive {
+    grid-template-columns: var(--pkde-shop-filters-width, 15rem) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+}
+/* The filters never outgrow the screen: long lists scroll inside their card, and the column floats only where it fits (--pkde-shop-sticky-top is the
+   height of the site's sticky header plus a gap). */
+#shop-filters ul {
+  max-height: 14rem;
+  margin-top: 0.75rem;
+  padding-right: 0.5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--pkde-shop-ink, var(--color-neutral-950)) 25%, transparent) transparent;
+}
+@media (min-width: 1024px) and (min-height: 820px) {
+  .shop-archive__filters {
+    position: sticky;
+    top: var(--pkde-shop-sticky-top, 5.5rem);
+  }
+}
+.shop-archive__filters-title {
+  margin: 0 0 1.25rem;
+  font: 500 0.7rem / 1.3 var(--font-display, inherit), system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pkde-shop-accent, var(--color-brand-700));
+}
+.shop-archive__filters :where(.rounded-2xl) {
+  border-radius: var(--pkde-shop-panel-radius, 20px);
+  border-color: var(--pkde-shop-line, var(--color-neutral-200));
+  background: var(--pkde-shop-surface, var(--color-white));
+}
+.shop-archive__results .woocommerce-result-count {
+  font-size: 0.8rem;
+  color: var(--pkde-shop-muted, var(--color-neutral-600));
+}
+.shop-archive__results .woocommerce-ordering select {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
+  border-radius: var(--pkde-shop-radius, 999px);
+  background: var(--pkde-shop-surface, var(--color-white));
+  font-size: 0.8rem;
+  color: var(--pkde-shop-ink, var(--color-neutral-950));
+}
+.shop-archive__results ul.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.5rem), 1fr));
+  gap: 2.25rem var(--pkde-shop-gap, 1.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-items: stretch;
+}
+.shop-archive__results ul.products > * {
+  width: auto;
+  margin: 0;
+}
+/* Pagination in one row, centred. The kit's generic pagination is a flex container, which would shrink the list to one item wide here. */
+.shop-archive__results .woocommerce-pagination {
+  display: block;
+  width: 100%;
+  margin-top: 3rem;
+}
+.shop-archive__results .woocommerce-pagination ul,
+.shop-archive__results .woocommerce-pagination ul.page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.shop-archive__results .woocommerce-pagination ul.page-numbers li {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.shop-archive__results .woocommerce-pagination :where(a, span) {
+  display: grid;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
+  border-radius: var(--pkde-shop-radius, 999px);
+  background: var(--pkde-shop-surface, var(--color-white));
+  color: var(--pkde-shop-ink, var(--color-neutral-950));
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.shop-archive__results .woocommerce-pagination .current {
+  background: var(--pkde-shop-ink, var(--color-neutral-950));
+  border-color: var(--pkde-shop-ink, var(--color-neutral-950));
+  color: var(--pkde-shop-surface, var(--color-white));
 }
 
 /* Product gallery: WooCommerce prints the zoom trigger as an emoji link above the picture. It is a round white button over the top-right

@@ -21,8 +21,9 @@ on by default and just needed seed data with something to show.
   win). The plain shop is the Shop page's own content (`App\View\Composers\ProductArchive`): the **Shop
   products** block (`sage/shop-products`) prints the live archive (filters, sorting, pages) where it sits in the
   page, and the archive is appended after the content when the block is missing, so the shop always lists
-  products. Every other archive uses `partials/shop-archive.blade.php` (title, notices) and
-  `partials/shop-archive-body.blade.php` (filters + `woocommerce_content()`). `template-brands.blade.php` is a
+  products. Every other archive uses `partials/shop-archive.blade.php` (title, notices, the term's description in a closed toggle) and
+  `partials/shop-archive-body.blade.php` (filters + `woocommerce_content()`); `partials/shop-page.blade.php` is the body of the site's
+  `archive-product` view (see [The standard shop archive](#the-standard-shop-archive)). `template-brands.blade.php` is a
   **Brands directory page** (`/brands/`: a card grid of every brand, image + name + product count, linking to its
   archive). All product archives share one **filter sidebar**,
   `partials/sidebar-shop.blade.php` — see [WooCommerce filtering](woocommerce-filtering.md) for
@@ -111,3 +112,46 @@ What the kit does for you (`app/search.php`, `resources/css/live-search.css`): R
 * **Search icon and panel.** `add_filter('pkde_kit/header_search', '__return_true')` (in the theme's `app/filters.php`) turns on a search icon in the header bar that opens a panel under it, with the product search and its live results, instead of an inline field in a menu that has no room for one. The menu panel closes first, the cursor goes into the field, Escape closes the panel and returns focus to the icon. The template's header includes `pkde-kit::partials.header-search` for the icon and the panel; a site with its own header includes the same partial twice (`['part' => 'button']` and `['part' => 'panel']`).
 * **Mobile-menu breakpoint.** The menu leaves the bar for the menu button below Tailwind's `sm` breakpoint (640px) by default. A site with a long menu moves it: `add_filter('pkde_kit/nav_breakpoint', fn () => 'xl')` (`sm`, `md`, `lg`, `xl` or `2xl`; bb needs `xl`, 1280px). The classes come from `App\nav_classes()`, written out as literal strings so Tailwind generates them.
 
+## The standard shop archive
+
+One layout for every site (it was tcs's, MGR-77): the title, the notices, the term's description in a closed "Read more about X" toggle, then the filters in a
+column beside the results (stacked below 1024px). A site does not copy the partials; it changes the look with variables and the details with hooks, and
+its `archive-product.blade.php` is three lines:
+
+```blade
+@extends('layouts.app')
+@section('content')
+  @include('pkde-kit::partials.shop-page')
+@endsection
+```
+
+Markup (BEM, so a site targets it without the `woocommerce` class, which the list deliberately does not carry, TCS-72): `.shop-archive`,
+`.shop-archive__filters`, `.shop-archive__filters-title`, `.shop-archive__results`, and the toggle `details.pkde-term-description`. The styles are
+`resources/css/shop-pages.css`.
+
+**Variables** (set on `:root`; each has a kit-token fallback, so a site that sets none still looks right):
+
+| Variable | What it colours or sizes | Default |
+|---|---|---|
+| `--pkde-shop-line` | rules, borders of the toggle, panels, sort and pagination | `--color-neutral-200` |
+| `--pkde-shop-muted` | the term text and the result count | `--color-neutral-600` |
+| `--pkde-shop-ink` | text of the sort and pagination, the current page | `--color-neutral-950` |
+| `--pkde-shop-accent` | the + / - mark and the filters heading | `--color-brand-700` |
+| `--pkde-shop-surface` | background of the sort, pills and filter panels | `--color-white` |
+| `--pkde-shop-radius` | sort, pagination and view buttons | `999px` |
+| `--pkde-shop-panel-radius` | the filter panels | `20px` |
+| `--pkde-shop-gap` | column gap between products | `1.5rem` |
+| `--pkde-shop-filters-width` | the filter column from 1024px | `15rem` |
+| `--pkde-shop-sticky-top` | where the filter column sticks (the sticky header's height plus a gap) | `5.5rem` |
+
+**Hooks** (a site adds them in its own code):
+
+| Hook | Kind | Effect |
+|---|---|---|
+| `pkde_kit/shop_term_toggle` (`bool $show`, `?WP_Term $term`) | filter | `false` hides the description toggle (default `true`) |
+| `pkde_kit/shop_filters_title` (`string $title`) | filter | the heading over the filters; `''` removes it (default "Filter your search") |
+| `pkde_kit/shop_before_results`, `pkde_kit/shop_after_results` | action | print inside the results column, before and after the toolbar and products |
+| `pkde_kit/shop_page_header` (`bool $show`) | filter | `false` leaves the page header off the Shop page (default `true`) |
+
+The toggle is printed once, above the layout; the copy WooCommerce would print inside the product list is removed there. A site view that calls
+`woocommerce_content()` without these partials still gets the toggle inside the list (`App\term_toggle()`).
