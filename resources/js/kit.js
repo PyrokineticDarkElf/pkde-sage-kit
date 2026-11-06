@@ -202,3 +202,32 @@ if (searchPanel) {
     }
   });
 }
+
+// The post's contents rail (partials/toc): always open beside the text on a wide screen, collapsed above it on a narrow one.
+const tocDetails = document.querySelector('[data-toc] details');
+
+if (tocDetails) {
+  const wide = window.matchMedia('(min-width: 1024px)');
+  const syncDetails = () => { tocDetails.open = wide.matches; };
+
+  syncDetails();
+  wide.addEventListener('change', syncDetails);
+}
+
+// The share row's "Copy link" (partials/share): copies the post's address and says so in the status line for screen readers.
+document.querySelectorAll('[data-share-copy]').forEach((button) => {
+  const label = button.textContent;
+
+  button.addEventListener('click', async () => {
+    const status = button.closest('.post-share')?.querySelector('[data-share-status]');
+
+    try {
+      await navigator.clipboard.writeText(button.getAttribute('data-share-url') || window.location.href);
+      button.textContent = button.getAttribute('data-copied-label') || label;
+      if (status) status.textContent = button.textContent;
+      window.setTimeout(() => { button.textContent = label; }, 2000);
+    } catch {
+      // No clipboard permission: the address is still in the browser's bar.
+    }
+  });
+});

@@ -6,7 +6,7 @@
       $related = new WP_Query([
           'category__in' => $relatedCategories,
           'post__not_in' => [get_the_ID()],
-          'posts_per_page' => 3,
+          'posts_per_page' => max(0, (int) apply_filters('pkde_kit/related_posts_count', 3)),
           'ignore_sticky_posts' => true,
           'no_found_rows' => true,
       ]);

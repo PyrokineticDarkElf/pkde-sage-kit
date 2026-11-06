@@ -1,0 +1,285 @@
+/**
+ * The blog single (partials/content-single, tcs's layout as the kit default, owner via MGR-66): a header, a prominent featured image, a reading column
+ * with the contents list beside it, then share, previous/next, the author, related and recent posts and the tags. A site changes the look with these
+ * variables on :root, never by copying the view or restyling the classes:
+ *
+ *   --pkde-post-line, -muted, -ink, -accent, -surface      rules and borders, body text, headings, links and the active contents link, panels
+ *   --pkde-post-title-font, -title-weight, -title-size      the H1 (weight defaults to the page header's --pkde-page-header-title-weight)
+ *   --pkde-post-heading-font, -heading-weight               h2 to h4 inside the text
+ *   --pkde-post-text-size, -text-leading                    the reading text (1.0625rem, 1.95)
+ *   --pkde-post-measure                                      the text column's width (44rem)
+ *   --pkde-post-rail-width, -sticky-top                      the contents rail (15rem) and where it sticks (6.5rem)
+ *   --pkde-post-hero-radius, -hero-max-height, -hero-bg, -image-radius  the hero (32px, 34rem, its background while loading) and the images in the text (20px)
+ *
+ * Every default is a kit token, so a site that sets none still looks right. Unlayered on purpose, like the other kit rules that sit before a site's CSS.
+ */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+.post-body__text :where(h2, h3, h4)[id] {
+  scroll-margin-top: var(--pkde-post-sticky-top, 6.5rem);
+}
+.post-header {
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 3vw, 2.5rem);
+}
+.post-header .breadcrumbs {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pkde-post-muted, var(--color-neutral-600));
+}
+.post-header__cats {
+  margin-top: 1.25rem;
+}
+.post-header__cats a {
+  border-color: var(--pkde-post-line, var(--color-neutral-200));
+  background: var(--pkde-post-surface, var(--color-white));
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.post-header h1 {
+  margin: 1rem 0 0;
+  font-family: var(--pkde-post-title-font, var(--font-display, inherit)), system-ui, sans-serif;
+  font-weight: var(--pkde-post-title-weight, var(--pkde-page-header-title-weight, 600));
+  font-size: var(--pkde-post-title-size, clamp(2.2rem, 4.4vw, 3.8rem));
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--pkde-post-ink, var(--color-neutral-950));
+  text-wrap: balance;
+}
+.post-header__meta {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--pkde-post-muted, var(--color-neutral-600));
+}
+.post-header__meta p {
+  color: inherit;
+}
+.post-hero {
+  /* A figure: the reset's margin would beat the container's mx-auto utility (unlayered CSS wins over Tailwind's layer). */
+  margin-inline: auto;
+  margin-block: 0 clamp(2rem, 5vw, 4rem);
+}
+.post-hero__img {
+  display: block;
+  width: 100%;
+  max-height: var(--pkde-post-hero-max-height, 34rem);
+  border-radius: var(--pkde-post-hero-radius, 32px);
+  object-fit: cover;
+  background: var(--pkde-post-hero-bg, var(--color-neutral-100));
+}
+.post-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+}
+@media (min-width: 1024px) {
+  .post-body {
+    grid-template-columns: minmax(0, 1fr) var(--pkde-post-rail-width, 15rem);
+    gap: clamp(3rem, 6vw, 6rem);
+  }
+  .post-body__text {
+    max-width: var(--pkde-post-measure, 44rem);
+  }
+}
+@media (max-width: 1023px) {
+  .post-rail {
+    order: -1;
+  }
+}
+.post-body__text {
+  color: var(--pkde-post-muted, var(--color-neutral-600));
+  font-size: var(--pkde-post-text-size, 1.0625rem);
+  line-height: var(--pkde-post-text-leading, 1.95);
+}
+.post-body__text :where(h2, h3, h4) {
+  margin: 2.5rem 0 0.75rem;
+  font-family: var(--pkde-post-heading-font, var(--font-display, inherit)), system-ui, sans-serif;
+  font-weight: var(--pkde-post-heading-weight, 300);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--pkde-post-ink, var(--color-neutral-950));
+}
+.post-body__text h2 {
+  font-size: 1.75rem;
+}
+.post-body__text h3 {
+  font-size: 1.35rem;
+}
+.post-body__text a {
+  color: var(--pkde-post-accent, var(--color-brand-700));
+  text-underline-offset: 3px;
+}
+.post-body__text img {
+  border-radius: var(--pkde-post-image-radius, 20px);
+}
+.post-toc {
+  font-size: 0.875rem;
+}
+@media (min-width: 1024px) {
+  .post-toc {
+    position: sticky;
+    top: var(--pkde-post-sticky-top, 6.5rem);
+  }
+}
+.post-toc summary {
+  margin-bottom: 0.75rem;
+  font: 500 0.68rem / 1.3 var(--font-display, inherit), system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pkde-post-accent, var(--color-brand-700));
+  cursor: pointer;
+  list-style: none;
+}
+.post-toc summary::-webkit-details-marker {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .post-toc summary {
+    pointer-events: none;
+    cursor: default;
+  }
+}
+@media (max-width: 1023px) {
+  .post-toc {
+    padding: 0 1.25rem;
+    border: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+    border-radius: 18px;
+    background: var(--pkde-post-surface, var(--color-white));
+  }
+  .post-toc summary {
+    margin: 0;
+    padding: 1rem 0;
+  }
+  .post-toc ul {
+    padding-bottom: 1rem;
+  }
+}
+.post-toc ul {
+  max-height: calc(100vh - 12rem);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+  list-style: none;
+  scrollbar-width: thin;
+}
+.post-toc li[data-level="3"] a {
+  padding-left: 1.75rem;
+}
+.post-toc li[data-level="4"] a {
+  padding-left: 2.5rem;
+}
+.post-toc a {
+  display: block;
+  margin-left: -1px;
+  padding: 0.35rem 0 0.35rem 1rem;
+  border-left: 2px solid transparent;
+  color: var(--pkde-post-muted, var(--color-neutral-600));
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+.post-toc a:hover {
+  color: var(--pkde-post-ink, var(--color-neutral-950));
+}
+.post-toc a[data-active="true"] {
+  border-left-color: var(--pkde-post-accent, var(--color-brand-700));
+  color: var(--pkde-post-ink, var(--color-neutral-950));
+  font-weight: 500;
+}
+@media (prefers-reduced-motion: reduce) {
+  .post-toc a {
+    transition: none;
+  }
+}
+.post-after {
+  padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 7vw, 6rem);
+  border-top: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+}
+.post-after__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+@media (min-width: 900px) {
+  .post-after__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}
+.post-after__terms {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+@media (min-width: 700px) {
+  .post-after__terms {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.post-recent {
+  margin-top: 2.5rem;
+}
+.post-recent > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem 2rem;
+}
+@media (min-width: 900px) {
+  .post-recent > div {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+/* The share row: links in the same pill look as the category chips, a button for "Copy link". */
+.post-share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 2rem;
+}
+.post-share__label {
+  margin: 0;
+  font: 500 0.68rem / 1.3 var(--font-display, inherit), system-ui, sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pkde-post-accent, var(--color-brand-700));
+}
+.post-share__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.post-share__list :where(a, button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+  border-radius: 999px;
+  background: var(--pkde-post-surface, var(--color-white));
+  color: var(--pkde-post-ink, var(--color-neutral-950));
+  font-size: 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.post-share__list :where(a, button):hover {
+  border-color: var(--pkde-post-ink, var(--color-neutral-950));
+}
+.post-share__list :where(a, button):focus-visible {
+  outline: 2px solid var(--pkde-post-accent, var(--color-brand-600));
+  outline-offset: 2px;
+}

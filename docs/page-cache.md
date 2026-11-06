@@ -24,7 +24,7 @@ A site that prints anything else per visitor calls `\App\no_page_cache()` in the
 
 ## What a site must check before it opts in
 
-1. **Its header prints the kit's count** (`{!! \App\cart_count_html() !!}` inside `data-pkde-cart-badge`), not `WC()->cart->get_cart_contents_count()`. mds, rp, bp and jsd had their own server-rendered count in 2026-11: switch them first.
+1. **Its header prints the kit's count** (`{!! \App\cart_count_html() !!}` inside `data-pkde-cart-badge`), not `WC()->cart->get_cart_contents_count()`. (rp, bp, mds and jsd are not shops: the `WC()->cart` block in their headers is dead code to delete, and the opt-in is meaningless without WooCommerce, so the drift check ignores them.)
 2. No view reads the basket, a notice, a cookie or the user on the server. The drift check scans the theme's views for it (`pkde_drift_personal_views`) and FAILs while the opt-in is on.
 3. WooCommerce settings: tax by the shop's base address (a customer-specific tax address changes prices per visitor), geolocation off or "Geolocate (with page caching support)", AJAX add to cart on, "Redirect to the cart page after successful addition" either way (the cart page is uncached).
 4. No plugin prints per-visitor content (checked 2026-11-06 on tcs: Contact Form 7, Turnstile, Wordfence, Rank Math, Relevanssi, Post SMTP, W3TC, WPS Hide Login: no basket, user or session data in the page; Relevanssi live search is an AJAX request).

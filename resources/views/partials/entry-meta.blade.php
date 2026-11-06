@@ -25,13 +25,17 @@
   @if (get_the_author() !== '')
     <span aria-hidden="true">&middot;</span>
     <span>{{ __('By', 'sage') }}</span>
-    <a href="{{ get_author_posts_url(get_the_author_meta('ID')) }}" @class([
-      'p-author h-card font-medium',
-      'text-neutral-700 hover:text-neutral-900' => $cardStyle === 'white',
-      'text-[color:var(--pkde-card-content)] hover:text-[color:var(--pkde-card-accent)]' => $cardStyle !== 'white',
-    ])>
-      {{ get_the_author() }}
-    </a>
+    @php($authorClasses = ['p-author h-card font-medium', 'text-neutral-700 hover:text-neutral-900' => $cardStyle === 'white', 'text-[color:var(--pkde-card-content)] hover:text-[color:var(--pkde-card-accent)]' => $cardStyle !== 'white'])
+    {{-- The byline links to the author's archive while it exists (\App\byline_links_to_archive(): Rank Math can switch author archives off). --}}
+    @if (\App\byline_links_to_archive())
+      <a href="{{ get_author_posts_url(get_the_author_meta('ID')) }}" @class($authorClasses)>
+        {{ get_the_author() }}
+      </a>
+    @else
+      <span @class($authorClasses)>
+        {{ get_the_author() }}
+      </span>
+    @endif
   @endif
   @if (! empty($showReadingTime))
     <span aria-hidden="true">&middot;</span>

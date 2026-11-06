@@ -10,6 +10,8 @@
  *   --pkde-page-header-title-font    the H1 font            default: the display font (--font-display)
  *   --pkde-page-header-title-weight  the H1 weight          default: 600 (a one-weight serif sets 400)
  *   --pkde-page-header-title-tracking                       default: -0.04em
+ *   --pkde-page-header-title-size    the H1 size, phone   default: 2.25rem (text-4xl); --pkde-page-header-title-size-lg from 640px: 3rem (text-5xl)
+ *   --pkde-page-header-title-leading the H1 line height   default: 1.25
  *   --pkde-page-header-intro         the intro line's colour (App\page_header_intro(), under the H1)   default: the breadcrumb colour
  *   --pkde-page-header-intro-size    its font size          default: 1.125rem
  *   --pkde-page-header-intro-max-width  its measure          default: 42rem
@@ -26,6 +28,9 @@
   --pkde-page-header-title-font: var(--font-display, var(--font-sans, inherit));
   --pkde-page-header-title-weight: 600;
   --pkde-page-header-title-tracking: -0.04em;
+  --pkde-page-header-title-size: 2.25rem;
+  --pkde-page-header-title-size-lg: 3rem;
+  --pkde-page-header-title-leading: 1.25;
   --pkde-page-header-intro: var(--pkde-page-header-crumb);
   --pkde-page-header-intro-size: 1.125rem;
   --pkde-page-header-intro-max-width: 42rem;
@@ -40,6 +45,14 @@
   font-family: var(--pkde-page-header-title-font);
   font-weight: var(--pkde-page-header-title-weight);
   letter-spacing: var(--pkde-page-header-title-tracking);
+  /* Explicit, so a site's own H1 style in theme.json (a larger size, a tighter line) cannot change the title band (tcs needed a revert-layer rule for it, TCS-98). */
+  font-size: var(--pkde-page-header-title-size);
+  line-height: var(--pkde-page-header-title-leading);
+}
+@media (min-width: 640px) {
+  .page-header h1 {
+    font-size: var(--pkde-page-header-title-size-lg);
+  }
 }
 .page-header .breadcrumbs,
 .page-header .breadcrumbs a {

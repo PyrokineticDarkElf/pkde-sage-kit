@@ -7,7 +7,7 @@
 $root = dirname(__DIR__, 2);
 
 it('supplies a default view for every blog and shop archive', function () use ($root) {
-    foreach (['home', 'archive', 'category', 'tag', 'author', 'search', 'index', 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'taxonomy-product_brand'] as $view) {
+    foreach (['home', 'archive', 'category', 'tag', 'author', 'search', 'index', 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'taxonomy-product_brand', 'single', 'page'] as $view) {
         expect(file_exists("$root/resources/views/$view.blade.php"))->toBeTrue("missing $view");
     }
 

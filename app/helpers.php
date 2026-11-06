@@ -327,3 +327,5 @@ add_filter('image_editor_output_format', static fn(array $formats): array => app
 add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
 
 require_once __DIR__ . '/page-header.php';
+
+require_once __DIR__ . '/single-post.php';

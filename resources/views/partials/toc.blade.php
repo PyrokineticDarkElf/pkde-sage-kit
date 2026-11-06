@@ -1,18 +1,18 @@
+{{--
+  The table of contents of a post: a nav with the scroll-spied active link (data-active, resources/js/kit.js). Always open beside the text on a wide
+  screen, a collapsed <details> above it on a narrow one (kit.js opens and closes it with the breakpoint); no animation, so reduced motion needs nothing.
+--}}
 @if (count($headings ?? []) > 1)
-  <nav data-toc class="rounded-2xl border border-neutral-200 p-5 lg:sticky lg:top-24" aria-label="{{ __('Table of contents', 'sage') }}">
-    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">{{ __('On this page', 'sage') }}</p>
-    <ul class="mt-3 space-y-2 text-sm">
-      @foreach ($headings as $heading)
-        <li style="padding-left: {{ ($heading['level'] - 2) * 0.75 }}rem">
-          <a
-            href="#{{ $heading['id'] }}"
-            data-toc-link="{{ $heading['id'] }}"
-            class="block text-neutral-600 transition hover:text-neutral-900 data-[active=true]:font-semibold data-[active=true]:text-brand-700"
-          >
-            {{ $heading['text'] }}
-          </a>
-        </li>
-      @endforeach
-    </ul>
+  <nav data-toc class="post-toc" aria-label="{{ __('Table of contents', 'sage') }}">
+    <details class="post-toc__details" open>
+      <summary>{{ __('On this page', 'sage') }}</summary>
+      <ul>
+        @foreach ($headings as $heading)
+          <li data-level="{{ $heading['level'] }}">
+            <a href="#{{ $heading['id'] }}" data-toc-link="{{ $heading['id'] }}">{{ $heading['text'] }}</a>
+          </li>
+        @endforeach
+      </ul>
+    </details>
   </nav>
 @endif
