@@ -45,6 +45,57 @@ function breadcrumb_standard(): array
 }
 
 /**
+ * The deepest of a product's categories (the most ancestors; the first among equals), as WooCommerce's own trail picks it. Pure: $depth maps a term to
+ * its number of ancestors.
+ *
+ * @param  list<object>  $terms
+ */
+function deepest_term(array $terms, callable $depth): ?object
+{
+    $best = null;
+    $bestDepth = -1;
+
+    foreach ($terms as $term) {
+        $d = (int) $depth($term);
+
+        if ($d > $bestDepth) {
+            $best = $term;
+            $bestDepth = $d;
+        }
+    }
+
+    return $best;
+}
+
+/**
+ * Puts a product's category path into its trail: Rank Math only adds one when its "primary taxonomy" setting for products is set, and that is a
+ * per-site wp-admin setting the kit does not control, so a single product's trail was "Home / Product" (tcs, TCS-112; before it was WooCommerce's
+ * "Home / Wall Clocks / Modern Wall Clocks / Product"). The crumbs [label, url] of the path go in front of the last crumb (the product), unless the trail
+ * already has them. Pure.
+ *
+ * @param  list<array{0: string, 1: string}>  $crumbs  the trail, the current page last
+ * @param  list<array{0: string, 1: string}>  $path  the category and its ancestors, outermost first
+ * @return list<array{0: string, 1: string}>
+ */
+function crumbs_with_category_path(array $crumbs, array $path): array
+{
+    if (! $crumbs || ! $path) {
+        return $crumbs;
+    }
+
+    $urls = array_column($crumbs, 1);
+    $path = array_values(array_filter($path, fn($crumb) => ! in_array($crumb[1], $urls, true)));
+
+    if (! $path) {
+        return $crumbs;
+    }
+
+    $last = array_pop($crumbs);
+
+    return [...$crumbs, ...$path, $last];
+}
+
+/**
  * The trail for this request: Rank Math's (standardised), else WooCommerce's on shop pages (" / " between the crumbs), else ''.
  * `pkde_kit/breadcrumb_html` may replace it.
  */
@@ -74,3 +125,30 @@ add_action('after_setup_theme', function () {
 // Rank Math builds its trail from these (the filter's result wins over the site's own settings, see Breadcrumbs::__construct()).
 add_filter('rank_math/frontend/breadcrumb/settings', fn($settings) => array_merge((array) $settings, breadcrumb_standard()['settings']));
 add_filter('rank_math/frontend/breadcrumb/strings', fn($strings) => array_merge((array) $strings, breadcrumb_standard()['strings']));
+
+// A single product's trail gets its category path (the deepest category and its ancestors), whatever the site's Rank Math product settings say. Rank
+// Math's own crumbs list feeds its BreadcrumbList schema too, so the schema carries the same path.
+add_filter('rank_math/frontend/breadcrumb/items', function ($crumbs) {
+    if (! function_exists('is_product') || ! is_product() || ! is_array($crumbs)) {
+        return $crumbs;
+    }
+
+    $terms = get_the_terms(get_the_ID(), 'product_cat');
+
+    if (! is_array($terms) || ! $terms) {
+        return $crumbs;
+    }
+
+    $term = deepest_term($terms, fn($t) => count(get_ancestors($t->term_id, 'product_cat', 'taxonomy')));
+    $path = [];
+
+    foreach (array_reverse(get_ancestors($term->term_id, 'product_cat', 'taxonomy')) as $id) {
+        $ancestor = get_term($id, 'product_cat');
+        if ($ancestor instanceof \WP_Term) {
+            $path[] = [$ancestor->name, (string) get_term_link($ancestor)];
+        }
+    }
+    $path[] = [$term->name, (string) get_term_link($term)];
+
+    return crumbs_with_category_path($crumbs, $path);
+}, 10, 1);

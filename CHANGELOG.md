@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.06.6
+
+- **Fix: a single product's trail has its category path again (tcs, TCS-112).** With Rank Math's breadcrumbs forced on (2026.11.06.3), a product's trail was "Home / Product": Rank Math adds a product's category only when its "primary taxonomy" setting for products is set, a per-site wp-admin setting, and before the kit the trail on tcs was WooCommerce's ("Home / Wall Clocks / Modern Wall Clocks / Product"). The kit now puts the product's deepest category (as WooCommerce picks it) and its ancestors in front of the product through `rank_math/frontend/breadcrumb/items`, unless the trail already has them, so the site's setting no longer matters and Rank Math's BreadcrumbList schema (built from the same list) carries the path. Pure parts tested (`deepest_term()`, `crumbs_with_category_path()`: the path goes in once, in order, before the last crumb). Reproduced and fixed against real Rank Math and WooCommerce 11.1.2 on tcs's local site (read only): the product trail was "Home / CLEARANCE Large Grey 'Shade' Wall Clock" and is "Home / Wall Clocks / Big Wall Clocks / CLEARANCE Large Grey 'Shade' Wall Clock".
+**Adopt:** bump the kit. Nothing else.
+
 ## 2026.11.06.5
 
 Owner decisions on MGR-77: product cards stay unique per site but share the Sale and New badges; category tiles stay unique per site but can share the image handling.

@@ -4,6 +4,8 @@
 require_once dirname(__DIR__, 2) . '/app/breadcrumbs.php';
 
 use function App\breadcrumb_standard;
+use function App\crumbs_with_category_path;
+use function App\deepest_term;
 
 $root = dirname(__DIR__, 2);
 
@@ -22,4 +24,29 @@ it('wires the standard into Rank Math, forces its module on, and prints the trai
         ->and($partial)->toContain('\App\breadcrumb_trail_html()')
         ->and($code)->toContain("'delimiter' => ' / '")->not->toContain('function breadcrumb_crumbs')->not->toContain('function breadcrumb_markup')
         ->and(file_get_contents("$root/app/helpers.php"))->toContain("require_once __DIR__ . '/breadcrumbs.php';");
+});
+
+it('picks a product\'s deepest category, the first among equals', function () {
+    $terms = [(object) ['n' => 'Wall Clocks', 'd' => 0], (object) ['n' => 'Living Room', 'd' => 1], (object) ['n' => 'Modern', 'd' => 1]];
+
+    expect(deepest_term($terms, fn($t) => $t->d)->n)->toBe('Living Room')
+        ->and(deepest_term([], fn($t) => 0))->toBeNull();
+});
+
+it('puts the category path in front of the product in its trail, once (tcs TCS-112)', function () {
+    $trail = [['Home', 'https://example.test/'], ['Wall Clock', '']];
+    $path = [['Wall Clocks', 'https://example.test/wall-clocks/'], ['Modern Wall Clocks', 'https://example.test/wall-clocks/modern/']];
+
+    $with = crumbs_with_category_path($trail, $path);
+
+    expect(array_column($with, 0))->toBe(['Home', 'Wall Clocks', 'Modern Wall Clocks', 'Wall Clock'])
+        ->and(crumbs_with_category_path($with, $path))->toBe($with)
+        ->and(crumbs_with_category_path([['Home', '/'], ['Wall Clocks', 'https://example.test/wall-clocks/'], ['Clock', '']], $path))
+        ->toBe([['Home', '/'], ['Wall Clocks', 'https://example.test/wall-clocks/'], ['Modern Wall Clocks', 'https://example.test/wall-clocks/modern/'], ['Clock', '']])
+        ->and(crumbs_with_category_path([], $path))->toBe([])
+        ->and(crumbs_with_category_path($trail, []))->toBe($trail);
+});
+
+it('hooks the product category path into Rank Math\'s trail items', function () use ($root) {
+    expect(file_get_contents("$root/app/breadcrumbs.php"))->toContain("'rank_math/frontend/breadcrumb/items'", "'product_cat'", 'is_product()');
 });
