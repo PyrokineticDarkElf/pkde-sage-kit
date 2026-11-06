@@ -325,3 +325,5 @@ add_filter('get_custom_logo_image_attributes', static function (array $attribute
  */
 add_filter('image_editor_output_format', static fn(array $formats): array => apply_filters('pkde_png_to_webp', true) ? png_output_formats($formats) : $formats);
 add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
+
+require_once __DIR__ . '/page-header.php';

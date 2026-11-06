@@ -10,6 +10,9 @@
  *   --pkde-page-header-title-font    the H1 font            default: the display font (--font-display)
  *   --pkde-page-header-title-weight  the H1 weight          default: 600 (a one-weight serif sets 400)
  *   --pkde-page-header-title-tracking                       default: -0.04em
+ *   --pkde-page-header-intro         the intro line's colour (App\page_header_intro(), under the H1)   default: the breadcrumb colour
+ *   --pkde-page-header-intro-size    its font size          default: 1.125rem
+ *   --pkde-page-header-intro-max-width  its measure          default: 42rem
  *
  * Contrast: the title and breadcrumbs must reach 4.5:1 on the band. The defaults are checked by `npm run theme:check` for the palette's brand
  * colour; a site that sets its own band colour checks its own text. Unlayered on purpose, like the other kit rules that must beat Tailwind
@@ -23,6 +26,9 @@
   --pkde-page-header-title-font: var(--font-display, var(--font-sans, inherit));
   --pkde-page-header-title-weight: 600;
   --pkde-page-header-title-tracking: -0.04em;
+  --pkde-page-header-intro: var(--pkde-page-header-crumb);
+  --pkde-page-header-intro-size: 1.125rem;
+  --pkde-page-header-intro-max-width: 42rem;
 }
 
 .page-header {
@@ -41,4 +47,20 @@
 }
 .page-header .breadcrumbs a:hover {
   color: var(--pkde-page-header-title);
+}
+.page-header__intro {
+  max-width: var(--pkde-page-header-intro-max-width);
+  color: var(--pkde-page-header-intro);
+  font-size: var(--pkde-page-header-intro-size);
+  line-height: 1.6;
+}
+.page-header__intro > :first-child {
+  margin-top: 0;
+}
+.page-header__intro > :last-child {
+  margin-bottom: 0;
+}
+.page-header__intro a {
+  color: inherit;
+  text-decoration: underline;
 }
