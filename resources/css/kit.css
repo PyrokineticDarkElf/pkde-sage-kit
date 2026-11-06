@@ -404,6 +404,18 @@
   @media (min-width: 64rem) {
     .woocommerce.product-grid--4up ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
+  /**
+   * A product list printed on a page (the Product Loop block, the [products columns="N"] shortcode) wraps its list in
+   * `.woocommerce.columns-N`: that count is honoured from 64rem, whatever it is (the grid above stops at three). The Shop archives are
+   * not affected: their count is --pkde-shop-columns (shop-pages.css), and WooCommerce puts columns-N on their list, not a wrapper.
+   */
+  @media (min-width: 64rem) {
+    .woocommerce.columns-1 ul.products { grid-template-columns: minmax(0, 1fr); }
+    .woocommerce.columns-2 ul.products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .woocommerce.columns-4 ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .woocommerce.columns-5 ul.products { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .woocommerce.columns-6 ul.products { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
   .woocommerce ul.products li.product {
     display: flex;
     flex-direction: column;

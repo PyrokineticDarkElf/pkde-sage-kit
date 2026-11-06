@@ -117,3 +117,10 @@ test('the page header band (brand-100) reads with the default title and breadcru
     assert.doesNotMatch(run('--check').stderr, /page header band/);
   }
 });
+
+test('"editorPalette": false leaves theme.json alone, in generate and in check', () => {
+  const { run } = generate(COLORS, { editorPalette: false });
+  const check = run('--check');
+  assert.equal(check.status, 0, check.stderr);
+  assert.doesNotMatch(check.stderr, /theme\.json/);
+});

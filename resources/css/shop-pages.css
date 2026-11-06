@@ -41,9 +41,10 @@
   overflow: hidden;
   font-size: 0;
 }
-/* amber-700 reaches 5.0:1 on white (the amber-500 of WooCommerce's default gives 2.1:1). */
+/* amber-700 reaches 5.0:1 on white (the amber-500 of WooCommerce's default gives 2.1:1). A site sets --pkde-star-fill to its brand colour
+   (it also colours the review form's chosen stars below); keep it at 3:1 or more on white. */
 .star-rating > span::before {
-  background: var(--color-amber-700);
+  background: var(--pkde-star-fill, var(--color-amber-700));
 }
 
 /* Product cards (MGR product-card actions, tcs): equal height in a row, and ONE aligned action row at the bottom of the card, whatever is in the card above
@@ -673,7 +674,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 }
 .woocommerce-Reviews p.stars.selected a,
 .woocommerce-Reviews p.stars:hover a {
-  background: var(--color-amber-700);
+  background: var(--pkde-star-fill, var(--color-amber-700));
 }
 .woocommerce-Reviews p.stars.selected a.active ~ a,
 .woocommerce-Reviews p.stars a:hover ~ a {

@@ -223,6 +223,8 @@ white fails, `theme:generate` and `theme:check` print a note and still pass: you
 instead of `text-white`. A colour that is deliberate even so goes in `"acceptLowContrast": ["brand"]` at the top level of
 `config/brand-palette.json` and is skipped.
 
+**A hand-curated editor palette.** By default `theme:generate` writes the brand ladders into `theme.json` (`settings.color.palette`) and `theme:check` fails when they differ. A site that curates its editor swatches by hand (its own names, a few extra colours) sets `"editorPalette": false` at the top level of `config/brand-palette.json`: `theme.json` is then never written or checked, and the generated CSS, JS and PHP files are the same either way (kit 2026.11.07.8). Off by default.
+
 **Foreground tokens: text on a brand or accent background.** For every step of every colour the generator also emits
 `--color-{name}-{step}-fg` (and `--color-{name}-fg` for the 600 step, `--color-action-fg`, `--color-action-hover-fg`, `--color-highlight-fg`):
 white when it reaches 4.5:1 on that step, otherwise whichever of white and near-black (`#0a0a0a`) measures higher. Tailwind turns them into

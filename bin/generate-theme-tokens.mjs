@@ -846,9 +846,13 @@ const themeOptions = buildThemeOptions(palette.colors);
 const headerOptions = buildHeaderOptions(header);
 // --check compares the parsed palette, not the text, so a tool that re-saves theme.json in another layout (json.dump, an editor's
 // formatter) does not fail it; only generating needs the layout withPalette() looks for.
-const themeJson = options.check ? null : withPalette(fs.readFileSync(themeJsonPath, 'utf8'), palette.colors);
+// A site that curates its editor palette by hand sets "editorPalette": false in config/brand-palette.json: theme.json is then left alone
+// (and --check ignores it); the generated CSS and PHP are the same either way.
+const manualEditorPalette = palette.editorPalette === false;
+const themeJson = options.check || manualEditorPalette ? null : withPalette(fs.readFileSync(themeJsonPath, 'utf8'), palette.colors);
 
 function themeJsonPaletteUpToDate() {
+  if (manualEditorPalette) return true;
   try {
     const have = JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')).settings?.color?.palette;
     return JSON.stringify(have) === JSON.stringify(JSON.parse(`[${buildPalette(palette.colors)}]`));
@@ -900,7 +904,7 @@ fs.writeFileSync(cardThemesOutputPath, cardThemesCss);
 fs.writeFileSync(themeOptionsOutputPath, themeOptions.js);
 fs.writeFileSync(themeOptionsPhpOutputPath, themeOptions.php);
 fs.writeFileSync(headerOptionsOutputPath, headerOptions);
-fs.writeFileSync(themeJsonPath, themeJson);
+if (themeJson !== null) fs.writeFileSync(themeJsonPath, themeJson);
 const aliases = palette.colors.map((color, index) => `${color.name}/${POSITIONAL_ALIASES[index] ?? '—'}`);
 process.stdout.write(`Generated ${palette.colors.length} colour palette(s): ${palette.colors.map((color) => color.name).join(', ')}\n`);
 process.stdout.write(`Section themes (name/alias): ${aliases.join(', ')}\n`);

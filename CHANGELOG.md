@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.07.8
+
+From the MGR-78 clean-up audit of tcs and bb: three things both sites had written for themselves that every client site wants.
+
+- **`--pkde-star-fill`: the star colour is one variable.** The filled stars of a rating and the chosen stars in the review form use `var(--pkde-star-fill, var(--color-amber-700))`, so a site's brand colour is one line instead of bb's three override selectors. The default is unchanged (amber-700, 5.0:1 on white). Checked on bb's /shop/ (rated cards) with bb's override rules replaced by the variable: the stars' computed fill is the same sage-600.
+- **The Product Loop block's Columns setting works at any count.** A product list on a page is wrapped in `.woocommerce.columns-N`; the kit's grid stopped at three, so bb and tcs each wrote rules for 4, 5 and 6. From 64rem the kit honours 1, 2, 4, 5 and 6 (3 is the existing default); the Shop archives are unaffected (their count is `--pkde-shop-columns`, and WooCommerce puts `columns-N` on their list, not on a wrapper). bb's own `columns-4` rule is now the kit's.
+- **`"editorPalette": false` in `config/brand-palette.json` leaves `theme.json` alone.** tcs keeps its own editor palette (ink, muted, peach ...) and so kept a 37 KB copy of an older generator that did not touch `theme.json`; it could not move to the kit's generator, which rewrites the palette and fails `theme:check` when it differs. With the option the kit's generator produces the same generated files as tcs's copy, byte for byte (checked on a copy of tcs), `theme.json` is not written or checked, and the copy can be deleted. Off by default; a site that wants the generated ladders changes nothing.
+**Adopt:** bump the kit. See the feed entry "Adopt: tcs/bb clean-up": bb deletes its star override and its `columns-4` rule; tcs sets `"editorPalette": false`, deletes `bin/generate-theme-tokens.mjs` and points `theme:generate` / `theme:check` at the kit's generator.
+
 ## 2026.11.07.7
 
 From the MGR-78 clean-up audit of tcs and bb: what the kit takes so the sites can delete their copies.

@@ -97,3 +97,13 @@ it('puts the card\'s star rating where the site wants it in DOM order (default a
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/card-rating.php')
         ->and(file_get_contents("$root/docs/woocommerce-templates.md"))->toContain('pkde_kit/card_rating_position', 'above_button', 'below_title', 'above_title');
 });
+
+it('lets a site colour the stars with one variable and honours the Product Loop block\'s column count (MGR-78)', function () {
+    $root = dirname(__DIR__, 2);
+    $shop = file_get_contents("$root/resources/css/shop-pages.css");
+    $kit = file_get_contents("$root/resources/css/kit.css");
+
+    expect(substr_count($shop, 'var(--pkde-star-fill, var(--color-amber-700))'))->toBe(2)
+        ->and($shop)->not->toContain('background: var(--color-amber-700)')
+        ->and($kit)->toContain('.woocommerce.columns-4 ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }', '.woocommerce.columns-2 ul.products');
+});
