@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.07.4
+
+- **The filter lists cannot get a horizontal scrollbar either (owner follow-up on 2026.11.07.3).** The two leads were checked first on bb (before and after the fix) and tcs, at 1440: `scrollWidth` equals `clientWidth` on every list (187px beside the 11px vertical bar, 198px without it), no row, input, count badge or label reaches past the right padding, and no element in the lists is `position: absolute` (the checkbox is static), so neither (a) nor (b) was the cause: the 11px bar was the vertical one (scrollHeight 93 against clientHeight 92), and `overflow-x: hidden` on the lists did not remove it. `overflow-y: auto` does make `overflow-x` auto, so `#shop-filters ul` now sets `overflow-x: hidden` to keep it that way (it clips nothing that was visible: the box already clipped both axes). Vertical scroll for long lists is unchanged.
+**Adopt:** bump the kit. Nothing else.
+
+
 ## 2026.11.07.3
 
 - **Fix: a scrollbar on shop filter lists that are shorter than 14rem (owner, MGR-77).** Measured on bb's /shop/ at 1440 (and 390): a list of 3 rows had `scrollHeight` 93 against `clientHeight` 92, a list of 2 rows 57 against 56. Two causes, both the kit's: (1) the last line of text reached 0.5px past its line box (bb's font has a taller ascent and descent than the 20px line height: the text's box ran from 71 to 92.5px in a list 92px high), and in a scroll container (`overflow-y: auto`) the half pixel becomes a scrollable pixel; the list now has 2px of vertical padding inside the scroller (the margin is 2px smaller, so nothing moves). (2) The sidebar put `space-y-2` (a bottom margin on each row) on top of the list's own `gap-2`, so rows were 16px apart, not 8: an 8-row list came to 273px and scrolled in a 224px box (8 rows at the intended 8px come to 220px). `[&_ul]:space-y-2` is gone from `partials/sidebar-shop`. A long list still scrolls (tcs's lists of 40 to 68 rows); lists of 1 to 8 rows show no scrollbar on either site at 1440 and 390. Not `overflow: hidden`. Test added.

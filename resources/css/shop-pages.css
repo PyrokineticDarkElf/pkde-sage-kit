@@ -308,6 +308,9 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   margin-top: calc(0.75rem - 2px);
   padding-block: 2px;
   padding-right: 0.5rem;
+  /* overflow-y: auto makes overflow-x auto too: a row a pixel too wide would add a horizontal bar. None is (scrollWidth equals clientWidth on tcs and bb), so
+     this only keeps it that way; the vertical scroll for long lists is untouched. */
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--pkde-shop-ink, var(--color-neutral-950)) 25%, transparent) transparent;

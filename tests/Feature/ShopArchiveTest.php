@@ -58,9 +58,9 @@ it('keeps a Section that holds only the Shop products block from stacking its pa
 
 it('keeps the filter lists from showing a scrollbar they do not need, and keeps the scroll for long lists (owner, bb)', function () use ($root) {
     $css = file_get_contents("$root/resources/css/shop-pages.css");
-    $rule = substr($css, strpos($css, '#shop-filters ul {'), 420);
+    $rule = substr($css, strpos($css, '#shop-filters ul {'), 760);
 
-    expect($rule)->toContain('max-height: 14rem;', 'overflow-y: auto;', 'padding-block: 2px;', 'margin-top: calc(0.75rem - 2px);')
+    expect($rule)->toContain('max-height: 14rem;', 'overflow-y: auto;', 'overflow-x: hidden;', 'padding-block: 2px;', 'margin-top: calc(0.75rem - 2px);')
         ->and($rule)->not->toContain('overflow: hidden')
         ->and(file_get_contents("$root/resources/views/partials/sidebar-shop.blade.php"))->not->toContain('[&_ul]:space-y-2')
         ->and(file_get_contents("$root/resources/views/partials/shop-term-filter.blade.php"))->toContain('<ul class="grid gap-2 text-sm">');
