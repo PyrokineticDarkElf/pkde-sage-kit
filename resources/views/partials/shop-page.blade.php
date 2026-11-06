@@ -6,13 +6,24 @@
   Hook: pkde_kit/shop_page_header (filter, bool): false leaves the page header off the Shop page, for a Shop page whose content brings its own title.
 --}}
 @if ($shopPageContent !== null)
-  @if (apply_filters('pkde_kit/shop_page_header', true))
+  @php
+    $showHeader = (bool) apply_filters('pkde_kit/shop_page_header', true);
+    $hasNotices = function_exists('wc_notice_count') && wc_notice_count() > 0;
+  @endphp
+  @if ($showHeader)
     @include('pkde-kit::partials.page-header')
   @endif
   <div class="page-content">
-    <div class="mx-auto max-w-content px-[var(--page-gutter,1.5rem)] pt-8">
+    {{-- The notices row (and its top padding) only exists where it has something to show: under the page header, or with a notice to print.
+         A Shop page without the header and without notices starts at its own content, with no empty strip above it. The (empty) notices
+         wrapper stays either way: WooCommerce's add-to-cart script puts its messages into it. --}}
+    @if ($showHeader || $hasNotices)
+      <div class="mx-auto max-w-content px-[var(--page-gutter,1.5rem)] pt-8">
+        @include('pkde-kit::partials.woocommerce-notices')
+      </div>
+    @else
       @include('pkde-kit::partials.woocommerce-notices')
-    </div>
+    @endif
     {!! $shopPageContent !!}
   </div>
 @else

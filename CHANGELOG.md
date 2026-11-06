@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.05.2
+
+- **Fix: /shop/ answered 500 "Undefined variable $shopPageContent" when the theme has no `archive-product.blade.php` (tcs, TCS-109).** Laravel binds `view.finder` as a non-shared service, so Sage's finder and the view factory's finder are two objects. 2026.11.05.1 put the kit's views directory on Sage's only: the view name resolved, but the factory's `exists('archive-product')` was false, so Acorn rendered the kit's view by file path and the `ProductArchive` composer (bound to the name) never ran. The provider now adds the directory to both (`addViewLocation()`). A new test builds two non-shared finders with a theme that has no `archive-product` and checks the kit's view is found by name on both; it fails without the fix.
+- **Fix: the Shop page's notices row no longer adds 32px of empty space when the page header is off.** `partials/shop-page` pads the row (`pt-8`) only under the page header or when there is a notice to print; the (empty) `woocommerce-notices-wrapper` stays either way, because WooCommerce's add-to-cart script puts its messages into it.
+**Adopt:** bump the kit. bb (and any site) can now delete its `archive-product.blade.php`; tcs can delete its own too (with `pkde_kit/shop_page_header` false the Shop page starts at its content).
+
 ## 2026.11.05.1
 
 - **The kit supplies the archive views (owner via the manager, MGR-77 / TPL-154).** `resources/views/` now holds `home`, `archive`, `category`, `tag`, `author`, `search`, `index`, `archive-product` and `taxonomy-product_cat`, `_tag`, `_brand` (page header, the term's description for a category and tag, the posts or the shop archive). A theme without a file of that name uses the kit's, so the copies in the template and in the sites go; a flat site file still wins, so one archive can still be changed alone. To make that work the kit's views directory is now added to the view finder itself (`view.finder`), not to the view factory: Sage builds WordPress's template list from the finder's paths when the hierarchy runs, and with the directory added later the kit's views were not in it (a kit `category` made the page hang on the theme's `index.php` shim, found on the template's own stack). The kit's `category` is found BEFORE a theme's `blog/category`, so a theme keeps no `blog/` or `shop/` copy of these.

@@ -24,9 +24,7 @@ class KitServiceProvider extends ServiceProvider
         $views = dirname(__DIR__) . '/resources/views';
 
         $this->loadViewsFrom($views, 'pkde-kit');
-        // On the finder itself (not the view factory), so Sage's template lookup sees it too: it builds WordPress's template list from the finder's
-        // paths, and the kit's archive views (home, category, archive-product ...) must be in that list.
-        $this->callAfterResolving('view.finder', fn($finder) => $finder->addLocation($views));
+        $this->addViewLocation($views);
 
         // <x-pkde-kit::alert> resolves to the view pkde-kit::components.alert, so a vendor/pkde-kit override applies to components too.
         Blade::anonymousComponentNamespace('components', 'pkde-kit');
@@ -34,5 +32,18 @@ class KitServiceProvider extends ServiceProvider
         foreach ([AppComposer::class, PostComposer::class, ProductArchiveComposer::class] as $composer) {
             View::composer($composer::views(), $composer);
         }
+    }
+
+    /**
+     * The kit's views directory goes on the END of every view finder, so a theme without a file of that name falls back to the kit's.
+     * Laravel binds `view.finder` as NOT shared, so there are two finders and both need it: Sage's own (it builds WordPress's template list from
+     * its paths, so a kit `category` is a template at all) and the view factory's (so `exists('archive-product')` is true, the view is rendered
+     * by name and its composer, App\View\Composers\ProductArchive, runs; on the factory's finder alone the shop answered 500 "Undefined variable
+     * $shopPageContent", kit 2026.11.05.1).
+     */
+    protected function addViewLocation(string $views): void
+    {
+        $this->callAfterResolving('view.finder', fn($finder) => $finder->addLocation($views));
+        $this->callAfterResolving('view', fn($view) => $view->getFinder()->addLocation($views));
     }
 }
