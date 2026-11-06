@@ -329,11 +329,19 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   font-size: 0.8rem;
   color: var(--pkde-shop-muted, var(--color-neutral-600));
 }
+/* The sort select draws its own chevron: a native select's arrow sits against the pill's edge, and where depends on the browser (Chrome follows the padding,
+   Safari does not, and with appearance: auto there is no ::picker-icon to style). --pkde-shop-select-inset is the chevron's distance from the right edge
+   (1rem), --pkde-shop-select-chevron replaces the image (a CSS url(), e.g. in a site's brand colour). */
 .shop-archive__results .woocommerce-ordering select {
-  padding: 0.45rem 0.8rem;
+  appearance: none;
+  padding: 0.45rem 2.5rem 0.45rem 0.8rem;
   border: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
   border-radius: var(--pkde-shop-radius, 999px);
-  background: var(--pkde-shop-surface, var(--color-white));
+  background-color: var(--pkde-shop-surface, var(--color-white));
+  background-image: var(--pkde-shop-select-chevron, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23525252' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 1.75 6 6.25l4.5-4.5'/%3E%3C/svg%3E"));
+  background-repeat: no-repeat;
+  background-position: right var(--pkde-shop-select-inset, 1rem) center;
+  background-size: 0.75rem auto;
   font-size: 0.8rem;
   color: var(--pkde-shop-ink, var(--color-neutral-950));
 }
@@ -1114,9 +1122,7 @@ body.woocommerce-cart .cart-collaterals .cart_totals {
 }
 a.pkde-badge:hover,
 a.pkde-badge:focus-visible {
-  filter: brightness(0.96);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  filter: brightness(0.96); /* the only hover cue: no underline on a pill (owner, 2026-11-06) */
 }
 /* In a row of badges (the product page prints them in a .product-badges wrapper) they flow instead of sitting on the corners. */
 .product-badges .pkde-badge {

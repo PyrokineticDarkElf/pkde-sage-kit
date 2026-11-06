@@ -146,6 +146,8 @@ Markup (BEM, so a site targets it without the `woocommerce` class, which the lis
 | `--pkde-shop-columns` | product grid columns from 1280px (the filter column beside the results) | `4` |
 | `--pkde-shop-columns-tablet` | product grid columns from 640px to 1279px | `3` |
 | `--pkde-shop-columns-phone` | product grid columns below 640px | `2` |
+| `--pkde-shop-select-inset` | the sort select's chevron, distance from its right edge | `1rem` |
+| `--pkde-shop-select-chevron` | the sort select's chevron image (a CSS `url(...)`, e.g. in the brand colour) | a thin grey chevron |
 | `--pkde-shop-pad-top` | space above the filters and the results | `1rem` |
 | `--pkde-shop-gap` | column gap between products (the same on every site; a site that wants more sets it) | `1.5rem` |
 
