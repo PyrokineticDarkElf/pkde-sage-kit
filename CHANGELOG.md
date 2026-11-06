@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.07.7
+
+From the MGR-78 clean-up audit of tcs and bb: what the kit takes so the sites can delete their copies.
+
+- **The kit supplies `404.blade.php` and `single-product.blade.php`.** They were the template's `pages/404` and `shop/single-product`, and the stale flat copies in tcs and bb (identical, or class order only) were the same views; with the kit's views directory on the finder a site that has no file of that name uses the kit's. The 404's big numeral is drawn by CSS (`.pkde-404-numeral::before`), so it is decoration, not text: axe's colour-contrast check on the pale numeral (it flagged it on the template's own 404) is clean, and the picture is the same; the button's hover text uses the brand foreground token. Checked on the template stack: a 404 answers 404 with the page, axe clean at 1440 and 390.
+- **Chosen filter options read as chosen** (tcs's rule in its `site.css`, now the kit's): `#shop-filters label:has(input:checked) span:first-of-type` is weight 500 in `--pkde-shop-ink`. bb gets it too (a ticked option is easier to see).
+**Adopt:** bump the kit; see the feed entry "Adopt: tcs/bb clean-up" for what each site deletes (tcs and bb: `404.blade.php`, `single-product.blade.php`, tcs's `#shop-filters label:has(input:checked)` rule).
+
 ## 2026.11.07.6
 
 - **The card's star rating is placed in the markup, not moved with CSS (owner, MGR-77).** The kit's card printed the stars BEFORE the title; bb wanted them just above the button and reordered them with `order` and `:has()` / `:last-child` selectors, so the visual order no longer matched the DOM order (screen readers and keyboard users get the old one) and the selectors were brittle. New filter `pkde_kit/card_rating_position`: `above_button` (the default: after the title, the price and the short description, directly above the action row), `below_title` or `above_title` (the old look). The rating is a partial (`partials/card-rating`) printed in that place; in the `above_button` position `.pkde-product-card__rating--above-button` keeps the stars and the button together at the card's bottom, and a card without a rating keeps the button there on its own (`+ .pkde-product-actions { margin-top: 0 }`). **Default changed** from above the title to above the button for the kit's card. Checked on bb's live /shop/ (12 cards, 9 with a rating): with bb's three `order` rules removed and the stars put in the DOM above the actions, every card's geometry (stars to button 6px, button to the card's bottom 0, card height) equals bb's current look; DOM order is title, stars, button. tcs's card is its own copy (its stars stay above its title) and the new CSS only matches the new class, so it is untouched.

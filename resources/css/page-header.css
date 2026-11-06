@@ -95,3 +95,7 @@
   font: inherit;
   letter-spacing: inherit;
 }
+/* The 404 page's big numeral (views/404.blade.php): decoration, drawn here rather than printed as text. */
+.pkde-404-numeral::before {
+  content: "404";
+}

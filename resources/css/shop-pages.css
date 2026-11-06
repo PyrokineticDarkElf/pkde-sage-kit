@@ -309,6 +309,11 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     align-items: start;
   }
 }
+/* Chosen filter options read as chosen (tcs's rule, now the kit's): the label of a ticked option is heavier and in the ink colour. */
+#shop-filters label:has(input:checked) span:first-of-type {
+  font-weight: 500;
+  color: var(--pkde-shop-ink, var(--color-neutral-950));
+}
 /* The filters never outgrow the screen: long lists scroll inside their card, and the column floats only where it fits (--pkde-shop-sticky-top is the
    height of the site's sticky header plus a gap). */
 /* The 2px of vertical padding is not decoration: a line of text can reach past its line box (the font's ascent and descent are taller than the 20px
