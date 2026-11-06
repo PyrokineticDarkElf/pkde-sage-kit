@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.07.5
+
+- **The grid / list view toggle follows each site's brand colours (owner, MGR-77).** The buttons hard-coded neutrals: a neutral-500 hover border and a neutral-950 background with white text when pressed. They now use variables with brand fallbacks: `--pkde-view-toggle-border` (default `--pkde-shop-line`), `--pkde-view-toggle-color` (the idle icon, neutral-700), `--pkde-view-toggle-hover` (the hovered border, `--color-brand-600`), `--pkde-view-toggle-active-bg` (the pressed button and its border, `--color-brand-900`) and `--pkde-view-toggle-active-fg` (its icon, `--color-brand-900-fg`, white as the fallback, as for the TCS-95 buttons). The icons stay `currentColor`. Contrast checked on both sites (kit CSS applied to their live pages): tcs, pressed icon on the pressed button 15.0:1, hovered border on white 6.78:1, idle icon 10.4:1; bb, pressed 14.88:1, hovered border 4.66:1, idle 10.44:1 (text 4.5:1 and a graphical object 3:1 are the bars). A site that wants its primary button colour sets `--pkde-view-toggle-active-bg` and `-active-fg` to it.
+**Adopt:** bump the kit. A site's own `.pkde-view-toggle__button` colour overrides can go (tcs: its border and radius rule).
+
 ## 2026.11.07.4
 
 - **The filter lists cannot get a horizontal scrollbar either (owner follow-up on 2026.11.07.3).** The two leads were checked first on bb (before and after the fix) and tcs, at 1440: `scrollWidth` equals `clientWidth` on every list (187px beside the 11px vertical bar, 198px without it), no row, input, count badge or label reaches past the right padding, and no element in the lists is `position: absolute` (the checkbox is static), so neither (a) nor (b) was the cause: the 11px bar was the vertical one (scrollHeight 93 against clientHeight 92), and `overflow-x: hidden` on the lists did not remove it. `overflow-y: auto` does make `overflow-x` auto, so `#shop-filters ul` now sets `overflow-x: hidden` to keep it that way (it clips nothing that was visible: the box already clipped both axes). Vertical scroll for long lists is unchanged.

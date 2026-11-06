@@ -154,25 +154,29 @@
   display: inline-flex;
   gap: 0.25rem;
 }
+/* The grid / list buttons follow the site's brand (owner, MGR-77): variables, each with a brand-token fallback, so a site sets none and the toggle is in its
+   palette, not neutral grey. --pkde-view-toggle-border (default --pkde-shop-line), -color (the idle icon: neutral-700), -hover (the hovered border:
+   brand-600), -active-bg (the pressed button: brand-900) and -active-fg (its icon: the matching -fg token, white without it). The icons draw with
+   currentColor, so they take -color and -active-fg. */
 .pkde-view-toggle__button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid var(--pkde-shop-line, var(--color-neutral-300));
+  border: 1px solid var(--pkde-view-toggle-border, var(--pkde-shop-line, var(--color-neutral-300)));
   border-radius: var(--pkde-shop-radius, 999px);
   background: var(--pkde-shop-surface, var(--color-white));
-  color: var(--color-neutral-700);
+  color: var(--pkde-view-toggle-color, var(--color-neutral-700));
   cursor: pointer;
 }
 .pkde-view-toggle__button:hover {
-  border-color: var(--color-neutral-500);
+  border-color: var(--pkde-view-toggle-hover, var(--color-brand-600));
 }
 .pkde-view-toggle__button[aria-pressed="true"] {
-  border-color: var(--color-neutral-950);
-  background: var(--color-neutral-950);
-  color: var(--color-white);
+  border-color: var(--pkde-view-toggle-active-bg, var(--color-brand-900));
+  background: var(--pkde-view-toggle-active-bg, var(--color-brand-900));
+  color: var(--pkde-view-toggle-active-fg, var(--color-brand-900-fg, var(--color-white)));
 }
 .pkde-view-toggle__button:focus-visible {
   outline: 2px solid var(--color-brand-600, currentColor);

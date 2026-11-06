@@ -65,3 +65,12 @@ it('keeps the filter lists from showing a scrollbar they do not need, and keeps 
         ->and(file_get_contents("$root/resources/views/partials/sidebar-shop.blade.php"))->not->toContain('[&_ul]:space-y-2')
         ->and(file_get_contents("$root/resources/views/partials/shop-term-filter.blade.php"))->toContain('<ul class="grid gap-2 text-sm">');
 });
+
+it('draws the grid / list toggle in the site\'s brand through variables, with the icons in currentColor and no hard-coded neutral for the pressed state', function () use ($root) {
+    $css = file_get_contents("$root/resources/css/shop-pages.css");
+    $block = substr($css, strpos($css, '.pkde-view-toggle__button {'), 1500);
+
+    expect($block)->toContain('--pkde-view-toggle-border', '--pkde-view-toggle-color', '--pkde-view-toggle-hover', '--pkde-view-toggle-active-bg', '--pkde-view-toggle-active-fg', 'var(--color-brand-600)', 'var(--color-brand-900)', 'var(--color-brand-900-fg, var(--color-white))')
+        ->and($block)->not->toContain('--color-neutral-950')->not->toContain('--color-neutral-500')
+        ->and(file_get_contents("$root/app/woocommerce/view-toggle.php"))->toContain('currentColor');
+});
