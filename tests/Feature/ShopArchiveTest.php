@@ -74,3 +74,26 @@ it('draws the grid / list toggle in the site\'s brand through variables, with th
         ->and($block)->not->toContain('--color-neutral-950')->not->toContain('--color-neutral-500')
         ->and(file_get_contents("$root/app/woocommerce/view-toggle.php"))->toContain('currentColor');
 });
+
+it('puts the card\'s star rating where the site wants it in DOM order (default above the button), with no need for CSS order', function () use ($root) {
+    require_once "$root/app/woocommerce/card-rating.php";
+
+    expect(App\normalize_card_rating_position('above_title'))->toBe('above_title')
+        ->and(App\normalize_card_rating_position('below_title'))->toBe('below_title')
+        ->and(App\normalize_card_rating_position('above_button'))->toBe('above_button')
+        ->and(App\normalize_card_rating_position('left'))->toBe('above_button')
+        ->and(App\normalize_card_rating_position(null))->toBe('above_button')
+        ->and(App\CARD_RATING_POSITIONS)->toBe(['above_button', 'below_title', 'above_title']);
+
+    $card = file_get_contents("$root/resources/views/woocommerce/content-product.blade.php");
+    $css = file_get_contents("$root/resources/css/shop-pages.css");
+    $positionOf = fn(string $needle) => strpos($card, $needle);
+
+    expect($card)->toContain('\App\card_rating_position()')
+        ->and($positionOf("=== 'above_title'"))->toBeLessThan($positionOf('<h2'))
+        ->and($positionOf("=== 'below_title'"))->toBeGreaterThan($positionOf('<h2'))->toBeLessThan($positionOf('get_price_html'))
+        ->and($positionOf("=== 'above_button'"))->toBeGreaterThan($positionOf('get_price_html'))->toBeLessThan($positionOf('pkde-product-actions'))
+        ->and($css)->toContain('.pkde-product-card__rating--above-button {', '.pkde-product-card__rating--above-button + .pkde-product-actions {')
+        ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/card-rating.php')
+        ->and(file_get_contents("$root/docs/woocommerce-templates.md"))->toContain('pkde_kit/card_rating_position', 'above_button', 'below_title', 'above_title');
+});

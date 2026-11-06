@@ -66,6 +66,14 @@
   margin-top: auto;
   padding-top: 0.5rem;
 }
+/* The stars above the button (the default position, App\card_rating_position()): they and the action row stay together at the card's bottom, so a card
+   without a rating keeps the button there on its own and no site reorders the markup with CSS `order`. */
+.pkde-product-card__rating--above-button {
+  margin-top: auto;
+}
+.pkde-product-card__rating--above-button + .pkde-product-actions {
+  margin-top: 0;
+}
 .pkde-product-actions > a {
   display: inline-flex;
   flex: 1 1 auto;

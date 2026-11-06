@@ -40,10 +40,9 @@
   </div>
 
   <div class="pkde-product-card__body flex flex-1 flex-col gap-1.5">
-    @if (wc_review_ratings_enabled() && $product->get_rating_count() > 0)
-      <div class="text-xs text-amber-700">
-        {!! wc_get_rating_html($product->get_average_rating()) !!}
-      </div>
+    @php($ratingPosition = \App\card_rating_position())
+    @if ($ratingPosition === 'above_title')
+      @include('pkde-kit::partials.card-rating', ['position' => $ratingPosition])
     @endif
 
     <h2 class="font-display text-lg font-semibold leading-snug tracking-[-0.02em]">
@@ -52,6 +51,10 @@
       </a>
     </h2>
     @php(do_action('woocommerce_shop_loop_item_title'))
+
+    @if ($ratingPosition === 'below_title')
+      @include('pkde-kit::partials.card-rating', ['position' => $ratingPosition])
+    @endif
 
     <div class="text-sm text-[color:var(--pkde-card-content)] opacity-75">
       {!! $product->get_price_html() !!}
@@ -63,6 +66,10 @@
     @php($excerpt = trim(html_entity_decode(wp_strip_all_tags((string) $product->get_short_description()), ENT_QUOTES | ENT_HTML5, 'UTF-8')))
     @if ($excerpt !== '')
       <p class="pkde-product-card__excerpt text-sm text-neutral-600">{{ wp_trim_words($excerpt, 30, '…') }}</p>
+    @endif
+
+    @if ($ratingPosition === 'above_button')
+      @include('pkde-kit::partials.card-rating', ['position' => $ratingPosition])
     @endif
 
     {{-- The action row (pkde-product-actions, resources/css/shop-pages.css): the add-to-cart button, and "View basket" (a.added_to_cart.wc-forward),
