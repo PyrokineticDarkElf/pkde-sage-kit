@@ -299,9 +299,14 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 }
 /* The filters never outgrow the screen: long lists scroll inside their card, and the column floats only where it fits (--pkde-shop-sticky-top is the
    height of the site's sticky header plus a gap). */
+/* The 2px of vertical padding is not decoration: a line of text can reach past its line box (the font's ascent and descent are taller than the 20px
+   line height: bb's serif text sits 0.5px below the last row), and in a scroll container that half pixel is rounded up to a scrollable pixel, so a short
+   list showed a scrollbar it did not need (owner, bb: 3 rows, scrollHeight 93 against clientHeight 92). The padding is inside the scrollable area, so the
+   spill no longer overflows, a long list still scrolls, and the margin is reduced by the same 2px so nothing moves. */
 #shop-filters ul {
   max-height: 14rem;
-  margin-top: 0.75rem;
+  margin-top: calc(0.75rem - 2px);
+  padding-block: 2px;
   padding-right: 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;

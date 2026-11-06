@@ -53,7 +53,7 @@
 
 <aside
   id="shop-filters"
-  class="hidden space-y-8 lg:block [&_ul]:mt-3 [&_ul]:space-y-2 [&_ul]:text-sm [&_li]:list-none [&_a]:text-neutral-600 [&_a:hover]:text-neutral-900 [&_.count]:ml-1 [&_.count]:text-neutral-400"
+  class="hidden space-y-8 lg:block [&_ul]:mt-3 [&_ul]:text-sm [&_li]:list-none [&_a]:text-neutral-600 [&_a:hover]:text-neutral-900 [&_.count]:ml-1 [&_.count]:text-neutral-400"
 >
   @php($filterTaxonomies = \App\ShopFilters::taxonomies())
   <form method="get" action="{{ $filterAction }}" class="space-y-4" data-shop-filters>
