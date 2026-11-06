@@ -228,7 +228,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
    the products, from tcs). The look follows these variables, each with a kit-token fallback, so a site sets a few on :root instead of
    restyling: --pkde-shop-line (rules and borders), --pkde-shop-muted (body text), --pkde-shop-ink (headings, the current page),
    --pkde-shop-accent (the + / - mark and the filters heading), --pkde-shop-surface (panels and pills), --pkde-shop-radius (pills),
-   --pkde-shop-panel-radius (the filter panels), --pkde-shop-gap (between products and columns), --pkde-shop-filters-width (the filter column), --pkde-shop-sticky-top (where the filter column sticks), --pkde-shop-heading-weight (headings inside a term description: 600, a light brand sets 300). */
+   --pkde-shop-panel-radius (the filter panels), --pkde-shop-gap (between products and columns), --pkde-shop-filters-width (the filter column), --pkde-shop-sticky-top (where the filter column sticks), --pkde-shop-heading-weight (headings inside a term description: 600, a light brand sets 300), --pkde-shop-columns / -columns-tablet / -columns-phone
+   (the product grid: 4, 3, 2), --pkde-shop-pad-top (space above the filters and results: 1rem). */
 .pkde-term-description {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   border-block: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
@@ -287,7 +288,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 .shop-archive {
   display: grid;
   gap: 2rem;
-  padding-block: 1rem clamp(3rem, 7vw, 6rem);
+  padding-block: var(--pkde-shop-pad-top, 1rem) clamp(3rem, 7vw, 6rem);
 }
 @media (min-width: 1024px) {
   .shop-archive {
@@ -336,9 +337,26 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   font-size: 0.8rem;
   color: var(--pkde-shop-ink, var(--color-neutral-950));
 }
-.shop-archive__results ul.products {
+/* The product grid has a FIXED number of columns, the same on every site (owner, MGR-77 parity): --pkde-shop-columns from 1280px (the filter column
+   beside the results; default 4), --pkde-shop-columns-tablet from 640px (3), --pkde-shop-columns-phone below (2). The count no longer drifts with the
+   results width, the gap, the root font size or the filter column, and WooCommerce's own "products per row" class (columns-4) and a site's rules for
+   it do not change it: the selector is more specific than any `.woocommerce ul.products.columns-N` rule. */
+.shop-archive__results {
+  --pkde-shop-cols: var(--pkde-shop-columns-phone, 2);
+}
+@media (min-width: 640px) {
+  .shop-archive__results {
+    --pkde-shop-cols: var(--pkde-shop-columns-tablet, 3);
+  }
+}
+@media (min-width: 1280px) {
+  .shop-archive__results {
+    --pkde-shop-cols: var(--pkde-shop-columns, 4);
+  }
+}
+.shop-archive .shop-archive__results ul.products.products[class] {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.5rem), 1fr));
+  grid-template-columns: repeat(var(--pkde-shop-cols), minmax(0, 1fr));
   gap: 2.25rem var(--pkde-shop-gap, 1.5rem);
   margin: 0;
   padding: 0;

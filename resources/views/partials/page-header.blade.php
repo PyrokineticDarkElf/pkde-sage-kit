@@ -6,7 +6,7 @@
 --}}
 @php($intro = is_string($intro ?? null) ? $intro : (function_exists('App\\page_header_intro') ? \App\page_header_intro() : ''))
 <div class="page-header">
-  <div class="{{ \App\container_class('mx-auto max-w-content px-[var(--page-gutter,1.5rem)] py-14 sm:py-16', 'page-header') }}">
+  <div class="{{ \App\container_class('mx-auto max-w-content px-[var(--page-gutter,1.5rem)]', 'page-header') }} page-header__inner">
     @include('pkde-kit::partials.breadcrumbs')
     <h1 class="mt-3 max-w-3xl font-display text-4xl leading-tight sm:text-5xl">{!! $title !!}</h1>
     @if (trim($intro) !== '')

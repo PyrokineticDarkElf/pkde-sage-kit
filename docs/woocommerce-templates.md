@@ -140,10 +140,14 @@ Markup (BEM, so a site targets it without the `woocommerce` class, which the lis
 | `--pkde-shop-surface` | background of the sort, pills and filter panels | `--color-white` |
 | `--pkde-shop-radius` | sort, pagination and view buttons | `999px` |
 | `--pkde-shop-panel-radius` | the filter panels | `20px` |
-| `--pkde-shop-gap` | column gap between products | `1.5rem` |
 | `--pkde-shop-filters-width` | the filter column from 1024px | `15rem` |
 | `--pkde-shop-sticky-top` | where the filter column sticks (the sticky header's height plus a gap) | `5.5rem` |
 | `--pkde-shop-heading-weight` | headings inside a term description (a light brand sets 300) | `600` |
+| `--pkde-shop-columns` | product grid columns from 1280px (the filter column beside the results) | `4` |
+| `--pkde-shop-columns-tablet` | product grid columns from 640px to 1279px | `3` |
+| `--pkde-shop-columns-phone` | product grid columns below 640px | `2` |
+| `--pkde-shop-pad-top` | space above the filters and the results | `1rem` |
+| `--pkde-shop-gap` | column gap between products (the same on every site; a site that wants more sets it) | `1.5rem` |
 
 **Hooks** (a site adds them in its own code):
 
@@ -167,3 +171,5 @@ links, otherwise archives and searches link to `?sage_view=sale|new` and curated
 * **Markup and filter:** `.pkde-badge.pkde-badge--sale|new`; `pkde_kit/product_badges` (list of badges, product) adds, removes or reorders a badge.
 * **Look, on `:root`** (each with a kit-token fallback): `--pkde-badge-sale-bg`, `--pkde-badge-sale-fg`, `--pkde-badge-new-bg`, `--pkde-badge-new-fg`, `--pkde-badge-radius` (999px), `--pkde-badge-size` (0.625rem), `--pkde-badge-weight` (600), `--pkde-badge-tracking` (0.14em), `--pkde-badge-padding`, `--pkde-badge-top`, `--pkde-badge-inset`.
 * **Category tile image:** `\App\category_tile_image($attachmentId, $url, $alt, $class, $sizes)` renders a tile photo through the media library (width, height, srcset, sizes; an attachment id, or the URL of an original or a resized upload) and falls back to a plain lazy `<img>`; pair it with `\App\category_menu_image($termId)` for the most popular product's photograph. The kit's own tiles are unchanged; a site's own tile design calls the helper.
+
+**The grid has a fixed column count** (kit 2026.11.06.6 or later): 4 from 1280px, 3 from 640px, 2 below, the same on every site. It no longer follows the results width, the gap, the root font size or the filter column, and WooCommerce's own "products per row" class (`columns-4`) and a site's rules for it do not change it. At 1440 a card is 216px wide (4 columns, 24px gap, the 240px filter column), at 1024 it is 211px (3 columns). A site that wants another count sets `--pkde-shop-columns`.
