@@ -1,3 +1,4 @@
+import './cart-badge.js';
 import './cart-count.js';
 import './carousel.js';
 import './lightbox.js';
