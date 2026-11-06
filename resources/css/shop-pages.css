@@ -367,6 +367,16 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   width: auto;
   margin: 0;
 }
+/* A Shop page whose content is the Shop products block inside a Section (tcs's was: a Section, a group hidden on every device, then the block) would
+   stack the Section's own top padding (theme.json, 72px) and the block gap (48px) above the filters: 120px that bb's page (the archive straight
+   under the header) does not have. When the Section holds nothing visible but the archive, the space above the filters is the kit's alone
+   (--pkde-shop-pad-top). A Section with real content before the archive keeps its spacing. */
+.wp-block-sage-section:has(> .wp-block-sage-shop-products):not(:has(> :not(.wp-block-sage-shop-products, .wp-block-hidden-desktop.wp-block-hidden-tablet.wp-block-hidden-mobile))) {
+  padding-top: 0;
+}
+.wp-block-sage-section:has(> .wp-block-sage-shop-products):not(:has(> :not(.wp-block-sage-shop-products, .wp-block-hidden-desktop.wp-block-hidden-tablet.wp-block-hidden-mobile))) > .wp-block-sage-shop-products {
+  margin-block-start: 0;
+}
 /* Pagination in one row, centred: the shop's (WooCommerce's <nav class="woocommerce-pagination">) and the blog's (partials/post-grid prints
    <nav class="pkde-pagination"> around paginate_links()), one look. The kit's generic pagination is a flex container, which would shrink the
    list to one item wide here. The blog's previous and next hold a screen-reader label beside the arrow, so its pills are the direct a / span. */

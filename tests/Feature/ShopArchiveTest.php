@@ -48,3 +48,10 @@ it('takes the page header\'s space from variables and keeps a site\'s paragraph 
     expect($css)->toContain('--pkde-page-header-padding:', '--pkde-page-header-padding-lg:', '.page-header__inner', '.breadcrumbs p', 'font: inherit')
         ->and($view)->toContain('page-header__inner')->not->toContain('py-14');
 });
+
+it('keeps a Section that holds only the Shop products block from stacking its padding and block gap above the filters (tcs Shop page)', function () use ($root) {
+    $css = file_get_contents("$root/resources/css/shop-pages.css");
+
+    expect($css)->toContain('.wp-block-sage-section:has(> .wp-block-sage-shop-products):not(:has(> :not(.wp-block-sage-shop-products, .wp-block-hidden-desktop.wp-block-hidden-tablet.wp-block-hidden-mobile)))', 'padding-top: 0;', 'margin-block-start: 0;')
+        ->and($css)->toContain('ul.products.products[class]');
+});

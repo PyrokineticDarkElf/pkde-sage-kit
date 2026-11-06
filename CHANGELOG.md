@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.07.1
+
+- **Fix: 120px of extra space above the filters on tcs's Shop page (owner: "more top padding on tcs").** Measured on /shop/ at 1440 (both sites, kit 2026.11.07): the band is 217px on both, the notices row 32px on both, the archive's own 16px on both, and then tcs had 120px more. The element: tcs's Shop page CONTENT is a `wp-block-sage-section` that holds a group hidden on every device (`wp-block-hidden-desktop wp-block-hidden-tablet wp-block-hidden-mobile`, 0px high) and then the `wp-block-sage-shop-products` block. The Section carries theme.json's padding (`:root :where(.wp-block-sage-section) { padding-top: var(--wp--preset--spacing--section) }`, 72px) and its block gap (`:root :where(.wp-block-sage-section-is-layout-constrained) > * { margin-block-start: var(--wp--preset--spacing--l) }`, 48px, which also lands on the block because the hidden group is a sibling, not a margin collapse); bb's Shop page is the archive straight under the header, no Section. A product category archive was already equal (127px from the band to the filters title on both). A Section that holds only the archive (and blocks hidden on every device) now has no top padding and the archive no top block gap, so the space above the filters is `--pkde-shop-pad-top` alone: tcs's /shop/ goes from 168px to 48px from the band to the filters title, the same as bb's. A Section with visible content before the archive keeps its spacing.
+- **bb's `.page-content .woocommerce.columns-4 ul.products` rule (the home Featured block, restored in bb f218ca4) cannot change the archive grid:** with the rule loaded and `woocommerce columns-4` put on the archive wrapper so that it matches the archive's list, the grid stays at 3 columns at 1024 (the kit's selector is 0,5,1, the rule 0,4,1). Test added.
+**Adopt:** bump the kit. tcs content (optional, cleaner): on its Shop page delete the Section wrapper and the hidden group, leaving the Shop products block (or nothing: the archive is appended when the block is missing).
+
 ## 2026.11.07
 
 Owner questions on MGR-77 parity, answered in the browser on tcs and bb (both local, kit 2026.11.06.5).
