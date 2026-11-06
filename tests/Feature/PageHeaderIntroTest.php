@@ -48,6 +48,58 @@ it('prints the intro under the H1 and styles it with --pkde-page-header-intro* v
 
     expect($view)->toContain('page-header__intro', '$intro')
         ->and($css)->toContain('--pkde-page-header-intro:', '--pkde-page-header-intro-size:', '--pkde-page-header-intro-max-width:', '.page-header__intro')
-        ->and(file_get_contents("$root/app/View/Composers/Post.php"))->toContain('public function intro()')
+        ->and($view)->toContain('App\\page_header_intro')
         ->and(file_get_contents("$root/resources/views/category.blade.php"))->not->toContain('partials.term-description');
+});
+
+/**
+ * Renders the REAL page header partial with Illuminate's view factory. Kit 2026.11.05.3 printed an empty intro element under every header
+ * because the Post composer handed `intro()` over as a public method (Acorn passes those as callable objects, always "set").
+ */
+function render_page_header(array $data): string
+{
+    $root = dirname(__DIR__, 2);
+    $stubs = sys_get_temp_dir() . '/pkde-header-' . bin2hex(random_bytes(4));
+    mkdir("$stubs/partials", 0777, true);
+    file_put_contents("$stubs/partials/breadcrumbs.blade.php", '<nav class="breadcrumbs">crumbs</nav>');
+
+    if (! function_exists('wp_kses_post')) {
+        eval('function wp_kses_post($html) { return $html; }');
+    }
+    if (! function_exists('App\container_class')) {
+        eval('namespace App; function container_class($default, $context = "") { return $default; }');
+    }
+
+    $files = new Illuminate\Filesystem\Filesystem();
+    $compiled = "$stubs/compiled";
+    mkdir($compiled);
+    $blade = new Illuminate\View\Compilers\BladeCompiler($files, $compiled);
+    $resolver = new Illuminate\View\Engines\EngineResolver();
+    $resolver->register('blade', fn() => new Illuminate\View\Engines\CompilerEngine($blade, $files));
+    $finder = new Illuminate\View\FileViewFinder($files, []);
+    $finder->addNamespace('pkde-kit', ["$stubs", "$root/resources/views"]);
+    $factory = new Illuminate\View\Factory($resolver, $finder, new Illuminate\Events\Dispatcher());
+    $factory->addExtension('blade.php', 'blade');
+    $html = $factory->make('pkde-kit::partials.page-header', $data)->render();
+
+    $files->deleteDirectory($stubs);
+
+    return $html;
+}
+
+it('renders a page header with no intro element when the intro is empty, and one when it has text', function () {
+    $none = render_page_header(['title' => 'Our Blog', 'intro' => '']);
+
+    expect($none)->toContain('<h1', 'Our Blog')->not->toContain('page-header__intro');
+
+    $with = render_page_header(['title' => 'Our Blog', 'intro' => '<p>Short notes.</p>']);
+
+    expect($with)->toContain('<div class="page-header__intro mt-4"><p>Short notes.</p></div>');
+});
+
+it('never hands the intro to the view as a composer method (Acorn passes public methods as always-set objects)', function () {
+    $composer = file_get_contents(dirname(__DIR__, 2) . '/app/View/Composers/Post.php');
+
+    expect($composer)->not->toMatch('/function\s+intro\s*\(/')
+        ->and($composer)->not->toMatch('/function\s+with\s*\(/');
 });

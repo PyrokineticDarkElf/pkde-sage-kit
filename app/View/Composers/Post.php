@@ -59,19 +59,6 @@ class Post extends Composer
     }
 
     /**
-     * The page header's optional intro line (HTML, '' for none): the posts page's excerpt, or a term's description where no toggle prints it.
-     * Only the page header asks; see app/page-header.php.
-     */
-    public function intro(): string
-    {
-        if (! str_ends_with($this->view->name(), 'partials.page-header') || ! function_exists('App\page_header_intro')) {
-            return '';
-        }
-
-        return \App\page_header_intro();
-    }
-
-    /**
      * Retrieve the pagination links.
      */
     public function pagination(): string
