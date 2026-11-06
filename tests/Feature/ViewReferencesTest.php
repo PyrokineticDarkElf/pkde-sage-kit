@@ -63,14 +63,11 @@ it('keeps no un-namespaced partial or component reference that would resolve onl
 });
 
 it('marks the Sale and New badge links nofollow, so crawlers do not follow every card into the same filtered views', function () {
-    $view = file_get_contents(dirname(__DIR__, 2) . '/resources/views/woocommerce/content-product.blade.php');
+    $view = file_get_contents(dirname(__DIR__, 2) . '/resources/views/partials/product-badges.blade.php');
 
-    preg_match_all("/<a href=\"\{\{ add_query_arg\('sage_view', '(?:sale|new)'[^>]*>/", $view, $links);
+    preg_match_all('/<a href="\{\{ \$badge\[\'url\'\] \}\}"[^>]*>/', $view, $links);
 
-    expect($links[0])->toHaveCount(2);
-    foreach ($links[0] as $link) {
-        expect($link)->toContain('rel="nofollow"');
-    }
+    expect($links[0])->toHaveCount(1)->and($links[0][0])->toContain('rel="nofollow"');
 });
 
 it('keeps amber text and white-on-amber markers at 700 or darker, the lightest step that clears 4.5:1 on a white or light card', function () {

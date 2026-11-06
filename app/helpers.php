@@ -331,3 +331,5 @@ require_once __DIR__ . '/page-header.php';
 require_once __DIR__ . '/single-post.php';
 
 require_once __DIR__ . '/breadcrumbs.php';
+
+require_once __DIR__ . '/tile-image.php';

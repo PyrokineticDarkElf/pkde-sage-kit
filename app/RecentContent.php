@@ -25,6 +25,22 @@ class RecentContent
         'product' => 4,
     ];
 
+    /**
+     * The counts, per post type (`pkde_kit/recent_counts` may change them; a type that is not listed has no "New").
+     *
+     * @return array<string, int>
+     */
+    public static function counts(): array
+    {
+        return function_exists('apply_filters') ? (array) apply_filters('pkde_kit/recent_counts', self::RECENT_COUNTS) : self::RECENT_COUNTS;
+    }
+
+    /** The "New" window in days for a post type (`pkde_kit/new_badge_days`, default 0 = off: the N newest items count instead). */
+    public static function days(string $postType): int
+    {
+        return function_exists('apply_filters') ? max(0, (int) apply_filters('pkde_kit/new_badge_days', 0, $postType)) : 0;
+    }
+
     /** @var array<string, int[]> Per-post-type recent-ID lists, computed once per request. */
     private static array $cache = [];
 
@@ -32,7 +48,7 @@ class RecentContent
     {
         $postType ??= get_post_type($postId);
 
-        if (! $postType || ! isset(self::RECENT_COUNTS[$postType])) {
+        if (! $postType || ! isset(self::counts()[$postType])) {
             return false;
         }
 
@@ -43,10 +59,13 @@ class RecentContent
     public static function recentIds(string $postType): array
     {
         if (! isset(self::$cache[$postType])) {
+            $days = self::days($postType);
             self::$cache[$postType] = get_posts([
                 'post_type' => $postType,
                 'post_status' => 'publish',
-                'posts_per_page' => self::RECENT_COUNTS[$postType],
+                // N days: everything published in that window (capped); otherwise the N newest.
+                'posts_per_page' => $days > 0 ? 50 : max(1, (int) (self::counts()[$postType] ?? 1)),
+                'date_query' => $days > 0 ? [['after' => $days . ' days ago']] : [],
                 'orderby' => 'date',
                 'order' => 'DESC',
                 'fields' => 'ids',

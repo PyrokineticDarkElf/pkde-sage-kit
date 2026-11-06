@@ -25,21 +25,7 @@
   <div class="pkde-product-card__media relative block overflow-hidden rounded-2xl bg-neutral-100">
     @php(do_action('woocommerce_before_shop_loop_item_title'))
 
-    @if ($product->is_on_sale())
-      @if ($badgeLinks)
-        <a href="{{ add_query_arg('sage_view', 'sale', wc_get_page_permalink('shop')) }}" rel="nofollow" aria-label="{{ sprintf(__('%1$s: %2$s (see all products on sale)', 'sage'), __('Sale', 'sage'), $product->get_name()) }}" class="absolute left-3 top-3 z-10 rounded-full bg-neutral-950 px-3 py-1 text-[11px] font-semibold text-white">{{ __('Sale', 'sage') }}</a>
-      @else
-        <span class="absolute left-3 top-3 z-10 rounded-full bg-neutral-950 px-3 py-1 text-[11px] font-semibold text-white">{{ __('Sale', 'sage') }}<span class="sr-only">: {{ $product->get_name() }}</span></span>
-      @endif
-    @endif
-
-    @if (\App\RecentContent::isNew($productId, 'product'))
-      @if ($badgeLinks)
-        <a href="{{ add_query_arg('sage_view', 'new', wc_get_page_permalink('shop')) }}" rel="nofollow" aria-label="{{ sprintf(__('%1$s: %2$s (see the newest products)', 'sage'), __('New', 'sage'), $product->get_name()) }}" class="absolute right-3 top-3 z-10 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">{{ __('New', 'sage') }}</a>
-      @else
-        <span class="absolute right-3 top-3 z-10 rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">{{ __('New', 'sage') }}<span class="sr-only">: {{ $product->get_name() }}</span></span>
-      @endif
-    @endif
+    @include('pkde-kit::partials.product-badges', ['links' => $badgeLinks])
 
     {{-- The picture link repeats the title link below it: hidden from assistive tech and the tab order (axe link-name). --}}
     <a aria-hidden="true" tabindex="-1" href="{{ get_permalink($productId) }}" class="block">

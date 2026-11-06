@@ -156,3 +156,14 @@ Markup (BEM, so a site targets it without the `woocommerce` class, which the lis
 
 The toggle is printed once, above the layout; the copy WooCommerce would print inside the product list is removed there. A site view that calls
 `woocommerce_content()` without these partials still gets the toggle inside the list (`App\term_toggle()`).
+
+## Sale and New badges, and the category tile image (MGR-77)
+
+`partials/product-badges` is the one place the Sale and New badges are drawn: the kit's card includes it, and a site's own card includes it too
+(`@include('pkde-kit::partials.product-badges', ['product' => $product])` inside the picture's box, which is `position: relative`; `'links' => true|false` to force
+links, otherwise archives and searches link to `?sage_view=sale|new` and curated rows do not). The product page can print them in a `.product-badges` wrapper.
+
+* **When New shows:** the N newest products (4; `pkde_kit/recent_counts` changes the counts per post type) or, with `pkde_kit/new_badge_days` above 0 (filter, `int $days`, `string $postType`), the products published within that many days. The `?sage_view=new` list follows the same rule. Sale: the product is on sale.
+* **Markup and filter:** `.pkde-badge.pkde-badge--sale|new`; `pkde_kit/product_badges` (list of badges, product) adds, removes or reorders a badge.
+* **Look, on `:root`** (each with a kit-token fallback): `--pkde-badge-sale-bg`, `--pkde-badge-sale-fg`, `--pkde-badge-new-bg`, `--pkde-badge-new-fg`, `--pkde-badge-radius` (999px), `--pkde-badge-size` (0.625rem), `--pkde-badge-weight` (600), `--pkde-badge-tracking` (0.14em), `--pkde-badge-padding`, `--pkde-badge-top`, `--pkde-badge-inset`.
+* **Category tile image:** `\App\category_tile_image($attachmentId, $url, $alt, $class, $sizes)` renders a tile photo through the media library (width, height, srcset, sizes; an attachment id, or the URL of an original or a resized upload) and falls back to a plain lazy `<img>`; pair it with `\App\category_menu_image($termId)` for the most popular product's photograph. The kit's own tiles are unchanged; a site's own tile design calls the helper.

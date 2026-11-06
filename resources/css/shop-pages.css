@@ -1060,3 +1060,37 @@ body.woocommerce-cart .cart-collaterals .cart_totals {
     }
   }
 }
+
+/* Sale and New badges (partials/product-badges, from tcs): on the card's picture and over the product page's gallery. Variables, each with a kit-token
+   fallback: --pkde-badge-sale-bg, -sale-fg, -new-bg, -new-fg (colours), -radius, -size, -weight, -tracking, -padding, -top, -inset. */
+.pkde-badge {
+  position: absolute;
+  z-index: 2;
+  top: var(--pkde-badge-top, 0.8rem);
+  padding: var(--pkde-badge-padding, 0.3rem 0.65rem);
+  border-radius: var(--pkde-badge-radius, 999px);
+  font: var(--pkde-badge-weight, 600) var(--pkde-badge-size, 0.625rem) / 1 var(--font-display, inherit), system-ui, sans-serif;
+  letter-spacing: var(--pkde-badge-tracking, 0.14em);
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.pkde-badge--sale {
+  left: var(--pkde-badge-inset, 0.65rem);
+  background: var(--pkde-badge-sale-bg, var(--color-neutral-950));
+  color: var(--pkde-badge-sale-fg, var(--color-white));
+}
+.pkde-badge--new {
+  right: var(--pkde-badge-inset, 0.65rem);
+  background: var(--pkde-badge-new-bg, var(--color-brand-600));
+  color: var(--pkde-badge-new-fg, var(--color-brand-600-fg, var(--color-white)));
+}
+a.pkde-badge:hover,
+a.pkde-badge:focus-visible {
+  filter: brightness(0.96);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* In a row of badges (the product page prints them in a .product-badges wrapper) they flow instead of sitting on the corners. */
+.product-badges .pkde-badge {
+  position: static;
+}
