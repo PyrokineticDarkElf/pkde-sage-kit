@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.06.4
+
+- **The kit no longer builds its own breadcrumb trail (owner correction to 2026.11.06.3: "not needed").** Removed: the fallback trail for a site without Rank Math's breadcrumbs (`breadcrumb_crumbs()`, `breadcrumb_markup()`, `breadcrumb_context()`). Kept: Rank Math forced to the standard (" / ", "Home", the page as the last crumb, ancestors and the blog page shown; its BreadcrumbList schema stays), the theme support that keeps Rank Math's module on, `pkde_kit/breadcrumb_standard` and `pkde_kit/force_rank_math_breadcrumbs`, and the WooCommerce fallback on shop pages, which is WooCommerce's own trail with " / " between the crumbs, as before 2026.11.06.3. `partials/breadcrumbs` prints Rank Math's trail, else WooCommerce's, else nothing. A site without Rank Math has no trail outside the shop.
+**Adopt:** bump the kit. Nothing else.
+
+
 ## 2026.11.06.3
 
 Owner decisions on MGR-77 parity: the kit owns the breadcrumbs, and brand styles come only from each site's theme variables.

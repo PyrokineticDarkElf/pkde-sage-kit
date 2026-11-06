@@ -6,10 +6,7 @@ The trail is the same on every site, whatever its Rank Math settings: `Home / Bl
   `rank_math/frontend/breadcrumb/settings` and `/strings` (separator `/`, label `Home`, the current page as the last crumb, ancestors and the blog page
   shown, no prefix, its English formats for the 404, search and archive crumbs), and declares theme support for `rank-math-breadcrumbs`, which is how Rank
   Math decides the module is on, so the wp-admin switch no longer matters.
-* **Rank Math absent (or `pkde_kit/force_rank_math_breadcrumbs` false and the module off):** the kit builds the trail itself, in the same markup
-  (`<nav aria-label="breadcrumbs" class="rank-math-breadcrumb"><p><a>Home</a><span class="separator"> / </span> ... <span class="last">Title</span></p></nav>`),
-  for posts, pages, categories, tags, taxonomies, the posts page, authors, dates, search, 404 and paged lists; on shop pages from WooCommerce's own crumbs.
-  It prints no schema.
+* **No kit-built trail** (owner, 2026-11-06: not needed). On shop pages WooCommerce's own trail, with " / " between the crumbs, is the fallback when Rank Math prints none; elsewhere there is none. The drift check says when Rank Math's module is off.
 * The partial `partials/breadcrumbs` (`\App\breadcrumb_trail_html()`) is the only place a trail is printed; the page header and the blog single use it.
 
 Hooks: `pkde_kit/breadcrumb_standard` (array `settings`, `strings`), `pkde_kit/force_rank_math_breadcrumbs` (bool), `pkde_kit/breadcrumb_html` (string).
