@@ -1,3 +1,5 @@
+{{-- No header at all when there is no heading and no "View all" link (the kit printed an empty h2 there; tcs found it, MGR-77 parity). --}}
+@if (trim((string) ($heading ?? '')) !== '' || ! empty($viewAllUrl))
 {{--
   Shared section header for every "loop" block (Recent Posts, Featured
   Posts, Product Categories, Brands, Recent Products, Best Selling
@@ -54,3 +56,4 @@
     ])>{{ $description }}</p>
   @endif
 </div>
+@endif

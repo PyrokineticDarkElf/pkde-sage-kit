@@ -102,7 +102,7 @@ html {
 .post-body__text :where(h2, h3, h4) {
   margin: 2.5rem 0 0.75rem;
   font-family: var(--pkde-post-heading-font, var(--font-display, inherit)), system-ui, sans-serif;
-  font-weight: var(--pkde-post-heading-weight, 300);
+  font-weight: var(--pkde-post-heading-weight, 600);
   letter-spacing: -0.01em;
   line-height: 1.25;
   color: var(--pkde-post-ink, var(--color-neutral-950));

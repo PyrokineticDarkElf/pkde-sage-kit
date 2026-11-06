@@ -228,7 +228,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
    the products, from tcs). The look follows these variables, each with a kit-token fallback, so a site sets a few on :root instead of
    restyling: --pkde-shop-line (rules and borders), --pkde-shop-muted (body text), --pkde-shop-ink (headings, the current page),
    --pkde-shop-accent (the + / - mark and the filters heading), --pkde-shop-surface (panels and pills), --pkde-shop-radius (pills),
-   --pkde-shop-panel-radius (the filter panels), --pkde-shop-gap (between products and columns), --pkde-shop-filters-width (the filter column), --pkde-shop-sticky-top (where the filter column sticks). */
+   --pkde-shop-panel-radius (the filter panels), --pkde-shop-gap (between products and columns), --pkde-shop-filters-width (the filter column), --pkde-shop-sticky-top (where the filter column sticks), --pkde-shop-heading-weight (headings inside a term description: 600, a light brand sets 300). */
 .pkde-term-description {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   border-block: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
@@ -274,7 +274,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 }
 .pkde-term-description .term-description :where(h2, h3, h4) {
   margin: 1.75rem 0 0.5rem;
-  font-weight: 300;
+  font-weight: var(--pkde-shop-heading-weight, 600);
   color: var(--pkde-shop-ink, var(--color-neutral-950));
 }
 /* Descriptions pasted with their own colours read in the theme colour. */

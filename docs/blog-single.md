@@ -55,7 +55,7 @@ Each has a kit-token fallback, so a site that sets none still looks right (`reso
 | `--pkde-post-accent` | links in the text, the contents heading and active mark | `--color-brand-700` |
 | `--pkde-post-surface` | pill and panel background | `--color-white` |
 | `--pkde-post-title-weight`, `--pkde-post-title-size` | the H1 | the page header's weight, `clamp(2.2rem, 4.4vw, 3.8rem)` |
-| `--pkde-post-heading-weight` | h2 to h4 in the text | 300 |
+| `--pkde-post-heading-weight` | h2 to h4 in the text (a light brand sets 300) | 600 |
 | `--pkde-post-text-size` | the reading text | 1.0625rem |
 | `--pkde-post-measure` | text column width | 44rem |
 | `--pkde-post-rail-width`, `--pkde-post-sticky-top` | the contents rail, where it sticks | 15rem, 6.5rem |

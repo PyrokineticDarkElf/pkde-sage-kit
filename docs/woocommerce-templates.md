@@ -143,6 +143,7 @@ Markup (BEM, so a site targets it without the `woocommerce` class, which the lis
 | `--pkde-shop-gap` | column gap between products | `1.5rem` |
 | `--pkde-shop-filters-width` | the filter column from 1024px | `15rem` |
 | `--pkde-shop-sticky-top` | where the filter column sticks (the sticky header's height plus a gap) | `5.5rem` |
+| `--pkde-shop-heading-weight` | headings inside a term description (a light brand sets 300) | `600` |
 
 **Hooks** (a site adds them in its own code):
 

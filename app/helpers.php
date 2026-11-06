@@ -329,3 +329,5 @@ add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters(
 require_once __DIR__ . '/page-header.php';
 
 require_once __DIR__ . '/single-post.php';
+
+require_once __DIR__ . '/breadcrumbs.php';

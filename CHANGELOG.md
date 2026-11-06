@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.06.3
+
+Owner decisions on MGR-77 parity: the kit owns the breadcrumbs, and brand styles come only from each site's theme variables.
+
+- **Breadcrumbs are the kit's (`app/breadcrumbs.php`, `docs/breadcrumbs.md`).** Rank Math's trail is forced to one standard through `rank_math/frontend/breadcrumb/settings` and `/strings` (separator " / ", label "Home", the page as the last crumb, ancestors and the blog page shown, no prefix), so no site setting changes it, and its BreadcrumbList schema stays. The kit also declares theme support for `rank-math-breadcrumbs` (Rank Math's own switch for the module), so the wp-admin setting no longer decides whether there is a trail; and without Rank Math the kit builds the same trail itself, in the same markup (posts, pages, categories, tags, taxonomies, the posts page, authors, dates, search, 404, paged lists; WooCommerce's own crumbs on shop pages). `partials/breadcrumbs` has one source for all of it. Filters: `pkde_kit/breadcrumb_standard`, `pkde_kit/force_rank_math_breadcrumbs`, `pkde_kit/breadcrumb_html`. Checked on the template stack with Rank Math on (its site separator is "-") and with the plugin removed: the same trail on a post, a category, a page, the blog and its page 2, search and 404 ("Home / Blog / Topic One / Sample Post 25"), none on the front page. Tests: the standard, the markup, the crumbs for every page type, the paged trail, the wiring.
+- **`partials/blocks/section-header` prints nothing without a heading and a "View all" link** (tcs's override, which fixed an empty `h2`): tcs deletes its copy.
+- **Brand constants became variables.** The light weight (300) that headings inside a term description and inside a post carried is now `--pkde-shop-heading-weight` and `--pkde-post-heading-weight`, default 600; a light brand sets 300 in its theme. The kit keeps layout and structure; colours, fonts and weights come from the theme.
+**Adopt:** see the feed entry "Adopt: blog single, page header parity" (updated 2026-11-06 with the owner's decisions).
+
 ## 2026.11.06.2
 
 Three owner points in one release (MGR-77 parity, MGR-66; the kit views are the only copy, sites customise with variables and hooks).
