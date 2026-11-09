@@ -95,7 +95,13 @@
   font: inherit;
   letter-spacing: inherit;
 }
-/* The 404 page's big numeral (views/404.blade.php): decoration, drawn here rather than printed as text. */
+/* The 404 page's big numeral (views/404.blade.php): decoration, drawn here rather than printed as text. Its size is set here, not with a Tailwind
+   utility: WordPress's unlayered global style for `p` (theme.json typography) beats a layered `text-8xl` and made it 17px on tcs (TCS-114).
+   `--pkde-404-numeral-size` changes it (default 6rem). */
+p.pkde-404-numeral {
+  font-size: var(--pkde-404-numeral-size, 6rem);
+  line-height: 1;
+}
 .pkde-404-numeral::before {
   content: "404";
 }

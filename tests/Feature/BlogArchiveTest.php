@@ -89,3 +89,11 @@ it('never lets a page in the search results resolve to the kit\'s page view (BP-
         // The kit's view files the old lookup could hit by post-type name are all excluded.
         ->and(file_get_contents("$root/resources/views/partials/post-grid.blade.php"))->toContain('\\App\\post_card_views(get_post_type())')->not->toContain("'partials.content-' .");
 });
+
+it('sets the 404 numeral size in CSS and hides the live search helper sentence (TCS-114)', function () {
+    $root = dirname(__DIR__, 2);
+
+    expect(file_get_contents("$root/resources/css/page-header.css"))->toContain('p.pkde-404-numeral {', 'var(--pkde-404-numeral-size, 6rem)')
+        ->and(file_get_contents("$root/resources/views/404.blade.php"))->not->toContain('text-8xl')
+        ->and(file_get_contents("$root/resources/css/live-search.css"))->toContain('.relevanssi-live-search-instructions {', 'clip-path: inset(50%)');
+});

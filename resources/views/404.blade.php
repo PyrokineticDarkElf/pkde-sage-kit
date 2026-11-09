@@ -12,7 +12,7 @@
   <div class="mx-auto max-w-content px-[var(--page-gutter,1.5rem)] py-20 lg:py-28">
   <div class="mx-auto flex max-w-2xl flex-col items-center text-center">
     {{-- The big numeral is decoration: drawn by CSS (::before), so it is not text a contrast check or a screen reader meets. --}}
-    <p aria-hidden="true" class="pkde-404-numeral font-display text-8xl font-semibold tracking-[-0.07em] text-neutral-200"></p>
+    <p aria-hidden="true" class="pkde-404-numeral font-display font-semibold tracking-[-0.07em] text-neutral-200"></p>
     <h1 class="mt-5 font-display text-3xl font-semibold tracking-[-0.03em] text-neutral-950">
       {{ __('Page not found', 'sage') }}
     </h1>

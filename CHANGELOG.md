@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.07.10
+
+From tcs's 404 (TCS-114), both on every site:
+
+- **The 404 numeral is as big as designed.** It computed to 17px on tcs: WordPress's unlayered global style for `p` (theme.json typography) beats Tailwind's layered `text-8xl`. The size is now kit CSS (`p.pkde-404-numeral`, `--pkde-404-numeral-size`, default 6rem, line height 1). Checked on tcs's live 404 with the rule applied: 17px becomes 96px.
+- **The live search's helper sentence is visually hidden.** Relevanssi Live Ajax Search adds a span (`.relevanssi-live-search-instructions`, "When autocomplete results are available use up and down arrows ...") to every search form; its own stylesheet is not loaded, so it showed as text beside the field (on tcs's 404 the search form was 360px tall). Hidden visually, still read by screen readers; the form is 38px tall.
+**Adopt:** bump the kit; nothing to delete (tcs: its own header rules for this, if any, stay).
+
 ## 2026.11.07.9
 
 - **Fix (BP-78): search results printed whole pages.** `partials/post-grid` tried `partials.content-{post type}` before the kit's card; since the kit's views root is on every theme's view finder (2026.11.05.1), `partials.content-page` resolved to the kit's page view (the page's whole `the_content()` in a `content-grid` column) for every page in the results, after the cards, and at 390px each sat a second gutter in. Any site whose search matches a page was hit (a shop's search finds pages and products). The lookup is now `\App\post_card_views($type)`: a site's `partials/card-{type}`, its `partials/content-{type}`, then the kit's card, and a type named like one of the kit's own page and single views (`page`, `page-wide`, `single`, `search`) never tries `partials/content-{type}`. Reproduced on the template stack (`/?s=contact`: two whole pages before, two cards after). Test added.
