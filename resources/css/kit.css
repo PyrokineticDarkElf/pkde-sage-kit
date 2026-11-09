@@ -13,6 +13,8 @@
 @import "./post-single.css";
 @import "./shop-pages.css";
 @import "./live-search.css";
+@import "./product-sections.css";
+@import "./add-to-basket.css";
 
 :root {
   --pkde-theme-background: var(--color-neutral-950);

@@ -1,8 +1,10 @@
+import './add-to-basket.js';
 import './cart-badge.js';
 import './cart-count.js';
 import './carousel.js';
 import './lightbox.js';
 import './phone.js';
+import './product-carousel.js';
 import './shop-view.js';
 
 const toc = document.querySelector('[data-toc]');

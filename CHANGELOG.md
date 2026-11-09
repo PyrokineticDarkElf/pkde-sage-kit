@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026.11.07.11
+
+From MGR-79 (owner request, every shop): the add-to-basket feedback, one heading scale on the product page, and the three "more products" sections. `docs/product-sections.md`.
+
+- **Add-to-basket busy and added states.** A working button is `aria-busy` and `aria-disabled` (not `disabled`, which would drop the product id from the form), shows a spinner and swallows a second click; then it shows a check mark (and "Added" on a plain text button), WooCommerce's "View basket" link appears beside it, and a polite live region says both. Cards use WooCommerce's `adding_to_cart` / `added_to_cart` events, the product page's form uses `submit`. **Simple products on the product page are added without a reload** (one request to WooCommerce's `add_to_cart` endpoint, the header count updates; any failure submits the form normally); `pkde_kit/ajax_add_to_cart_single` turns it off, and it follows the shop's own AJAX and redirect settings. Reduced motion: a still ring. Variables `--pkde-atc-*`.
+- **One heading scale on the product page.** Description, Additional information and Related products were 16px body text beside a 24px Reviews title (Tailwind's reset). All product-page H2s now read `--pkde-product-h2-font / -size / -weight / -leading / -tracking`.
+- **Upsells, cross-sells and related as three kit sections, in that order** ("You may also like", "Goes well with", "More from <category>"). Each prints only when it has products, shows the site's own card, and is a scroll-snap carousel with previous / next buttons (no library, keyboard and touch, reduced-motion safe, lazy images). Filters for the order, titles, counts and on/off (`pkde_kit/product_sections*`), an optional "Show more" on related (`pkde_kit/related_load_more`, served as the site's own card HTML), nothing per visitor (the basket's own cross-sells are untouched). `pkde_kit/product_sections_enabled` false keeps WooCommerce's own output.
+- Checked on the template stack with WooCommerce and real products (axe clean at 1440 and 390, busy and added states, the fallback, reduced motion, a basket visitor's sections identical to an anonymous visitor's) and on tcs's and bb's live product pages with the kit CSS and JS injected (their own cards in the carousel, axe no worse than before).
+**Adopt:** bump the kit. **tcs** sets `--pkde-product-h2-size: clamp(1.5rem, 3vw, 2.25rem)` (its H2 scale; the default 1.5rem is smaller) and keeps `--pkde-shop-heading-weight: 300`; **bb** sets `--pkde-product-h2-weight: 400` (Addington has one weight). Both can delete their own rules for the product page's H2s and for the Related products heading. A site that wants WooCommerce's own upsells and related back: `add_filter('pkde_kit/product_sections_enabled', '__return_false');`.
+
 ## 2026.11.07.10
 
 From tcs's 404 (TCS-114), both on every site:

@@ -1,0 +1,49 @@
+/**
+ * Add-to-basket states (resources/js/add-to-basket.js, MGR-79): a button that is working shows a spinner and cannot be pressed again; once the
+ * product is in the basket it shows a check mark (and, for a plain text button, the word "Added") for a few seconds, and WooCommerce's "View
+ * basket" link appears beside it.
+ *
+ *   --pkde-atc-spinner-size       the spinner's size (1em)
+ *   --pkde-atc-spinner-color      its colour (currentColor, so it reads on any button)
+ *   --pkde-atc-busy-opacity       the button's opacity while it works (0.75)
+ *   --pkde-atc-added-color        the check mark's colour (currentColor)
+ * Reduced motion: the spinner is a still ring, not a rotation.
+ */
+:is(.add_to_cart_button, .single_add_to_cart_button)[aria-busy="true"] {
+  cursor: progress;
+  opacity: var(--pkde-atc-busy-opacity, 0.75);
+  pointer-events: none;
+}
+:is(.add_to_cart_button, .single_add_to_cart_button)[aria-busy="true"]::after {
+  content: "";
+  display: inline-block;
+  width: var(--pkde-atc-spinner-size, 1em);
+  height: var(--pkde-atc-spinner-size, 1em);
+  margin-inline-start: 0.5em;
+  border: 2px solid var(--pkde-atc-spinner-color, currentColor);
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  vertical-align: -0.15em;
+  animation: pkde-atc-spin 0.7s linear infinite;
+}
+:is(.add_to_cart_button, .single_add_to_cart_button)[data-pkde-added]::after {
+  content: "";
+  display: inline-block;
+  width: var(--pkde-atc-spinner-size, 1em);
+  height: var(--pkde-atc-spinner-size, 1em);
+  margin-inline-start: 0.5em;
+  background: var(--pkde-atc-added-color, currentColor);
+  vertical-align: -0.15em;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+@keyframes pkde-atc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.add_to_cart_button, .single_add_to_cart_button)[aria-busy="true"]::after {
+    animation: none;
+  }
+}
