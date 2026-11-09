@@ -8,7 +8,7 @@
   @else
     <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
       @while(have_posts()) @php(the_post())
-        @includeFirst(['partials.content-' . get_post_type(), 'pkde-kit::partials.content'])
+        @includeFirst(\App\post_card_views(get_post_type()))
       @endwhile
     </div>
 

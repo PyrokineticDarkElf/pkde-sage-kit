@@ -78,3 +78,14 @@ it('pads the Shop page notices row only under the page header or when there is a
         ->and(substr_count($page, 'pt-8'))->toBe(1)
         ->and($page)->toMatch('/@else\s+@include\(.pkde-kit::partials\.woocommerce-notices.\)/');
 });
+
+it('never lets a page in the search results resolve to the kit\'s page view (BP-78)', function () {
+    $root = dirname(__DIR__, 2);
+
+    expect(\App\post_card_views('page'))->toBe(['partials.card-page', 'pkde-kit::partials.content'])
+        ->and(\App\post_card_views('post'))->toBe(['partials.card-post', 'partials.content-post', 'pkde-kit::partials.content'])
+        ->and(\App\post_card_views('product'))->toBe(['partials.card-product', 'partials.content-product', 'pkde-kit::partials.content'])
+        ->and(\App\post_card_views('single'))->not->toContain('partials.content-single')
+        // The kit's view files the old lookup could hit by post-type name are all excluded.
+        ->and(file_get_contents("$root/resources/views/partials/post-grid.blade.php"))->toContain('\\App\\post_card_views(get_post_type())')->not->toContain("'partials.content-' .");
+});

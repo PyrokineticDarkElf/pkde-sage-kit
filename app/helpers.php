@@ -326,6 +326,25 @@ add_filter('get_custom_logo_image_attributes', static function (array $attribute
 add_filter('image_editor_output_format', static fn(array $formats): array => apply_filters('pkde_png_to_webp', true) ? png_output_formats($formats) : $formats);
 add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
 
+/**
+ * The views tried, in order, for one result card in partials/post-grid (search, post-type archives): a site's `partials/card-{type}`, then its
+ * `partials/content-{type}`, then the kit's card. `content-page`, `content-page-wide`, `content-single` and `content-search` are the kit's own
+ * page and single views (the kit's views root is on every theme's view finder), so `partials.content-page` always resolves and printed a whole
+ * page for every page in the results (BP-78); a post type with one of those names never tries `partials/content-{type}`.
+ *
+ * @return list<string>
+ */
+function post_card_views(string $type): array
+{
+    $kitViews = ['page', 'page-wide', 'single', 'search'];
+
+    return array_values(array_filter([
+        'partials.card-' . $type,
+        in_array($type, $kitViews, true) ? null : 'partials.content-' . $type,
+        'pkde-kit::partials.content',
+    ]));
+}
+
 require_once __DIR__ . '/page-header.php';
 
 require_once __DIR__ . '/single-post.php';

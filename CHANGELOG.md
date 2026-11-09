@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.07.9
+
+- **Fix (BP-78): search results printed whole pages.** `partials/post-grid` tried `partials.content-{post type}` before the kit's card; since the kit's views root is on every theme's view finder (2026.11.05.1), `partials.content-page` resolved to the kit's page view (the page's whole `the_content()` in a `content-grid` column) for every page in the results, after the cards, and at 390px each sat a second gutter in. Any site whose search matches a page was hit (a shop's search finds pages and products). The lookup is now `\App\post_card_views($type)`: a site's `partials/card-{type}`, its `partials/content-{type}`, then the kit's card, and a type named like one of the kit's own page and single views (`page`, `page-wide`, `single`, `search`) never tries `partials/content-{type}`. Reproduced on the template stack (`/?s=contact`: two whole pages before, two cards after). Test added.
+**Adopt:** bump the kit; nothing to delete. A site with its own card for a post type can name it `partials/card-{type}` (`partials/content-{type}` still works, except for pages).
+
 ## 2026.11.07.8
 
 From the MGR-78 clean-up audit of tcs and bb: three things both sites had written for themselves that every client site wants.
