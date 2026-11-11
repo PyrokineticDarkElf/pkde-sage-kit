@@ -7,8 +7,10 @@ This one covers what the *theme* has to render it.
 **What you get without writing any new templates:** Cart, Checkout, and the Login/Register/
 Account pages. WooCommerce creates these as ordinary WordPress Pages — Cart/Checkout with its own
 Cart/Checkout blocks embedded, My Account as a `[woocommerce_my_account]` shortcode — so they
-already render correctly through the theme's existing generic page template, styled by WC
-Blocks' own default (reasonably neutral) stylesheet. Upsells (product page) and cross-sells (cart
+already render correctly through the theme's existing generic page template. The shortcode pages
+(basket, checkout, account) are styled by `shop-pages.css`; the Cart and Checkout BLOCKS keep their own
+layout and take the same button, field and summary look from `resources/css/cart-checkout-blocks.css`
+(kit 2026.11.07.12: the primary button is `--color-brand-600`, fields have the shortcode pages' radius). Upsells (product page) and cross-sells (cart
 page) also need nothing extra — `woocommerce_upsell_display`/`woocommerce_cross_sell_display` are
 on by default and just needed seed data with something to show.
 

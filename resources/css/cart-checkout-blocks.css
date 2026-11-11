@@ -1,0 +1,52 @@
+/**
+ * The Cart and Checkout BLOCKS in the kit's look (TPL-131). WooCommerce creates the Cart and Checkout pages with its blocks (WooCommerce 8.3 and
+ * later), so a site made from the template has them unless it converts them to shortcodes; the kit styled only the shortcode pages
+ * (shop-pages.css). The blocks keep their own layout (items left, summary right, the page measure from shop-pages.css); this only gives their
+ * buttons, fields and summary card the same look as the shortcode pages, from the same tokens:
+ *   primary button   --color-brand-600 / -800 on hover, its -fg text colour (the shortcode pages' #place_order)
+ *   other buttons    --color-neutral-950 pill, --color-brand-700 on hover
+ *   fields           the shortcode pages' radius (0.875rem) and --pkde-line border
+ *   summary card     --pkde-shop-panel-radius and --pkde-shop-line
+ * The body class scope costs no specificity (:where); WooCommerce Blocks' own rules are class selectors, so the component classes here count and a
+ * site overrides with one more class.
+ */
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button) {
+  border-radius: 999px;
+  background: var(--color-neutral-950);
+  color: var(--color-white);
+  font-weight: 600;
+}
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button):hover {
+  background: var(--color-brand-700);
+  color: var(--color-brand-700-fg);
+}
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-cart__submit-button.wc-block-components-button:not(.is-link),
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-checkout-place-order-button.wc-block-components-button:not(.is-link) {
+  min-height: 3.25rem;
+  background: var(--color-brand-600);
+  color: var(--color-brand-600-fg);
+}
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-cart__submit-button.wc-block-components-button:not(.is-link):hover,
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-checkout-place-order-button.wc-block-components-button:not(.is-link):hover {
+  background: var(--color-brand-800);
+  color: var(--color-brand-800-fg);
+}
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-text-input input,
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-textarea,
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-blocks-components-select__select {
+  border-radius: 0.875rem;
+  border-color: var(--pkde-line, var(--color-neutral-300));
+}
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-text-input input:focus-visible,
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-blocks-components-select__select:focus-visible,
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-button:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wc-block-components-totals-wrapper,
+:where(body.woocommerce-cart, body.woocommerce-checkout) .wp-block-woocommerce-checkout-order-summary-block {
+  border-color: var(--pkde-shop-line, var(--color-neutral-200));
+}
+:where(body.woocommerce-checkout) .wp-block-woocommerce-checkout-order-summary-block {
+  border-radius: var(--pkde-shop-panel-radius, 1rem);
+}

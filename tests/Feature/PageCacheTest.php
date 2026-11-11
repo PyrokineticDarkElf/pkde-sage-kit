@@ -38,6 +38,7 @@ it('keeps no per-visitor call in the kit\'s views, blocks and app code apart fro
         }
     }
 
-    // The ONLY allowed readers: the live cart fragment (an AJAX answer) and the REST cart loader of the product-loop block.
-    expect(array_keys($hits))->toEqualCanonicalizing(['app/woocommerce/cart-count.php', 'resources/blocks/product-loop/render.php']);
+    // The ONLY allowed readers: the live cart fragment (an AJAX answer), the REST cart loader of the product-loop block and the recently viewed
+    // sync endpoint (a POST answer that stores a logged-in visitor's list; the page only carries an empty placeholder).
+    expect(array_keys($hits))->toEqualCanonicalizing(['app/woocommerce/cart-count.php', 'resources/blocks/product-loop/render.php', 'app/woocommerce/recently-viewed.php']);
 });

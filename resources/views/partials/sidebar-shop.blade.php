@@ -78,4 +78,7 @@
       @endif
     @endforeach
   </form>
+
+  {{-- Recently viewed (opt-in: pkde_kit/recently_viewed): an empty placeholder the script fills, so the page stays the same for every visitor. --}}
+  {!! \App\recently_viewed_box() !!}
 </aside>

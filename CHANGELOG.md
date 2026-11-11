@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.07.12
+
+From the owner's "go" on the template backlog (TPL-131, TPL-134): the Cart and Checkout blocks, and recently viewed products. Only what every shop wants.
+
+- **Cart and Checkout BLOCKS take the kit's look (TPL-131).** WooCommerce creates the Cart and Checkout pages with its blocks (the template's shop setup gets them), but the kit styled only the shortcode pages, so a block checkout had WooCommerce's grey square buttons. `resources/css/cart-checkout-blocks.css` gives the blocks the shortcode pages' primary button (`--color-brand-600` and its `-fg`, 3.25rem, pill), other buttons, field radius and summary card, from the same tokens; the blocks keep their own layout (items left, summary right) inside the page measure. Checked on the template stack with WooCommerce, a basket of 4 and a guest checkout at 1440 and 390: no horizontal overflow, axe clean except WooCommerce core's own `autocomplete-valid` on the email field (`autocomplete="section-contact contact email"`), which is not the kit's markup. The inventory of the shops: tcs, bb and js use the classic shortcode pages today (their empty basket prints the classic notice; they are styled), el has no basket or checkout page on its local site; the template and any new shop get blocks.
+- **Recently viewed products, opt-in (TPL-134).** `add_filter('pkde_kit/recently_viewed', '__return_true')`: a small list in the shop sidebar (5 at a time, "Show more", up to 20 kept), the viewed product left out, hidden, out-of-stock and deleted products dropped. The pages stay the same for every visitor (an empty marker and an empty hidden box); the list is the browser's localStorage (first-party, no cookie) and, for a logged-in visitor, the account's user meta, merged by a same-origin POST. `docs/recently-viewed.md` (including the cookie policy note). Checked on the template stack with WooCommerce: logged out 3 then 5 items, focus and live message, axe clean on the box, the server HTML holds no list; logged in, a fresh browser shows the account's list; a cross-site POST and a GET to the sync endpoint answer 400; a draft, an out-of-stock and a missing product are dropped; the endpoint answers `no-store`.
+**Adopt:** bump the kit. Nothing changes on a site that does not opt in to recently viewed. A shop with the Cart/Checkout blocks gets the new button and field look (tcs, bb and js use the shortcode pages: no change).
+
 ## 2026.11.07.11
 
 From MGR-79 (owner request, every shop): the add-to-basket feedback, one heading scale on the product page, and the three "more products" sections. `docs/product-sections.md`.

@@ -34,6 +34,7 @@ require_once __DIR__ . '/woocommerce/badges.php';
 require_once __DIR__ . '/woocommerce/card-rating.php';
 require_once __DIR__ . '/woocommerce/product-sections.php';
 require_once __DIR__ . '/woocommerce/add-to-basket.php';
+require_once __DIR__ . '/woocommerce/recently-viewed.php';
 
 add_action('after_setup_theme', function () {
     // Product Catalog defaults (Appearance > Customize > WooCommerce > Product Catalog): three per row, four rows per page.

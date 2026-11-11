@@ -15,6 +15,8 @@
 @import "./live-search.css";
 @import "./product-sections.css";
 @import "./add-to-basket.css";
+@import "./recently-viewed.css";
+@import "./cart-checkout-blocks.css";
 
 :root {
   --pkde-theme-background: var(--color-neutral-950);
