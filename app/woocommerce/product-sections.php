@@ -204,7 +204,8 @@ add_action('wp', function () {
 add_action('wc_ajax_pkde_related', function () {
     $product = wc_get_product(absint($_GET['product_id'] ?? 0)); // phpcs:ignore WordPress.Security.NonceVerification
     $count = min(24, max(1, absint($_GET['count'] ?? 0))); // phpcs:ignore WordPress.Security.NonceVerification
-    $exclude = array_map('absint', array_filter(explode(',', (string) ($_GET['exclude'] ?? '')))); // phpcs:ignore WordPress.Security.NonceVerification
+    // At most 60 ids are taken: a longer list would only make the related query ask for more rows (nothing the carousel holds needs it).
+    $exclude = array_slice(array_map('absint', array_filter(explode(',', substr((string) ($_GET['exclude'] ?? ''), 0, 600)))), 0, 60); // phpcs:ignore WordPress.Security.NonceVerification
 
     if (! $product || ! $product->is_visible() || (int) apply_filters('pkde_kit/related_load_more', 0, $product) < 1) {
         wp_send_json(['html' => '', 'done' => true]);

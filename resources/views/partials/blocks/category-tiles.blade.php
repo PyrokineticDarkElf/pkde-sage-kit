@@ -30,7 +30,7 @@
     @endforeach
 
     @foreach (($extra ?? []) as $tile)
-      @php($tileUrl = str_starts_with($tile['url'], '/') ? home_url($tile['url']) : $tile['url'])
+      @php($tileUrl = esc_url(str_starts_with($tile['url'], '/') ? home_url($tile['url']) : $tile['url']))
       <div class="group">
         <a href="{{ $tileUrl }}" aria-hidden="true" tabindex="-1" class="block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
           @if (! empty($tile['image']))

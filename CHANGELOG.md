@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.07.13
+
+From the TPL-129 security audit's first leads (hunters ran, the verifier phase did not): three small, certain fixes in the kit.
+
+- **The related "Show more" endpoint bounds its input.** `exclude` was an unlimited list that made `wc_get_related_products` ask for that many extra rows; it is now at most 60 ids (600 characters).
+- **A password-protected product's short description stays out of the card** (the card, so the related sections and archives): WooCommerce shows the password form instead of the product on its page, and the card printed the description anyway.
+- **A custom category tile's link goes through `esc_url()`**: the tile's URL is a block attribute an author can set, and `{{ }}` escapes quotes but let a `javascript:` URL through as a link.
+**Adopt:** bump the kit; nothing else.
+
 ## 2026.11.07.12
 
 From the owner's "go" on the template backlog (TPL-131, TPL-134): the Cart and Checkout blocks, and recently viewed products. Only what every shop wants.

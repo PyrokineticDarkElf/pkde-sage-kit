@@ -76,3 +76,9 @@ it('shows a busy state that respects reduced motion and keeps the button out of 
         ->and($js)->toContain("'adding_to_cart'", "'added_to_cart'", "setAttribute('aria-busy', 'true')", 'stopImmediatePropagation', 'requestSubmit')
         ->and($js)->not->toContain('.disabled = true', "setAttribute('disabled'");
 });
+
+it('bounds what a request can ask of the related endpoint, keeps a protected product\'s text out of the card and escapes a tile\'s link (audit leads)', function () use ($root) {
+    expect(file_get_contents("$root/app/woocommerce/product-sections.php"))->toContain('array_slice(array_map(\'absint\'', 'substr((string) ($_GET[\'exclude\']')
+        ->and(file_get_contents("$root/resources/views/woocommerce/content-product.blade.php"))->toContain('post_password_required($product->get_id())')
+        ->and(file_get_contents("$root/resources/views/partials/blocks/category-tiles.blade.php"))->toContain('$tileUrl = esc_url(');
+});
