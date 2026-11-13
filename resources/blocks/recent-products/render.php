@@ -21,6 +21,7 @@ $query = new WP_Query([
     'post_type' => 'product',
     'post_status' => 'publish',
     'posts_per_page' => $count,
+    'tax_query' => [\App\catalog_visibility_clause()],
     'orderby' => 'date',
     'order' => 'DESC',
 ]);

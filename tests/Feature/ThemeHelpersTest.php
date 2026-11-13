@@ -144,3 +144,18 @@ it('keeps the header breakpoint at sm unless a filter says otherwise, with every
             ->and($source)->toContain("'hideAbove' => '$breakpoint:hidden'");
     }
 });
+
+it('has one catalogue-visibility clause that leaves out hidden and search-only products', function () {
+    expect(\App\catalog_visibility_clause())->toBe(['taxonomy' => 'product_visibility', 'field' => 'name', 'terms' => ['exclude-from-catalog'], 'operator' => 'NOT IN']);
+});
+
+it('uses that clause in every query that lists or counts products for visitors (TPL-129 lead)', function () {
+    $root = dirname(__DIR__, 2);
+
+    foreach (['app/ShopFilters.php', 'app/RecentContent.php', 'resources/blocks/recent-products/render.php', 'resources/blocks/best-selling-products/render.php'] as $file) {
+        expect(file_get_contents("$root/$file"))->toContain('catalog_visibility_clause()');
+    }
+
+    // wc_get_products() takes the visibility as an argument instead of a tax_query: the category menu image must not come from a hidden product
+    expect(file_get_contents("$root/app/helpers.php"))->toContain("'visibility' => 'catalog'");
+});

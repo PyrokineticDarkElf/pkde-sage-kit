@@ -71,6 +71,9 @@ class ShopFilters
             ];
         }
 
+        // hidden / search-only products are not counted (WP-Query does not leave them out by itself)
+        $taxQuery[] = catalog_visibility_clause();
+
         if (count($taxQuery) > 1) {
             $taxQuery['relation'] = 'AND';
         }

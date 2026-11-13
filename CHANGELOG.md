@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.13
+
+Catalogue visibility (TPL-129, the second pass on the audit leads). **Adopt:** bump the kit; nothing else. The category menu image is a 24-hour transient, so a stale image from a hidden product disappears within a day (or `wp transient delete --all`).
+
+- **Hidden and search-only products are no longer counted or listed by the kit's own queries.** New `App\catalog_visibility_clause()` (the `product_visibility` `exclude-from-catalog` NOT IN clause) is applied to the shop filter counts (`ShopFilters::termCounts`; WP_Query does not leave hidden products out by itself, so the numbers beside the category, tag, brand and attribute filters were too high), the "N newest" slots of the recent / "new" rule (`RecentContent::recentIds` for products), the Recent products and Best-selling products blocks, and `category_menu_image()` now asks `wc_get_products` for `visibility => catalog` (a hidden product's image could become a category thumbnail for anonymous visitors: the one direct leak found). Not changed: WooCommerce's own shop query and `wc_get_featured_product_ids()` already exclude hidden products, and the product page sections and recently viewed use `is_visible()`.
+
 ## 2026.11.07.13
 
 From the TPL-129 security audit's first leads (hunters ran, the verifier phase did not): three small, certain fixes in the kit.

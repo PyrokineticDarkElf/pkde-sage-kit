@@ -279,7 +279,7 @@ function category_menu_image(int $termId): string
     $term = get_term($termId, 'product_cat');
     if ($term instanceof \WP_Term && function_exists('wc_get_products')) {
         foreach (['instock', ''] as $stock) {
-            $args = ['limit' => 1, 'status' => 'publish', 'category' => [$term->slug], 'orderby' => 'popularity', 'order' => 'DESC'] + ($stock ? ['stock_status' => $stock] : []);
+            $args = ['limit' => 1, 'status' => 'publish', 'visibility' => 'catalog', 'category' => [$term->slug], 'orderby' => 'popularity', 'order' => 'DESC'] + ($stock ? ['stock_status' => $stock] : []);
             $product = wc_get_products($args)[0] ?? null;
             $url = $product ? (string) wp_get_attachment_image_url($product->get_image_id(), 'medium_large') : '';
             if ($url) {
@@ -325,6 +325,18 @@ add_filter('get_custom_logo_image_attributes', static function (array $attribute
  */
 add_filter('image_editor_output_format', static fn(array $formats): array => apply_filters('pkde_png_to_webp', true) ? png_output_formats($formats) : $formats);
 add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
+
+/**
+ * The tax_query clause that leaves out products WooCommerce hides from the catalogue (catalogue visibility "hidden" or "search only"; they carry the
+ * `exclude-from-catalog` term of `product_visibility`). WP_Query and get_posts() do not do this on their own, only WooCommerce's main shop query does:
+ * every kit query that lists or counts products for visitors adds this (shop filter counts, the newest and best-selling blocks, the "new" badge rule).
+ *
+ * @return array{taxonomy: string, field: string, terms: list<string>, operator: string}
+ */
+function catalog_visibility_clause(): array
+{
+    return ['taxonomy' => 'product_visibility', 'field' => 'name', 'terms' => ['exclude-from-catalog'], 'operator' => 'NOT IN'];
+}
 
 /**
  * The views tried, in order, for one result card in partials/post-grid (search, post-type archives): a site's `partials/card-{type}`, then its

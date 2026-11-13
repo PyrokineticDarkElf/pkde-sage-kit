@@ -70,6 +70,8 @@ class RecentContent
                 'order' => 'DESC',
                 'fields' => 'ids',
                 'ignore_sticky_posts' => true,
+                // a hidden / search-only product does not take one of the "N newest" slots
+                'tax_query' => $postType === 'product' ? [catalog_visibility_clause()] : [],
                 'no_found_rows' => true,
             ]);
         }
