@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026.11.18.2
+
+Kit blocks in the block editor canvas (WP-90, owner report, found by bb). **Adopt:** bump the kit, then ONE line in the theme's `resources/css/editor.css` (the template's is changed in 2026.11.18.2): replace
+
+    @import "../../vendor/pkde/sage-kit/resources/css/editor-width.css";
+
+with
+
+    @import "../../vendor/pkde/sage-kit/resources/css/editor-kit.css";
+
+The theme's `editor.css` (identical in the template, tcs and bb) imported the page width and the site's own CSS but never the kit's block styles, so the Product Loop block, whose list the server renders into the canvas, was a plain stack in the editor: 4 cards 1232px wide, a 5622px block (6958px at 1440). The new `resources/css/editor-kit.css` is `kit.css` whole plus `editor-width.css` (which it replaces), so a later kit change cannot fall behind in the canvas and no theme edits again.
+
+- **Measured** on the template stack in real Chrome (temporary WooCommerce catalogue, throwaway admin; everything restored afterwards), every kit block inserted into the editor with its defaults, before and after: only two canvas sizes change. Product Loop goes from a 6958px stack to a 4-column grid, 608px high, the cards 177px wide as on the front end (grid4 and the same card in a side-by-side screenshot: badges, prices, buttons equal; the front end adds the page's prose link underline and a little more row gap, which come from the page wrapper, not the block). The CTA block grows by 25px (its buttons now take the kit's button styling). The other kit blocks (latest and featured posts, entry grid, product categories, brands, recent / best-selling / featured products) show a placeholder in the editor, not rendered content, and are unchanged, as are Section, Hero, Hero slider, Accordion, FAQ, Gallery and Carousel.
+- The theme's production build passes with the import (editor.css 149 kB, 25 kB gzipped). The editor interface (toolbars, sidebars) is outside the canvas iframe and is not touched.
+
 ## 2026.11.18.1
 
 Fix for 2026.11.18 (found on tcs): on a desktop the floating filter column was taller than the screen, so "Apply filters" and "Reset", at the bottom of it, could never be reached (tcs /shop/: 1619px, below the fold at every scroll position at 1440x900 and 1024x900). **Adopt:** bump the kit (tcs and bb: this replaces 2026.11.18, push this one).
