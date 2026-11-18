@@ -38,13 +38,14 @@ it('sets the WebP quality and leaves other mime types alone', function () {
         ->and(webp_quality(90, 'image/png'))->toBe(90);
 });
 
-it('marks shop filter, price and sale/new views as faceted requests', function () {
+it('marks shop filter, price, sort and sale/new views as faceted requests', function () {
     expect(\App\is_faceted_request(['sage_filter_product_cat' => ['a']]))->toBeTrue()
         ->and(\App\is_faceted_request(['sage_view' => 'sale']))->toBeTrue()
         ->and(\App\is_faceted_request(['min_price' => '5']))->toBeTrue()
         ->and(\App\is_faceted_request(['max_price' => '50']))->toBeTrue()
         ->and(\App\is_faceted_request(['s' => 'clock', 'post_type' => 'product']))->toBeFalse()
-        ->and(\App\is_faceted_request(['paged' => '2', 'orderby' => 'price']))->toBeFalse()
+        ->and(\App\is_faceted_request(['orderby' => 'price']))->toBeTrue()
+        ->and(\App\is_faceted_request(['paged' => '2']))->toBeFalse()
         ->and(\App\is_faceted_request([]))->toBeFalse();
 });
 

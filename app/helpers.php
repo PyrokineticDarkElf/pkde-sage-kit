@@ -243,20 +243,34 @@ function iframe_titles(string $html, string $title): string
 }
 
 /**
- * Is this a filtered view of a product list (a shop filter choice, a price range or a ?sage_view=sale|new)? Such URLs are
- * combinations of the same products, so they are served noindex, follow (app/woocommerce/filter-query.php).
+ * Is this a filtered or sorted view of a product list (a shop filter choice, a price range, a sort order or a
+ * ?sage_view=sale|new)? Such URLs are combinations of the same products, so they are served noindex, follow: as an
+ * X-Robots-Tag header, as a wp_robots tag and in Rank Math's robots meta (app/woocommerce/filter-query.php). This is the
+ * ONE place that says which query arguments make a URL a faceted one.
  *
  * @param  array<string, mixed>  $query  the request's query arguments ($_GET)
  */
 function is_faceted_request(array $query): bool
 {
     foreach (array_keys($query) as $key) {
-        if (in_array((string) $key, ['sage_view', 'min_price', 'max_price'], true) || str_starts_with((string) $key, 'sage_filter_')) {
+        if (in_array((string) $key, ['sage_view', 'min_price', 'max_price', 'orderby'], true) || str_starts_with((string) $key, 'sage_filter_')) {
             return true;
         }
     }
 
     return false;
+}
+
+/**
+ * Rank Math's robots directives with a faceted view made `noindex, follow`; other directives and other URLs unchanged.
+ *
+ * @param  array<string, string>  $robots  Rank Math's directives, keyed (index, follow, max-snippet, ...)
+ * @param  array<string, mixed>  $query  the request's query arguments ($_GET)
+ * @return array<string, string>
+ */
+function faceted_rank_math_robots(array $robots, array $query): array
+{
+    return is_faceted_request($query) ? ['index' => 'noindex', 'follow' => 'follow'] + $robots : $robots;
 }
 
 if (! function_exists('add_filter')) {

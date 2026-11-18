@@ -109,9 +109,19 @@ add_action('pre_get_posts', function ($query) {
 });
 
 /**
- * Faceted URLs: any filtered view of a product list (a sage_filter_* choice or a ?sage_view=) is `noindex, follow`, so
- * search engines do not index the endless combinations but still follow the product links on them.
+ * Faceted URLs (see is_faceted_request(), the one rule for which query arguments make one): `noindex, follow`, so search
+ * engines do not index the endless combinations but still follow the product links on them. Three places say it, all from
+ * that one rule, because each one alone misses a case:
+ *  - the X-Robots-Tag header, the base: it holds whatever SEO plugin is active (or none) and reaches non-HTML responses;
+ *  - the wp_robots tag, for a site without Rank Math (Rank Math removes every wp_robots filter, class-head.php);
+ *  - Rank Math's own robots meta, so it never says `index` where the header says `noindex`.
  */
+add_action('send_headers', function () {
+    if (! headers_sent() && is_faceted_request($_GET)) {
+        header('X-Robots-Tag: noindex, follow');
+    }
+});
+
 add_filter('wp_robots', function ($robots) {
     if (is_faceted_request($_GET)) {
         $robots['noindex'] = true;
@@ -121,3 +131,5 @@ add_filter('wp_robots', function ($robots) {
 
     return $robots;
 }, 20);
+
+add_filter('rank_math/frontend/robots', fn($robots) => is_array($robots) ? faceted_rank_math_robots($robots, $_GET) : $robots, 20);

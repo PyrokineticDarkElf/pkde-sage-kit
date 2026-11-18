@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.18.4
+
+Filtered and sorted shop URLs are `noindex, follow` in three places from ONE rule (WP-91, TPL-175, owner design "ours is the base, Rank Math supplements"). **Adopt:** bump only.
+
+- **The rule** is `App\is_faceted_request()`: any `sage_filter_*`, `sage_view`, `min_price`, `max_price` or **`orderby`** query argument (`orderby` is new: a sorted list is the same products in another order). It is the only place that names these arguments.
+- **`X-Robots-Tag: noindex, follow`** is sent on those URLs (`send_headers`), whatever SEO plugin is active, or none. **`wp_robots`** keeps the same answer for a site without Rank Math. **`rank_math/frontend/robots`** now gets the same answer (`App\faceted_rank_math_robots()`), because Rank Math removes every `wp_robots` filter and printed `index` on these URLs.
+- Plain shop, category and `/page/2/` URLs are unchanged (`index, follow`, no header). Proved on the template stack with WooCommerce and Rank Math, production environment, over HTTP: `?orderby=price`, `?sage_filter_product_cat[]=`, `?min_price=`, `?sage_view=sale` all answer the header and `<meta name="robots" content="noindex, follow">`; `/shop/` and `/shop/page/2/` answer `index, follow, max-snippet...` and no header. On staging the platform's `noindex, nofollow` wins (priority 9999). Not run on a real site.
+- The drift check (pkde-deploy 2026.11.18) has the rows "Faceted shop URL (?orderby=) is noindex in the X-Robots-Tag header" and "... in the robots meta tag".
+
 ## 2026.11.18.3
 
 - **The shop term description ("Read more about ...") has a rule under it only** (WP-77, owner request): `.pkde-term-description` is `border-bottom: 1px solid var(--pkde-shop-line, ...)` instead of `border-block`, the same token, the bottom margin unchanged. Checked on the real tcs and bb category archives with a description (Alarm Clocks, Bamboo Blankets) at 1440 and 390: the top border is 0, the bottom rule is the same 1px colour, nothing else draws a line above (the element before it has no border, its parent none; the page header band ends there by its background). The block is 1px shorter (the top border), the spacing around it is the same. **Adopt:** bump the kit.
