@@ -1,0 +1,69 @@
+/**
+ * The shop filter form's "Apply filters" and "Reset" buttons (WP-89). Apply is the primary button in the brand colours (the cart button's tokens); while nothing
+ * differs from what is applied (data-pending="0") it is quieter, never disabled, so a submit is never blocked. Reset is a link-style secondary action. Below lg
+ * the bar sticks to the bottom of the viewport while the filter panel is open, so Apply is reachable without scrolling to the end of a long list.
+ *   --pkde-filter-apply-bg / -fg / -hover-bg / -hover-fg   the primary button (brand-600 / brand-800 and their -fg colours)
+ *   --pkde-filter-apply-quiet-bg / -quiet-fg               the same button with nothing pending (neutral-200 / neutral-800)
+ *   --pkde-filter-actions-bg                               the sticky bar behind the buttons (white)
+ */
+.pkde-filter-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 0.75rem 0;
+  background: var(--pkde-filter-actions-bg, var(--color-white, #fff));
+  border-top: 1px solid var(--pkde-line, var(--color-neutral-200));
+}
+@media (min-width: 64rem) {
+  .pkde-filter-actions {
+    position: static;
+    border-top: 0;
+    padding: 0;
+  }
+}
+.pkde-filter-apply {
+  min-height: 2.75rem;
+  padding: 0.625rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pkde-filter-apply-bg, var(--color-brand-600));
+  color: var(--pkde-filter-apply-fg, var(--color-brand-600-fg, var(--color-white, #fff)));
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pkde-filter-apply:hover {
+  background: var(--pkde-filter-apply-hover-bg, var(--color-brand-800));
+  color: var(--pkde-filter-apply-hover-fg, var(--color-brand-800-fg, var(--color-white, #fff)));
+}
+.pkde-filter-apply[data-pending="0"] {
+  background: var(--pkde-filter-apply-quiet-bg, var(--color-neutral-200));
+  color: var(--pkde-filter-apply-quiet-fg, var(--color-neutral-800));
+}
+.pkde-filter-apply[data-pending="0"]:hover {
+  background: var(--pkde-filter-apply-quiet-bg, var(--color-neutral-200));
+  filter: brightness(0.96);
+}
+.pkde-filter-reset {
+  padding: 0.5rem 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--color-neutral-700);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.pkde-filter-reset:hover {
+  color: var(--color-neutral-950);
+}
+.pkde-filter-apply:focus-visible,
+.pkde-filter-reset:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}

@@ -5,7 +5,7 @@
   multi-select via partials/shop-term-filter.blade.php, plus a price
   min/max pair, all submitted as query args and restored into the form via
   wc_query_string_form_fields() — so a filtered URL is shareable and works
-  with JS disabled. Reload-based (a real GET request), not live AJAX.
+  with JS disabled. Reload-based (a real GET request), not live AJAX, and sent once with the "Apply filters" button (no request per tick).
   Shared by the shop page and every product taxonomy archive (category,
   tag, brand) so the filter set lives in one place.
 
@@ -77,6 +77,22 @@
         </div>
       @endif
     @endforeach
+
+    {{-- Nothing is sent until "Apply filters" (WP-89): a tick only changes the form. The button is a plain submit, so the form works without JavaScript; with
+         it the button shows how many choices differ from what is applied now. "Reset" is a link to the archive without the form's choices when some are
+         applied, else a native reset button (back to the rendered, unfiltered state, no request). --}}
+    @php($filterQuery = \App\ShopFilters::currentQuery())
+    <div class="pkde-filter-actions" data-shop-actions>
+      <button type="submit" class="pkde-filter-apply" data-shop-apply data-pending="0" data-label="{{ esc_attr__('Apply filters', 'sage') }}" data-pending-label="{{ esc_attr__('Apply filters (%d)', 'sage') }}">
+        <span data-shop-apply-label>{{ __('Apply filters', 'sage') }}</span>
+      </button>
+      @if (\App\ShopFilters::hasAppliedFilters($filterQuery))
+        <a href="{{ \App\ShopFilters::resetUrl($filterAction, $filterQuery) }}" class="pkde-filter-reset" data-shop-reset aria-label="{{ esc_attr__('Reset filters', 'sage') }}">{{ __('Reset', 'sage') }}</a>
+      @else
+        <button type="reset" class="pkde-filter-reset" data-shop-reset aria-label="{{ esc_attr__('Reset filters', 'sage') }}">{{ __('Reset', 'sage') }}</button>
+      @endif
+      <p class="sr-only" role="status" aria-live="polite" data-shop-status data-status-none="" data-status-one="{{ esc_attr__('1 filter change not applied yet.', 'sage') }}" data-status-many="{{ esc_attr__('%d filter changes not applied yet.', 'sage') }}"></p>
+    </div>
   </form>
 
   {{-- Recently viewed (opt-in: pkde_kit/recently_viewed): an empty placeholder the script fills, so the page stays the same for every visitor. --}}

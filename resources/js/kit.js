@@ -6,6 +6,7 @@ import './lightbox.js';
 import './phone.js';
 import './product-carousel.js';
 import './recently-viewed.js';
+import './shop-filters.js';
 import './shop-view.js';
 
 const toc = document.querySelector('[data-toc]');
@@ -171,10 +172,6 @@ document.querySelectorAll('[data-shop-filters]').forEach((form) => {
     form.querySelectorAll('[data-price-input]').forEach((input) => {
       if (input.value === '') input.removeAttribute('name');
     });
-  });
-
-  form.querySelectorAll('input').forEach((input) => {
-    input.addEventListener('change', () => form.requestSubmit());
   });
 });
 

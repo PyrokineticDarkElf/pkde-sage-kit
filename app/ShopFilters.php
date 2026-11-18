@@ -104,6 +104,43 @@ class ShopFilters
         return array_map('count', $counts);
     }
 
+    /** The current request's query arguments, keys and values sanitised (the same reading the chips and the reset link use). @return array<string, mixed> */
+    public static function currentQuery(): array
+    {
+        $query = [];
+        foreach ($_GET as $key => $value) {
+            $query[sanitize_key($key)] = is_array($value) ? array_map('sanitize_text_field', wp_unslash($value)) : sanitize_text_field(wp_unslash($value));
+        }
+
+        return $query;
+    }
+
+    /** The arguments that belong to the filter form: every sage_filter_* choice, the price range and the page number. */
+    public static function isFilterArgument(string $key): bool
+    {
+        return str_starts_with($key, 'sage_filter_') || in_array($key, ['min_price', 'max_price', 'paged'], true);
+    }
+
+    /** Is any choice of the filter form applied (a sage_filter_* term or a price bound)? Pure. */
+    public static function hasAppliedFilters(array $query): bool
+    {
+        foreach ($query as $key => $value) {
+            if ((str_starts_with((string) $key, 'sage_filter_') || in_array($key, ['min_price', 'max_price'], true)) && $value !== '' && $value !== []) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** The archive without the filter form's choices and the page number; every other argument (orderby, a search, a sage_view) stays. Pure. */
+    public static function resetUrl(string $baseUrl, array $query): string
+    {
+        $args = array_filter($query, fn($value, $key) => ! self::isFilterArgument((string) $key) && $value !== '' && $value !== [], ARRAY_FILTER_USE_BOTH);
+
+        return $args ? $baseUrl . (str_contains($baseUrl, '?') ? '&' : '?') . http_build_query($args) : $baseUrl;
+    }
+
     /**
      * The filters currently applied as removable chips: each one links to this same archive with just that choice taken out.
      *
@@ -111,10 +148,7 @@ class ShopFilters
      */
     public static function activeChips(string $baseUrl): array
     {
-        $query = [];
-        foreach ($_GET as $key => $value) {
-            $query[sanitize_key($key)] = is_array($value) ? array_map('sanitize_text_field', wp_unslash($value)) : sanitize_text_field(wp_unslash($value));
-        }
+        $query = self::currentQuery();
         unset($query['paged']);
 
         $urlWithout = function (string|array $keys, ?string $slug = null) use ($query, $baseUrl) {

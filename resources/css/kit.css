@@ -16,6 +16,7 @@
 @import "./product-sections.css";
 @import "./add-to-basket.css";
 @import "./recently-viewed.css";
+@import "./shop-filter-actions.css";
 @import "./cart-checkout-blocks.css";
 
 :root {

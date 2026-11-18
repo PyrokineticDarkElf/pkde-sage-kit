@@ -16,7 +16,11 @@ The implementation is split across:
 | `resources/views/partials/shop-term-filter.blade.php` | Checkbox group markup and dynamic count display. |
 | `app/ShopFilters.php` | Allowed filter taxonomies, query parameter names, active values, and faceted counts. |
 | `app/woocommerce/filter-query.php` | Migrates legacy filter URLs, applies selected terms to the main WooCommerce product query, and adds `?featured=1` support (see below). |
-| `resources/js/app.js` | Auto-submits filter changes and omits blank price values. |
+| `resources/js/kit.js` | Omits blank price values on submit. Nothing is sent when a box is ticked. |
+| `resources/js/shop-filters.js` | Counts the choices that differ from the applied state for the "Apply filters (3)" label and the screen-reader status line; it cannot block a submit. |
+| `resources/css/shop-filter-actions.css` | The "Apply filters" and "Reset" buttons (brand tokens, `--pkde-filter-*` variables, sticky bar below lg). |
+
+**Apply and Reset (WP-89).** A tick or a typed price only changes the form; the choices are sent once, with the "Apply filters" button (a plain GET submit, so it works without JavaScript, and Enter in a price field submits too). "Reset" is a link to the archive without the form's choices (`sage_filter_*`, `min_price`, `max_price`, `paged`; `orderby` and every other argument stay) when some are applied, and a native reset button (back to the rendered, unfiltered state, no request) when none are. The counts beside the options always describe the applied filters, never the pending ticks. The grid/list choice lives in localStorage, not in the URL, so Reset never touches it.
 
 `?featured=1` on the Shop page is a separate thing from the sidebar filters above — it powers the
 Featured Products block's own "View all featured" link

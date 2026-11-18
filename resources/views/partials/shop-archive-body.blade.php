@@ -7,7 +7,7 @@
 <div @class(['shop-archive', \App\container_class('mx-auto max-w-content px-[var(--page-gutter,1.5rem)]', 'shop-archive-body') => ! ($nested ?? false)])>
   <div class="shop-archive__filters">
     @if ($filtersTitle !== '')
-      <h3 class="shop-archive__filters-title">{{ $filtersTitle }}</h3>
+      <h2 class="shop-archive__filters-title">{{ $filtersTitle }}</h2>
     @endif
     @include('pkde-kit::partials.sidebar-shop')
   </div>

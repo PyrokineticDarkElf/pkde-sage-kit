@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026.11.18
+
+Shop filters send their choices once (WP-89 part 1, owner request). **Adopt (tcs, bb; js and el with their next catch-up):** bump the kit; delete a site copy of `partials/sidebar-shop` and of `shop-archive-body` if there is one (this release changes both); check that no site CSS or JS depends on the filter form submitting by itself on a tick. Everything is a kit default, no per-site switch.
+
+- **No more request per tick.** The `change` handler that called `form.requestSubmit()` is gone. Ticking boxes and typing prices only change the form, so a filtered, uncached page render (and `ShopFilters::termCounts()` once per group) no longer happens for every click.
+- **"Apply filters" button** at the bottom of the filter form: a plain `type="submit"`, so the form works without JavaScript. With JavaScript it shows how many choices differ from what is applied ("Apply filters (3)", counted against the server-rendered state, also after Back), is visually quieter while nothing differs, and a status line (`role="status"`) tells a screen reader. It never blocks a submit; Enter in a price field submits; empty prices still drop their name. Below `lg` the bar is sticky at the bottom of the viewport, so Apply is reachable in a long list.
+- **"Reset" button:** with filters applied, a link to the archive without the form's choices (`sage_filter_*`, `min_price`, `max_price`, `paged`), keeping `orderby`, a search and every other argument; with nothing applied, a native reset button that unticks and clears the pending choices with no request. The "Clear all filters" chip link stays. The grid/list choice is in localStorage and is not touched.
+- **The counts beside the options** are unchanged: they describe the applied filters, never the pending ticks.
+- **Styling:** brand tokens (`--pkde-filter-apply-bg` / `-fg` / `-hover-bg` / `-hover-fg` / `-quiet-bg` / `-quiet-fg`, `--pkde-filter-actions-bg`), visible focus rings, translatable strings (`sage` domain: "Apply filters", "Apply filters (%d)", "Reset", "Reset filters", the two status sentences).
+- **Heading level:** the filter column's title ("Filter your search") is an `h2`, not an `h3`: it followed the page's `h1` and axe reported a skipped level. Only the class styles it.
+- New pure helpers on `App\ShopFilters`: `currentQuery()`, `hasAppliedFilters()`, `resetUrl()`, `isFilterArgument()`; `activeChips()` reads the query through `currentQuery()`.
+
 ## 2026.11.13
 
 Catalogue visibility (TPL-129, the second pass on the audit leads). **Adopt:** bump the kit; nothing else. The category menu image is a 24-hour transient, so a stale image from a hidden product disappears within a day (or `wp transient delete --all`).
