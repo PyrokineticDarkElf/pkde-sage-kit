@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.18.1
+
+Fix for 2026.11.18 (found on tcs): on a desktop the floating filter column was taller than the screen, so "Apply filters" and "Reset", at the bottom of it, could never be reached (tcs /shop/: 1619px, below the fold at every scroll position at 1440x900 and 1024x900). **Adopt:** bump the kit (tcs and bb: this replaces 2026.11.18, push this one).
+
+- **The filter groups scroll inside the floating column; the Apply bar does not.** From lg up, where the column floats (`min-height: 820px`), it is capped at `100dvh - --pkde-shop-sticky-top - 1rem` and laid out as a flex column; only the new `.pkde-filter-groups` wrapper (the price card and the filter groups, one `div` in `partials/sidebar-shop`) has `overflow-y: auto`, so the title, the active chips, the Apply bar and the recently viewed box keep their place. `overflow-y: auto` means a scrollbar appears only when the groups really overflow; it is thin and faint like the lists' (`scrollbar-width: thin`, the MGR-77 colour). The bar is `position: sticky; bottom: 0` at every width and, because the scroller is the wrapper and not the column, it sticks to the bottom of the VIEWPORT even before the column has scrolled up to its sticky position (the first version of this fix, a scrolling column, left the bar below the fold at the top of the page).
+- Short screens (under 820px high) keep the column in the flow as before; the bar still sticks to the viewport bottom there.
+- Measured on the real tcs pages (shop 1644px column, category 1239px) and bb, with the new CSS injected into the live dev pages (nothing written to the sites): at 1440x900, 1024x900, 1024x768 and 1440x1300 the bar is on screen and under the pointer at every scroll position where any part of the column is visible (21 to 34 positions each), the last filter group can be scrolled above the bar, no horizontal overflow. The scrollbar shows only where the content really overflows: tcs always (groups 1530px against 698px), bb at 1440x900 by about 30px, none at 1024x768 (column in the flow).
+
 ## 2026.11.18
 
 Shop filters send their choices once (WP-89 part 1, owner request). **Adopt (tcs, bb; js and el with their next catch-up):** bump the kit; delete a site copy of `partials/sidebar-shop` and of `shop-archive-body` if there is one (this release changes both); check that no site CSS or JS depends on the filter form submitting by itself on a tick. Everything is a kit default, no per-site switch.

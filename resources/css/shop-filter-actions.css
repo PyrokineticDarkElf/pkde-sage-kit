@@ -1,7 +1,9 @@
 /**
  * The shop filter form's "Apply filters" and "Reset" buttons (WP-89). Apply is the primary button in the brand colours (the cart button's tokens); while nothing
- * differs from what is applied (data-pending="0") it is quieter, never disabled, so a submit is never blocked. Reset is a link-style secondary action. Below lg
- * the bar sticks to the bottom of the viewport while the filter panel is open, so Apply is reachable without scrolling to the end of a long list.
+ * differs from what is applied (data-pending="0") it is quieter, never disabled, so a submit is never blocked. Reset is a link-style secondary action. The bar is
+ * sticky at every width, so Apply is reachable without scrolling to the end of a long list: below lg it sticks to the bottom of the viewport, from lg up to the
+ * bottom of the floating filter column, which scrolls inside itself when it is taller than the screen (shop-pages.css), or to the bottom of the viewport when
+ * the column is not floating (short screens).
  *   --pkde-filter-apply-bg / -fg / -hover-bg / -hover-fg   the primary button (brand-600 / brand-800 and their -fg colours)
  *   --pkde-filter-apply-quiet-bg / -quiet-fg               the same button with nothing pending (neutral-200 / neutral-800)
  *   --pkde-filter-actions-bg                               the sticky bar behind the buttons (white)
@@ -17,13 +19,6 @@
   padding: 0.75rem 0;
   background: var(--pkde-filter-actions-bg, var(--color-white, #fff));
   border-top: 1px solid var(--pkde-line, var(--color-neutral-200));
-}
-@media (min-width: 64rem) {
-  .pkde-filter-actions {
-    position: static;
-    border-top: 0;
-    padding: 0;
-  }
 }
 .pkde-filter-apply {
   min-height: 2.75rem;

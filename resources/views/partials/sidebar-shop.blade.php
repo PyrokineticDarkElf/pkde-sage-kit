@@ -59,6 +59,8 @@
   <form method="get" action="{{ $filterAction }}" class="space-y-4" data-shop-filters>
     {!! wc_query_string_form_fields(null, array_merge(array_map(fn ($taxonomy) => \App\ShopFilters::queryKey($taxonomy), array_keys($filterTaxonomies)), ['min_price', 'max_price', 'paged']), '', true) !!}
 
+    {{-- The groups scroll inside the floating column where the column is taller than the screen (shop-pages.css); the Apply bar below stays out of the scroller. --}}
+    <div class="pkde-filter-groups space-y-4" data-shop-groups>
     <div class="rounded-2xl border border-neutral-200 p-5">
       <fieldset class="grid gap-3">
         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ __('Price', 'sage') }}</p>
@@ -77,6 +79,7 @@
         </div>
       @endif
     @endforeach
+    </div>
 
     {{-- Nothing is sent until "Apply filters" (WP-89): a tick only changes the form. The button is a plain submit, so the form works without JavaScript; with
          it the button shows how many choices differ from what is applied now. "Reset" is a link to the archive without the form's choices when some are

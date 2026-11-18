@@ -65,3 +65,21 @@ it('styles the buttons from theme tokens, with a focus ring, and never disables 
         ->and($css)->not->toContain('pointer-events')
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./shop-filter-actions.css"');
 });
+
+it('keeps Apply and Reset reachable on a desktop: only the filter groups scroll inside the floating column, the bar stays out of the scroller (2026.11.18.1)', function () use ($root) {
+    $pages = preg_replace('~/\*.*?\*/~s', '', file_get_contents("$root/resources/css/shop-pages.css")); // comments may mention the properties
+    $bar = file_get_contents("$root/resources/css/shop-filter-actions.css");
+    $view = file_get_contents("$root/resources/views/partials/sidebar-shop.blade.php");
+
+    // the floating column is capped to the height left under the sticky header, and the groups wrapper (not the column, not the bar) is the scroller
+    expect($pages)->toMatch('/@media \(min-width: 1024px\) and \(min-height: 820px\) \{\s*\.shop-archive__filters \{[^}]*max-height: calc\(100vh - var\(--pkde-shop-sticky-top, 5\.5rem\) - 1rem\)/s')
+        ->and($pages)->toContain('100dvh')
+        ->and($pages)->toMatch('/\.shop-archive__filters \.pkde-filter-groups \{[^}]*overflow-y: auto[^}]*scrollbar-width: thin/s')
+        ->and($pages)->toMatch('/\.shop-archive__filters #shop-filters > form \{|\#shop-filters > form/')
+        ->and($pages)->not->toMatch('/\.shop-archive__filters \{[^}]*overflow-y: auto/s'); // the column itself never scrolls: the bar sticks to the viewport
+
+    // the bar is sticky at every width (no static override from lg up) and the groups sit in their own wrapper in the form
+    expect($bar)->toContain('position: sticky')
+        ->and($bar)->not->toContain('position: static')
+        ->and($view)->toContain('class="pkde-filter-groups space-y-4" data-shop-groups');
+});
