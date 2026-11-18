@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026.11.18.3
+
+- **The shop term description ("Read more about ...") has a rule under it only** (WP-77, owner request): `.pkde-term-description` is `border-bottom: 1px solid var(--pkde-shop-line, ...)` instead of `border-block`, the same token, the bottom margin unchanged. Checked on the real tcs and bb category archives with a description (Alarm Clocks, Bamboo Blankets) at 1440 and 390: the top border is 0, the bottom rule is the same 1px colour, nothing else draws a line above (the element before it has no border, its parent none; the page header band ends there by its background). The block is 1px shorter (the top border), the spacing around it is the same. **Adopt:** bump the kit.
+
 ## 2026.11.18.2
 
 Kit blocks in the block editor canvas (WP-90, owner report, found by bb). **Adopt:** bump the kit, then ONE line in the theme's `resources/css/editor.css` (the template's is changed in 2026.11.18.2): replace

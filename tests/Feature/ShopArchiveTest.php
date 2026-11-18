@@ -107,3 +107,10 @@ it('lets a site colour the stars with one variable and honours the Product Loop 
         ->and($shop)->not->toContain('background: var(--color-amber-700)')
         ->and($kit)->toContain('.woocommerce.columns-4 ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }', '.woocommerce.columns-2 ul.products');
 });
+
+it('draws one rule under the term description, none above it (WP-77)', function () use ($root) {
+    $css = preg_replace('~/\*.*?\*/~s', '', file_get_contents("$root/resources/css/shop-pages.css"));
+
+    expect($css)->toMatch('/\.pkde-term-description \{[^}]*border-bottom: 1px solid var\(--pkde-shop-line/s')
+        ->and($css)->not->toMatch('/\.pkde-term-description \{[^}]*border-(block|top)/s');
+});

@@ -245,7 +245,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
    (the product grid: 4, 3, 2), --pkde-shop-pad-top (space above the filters and results: 1rem). */
 .pkde-term-description {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
-  border-block: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
+  /* One rule, under the description (the owner, WP-77: no line above it; the header band above already ends the page header). */
+  border-bottom: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
 }
 .pkde-term-description summary {
   display: flex;
