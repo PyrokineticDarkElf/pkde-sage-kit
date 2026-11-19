@@ -15,7 +15,7 @@
   $showToggle = (bool) apply_filters('pkde_kit/shop_term_toggle', true, $term);
   // The toggle is printed here, above the layout; the copy WooCommerce would print inside the product list is removed so it shows once.
   remove_action('woocommerce_archive_description', 'App\print_term_toggle', 10);
-  $termToggle = $showToggle ? \App\term_toggle($term, '<h2>' . esc_html(sprintf(__('Read more about %s', 'sage'), $term?->name ?? '')) . '</h2>') : '';
+  $termToggle = $showToggle ? \App\term_toggle($term, '<span>' . esc_html(sprintf(__('Read more about %s', 'sage'), $term?->name ?? '')) . '</span>') : '';
 @endphp
 @include('pkde-kit::partials.page-header', $viewTitle ? ['title' => $viewTitle] : [])
 

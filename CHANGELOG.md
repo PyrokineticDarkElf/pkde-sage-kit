@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026.11.19.11
+
+The shop filter panel and the term toggle get the right landmarks and headings (WP-99 E, TPL-203; owner question C, 2026-11-19). **Adopt:** bump, then look at a shop page and a category with a description once on staging; nothing should move. A read-only search of the nine sites found no rule that targets `aside#shop-filters`, `#shop-filters`, `summary h2` or the recently viewed box; a site that has one points it at `search`, `#shop-filters` or `summary > span`.
+
+- **The filters are one `<search>` landmark** named by their own heading: `<search aria-labelledby="shop-filters-title">` wraps the `<h2 id="shop-filters-title">`, the active-filter chips, the mobile "Filters" button and the form (HTML Living Standard, `search` has the implicit ARIA role `search`). It replaces an unnamed `<aside>` (an unnamed complementary landmark says nothing to a screen reader user). With `pkde_kit/shop_filters_title` returning `''` the landmark is named "Filters" instead. The panel the button opens is now a `<div id="shop-filters">`.
+- **The recently viewed box is its own `<aside>`** (labelled by its heading "Recently viewed") after the search, not inside it: a list of viewed products is not a search control. It is printed by `shop-archive-body` instead of `sidebar-shop`, still opens and closes with the filters below `lg` (the toggle script follows `[data-filter-follow]`), and keeps its list look (`#shop-recent ul` carries the rules the panel gave it). A site that overrides `sidebar-shop` and calls `\App\recently_viewed_box()` there must delete that call (none of the nine sites does).
+- **The "Read more about X" / "About X" label in a term toggle is a `<span>`, not an `<h2>`:** a `<summary>` is a button and its children are presentational, so the heading was not a heading to assistive technology (WAI-ARIA 1.2, `button` role; WCAG 4.1.2 name and role). The look is unchanged (`summary > :where(span, h2, h3, h4)`). A site that passes its own heading to `term_toggle()` still gets it.
+- **The "Filter your search" heading stays an `<h2>` and stays visible at every width** (it titles a page section; being small is a style, not a semantic matter; WCAG 1.3.1, 2.4.6). The owner's other idea, hiding it with the form below `lg`, would be a visible change, so it is not done.
+- **No visible change, proved** on the template stack with WooCommerce and 20 seeded products: layout fingerprints of the shop, a category with a description, a category without, and two filtered URLs, at 1440 and 390, before (kit HEAD) and after. Every box of every visible element has the same position and size and the page text is identical; the only boxes that differ are the wrappers that were replaced (the `<aside>`, now a `<search>` and a `<div>`). The accessibility tree changes as intended: an unnamed `complementary` becomes `search "Filter your search"`, and the "Read more about X" `heading` becomes part of a `button`. With the recently viewed box on and filled from `localStorage`, its position and height match HEAD at both widths (a first run caught that the list lost the panel's 14 rem cap; fixed above).
+- Pest 158.
+
 ## 2026.11.19.10
 
 Redundancy clean-up, kit side (WP-99 D, TPL-202). **Adopt:** bump; deleted names were searched for in all nine sites first (read-only): no site includes any of them.

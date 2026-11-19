@@ -41,7 +41,7 @@ it('keeps the page the same for every visitor: an empty marker and an empty hidd
         // the sync endpoint is POST-only and same-origin only, and stores ids and nothing else
         ->and($php)->toContain("REQUEST_METHOD'] ?? '') !== 'POST'", 'HTTP_SEC_FETCH_SITE', "update_user_meta(get_current_user_id(), '_pkde_recently_viewed'")
         ->and($php)->not->toContain('setcookie', 'wp_create_nonce')
-        ->and(file_get_contents("$root/resources/views/partials/sidebar-shop.blade.php"))->toContain('\App\recently_viewed_box()')
+        ->and(file_get_contents("$root/resources/views/partials/shop-archive-body.blade.php"))->toContain('\App\recently_viewed_box()')
         ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('recently-viewed.js')
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('recently-viewed.css')
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/recently-viewed.php');

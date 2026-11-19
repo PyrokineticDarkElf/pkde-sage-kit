@@ -105,6 +105,8 @@ if (navToggle) {
 
       navToggle.setAttribute('aria-expanded', String(!expanded));
       panel.classList.toggle('hidden', expanded);
+      // the recently viewed box sits outside the filters' landmark and follows the panel (partials/shop-archive-body)
+      document.querySelectorAll('[data-filter-follow]').forEach((el) => el.classList.toggle('hidden', expanded));
     });
 
     // Escape closes the open menu and puts focus back on its button.
@@ -129,6 +131,8 @@ if (filterToggle) {
 
       filterToggle.setAttribute('aria-expanded', String(!expanded));
       panel.classList.toggle('hidden', expanded);
+      // the recently viewed box sits outside the filters' landmark and follows the panel (partials/shop-archive-body)
+      document.querySelectorAll('[data-filter-follow]').forEach((el) => el.classList.toggle('hidden', expanded));
     });
   }
 }

@@ -50,7 +50,7 @@ remove_action('woocommerce_archive_description', 'woocommerce_product_archive_de
 // a site's own taxonomy view that calls woocommerce_content() directly still gets it here.
 
 /**
- * The toggle for a term's description: '' when the term has none. $summary is trusted HTML (the heading in the <summary>); the default is
+ * The toggle for a term's description: '' when the term has none. $summary is trusted HTML (the label in the <summary>: a <span>, because a <summary> is a button and its children are presentational, so a heading in it is not a heading); the default is
  * "About <term>". The text is the term's own description as WordPress prints it (term_description()), limited to what a post may contain.
  */
 function term_toggle(?\WP_Term $term, string $summary = ''): string
@@ -61,7 +61,7 @@ function term_toggle(?\WP_Term $term, string $summary = ''): string
 
     return sprintf(
         '<details class="pkde-term-description"><summary>%s</summary><div class="term-description">%s</div></details>',
-        $summary !== '' ? $summary : '<h2>' . esc_html(sprintf(__('About %s', 'sage'), $term->name)) . '</h2>',
+        $summary !== '' ? $summary : '<span>' . esc_html(sprintf(__('About %s', 'sage'), $term->name)) . '</span>',
         wp_kses_post(term_description($term)),
     );
 }

@@ -52,7 +52,7 @@
   </svg>
 </button>
 
-<aside
+<div
   id="shop-filters"
   class="hidden space-y-8 lg:block [&_ul]:mt-3 [&_ul]:text-sm [&_li]:list-none [&_a]:text-neutral-600 [&_a:hover]:text-neutral-900 [&_.count]:ml-1 [&_.count]:text-neutral-400"
 >
@@ -108,6 +108,4 @@
     </div>
   </form>
 
-  {{-- Recently viewed (opt-in: pkde_kit/recently_viewed): an empty placeholder the script fills, so the page stays the same for every visitor. --}}
-  {!! \App\recently_viewed_box() !!}
-</aside>
+</div>
