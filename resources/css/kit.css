@@ -1109,3 +1109,17 @@ iframe:focus-visible {
 .wpcf7 .iti {
   width: 100%;
 }
+
+/**
+ * An Image block placed directly in a Grid block fills its cell (BB-49, from bb): without this the cell is as tall as the grid row but the
+ * picture keeps its own height, so photographs in a grid look shorter than their neighbours. The crop stays the block's own Scale setting
+ * (object-fit comes from the block). Unlayered on purpose, like the accordion rules above: WordPress core's `.wp-block-image img { height: auto }`
+ * is unlayered too, and a layered rule would lose to it. A site that wants the old look overrides it in its own CSS.
+ */
+.is-layout-grid > .wp-block-image {
+  height: 100%;
+}
+.is-layout-grid > .wp-block-image img {
+  width: 100%;
+  height: 100%;
+}

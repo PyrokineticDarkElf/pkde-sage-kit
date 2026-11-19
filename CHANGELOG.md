@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.19.1
+
+Small corrections (TPL-185). **Adopt:** bump only; a site with its own grid-image CSS compares once.
+
+- **Image in a Grid fills its cell (BB-49, from bb):** `.is-layout-grid > .wp-block-image { height: 100% }` and its `img { width: 100%; height: 100% }`, unlayered at the end of `kit.css` so WordPress core's `.wp-block-image img { height: auto }` does not win. The crop stays the block's own Scale setting. bb removes its copy in `site.css` once it adopts. Proved by the cascade rules and a Pest check; not measured on a bb page.
+- **Dropped the migration of `filter_product_cat[]` / `filter_product_tag[]` array URLs** (`app/woocommerce/filter-query.php`), as announced with the flood guard. Those old URLs now do nothing; `sage_filter_*` is the only parameter the theme uses. `docs/woocommerce-filtering.md` updated.
+
 ## 2026.11.19
 
 Product structured data that matches the shop, and no layout shift in the product gallery (WP-91 phase 2, TPL-179, TPL-181). **Adopt:** bump only. A site that has its own product gallery CSS or its own copy of the Hero block or the category/brand card views keeps working; check the product page once on staging (the gallery now shows from the first paint).

@@ -49,9 +49,9 @@ match any selected term. Between different filter groups, the query uses `AND`:
 a product must match every selected group. Price parameters are WooCommerce’s
 native `min_price` and `max_price` values and combine with the taxonomy query.
 
-Legacy `filter_product_cat[]` and `filter_product_tag[]` array URLs are migrated
-in `app/woocommerce/filter-query.php` before WooCommerce builds the main product query. New
-theme code must only emit `sage_filter_*` taxonomy parameters.
+The earlier `filter_product_cat[]` and `filter_product_tag[]` array URLs are no longer migrated
+(dropped in 2026.11.19.1): WooCommerce reserves `filter_*` for its own layered navigation, so they
+now do nothing. Theme code must only emit `sage_filter_*` taxonomy parameters.
 
 ## Dynamic counts
 

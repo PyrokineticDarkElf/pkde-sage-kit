@@ -2,45 +2,14 @@
 
 /**
  * Wires the sidebar shop filters (see ShopFilters.php) into the main product
- * query, and migrates legacy WooCommerce filter URLs onto the theme's own
- * query parameters.
+ * query. (The migration of the earlier filter_product_cat[] / filter_product_tag[]
+ * array URLs onto sage_filter_* was dropped in 2026.11.19.1, TPL-185.)
  *
  * This file is loaded from app/woocommerce.php only after WooCommerce has
  * confirmed it is active.
  */
 
 namespace App;
-
-/*
- * WooCommerce reserves filter_product_cat/tag for its own scalar product
- * filters. Preserve any in-flight URLs from the earlier custom controls, but
- * move their array values out of WooCommerce's parameter namespace before it
- * builds the main query.
- */
-/** @param \WP|null $wp */
-$migrateLegacyFilterParameters = function ($wp = null) {
-    foreach (['product_cat', 'product_tag'] as $taxonomy) {
-        $legacyKey = 'filter_' . $taxonomy;
-        $themeKey = ShopFilters::queryKey($taxonomy);
-
-        if (isset($_GET[$legacyKey]) && is_array($_GET[$legacyKey])) {
-            $_GET[$themeKey] = $_GET[$themeKey] ?? $_GET[$legacyKey];
-            $_REQUEST[$themeKey] = $_REQUEST[$themeKey] ?? $_GET[$legacyKey];
-            unset($_GET[$legacyKey]);
-            unset($_REQUEST[$legacyKey]);
-        }
-
-        // WP::parse_request() stores query parameters here before the product
-        // query is built; clear the reserved array key at that layer too.
-        if ($wp instanceof \WP && isset($wp->query_vars[$legacyKey]) && is_array($wp->query_vars[$legacyKey])) {
-            $wp->query_vars[$themeKey] = $wp->query_vars[$themeKey] ?? $wp->query_vars[$legacyKey];
-            unset($wp->query_vars[$legacyKey]);
-        }
-    }
-};
-
-add_action('init', $migrateLegacyFilterParameters, 1);
-add_action('parse_request', $migrateLegacyFilterParameters, 1);
 
 /**
  * Shop sidebar controls submit selected taxonomy slugs as GET arrays. Each
