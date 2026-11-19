@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.19
+
+Product structured data that matches the shop, and no layout shift in the product gallery (WP-91 phase 2, TPL-179, TPL-181). **Adopt:** bump only. A site that has its own product gallery CSS or its own copy of the Hero block or the category/brand card views keeps working; check the product page once on staging (the gallery now shows from the first paint).
+
+- **Price in the Product schema is the displayed price** (`app/woocommerce/product-schema.php`, `rank_math/snippet/rich_snippet_product_entity`): with tax on, the offer `price` (`lowPrice` / `highPrice` of a variable product, the `priceSpecification` price and `valueAddedTaxIncluded`) follow *Display prices in the shop* (including or excluding tax) instead of the stored price. Template stack, WooCommerce 20% VAT, stored 108.00: including shows 129.60 and `valueAddedTaxIncluded: true`, excluding shows 108.00 and `false`, tax off leaves Rank Math's price alone. Not measured against bb and tcs data (their stores were not read): both can be compared with the drift probe once adopted.
+- **Brand, shipping, returns only when the store has them:** `brand` from the product's `product_brand` term when Rank Math has none (or the filter `pkde_kit/product_brand`); `shippingDetails` from the cheapest enabled free-shipping or numeric flat-rate method of the zone that lists the store's base country (not for a virtual product or one with a shipping class); `hasMerchantReturnPolicy` only from the filter `pkde_kit/schema_return_policy`. Checked on the template stack: the flat rate 4.50 GBP appears for GB, a virtual product has none, a brand term appears, no return policy appears. `docs/woocommerce-templates.md` has the filters.
+- **Gallery layout shift (kit.css):** WooCommerce prints every picture stacked with the gallery at opacity 0, then its script turns them into one picture and a thumbnail row on window load, so the page below jumped by three pictures' height and the LCP picture stayed invisible until then. Now the gallery shows at once, shows the first picture only until the script has built the viewport, keeps the viewport at one 4:3 picture, and reserves the thumbnail row. Measured in real Chrome, slow-4G throttle, bb product page: layout shift **0.297 to 0** at 390 and **0.091 to 0** at 1440; tcs product page 0 before and after. Thumbnail click still moves the slide (checked).
+- **LCP and sizes:** the first Hero block (or Hero Slider slide) on a page is eager with `fetchpriority="high"`, later ones lazy; the category cards and brand cards print sized, lazy attachment images (width, height, srcset) instead of a bare `<img>`.
+
 ## 2026.11.18.4
 
 Filtered and sorted shop URLs are `noindex, follow` in three places from ONE rule (WP-91, TPL-175, owner design "ours is the base, Rank Math supplements"). **Adopt:** bump only.

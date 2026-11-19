@@ -262,6 +262,51 @@ function is_faceted_request(array $query): bool
 }
 
 /**
+ * The Product schema offers with the prices a shopper SEES (WP-91, S-1): Rank Math prints the stored price, so a shop that displays prices with tax
+ * (or without) while it stores them the other way round showed one price on the page and another in the markup. Offer: price, and the price and
+ * valueAddedTaxIncluded of its priceSpecification. AggregateOffer: lowPrice and highPrice. A price that is null is left as Rank Math printed it.
+ *
+ * @param  array<string, mixed>  $offers  the entity's `offers`
+ * @param  bool  $vatIncluded  the shop displays prices including tax
+ * @return array<string, mixed>
+ */
+function schema_offer_prices(array $offers, ?string $price, ?string $low, ?string $high, bool $vatIncluded): array
+{
+    if (($offers['@type'] ?? '') === 'AggregateOffer') {
+        return array_replace($offers, array_filter(['lowPrice' => $low, 'highPrice' => $high], fn($v) => $v !== null));
+    }
+
+    if ($price !== null) {
+        $offers['price'] = $price;
+    }
+
+    if (isset($offers['priceSpecification']) && is_array($offers['priceSpecification'])) {
+        $offers['priceSpecification'] = array_replace($offers['priceSpecification'], array_filter(['price' => $price], fn($v) => $v !== null), ['valueAddedTaxIncluded' => $vatIncluded ? 'true' : 'false']);
+    }
+
+    return $offers;
+}
+
+/**
+ * schema.org OfferShippingDetails from what the store has set: a rate and the countries it applies to. Nothing when there is no rate.
+ *
+ * @param  list<string>  $countries  ISO country codes
+ * @return array<string, mixed>
+ */
+function shipping_details_schema(?string $rate, string $currency, array $countries): array
+{
+    if ($rate === null || $currency === '' || $countries === []) {
+        return [];
+    }
+
+    return [
+        '@type' => 'OfferShippingDetails',
+        'shippingRate' => ['@type' => 'MonetaryAmount', 'value' => $rate, 'currency' => $currency],
+        'shippingDestination' => array_map(fn($c) => ['@type' => 'DefinedRegion', 'addressCountry' => $c], array_values($countries)),
+    ];
+}
+
+/**
  * Rank Math's robots directives with a faceted view made `noindex, follow`; other directives and other URLs unchanged.
  *
  * @param  array<string, string>  $robots  Rank Math's directives, keyed (index, follow, max-snippet, ...)

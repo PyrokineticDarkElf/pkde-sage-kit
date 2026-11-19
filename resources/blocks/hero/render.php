@@ -41,7 +41,12 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ]);
 ?>
 <div <?php echo $wrapper_attributes; ?>>
-    <?php echo \App\block_image($image_id, $image_url, $image_alt, 'full', ['class' => 'absolute inset-0 -z-20 h-full w-full object-cover', 'sizes' => '100vw']); ?>
+    <?php
+    // The first hero (or slider slide) on the page is its LCP image: eager and high priority (WP-91). The counter is shared with the Hero Slider.
+    $hero_attributes = ['class' => 'absolute inset-0 -z-20 h-full w-full object-cover', 'sizes' => '100vw'];
+$hero_attributes += \App\next_hero_slide_number() === 1 ? ['loading' => 'eager', 'fetchpriority' => 'high'] : ['loading' => 'lazy'];
+echo \App\block_image($image_id, $image_url, $image_alt, 'full', $hero_attributes);
+?>
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-neutral-950 via-neutral-950/55 to-neutral-950/10"></div>
 
     <?php /*
