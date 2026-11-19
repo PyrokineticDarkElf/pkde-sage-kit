@@ -2,10 +2,12 @@
   Category photograph tiles — the "tiles" layout of the Product Categories block (product-categories/render.php): a large
   photograph with the name beneath it, with optional label overrides and extra tiles that link anywhere (a "Shop all" tile).
   The image is the category's own thumbnail (Products > Categories), else the most popular product's photograph
-  (App\category_menu_image), else a placeholder.
+  (App\category_menu_image), else a placeholder. An image given as a URL (the fallback, an extra tile) goes through the media library when it is an
+  upload (App\media_library_image: width, height, srcset, sizes). The default "Uncategorized" category is never a tile.
 
   Props: $terms (WP_Term[]), $labels (slug => label overrides), $extra (array of {label, url, image, alt}), $emptyMessage
 --}}
+@php($terms = array_values(array_filter((array) ($terms ?? []), fn ($term) => $term->slug !== 'uncategorized')))
 @if (! empty($terms) || ! empty($extra))
   <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
     @foreach ($terms as $term)
@@ -18,7 +20,7 @@
           @if ($thumbnail)
             {!! wp_get_attachment_image($thumbnail, 'medium_large', false, ['loading' => 'lazy', 'alt' => '', 'class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
           @elseif ($fallback)
-            <img src="{{ $fallback }}" alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]">
+            {!! \App\media_library_image($fallback, '', ['class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
           @else
             <x-pkde-kit::placeholder-image ratio="aspect-[4/3]" label="{{ $label }}" />
           @endif
@@ -34,7 +36,7 @@
       <div class="group">
         <a href="{{ $tileUrl }}" aria-hidden="true" tabindex="-1" class="block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
           @if (! empty($tile['image']))
-            <img src="{{ esc_url($tile['image']) }}" alt="{{ esc_attr($tile['alt'] ?? '') }}" loading="lazy" class="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]">
+            {!! \App\media_library_image($tile['image'], (string) ($tile['alt'] ?? ''), ['class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
           @else
             <x-pkde-kit::placeholder-image ratio="aspect-[4/3]" label="{{ $tile['label'] }}" />
           @endif

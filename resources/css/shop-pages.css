@@ -1184,3 +1184,8 @@ a.pkde-badge:focus-visible {
 .product-badges .pkde-badge {
   position: static;
 }
+
+/* The product card's picture fills its square; a site whose pictures should not be cropped (clocks, jewellery on white) sets --pkde-card-image-fit: contain. */
+.pkde-product-card__media img {
+  object-fit: var(--pkde-card-image-fit, cover);
+}

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.19.5
+
+Two gaps found in the tcs and bb copies of kit views, closed in the kit (TPL-193, triage TPL-189 §5 item 1). **Adopt:** bump. Nothing forced: tcs and bb may keep their copies, and the owner decides whether tcs retires its product card.
+
+- **Category tiles:** an image given as a URL (the most-popular-product fallback, an extra tile's image) is printed through the media library when it is an upload or a resized copy of one (`App\media_library_image()`: width and height, so no layout shift, plus srcset and sizes; tcs TCS-84); any other URL stays a plain lazy `<img>`. The default "Uncategorized" category is never a tile. Checked on the template stack with a real imported attachment: an upload, a `-150x150` copy and a site-relative URL all gained `width`, `height`, `srcset` and `sizes`, a foreign URL stayed a plain `<img>`, the tile partial printed both kinds.
+- **Product card slots, instead of a copy of the view:** the picture's `object-fit` is `var(--pkde-card-image-fit, cover)` (set `contain` for clocks or jewellery on white; the `object-cover` class is gone from the card, the default look is unchanged) and its `sizes` attribute comes from the filter `pkde_kit/card_image_sizes` (default: WordPress's own). The `title` attribute tcs adds to the product link is not a slot: it repeats the link text and adds nothing for assistive technology.
+- Pest 149 (`CardAndTilesSlotsTest`: the size-suffix helper, the tile partial, the card).
+
 ## 2026.11.19.4
 
 Shop filters v2: correct counts, a request check before any product query, filters a shop declares (WP-96, TPL-192; owner decision: no Filter Everything). **Adopt:** the shops (tcs, bb, js, el) bump, add `config/shop-filters.php` declaring the groups they show now (without the file nothing visible changes except that the counts are right), and check five combinations on staging. NOT part of the December train. Non-shops: bump only.

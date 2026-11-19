@@ -416,6 +416,42 @@ function post_card_views(string $type): array
     ]));
 }
 
+/**
+ * The upload URL of an original from the URL of one of its resized copies (".../clock-300x200.jpg" becomes ".../clock.jpg"). Pure.
+ */
+function strip_image_size(string $url): string
+{
+    return (string) preg_replace('/-\d+x\d+(?=\.\w+$)/', '', $url);
+}
+
+/**
+ * An image given as a URL, printed through the media library when it is one of its files (TPL-193, from tcs TCS-84): an upload or a resized copy of one gets its
+ * width and height (no layout shift), srcset and sizes; any other URL stays a plain lazy <img>. The URL may be site-relative ("/app/uploads/x.jpg"). Empty URL: ''.
+ *
+ * @param  array<string, string>  $attributes  extra attributes (class, sizes, alt)
+ */
+function media_library_image(string $url, string $alt = '', array $attributes = [], string $size = 'medium_large'): string
+{
+    if ($url === '') {
+        return '';
+    }
+
+    $full = str_starts_with($url, '/') ? home_url($url) : $url;
+    $id = attachment_url_to_postid($full) ?: attachment_url_to_postid(strip_image_size($full));
+    $attributes = ['loading' => 'lazy', 'alt' => $alt] + $attributes;
+
+    if ($id) {
+        return (string) wp_get_attachment_image($id, $size, false, $attributes);
+    }
+
+    $html = '';
+    foreach ($attributes as $name => $value) {
+        $html .= ' ' . esc_attr($name) . '="' . esc_attr($value) . '"';
+    }
+
+    return '<img src="' . esc_url($full) . '"' . $html . ' />';
+}
+
 require_once __DIR__ . '/page-header.php';
 
 require_once __DIR__ . '/single-post.php';
