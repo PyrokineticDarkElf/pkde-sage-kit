@@ -423,3 +423,39 @@ require_once __DIR__ . '/single-post.php';
 require_once __DIR__ . '/breadcrumbs.php';
 
 require_once __DIR__ . '/tile-image.php';
+
+/**
+ * The ID of the Contact Form 7 form tagged with a lookup key (TPL-186, WP-83), 0 when no form has it. The key lives on the form post as meta
+ * `_pkde_form_key`, so a theme finds its form without relying on the title (a rename never breaks it) or on an ID (IDs differ between staging and
+ * production). `contact` is the standard key of the contact page's form; a site may add its own. bin/deploy/cf7-form-key.php (pkde-deploy) tags the
+ * forms of an existing site; bin/setup tags a new site's. Cached for the request.
+ */
+function form_id(string $key = 'contact'): int
+{
+    static $found = [];
+
+    if (! isset($found[$key])) {
+        $ids = function_exists('get_posts') ? get_posts([
+            'post_type' => 'wpcf7_contact_form',
+            'post_status' => 'any',
+            'numberposts' => 1,
+            'orderby' => 'ID',
+            'order' => 'ASC',
+            'fields' => 'ids',
+            'meta_key' => '_pkde_form_key',
+            'meta_value' => $key,
+            'no_found_rows' => true,
+        ]) : [];
+        $found[$key] = (int) ($ids[0] ?? 0);
+    }
+
+    return $found[$key];
+}
+
+/** The `[contact-form-7 id="N"]` shortcode of the form with that key, or '' when the plugin is off or no form has the key. */
+function form_shortcode(string $key = 'contact'): string
+{
+    $id = form_id($key);
+
+    return $id > 0 && function_exists('shortcode_exists') && shortcode_exists('contact-form-7') ? '[contact-form-7 id="' . $id . '"]' : '';
+}

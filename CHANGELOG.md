@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.19.2
+
+Contact Form 7 forms found by a stable key (TPL-186, WP-83). **Adopt:** bump; a site that finds a form by its title swaps that line for the helper once its form is tagged (pkde-deploy 2026.11.19.3).
+
+- **`App\form_id(string $key = 'contact'): int`** and **`App\form_shortcode($key)`** (`app/helpers.php`): the form post carries the meta `_pkde_form_key`; the helper finds it with a meta query on `wpcf7_contact_form` (cached per request) and returns 0 / '' when no form has the key or the plugin is off. A rename of the form never breaks the page, and the key is the same on staging and production (an ID is not). `contact` is the standard key; a site adds its own (`park-home-enquiry`). Checked on the template stack with Contact Form 7 active: the helper returned the form's ID and shortcode, and the Contact page rendered the form with the page meta deleted, after the form was renamed. Pest `FormKeyTest`.
+
 ## 2026.11.19.1
 
 Small corrections (TPL-185). **Adopt:** bump only; a site with its own grid-image CSS compares once.
