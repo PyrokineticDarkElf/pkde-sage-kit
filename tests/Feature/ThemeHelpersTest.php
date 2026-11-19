@@ -153,9 +153,13 @@ it('has one catalogue-visibility clause that leaves out hidden and search-only p
 it('uses that clause in every query that lists or counts products for visitors (TPL-129 lead)', function () {
     $root = dirname(__DIR__, 2);
 
-    foreach (['app/ShopFilters.php', 'app/RecentContent.php', 'resources/blocks/recent-products/render.php', 'resources/blocks/best-selling-products/render.php'] as $file) {
+    foreach (['app/RecentContent.php', 'resources/blocks/recent-products/render.php', 'resources/blocks/best-selling-products/render.php'] as $file) {
         expect(file_get_contents("$root/$file"))->toContain('catalog_visibility_clause()');
     }
+
+    // the filter counts do not add the clause themselves: they run the main query's own arguments (WooCommerce's visibility, stock and search clauses in them,
+    // which for a search keep search-only products that the catalogue clause would drop), so hidden products are out of the counts by construction (WP-96)
+    expect(file_get_contents("$root/app/ShopFilterCounts.php"))->toContain('$wp_query->query_vars')->not->toContain('catalog_visibility_clause');
 
     // wc_get_products() takes the visibility as an argument instead of a tax_query: the category menu image must not come from a hidden product
     expect(file_get_contents("$root/app/helpers.php"))->toContain("'visibility' => 'catalog'");

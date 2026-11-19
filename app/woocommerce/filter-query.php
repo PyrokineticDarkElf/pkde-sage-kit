@@ -12,28 +12,65 @@
 namespace App;
 
 /**
- * Shop sidebar controls submit selected taxonomy slugs as GET arrays. Each
- * taxonomy uses IN (any selected term), while separate filter groups combine
- * with AND. This keeps filters composable and URLs bookmarkable/shareable.
+ * A request that carries sage_filter_* arguments is checked before ANY product query runs (WP-96, C): too many values or groups, or only unknown values,
+ * is a 404 with no query and no filter UI; a request that is valid but not canonical (values unsorted or repeated, an unknown parameter or value dropped, a bad
+ * price) is a 301 to its one canonical URL, so identical choices share one URL and one page-cache entry. See App\ShopFilterRequest.
  */
 add_action('pre_get_posts', function ($query) {
-    if (is_admin() || ! $query->is_main_query() || ! ($query->is_post_type_archive('product') || $query->is_tax(['product_cat', 'product_tag', 'product_brand']))) {
+    if (is_admin() || ! $query->is_main_query() || ! array_filter(array_keys($_GET), fn($key) => str_starts_with((string) $key, ShopFilterRequest::PREFIX))) {
         return;
     }
 
+    $request = ShopFilters::request();
+
+    if ($request['status'] === 'redirect') {
+        $path = (string) strtok((string) ($_SERVER['REQUEST_URI'] ?? '/'), '?');
+        $queryString = http_build_query($request['args']);
+        wp_safe_redirect($path . ($queryString !== '' ? '?' . $queryString : ''), 301);
+        exit;
+    }
+
+    if ($request['status'] === 'notfound') {
+        $query->set_404();
+        status_header(404);
+        nocache_headers();
+        add_filter('posts_pre_query', fn($posts, $q) => $q === $query ? [] : $posts, 10, 2);
+    }
+}, 1);
+
+/**
+ * The validated choices become tax-query clauses on the main product query. Each group is IN (any chosen term; a hierarchical taxonomy includes the children),
+ * different groups combine with AND. The clauses are flagged `pkde_filter` so the counts can take exactly these out and keep every other condition of the
+ * query (ShopFilterCounts).
+ */
+add_action('pre_get_posts', function ($query) {
+    // The shop, a category, tag or brand archive, and a product search (a search used to ignore the sidebar's choices while the sidebar's counts assumed them).
+    $productSearch = $query->is_search() && in_array('product', (array) $query->get('post_type'), true);
+
+    if (is_admin() || ! $query->is_main_query() || ! ($query->is_post_type_archive('product') || $query->is_tax(['product_cat', 'product_tag', 'product_brand']) || $productSearch)) {
+        return;
+    }
+
+    $request = ShopFilters::request();
     $taxQuery = (array) $query->get('tax_query');
+    $before = count($taxQuery);
 
-    foreach (ShopFilters::taxonomies() as $taxonomy => $label) {
-        $selected = ShopFilters::activeTerms($taxonomy);
+    foreach ($request['selection'] as $taxonomy => $slugs) {
+        $taxQuery[] = [
+            'taxonomy' => $taxonomy,
+            'field' => 'slug',
+            'terms' => $slugs,
+            'operator' => 'IN',
+            'pkde_filter' => true,
+        ];
+    }
 
-        if ($selected) {
-            $taxQuery[] = [
-                'taxonomy' => $taxonomy,
-                'field' => 'slug',
-                'terms' => $selected,
-                'operator' => 'IN',
-            ];
-        }
+    if ($request['stock']) {
+        $taxQuery[] = ['taxonomy' => 'product_visibility', 'field' => 'name', 'terms' => ['outofstock'], 'operator' => 'NOT IN', 'pkde_filter' => true];
+    }
+
+    if (count($taxQuery) === $before) {
+        return;
     }
 
     if (count($taxQuery) > 1 && ! isset($taxQuery['relation'])) {
@@ -41,6 +78,46 @@ add_action('pre_get_posts', function ($query) {
     }
 
     $query->set('tax_query', $taxQuery);
+});
+
+/**
+ * Cached counts are keyed by a catalogue version; it moves when a product is saved, deleted or changes stock, and when a product term or attribute is edited.
+ * Once per request however many of these fire (a product save fires several).
+ */
+$bumpFilterVersion = function () {
+    static $done = false;
+    if (! $done) {
+        $done = true;
+        ShopFilterCounts::bumpVersion();
+    }
+};
+foreach (['save_post_product', 'save_post_product_variation', 'before_delete_post', 'trashed_post', 'untrashed_post', 'woocommerce_product_set_stock', 'woocommerce_variation_set_stock', 'woocommerce_product_set_stock_status', 'woocommerce_variation_set_stock_status', 'woocommerce_attribute_added', 'woocommerce_attribute_updated', 'woocommerce_attribute_deleted', 'update_option_woocommerce_hide_out_of_stock_items'] as $hook) {
+    add_action($hook, $bumpFilterVersion);
+}
+foreach (['created_term', 'edited_term', 'delete_term'] as $hook) {
+    add_action($hook, function ($termId, $ttId = 0, $taxonomy = '') use ($bumpFilterVersion) {
+        if ($taxonomy === '' || is_object_in_taxonomy('product', (string) $taxonomy)) {
+            $bumpFilterVersion();
+        }
+    }, 10, 3);
+}
+add_action('set_object_terms', function ($objectId, $terms, $ttIds, $taxonomy) use ($bumpFilterVersion) {
+    if (get_post_type((int) $objectId) === 'product') {
+        $bumpFilterVersion();
+    }
+}, 10, 4);
+
+/** A declared filter source that is not a product taxonomy, price or stock is skipped, never fatal; an administrator is told (the drift check fails it too). */
+add_action('admin_notices', function () {
+    $invalid = current_user_can('manage_options') ? ShopFilters::invalidSources() : [];
+
+    if ($invalid) {
+        printf('<div class="notice notice-warning"><p>%s</p></div>', esc_html(sprintf(
+            /* translators: %s: a list of filter sources from config/shop-filters.php */
+            __('Shop filters: these sources in config/shop-filters.php are not product taxonomies, price or stock, and are skipped: %s', 'sage'),
+            implode(', ', $invalid),
+        )));
+    }
 });
 
 /**

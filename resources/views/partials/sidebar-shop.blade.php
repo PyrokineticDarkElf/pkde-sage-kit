@@ -1,18 +1,19 @@
 {{--
   A custom, GET-based faceted filter form — not WooCommerce's bundled
-  WC_Widget_* classes. Each taxonomy (category/tag/brand/every global
-  attribute, from \App\ShopFilters::taxonomies()) renders as a checkbox
-  multi-select via partials/shop-term-filter.blade.php, plus a price
-  min/max pair, all submitted as query args and restored into the form via
+  WC_Widget_* classes. The groups a site declares (config/shop-filters.php,
+  \App\ShopFilters::groups(); without a file: price, category, tags, brand
+  and every global attribute) render in the declared order: a taxonomy as a
+  checkbox multi-select via partials/shop-term-filter.blade.php, price as a
+  min/max pair, stock as one checkbox, all submitted as query args and restored into the form via
   wc_query_string_form_fields() — so a filtered URL is shareable and works
   with JS disabled. Reload-based (a real GET request), not live AJAX, and sent once with the "Apply filters" button (no request per tick).
   Shared by the shop page and every product taxonomy archive (category,
   tag, brand) so the filter set lives in one place.
 
-  Per-term counts (\App\ShopFilters::termCounts()) are faceted, not
-  sitewide: a category's count reflects the currently-active tag/brand/
-  attribute selections (and vice versa), so it always shows what a visitor
-  can actually reach from here, not how many products exist in total.
+  Per-term counts (\App\ShopFilterCounts, WP-96) are faceted, not
+  sitewide: the number beside an option is what the grid shows after choosing
+  that option alone in its group, on top of every other applied choice, the
+  archive, the price and the sale/new views.
 
   Collapsed by default below lg (a "Filters" toggle button expands it) so it
   doesn't push the product grid below the fold on mobile; always open above
@@ -55,28 +56,37 @@
   id="shop-filters"
   class="hidden space-y-8 lg:block [&_ul]:mt-3 [&_ul]:text-sm [&_li]:list-none [&_a]:text-neutral-600 [&_a:hover]:text-neutral-900 [&_.count]:ml-1 [&_.count]:text-neutral-400"
 >
-  @php($filterTaxonomies = \App\ShopFilters::taxonomies())
+  @php($filterGroups = \App\ShopFilters::groups())
   <form method="get" action="{{ $filterAction }}" class="space-y-4" data-shop-filters>
-    {!! wc_query_string_form_fields(null, array_merge(array_map(fn ($taxonomy) => \App\ShopFilters::queryKey($taxonomy), array_keys($filterTaxonomies)), ['min_price', 'max_price', 'paged']), '', true) !!}
+    {!! wc_query_string_form_fields(null, array_merge(array_map(fn ($group) => \App\ShopFilters::queryKey($group['source']), array_filter($filterGroups, fn ($group) => $group['type'] !== 'range')), ['min_price', 'max_price', 'paged']), '', true) !!}
 
     {{-- The groups scroll inside the floating column where the column is taller than the screen (shop-pages.css); the Apply bar below stays out of the scroller. --}}
     <div class="pkde-filter-groups space-y-4" data-shop-groups>
-    <div class="rounded-2xl border border-neutral-200 p-5">
-      <fieldset class="grid gap-3">
-        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ __('Price', 'sage') }}</p>
-        <div class="grid grid-cols-2 gap-2">
-          <label class="grid gap-1 text-xs text-neutral-500">{{ __('Min', 'sage') }}<input type="number" name="min_price" value="{{ esc_attr(is_scalar($_GET['min_price'] ?? null) ? (string) $_GET['min_price'] : '') }}" min="0" step="0.01" placeholder="0" data-price-input class="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
-          <label class="grid gap-1 text-xs text-neutral-500">{{ __('Max', 'sage') }}<input type="number" name="max_price" value="{{ esc_attr(is_scalar($_GET['max_price'] ?? null) ? (string) $_GET['max_price'] : '') }}" min="0" step="0.01" placeholder="Any" data-price-input class="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
-        </div>
-      </fieldset>
-    </div>
-
-    @foreach ($filterTaxonomies as $taxonomy => $heading)
-      @php($group = trim(view('pkde-kit::partials.shop-term-filter', ['taxonomy' => $taxonomy, 'heading' => $heading])->render()))
-      @if ($group !== '')
+    @foreach ($filterGroups as $group)
+      @if ($group['type'] === 'range')
         <div class="rounded-2xl border border-neutral-200 p-5">
-          {!! $group !!}
+          <fieldset class="grid gap-3">
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ $group['label'] }}</p>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Min', 'sage') }}<input type="number" name="min_price" value="{{ esc_attr(is_scalar($_GET['min_price'] ?? null) ? (string) $_GET['min_price'] : '') }}" min="0" step="0.01" placeholder="0" data-price-input class="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
+              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Max', 'sage') }}<input type="number" name="max_price" value="{{ esc_attr(is_scalar($_GET['max_price'] ?? null) ? (string) $_GET['max_price'] : '') }}" min="0" step="0.01" placeholder="Any" data-price-input class="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
+            </div>
+          </fieldset>
         </div>
+      @elseif ($group['type'] === 'toggle')
+        <div class="rounded-2xl border border-neutral-200 p-5">
+          <label class="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-700 transition hover:text-neutral-950">
+            <input type="checkbox" name="{{ \App\ShopFilters::queryKey('stock') }}" value="1" @checked(\App\ShopFilters::inStockOnly()) class="h-4 w-4 shrink-0 rounded border-neutral-300 text-neutral-950 focus:ring-neutral-950">
+            <span>{{ $group['label'] }}</span>
+          </label>
+        </div>
+      @else
+        @php($rendered = trim(view('pkde-kit::partials.shop-term-filter', ['taxonomy' => $group['source'], 'heading' => $group['label'], 'group' => $group])->render()))
+        @if ($rendered !== '')
+          <div class="rounded-2xl border border-neutral-200 p-5">
+            {!! $rendered !!}
+          </div>
+        @endif
       @endif
     @endforeach
     </div>

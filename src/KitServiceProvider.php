@@ -19,6 +19,12 @@ use Illuminate\Support\ServiceProvider;
  */
 class KitServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        // The shop filters' defaults; a site's own config/shop-filters.php wins key by key (WP-96).
+        $this->mergeConfigFrom(dirname(__DIR__) . '/config/shop-filters.php', 'shop-filters');
+    }
+
     public function boot(): void
     {
         $views = dirname(__DIR__) . '/resources/views';
