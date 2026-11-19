@@ -355,10 +355,10 @@ contrast against a saturated `bold` card background, the same problem the title/
 would have had before those were switched onto `--pkde-card-content`/`-accent`.
 
 **Category and Brand cards are two different partials, not one shared one with a mode flag** —
-`category-cards.blade.php` (Product Categories block, `template-categories.blade.php`) overlays the
+`category-cards.blade.php` (Product Categories block, also on the seeded Categories page) overlays the
 term's name and product count on the bottom of its own image with a dark gradient scrim, since a
 category card needs the name/count to actually browse by; `brand-cards.blade.php` (Brands block,
-`template-brands.blade.php`) is image-only, with the brand's name carried in the image's own `alt`
+also on the seeded Brands page) is image-only, with the brand's name carried in the image's own `alt`
 text rather than visible page text — no caption at all when there's a real logo, falling back to the
 name as a centered heading *in place of* the image (not below it) when a brand has none. They used
 to be one shared `term-cards.blade.php`; once the two started rendering genuinely different card

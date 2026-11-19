@@ -50,7 +50,8 @@ if ($include && $count > 0) {
 // when WooCommerce is set up — get_page_by_path() rather than a hardcoded
 // URL, so this still resolves correctly if a client renames the page.
 $categories_page = get_page_by_path('categories');
-$view_all_url = $categories_page ? get_permalink($categories_page) : '';
+// no "View all" link on the directory page itself: it would point at the page it is on
+$view_all_url = $categories_page && ! is_page($categories_page->ID) ? get_permalink($categories_page) : '';
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $wrapper_attributes = get_block_wrapper_attributes([

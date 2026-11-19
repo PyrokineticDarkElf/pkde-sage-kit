@@ -13,12 +13,14 @@ The shop filter panel and the term toggle get the right landmarks and headings (
 
 ## 2026.11.19.10
 
-Redundancy clean-up, kit side (WP-99 D, TPL-202). **Adopt:** bump; deleted names were searched for in all nine sites first (read-only): no site includes any of them.
+Redundancy clean-up, kit side (WP-99 D, TPL-202). **Adopt:** bump; jsd moves (or deletes) the Recent Products and Best Selling Products blocks on its `block-demo` page before the release after next; deleted names were searched for in all nine sites first (read-only): no site includes any of them.
 
 - **Removed dead views and docs:** `partials/term-description` (the page header prints the term description as its intro since 2026.11.05.3), `partials/content-search` (search uses `post-grid`), `partials/sidebar-single` (the blog single builds its own rail), and the stale docs `single-post-layout.md` and `seo-and-breadcrumbs.md` (the still-true semantic-structure paragraph moved into `breadcrumbs.md`; `blog-single.md` is the single-post doc). Corrected `view-folders.md`, `woocommerce-templates.md` and the blocks README (twenty blocks, seven WooCommerce-dependent, no sidebar-single line).
 - **The "Primary" widget area is gone** (`sidebar-primary`): no file in the template or any site includes `sections.sidebar` or has a `@section('sidebar')`, and `dynamic_sidebar('sidebar-primary')` existed only in the dead view. Widgets an editor put in "Primary" rendered nowhere. `sidebar-footer` stays.
 - **`bin/relevanssi-settings.php` moved to pkde-deploy** (`bin/deploy/relevanssi-settings.php`, run with `bash bin/deploy/wp.sh eval-file bin/deploy/relevanssi-settings.php`); the kit file is a stub for this release that prints where it went and changes nothing. The provider's view-finder comment is corrected (the location is needed for the template hierarchy, not for old un-namespaced includes).
-- Pest 155.
+- **Product Loop takes over from Recent Products and Best Selling Products (U-1):** `sage/product-loop` gains a section **heading**, **description**, an optional **"View all products" link** (to the shop in the block's order), a **section theme** and a **card style**, the same shared header and theme code the two older blocks use; with none of them set the output is what it was. **Recent Products** and **Best Selling Products** are **deprecated**: hidden from the inserter, still registered and still rendering every page that holds them, and **removed in the release after next** (a site that uses one has until then: Product Loop with Order by Newest, or Best selling, and the same count as Number of products). The sites' usage checks (local databases, read-only, 2026-11-19): neither block is in the content of bb, bp, cs, el, js, mds, rp or tcs; **jsd** holds both on its `block-demo` demo page only. Product Loop is in use on tcs (4), bb (1) and js (1), and with its new options off it renders as before.
+- **The Brands and Categories blocks print no "View all" link on the directory page itself** (it pointed at the page it was on). `template-brands`, `template-categories` and `template-custom` page templates leave the template (U-2/U-3, below); a directory page is now an ordinary page holding the block.
+- Pest 161.
 
 ## 2026.11.19.9
 

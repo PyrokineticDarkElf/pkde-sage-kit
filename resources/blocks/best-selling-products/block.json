@@ -5,7 +5,7 @@
   "title": "Best Selling Products (Grid)",
   "category": "widgets",
   "icon": "chart-bar",
-  "description": "A grid of WooCommerce's best-selling products, by total sales. Does nothing if WooCommerce isn't active.",
+  "description": "Deprecated, removed in a later release: use Product Loop with Order by Best selling. A grid of WooCommerce's best-selling products, by total sales. Does nothing if WooCommerce isn't active.",
   "keywords": ["woocommerce", "shop", "best selling", "products"],
   "textdomain": "sage",
   "attributes": {
@@ -31,6 +31,7 @@
     }
   },
   "supports": {
+    "inserter": false,
     "html": false,
     "align": ["wide", "full"]
   },

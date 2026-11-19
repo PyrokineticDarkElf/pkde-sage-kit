@@ -5,7 +5,7 @@
   "title": "Recent Products",
   "category": "widgets",
   "icon": "clock",
-  "description": "A grid of the most recently added WooCommerce products. Does nothing if WooCommerce isn't active.",
+  "description": "Deprecated, removed in a later release: use Product Loop with Order by Newest. A grid of the most recently added WooCommerce products. Does nothing if WooCommerce isn't active.",
   "keywords": ["woocommerce", "shop", "recent", "products"],
   "textdomain": "sage",
   "attributes": {
@@ -31,6 +31,7 @@
     }
   },
   "supports": {
+    "inserter": false,
     "html": false,
     "align": ["wide", "full"]
   },

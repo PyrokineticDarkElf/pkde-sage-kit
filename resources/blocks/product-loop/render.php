@@ -48,7 +48,33 @@ if ($exclude) {
     add_filter('woocommerce_shortcode_products_query', $filter, 10, 2);
 }
 
-echo '<div ' . get_block_wrapper_attributes() . '>' . do_shortcode($shortcode . ']') . '</div>';
+// Optional section header, theme and card style, the same three the Recent, Best Selling and Featured blocks have. With none set (the defaults)
+// the output is what it always was: the wrapper and the shortcode's grid.
+$heading = trim((string) ($attributes['heading'] ?? ''));
+$theme = sanitize_html_class($attributes['theme'] ?? '');
+$card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
+$view_all_url = '';
+
+if (! empty($attributes['viewAll']) && function_exists('wc_get_page_permalink')) {
+    // WooCommerce's own catalogue ordering understands these, so the link shows the shop in the order the block uses
+    $view_all_url = in_array($orderby, ['popularity', 'rating', 'date', 'price', 'price-desc'], true) ? add_query_arg('orderby', $orderby, wc_get_page_permalink('shop')) : wc_get_page_permalink('shop');
+}
+
+echo '<div ' . get_block_wrapper_attributes(['class' => \App\pkde_loop_theme_classes($theme)]) . '>';
+echo \App\pkde_loop_theme_content_open($theme);
+echo view('pkde-kit::partials.blocks.section-header', [
+    'heading' => $heading,
+    'description' => (string) ($attributes['description'] ?? ''),
+    'viewAllUrl' => $view_all_url,
+    'viewAllLabel' => __('View all products', 'sage'),
+    'themed' => (bool) $theme,
+])->render();
+// the card reads its style from this bridge (partials/blocks/product-grid.blade.php explains why); reset after, so it cannot leak into a later render
+$GLOBALS['pkde_product_card_style'] = $card_style;
+echo do_shortcode($shortcode . ']');
+$GLOBALS['pkde_product_card_style'] = null;
+echo \App\pkde_loop_theme_content_close($theme);
+echo '</div>';
 
 if (isset($filter)) {
     remove_filter('woocommerce_shortcode_products_query', $filter, 10);

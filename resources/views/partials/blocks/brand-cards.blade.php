@@ -1,6 +1,6 @@
 {{--
   Brand card grid — used by the Brands block (brands/render.php) and the
-  standalone Brands directory page (template-brands.blade.php). Image only,
+  standalone Brands directory page (a page holding the Brands block). Image only,
   no visible caption — the brand's name lives in the image's own `alt` text
   for accessibility, not as on-page text, since a brand card's whole point
   is usually just the logo. A brand with no logo falls back to its name as

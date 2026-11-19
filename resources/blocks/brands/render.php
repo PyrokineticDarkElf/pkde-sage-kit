@@ -27,7 +27,8 @@ $terms = get_terms([
 // set up — get_page_by_path() rather than a hardcoded home_url('/brands/')
 // so this still resolves correctly if a client ever renames the page.
 $brands_page = get_page_by_path('brands');
-$view_all_url = $brands_page ? get_permalink($brands_page) : '';
+// no "View all" link on the directory page itself: it would point at the page it is on
+$view_all_url = $brands_page && ! is_page($brands_page->ID) ? get_permalink($brands_page) : '';
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $wrapper_attributes = get_block_wrapper_attributes([

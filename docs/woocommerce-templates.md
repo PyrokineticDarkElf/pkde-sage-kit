@@ -25,9 +25,7 @@ on by default and just needed seed data with something to show.
   page, and the archive is appended after the content when the block is missing, so the shop always lists
   products. Every other archive uses `partials/shop-archive.blade.php` (title, notices, the term's description in a closed toggle) and
   `partials/shop-archive-body.blade.php` (filters + `woocommerce_content()`); `partials/shop-page.blade.php` is the body of the site's
-  `archive-product` view (see [The standard shop archive](#the-standard-shop-archive)). `template-brands.blade.php` is a
-  **Brands directory page** (`/brands/`: a card grid of every brand, image + name + product count, linking to its
-  archive). All product archives share one **filter sidebar**,
+  `archive-product` view (see [The standard shop archive](#the-standard-shop-archive)). The **Brands directory page** (`/brands/`) and the **Categories page** are ordinary pages holding the Brands and Product Categories blocks (`bin/setup` seeds them; there are no page templates for them any more). All product archives share one **filter sidebar**,
   `partials/sidebar-shop.blade.php` — see [WooCommerce filtering](woocommerce-filtering.md) for
   how that's actually built (a custom faceted filter, not WooCommerce's bundled widgets).
 - `single-product.blade.php` — category/tag pills under the title (replacing WC's plain

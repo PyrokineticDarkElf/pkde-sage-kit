@@ -1,7 +1,7 @@
 {{--
   Category card grid — used by the Product Categories block
   (product-categories/render.php) and the standalone Categories directory
-  page (template-categories.blade.php). Title and product count overlay the
+  page (a page holding the Product Categories block). Title and product count overlay the
   bottom of the image itself, unlike Brand cards (brand-cards.blade.php),
   which are image-only with no visible caption — a category card needs the
   name/count to actually browse by, a brand card's whole point is usually
