@@ -4,13 +4,14 @@
  * The product gallery reserves its final height before WooCommerce's script runs (WP-91, TPL-181). The measurements are in the changelog
  * (real Chrome, throttled: bb layout shift 0.30 to 0 on a phone, 0.09 to 0 on a desktop); this keeps the four rules from being edited away.
  */
-it('shows the gallery at once, one picture before the script, a 4:3 viewport and room for the thumbnails', function () {
+it('shows the gallery at once, one picture before the script, a viewport as high as the picture and room for the thumbnails', function () {
     $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
     $gallery = '.woocommerce div.product .woocommerce-product-gallery';
 
     expect($css)->toContain("$gallery {\n    opacity: 1 !important;")
         ->and($css)->toContain("$gallery:not(:has(.flex-viewport)) .woocommerce-product-gallery__image:nth-child(n + 2) {\n    display: none;")
-        ->and($css)->toContain("$gallery .flex-viewport {\n    height: auto !important;\n    aspect-ratio: 4 / 3;")
+        ->and($css)->toContain("$gallery .flex-viewport {\n    height: auto !important;\n    aspect-ratio: var(--pkde-gallery-ratio, auto);")
+        ->and($css)->not->toContain("height: auto !important;\n    aspect-ratio: 4 / 3;") // a fixed 4:3 clipped tcs's square pictures (TCS-131)
         ->and($css)->toContain(':not(:has(.flex-control-thumbs))::after')
         ->and($css)->toContain('padding-top: calc(25% - 0.5625rem)');
 });

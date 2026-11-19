@@ -828,8 +828,9 @@
      WooCommerce prints every picture stacked at full width with the whole gallery at opacity 0, then its script (on window load) turns them
      into one picture and a row of thumbnails: the page below jumped up by three pictures' height and the LCP picture stayed invisible until
      then. So: (1) show the gallery from the start (the inline opacity:0 is WooCommerce's, hence !important); (2) until the script has built the
-     viewport, show the first picture only; (3) the viewport is always one 4:3 picture high (flexslider's inline height is set later, and every
-     slide is 4:3 above); (4) keep room for the thumbnail row until it exists. */
+     viewport, show the first picture only; (3) the viewport is as high as the picture, whatever its shape (flexslider sets an inline height
+     later; --pkde-gallery-ratio forces a ratio only for a site that wants one: a fixed 4:3 here clipped square pictures, tcs TCS-131, 2026.11.19);
+     (4) keep room for the thumbnail row until it exists. */
   .woocommerce div.product .woocommerce-product-gallery {
     opacity: 1 !important;
   }
@@ -838,7 +839,7 @@
   }
   .woocommerce div.product .woocommerce-product-gallery .flex-viewport {
     height: auto !important;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: var(--pkde-gallery-ratio, auto);
   }
   .woocommerce div.product .woocommerce-product-gallery:has(.woocommerce-product-gallery__image:nth-child(2)):not(:has(.flex-control-thumbs))::after {
     content: "";

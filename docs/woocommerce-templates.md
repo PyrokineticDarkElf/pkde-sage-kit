@@ -192,3 +192,11 @@ Rank Math writes the Product schema; the kit (`app/woocommerce/product-schema.ph
 * **Brand:** Rank Math's own brand (its `product_brand` setting) first; otherwise the product's `product_brand` term (WooCommerce brands); otherwise the filter `pkde_kit/product_brand` (`string $brand, WC_Product $product`), which a store that sells under one name returns for every product. No brand, no `brand` property.
 * **`shippingDetails`:** the cheapest enabled free-shipping or numeric flat-rate method of the first shipping zone that lists the store's base country, with that zone's countries. Not written for a virtual product, a product with a shipping class (a class can change the cost) or when no zone has a numeric rate. `pkde_kit/schema_shipping_details` (`array $details, WC_Product $product`) replaces or drops it.
 * **`hasMerchantReturnPolicy`:** only from the filter `pkde_kit/schema_return_policy` (`array $policy, WC_Product $product`), because a return window and fees are the business's, not a WooCommerce setting. Example: `['applicableCountry' => 'GB', 'returnPolicyCategory' => 'https://schema.org/MerchantReturnFiniteReturnWindow', 'merchantReturnDays' => 30]`.
+
+## Product gallery height (layout shift)
+
+The kit shows the gallery from the first paint and keeps its viewport as high as the picture, so the page below does not jump when WooCommerce's script
+builds the slider (kit.css, "The gallery has its final height from the first paint"). The viewport follows the picture whatever its shape (square,
+3:2, 4:3). A site that wants every slide forced to one ratio sets `--pkde-gallery-ratio` (for example `1` or `4 / 3`) on `:root` or on the gallery and
+gives its slide images the same ratio; leave it unset otherwise. Kit 2026.11.19 shipped a fixed 4:3 here, which clipped square pictures (tcs, TCS-131);
+2026.11.19.3 removes it.

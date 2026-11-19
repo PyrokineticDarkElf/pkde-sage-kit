@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.19.3
+
+Fixes the product gallery clipping non-4:3 pictures (TPL-190, tcs TCS-131; a regression in 2026.11.19). **Adopt:** bump; tcs can drop its workaround, if any, and check one product page.
+
+- **Gallery viewport follows the picture** (`kit.css`): `aspect-ratio: 4 / 3` on `.flex-viewport` (TPL-181) was a guess from bb's pictures; the viewport is `overflow: hidden`, so a square picture was cut by a quarter (tcs: 154 px at 1440, 83 to 85 px at 390). The ratio now comes from `--pkde-gallery-ratio`, which is unset by default (`auto`: the viewport is as high as the picture, still with no layout shift); a site that wants a forced ratio sets the variable. Checked in real Chrome on the tcs and bb dev product pages with the CSS injected in memory (nothing written to a site): tcs at 390, shipped rule: viewport 257 over a 340 slide (clipped), fix: 342 over 340 (not clipped), layout shift 0 both ways (4 runs each); bb at 390 and 1440, shipped and fix: identical (257/257 and 447/447), layout shift 0 (3 runs each). NOT re-measured with the slow-4G throttle that gave bb 0.297 before the original fix (the tool cannot throttle here): the change only removes the fixed ratio, and bb's pictures were already 4:3 through its own CSS, so the first-paint height is unchanged.
+
 ## 2026.11.19.2
 
 Contact Form 7 forms found by a stable key (TPL-186, WP-83). **Adopt:** bump; a site that finds a form by its title swaps that line for the helper once its form is tagged (pkde-deploy 2026.11.19.3).
