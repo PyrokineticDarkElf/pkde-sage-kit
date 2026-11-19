@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.19.8
+
+The Contact Form 7 form look as variables (TPL-197, triage TPL-189 J-6). **Adopt:** bump. jsd can delete its unlayered "Contact Form 7 field styling" resets and set variables.
+
+- **`kit.css` CF7 block:** `--pkde-form-columns` (2 from 640px; `1` for a single column), `--pkde-form-gap`, `--pkde-form-label-size`, `-weight`, `-color`, `-gap`, `--pkde-form-field-border`, `-radius`, `-bg`, `--pkde-form-focus`, `--pkde-form-focus-ring`, `--pkde-form-submit-bg`, `-color`, `-radius`, `-hover-bg`, `-hover-color`. The defaults are the earlier values. A dark theme redefines the colours under its own selector instead of resetting `display`, `label` colour and `.wpcf7-form-control-wrap`.
+- Proved in real Chrome on the template contact page (Contact Form 7 active, the new rules injected in memory): with no variable set, the computed gap, columns, label size, weight and colour, label gap, input border, radius and background, and the submit's radius, background and colour are identical to the shipped CSS; setting the variables changed the gap, the label colour, the input radius and the submit's background and radius. Not seen: the column variable at 640px and wider (the pane was narrower), the submit hover, jsd's own form. Pest 153.
+
 ## 2026.11.19.7
 
 Slots on the post card and the page header, so jsd drops two view copies (TPL-196, triage TPL-189 J-1 and J-3). **Adopt:** bump; nothing changes without a callback.

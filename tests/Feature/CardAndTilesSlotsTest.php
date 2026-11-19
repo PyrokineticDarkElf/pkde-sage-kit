@@ -58,3 +58,11 @@ it('has slots on the post card and the page header, called with their defaults c
         ->and(strpos($header, "do_action('pkde_kit/page_header_start'"))->toBeLessThan(strpos($header, '<h1'))
         ->and(strpos($header, '<h1'))->toBeLessThan(strpos($header, "do_action('pkde_kit/page_header_after_title'"));
 });
+
+it('styles the Contact Form 7 form from variables whose defaults are the earlier look', function () use ($root) {
+    $css = file_get_contents("$root/resources/css/kit.css");
+
+    foreach (['--pkde-form-columns, 2', '--pkde-form-gap, 1.5rem', '--pkde-form-label-color, var(--color-neutral-900)', '--pkde-form-label-size, 0.875rem', '--pkde-form-label-weight, 500', '--pkde-form-label-gap, 0.5rem', '--pkde-form-field-border, var(--color-neutral-300)', '--pkde-form-field-radius, var(--radius-xl)', '--pkde-form-field-bg, var(--color-white)', '--pkde-form-focus, var(--color-brand-600)', '--pkde-form-focus-ring, var(--color-brand-100)', '--pkde-form-submit-bg, var(--color-neutral-950)', '--pkde-form-submit-color, var(--color-white)', '--pkde-form-submit-radius, 9999px', '--pkde-form-submit-hover-bg, var(--color-brand-700)', '--pkde-form-submit-hover-color, var(--color-brand-700-fg)'] as $variable) {
+        expect($css)->toContain("var($variable)");
+    }
+});

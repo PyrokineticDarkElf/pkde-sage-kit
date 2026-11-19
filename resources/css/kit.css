@@ -960,14 +960,18 @@
  * specificity — confirmed by checking contact-form-7/includes/css/styles.css
  * directly rather than assuming, after getting caught by exactly this once
  * already in this same file.
+ *
+ * The look is variables (TPL-196, from jsd's workaround; defaults are the look below): --pkde-form-columns (2 from 640px; 1 for a single column),
+ * --pkde-form-gap, --pkde-form-label-size / -weight / -color / -gap, --pkde-form-field-border / -radius / -bg, --pkde-form-focus / -focus-ring,
+ * --pkde-form-submit-bg / -color / -radius / -hover-bg / -hover-color. A dark theme redefines the colours under its own selector.
  */
 .wpcf7-form {
   display: grid;
-  gap: 1.5rem;
+  gap: var(--pkde-form-gap, 1.5rem);
 }
 @media (min-width: 640px) {
   .wpcf7-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--pkde-form-columns, 2), minmax(0, 1fr));
   }
 }
 .wpcf7-form p {
@@ -979,27 +983,27 @@
 }
 .wpcf7-form label {
   display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-neutral-900);
+  font-size: var(--pkde-form-label-size, 0.875rem);
+  font-weight: var(--pkde-form-label-weight, 500);
+  color: var(--pkde-form-label-color, var(--color-neutral-900));
 }
 .wpcf7-form-control-wrap {
   display: block;
-  margin-top: 0.5rem;
+  margin-top: var(--pkde-form-label-gap, 0.5rem);
 }
 .wpcf7-form-control {
   width: 100%;
-  border: 1px solid var(--color-neutral-300);
-  border-radius: var(--radius-xl);
-  background-color: var(--color-white);
+  border: 1px solid var(--pkde-form-field-border, var(--color-neutral-300));
+  border-radius: var(--pkde-form-field-radius, var(--radius-xl));
+  background-color: var(--pkde-form-field-bg, var(--color-white));
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
 }
 .wpcf7-form-control:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  border-color: var(--color-brand-600);
-  box-shadow: 0 0 0 2px var(--color-brand-100);
+  border-color: var(--pkde-form-focus, var(--color-brand-600));
+  box-shadow: 0 0 0 2px var(--pkde-form-focus-ring, var(--color-brand-100));
 }
 .wpcf7-submit {
   /* .wpcf7-form-control's own width: 100% above also applies here — CF7
@@ -1007,17 +1011,17 @@
      explicitly rather than left to stretch full-width like a text input. */
   width: auto;
   display: inline-flex;
-  border-radius: 9999px;
-  background-color: var(--color-neutral-950);
+  border-radius: var(--pkde-form-submit-radius, 9999px);
+  background-color: var(--pkde-form-submit-bg, var(--color-neutral-950));
   padding: 0.75rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--pkde-form-submit-color, var(--color-white));
   cursor: pointer;
 }
 .wpcf7-submit:hover {
-  background-color: var(--color-brand-700);
-  color: var(--color-brand-700-fg);
+  background-color: var(--pkde-form-submit-hover-bg, var(--color-brand-700));
+  color: var(--pkde-form-submit-hover-color, var(--color-brand-700-fg));
 }
 .wpcf7-not-valid-tip {
   margin-top: 0.375rem;
