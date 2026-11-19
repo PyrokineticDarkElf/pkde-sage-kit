@@ -200,3 +200,25 @@ builds the slider (kit.css, "The gallery has its final height from the first pai
 3:2, 4:3). A site that wants every slide forced to one ratio sets `--pkde-gallery-ratio` (for example `1` or `4 / 3`) on `:root` or on the gallery and
 gives its slide images the same ratio; leave it unset otherwise. Kit 2026.11.19 shipped a fixed 4:3 here, which clipped square pictures (tcs, TCS-131);
 2026.11.19.3 removes it.
+
+## Category tiles: the look is variables (TPL-195)
+
+The "tiles" layout of the Product Categories block prints `.pkde-tiles` > `.pkde-tile` > `a.pkde-tile__media` (the picture) + `h3.pkde-tile__title`. Its look is the
+`--pkde-tile-*` variables of `resources/css/category-tiles.css` (columns from 40rem and 64rem, gaps, the picture's aspect, corners and background, how the picture
+sits in its box, the hover zoom, and the name's size, weight, line height, spacing, alignment, case, gap and colours). Set them in the site's CSS instead of keeping
+a copy of the view; the defaults are the kit's own look. The picture's WordPress size is the filter `pkde_kit/tile_image_size` (default `medium_large`).
+
+```css
+/* bb: three tall tiles, a centred serif name (measured against bb's own tiles: the same tile height, 538.7 px, and the same type) */
+:root {
+  --pkde-tile-cols-sm: 3; --pkde-tile-cols-lg: 3; --pkde-tile-gap-x: 2rem; --pkde-tile-gap-y: 3rem;
+  --pkde-tile-aspect: 4 / 5; --pkde-tile-radius: 1.75rem; --pkde-tile-bg: var(--color-sage-200);
+  --pkde-tile-hover-scale: 1.04; --pkde-tile-hover-duration: 700ms;
+  --pkde-tile-title-size: 1.5rem; --pkde-tile-title-weight: 700; --pkde-tile-title-leading: 1.3333; --pkde-tile-title-spacing: normal;
+  --pkde-tile-title-align: center; --pkde-tile-title-gap: 1.25rem; --pkde-tile-title-color: var(--color-slate-800); --pkde-tile-title-hover: var(--color-sage-800);
+}
+```
+
+A site with a different design keeps its own CSS on the hooks (tcs: square tiles, `contain` pictures with padding, small uppercase names are variables too; its numbering
+counter, border on hover and lift are rules on `.pkde-tile`). Specificity: the kit's rules are unlayered with a single class, so a site rule with one class that
+comes later in the cascade wins.

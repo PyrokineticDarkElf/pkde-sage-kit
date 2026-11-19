@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.19.6
+
+Category tile look as variables (TPL-195, triage TPL-189 B-1/T-1). **Adopt:** bump. A site that keeps its own copy of `category-tiles.blade.php` keeps working and stops getting the kit's fixes; **bb and tcs can delete their copies** and set variables instead (below). Markup change for sites WITHOUT a copy: the wrapper is `.pkde-tiles` and each tile `.pkde-tile` (it was a Tailwind grid and `.group`), the picture link `.pkde-tile__media`, the name an `h3.pkde-tile__title`; the default look is the same.
+
+- **`resources/css/category-tiles.css`** (imported by `kit.css`): `--pkde-tile-cols-sm`, `-cols-lg`, `-gap-x`, `-gap-y`, `-aspect`, `-radius`, `-bg`, `-image-fit`, `-image-padding`, `-hover-scale`, `-hover-duration`, `-title-size`, `-title-weight`, `-title-leading`, `-title-spacing`, `-title-align`, `-title-transform`, `-title-gap`, `-title-color`, `-title-hover`; the picture's size is the filter `pkde_kit/tile_image_size`. Documented with an example in `docs/woocommerce-templates.md`.
+- **Checked in real Chrome against the two sites' own tiles (their dev pages; the kit's CSS injected in memory; nothing written):** bb's three tall tiles from the variables alone give the same tile (389.3 x 486.7 px), column and row gaps, corners, background, centred title, size, weight, line height and colour, and the same grid height (538.7 px); tcs's tiles give the same grid (1232 x 1360.9 px), tile and picture-box sizes, `contain` fit with padding, and the small uppercase letter-spaced name; the 2 px of the tcs picture inside its box and tcs's numbering counter, hover border and lift are tcs's own rules on the new class hooks. Not seen: hover states, a phone width, tcs's real pages with the kit's markup.
+- Pest 150.
+
 ## 2026.11.19.5
 
 Two gaps found in the tcs and bb copies of kit views, closed in the kit (TPL-193, triage TPL-189 §5 item 1). **Adopt:** bump. Nothing forced: tcs and bb may keep their copies, and the owner decides whether tcs retires its product card.

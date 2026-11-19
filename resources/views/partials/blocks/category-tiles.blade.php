@@ -5,44 +5,49 @@
   (App\category_menu_image), else a placeholder. An image given as a URL (the fallback, an extra tile) goes through the media library when it is an
   upload (App\media_library_image: width, height, srcset, sizes). The default "Uncategorized" category is never a tile.
 
+  The look is resources/css/category-tiles.css: --pkde-tile-* variables (columns, gaps, shape, corners, zoom, title), and the stable classes
+  pkde-tiles / pkde-tile / pkde-tile__media / pkde-tile__title for a site that restyles the tiles from its own CSS. The picture's size is the filter
+  pkde_kit/tile_image_size (default medium_large).
+
   Props: $terms (WP_Term[]), $labels (slug => label overrides), $extra (array of {label, url, image, alt}), $emptyMessage
 --}}
 @php($terms = array_values(array_filter((array) ($terms ?? []), fn ($term) => $term->slug !== 'uncategorized')))
+@php($tileImageSize = (string) apply_filters('pkde_kit/tile_image_size', 'medium_large'))
 @if (! empty($terms) || ! empty($extra))
-  <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+  <div class="pkde-tiles">
     @foreach ($terms as $term)
       @php($label = trim((string) (($labels ?? [])[$term->slug] ?? '')) ?: $term->name)
       @php($thumbnail = (int) get_term_meta($term->term_id, 'thumbnail_id', true))
       @php($fallback = $thumbnail ? '' : \App\category_menu_image((int) $term->term_id))
-      <div class="group">
+      <div class="pkde-tile">
         {{-- The picture link repeats the name link below it: hidden from assistive tech and the tab order. --}}
-        <a href="{{ get_term_link($term) }}" aria-hidden="true" tabindex="-1" class="block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
+        <a href="{{ get_term_link($term) }}" aria-hidden="true" tabindex="-1" class="pkde-tile__media">
           @if ($thumbnail)
-            {!! wp_get_attachment_image($thumbnail, 'medium_large', false, ['loading' => 'lazy', 'alt' => '', 'class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
+            {!! wp_get_attachment_image($thumbnail, $tileImageSize, false, ['loading' => 'lazy', 'alt' => '']) !!}
           @elseif ($fallback)
-            {!! \App\media_library_image($fallback, '', ['class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
+            {!! \App\media_library_image($fallback, '', [], $tileImageSize) !!}
           @else
-            <x-pkde-kit::placeholder-image ratio="aspect-[4/3]" label="{{ $label }}" />
+            <x-pkde-kit::placeholder-image ratio="h-full" label="{{ $label }}" />
           @endif
         </a>
-        <h3 class="mt-4 font-display text-lg font-semibold tracking-[-0.02em]">
-          <a href="{{ get_term_link($term) }}" class="transition hover:text-brand-700">{{ $label }}</a>
+        <h3 class="pkde-tile__title">
+          <a href="{{ get_term_link($term) }}">{{ $label }}</a>
         </h3>
       </div>
     @endforeach
 
     @foreach (($extra ?? []) as $tile)
       @php($tileUrl = esc_url(str_starts_with($tile['url'], '/') ? home_url($tile['url']) : $tile['url']))
-      <div class="group">
-        <a href="{{ $tileUrl }}" aria-hidden="true" tabindex="-1" class="block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
+      <div class="pkde-tile">
+        <a href="{{ $tileUrl }}" aria-hidden="true" tabindex="-1" class="pkde-tile__media">
           @if (! empty($tile['image']))
-            {!! \App\media_library_image($tile['image'], (string) ($tile['alt'] ?? ''), ['class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
+            {!! \App\media_library_image($tile['image'], (string) ($tile['alt'] ?? ''), [], $tileImageSize) !!}
           @else
-            <x-pkde-kit::placeholder-image ratio="aspect-[4/3]" label="{{ $tile['label'] }}" />
+            <x-pkde-kit::placeholder-image ratio="h-full" label="{{ $tile['label'] }}" />
           @endif
         </a>
-        <h3 class="mt-4 font-display text-lg font-semibold tracking-[-0.02em]">
-          <a href="{{ $tileUrl }}" class="transition hover:text-brand-700">{{ $tile['label'] }}</a>
+        <h3 class="pkde-tile__title">
+          <a href="{{ $tileUrl }}">{{ $tile['label'] }}</a>
         </h3>
       </div>
     @endforeach

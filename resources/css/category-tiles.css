@@ -1,0 +1,66 @@
+/**
+ * Category photograph tiles (partials/blocks/category-tiles, the "tiles" layout of the Product Categories block; TPL-195). The look is a set of variables with the
+ * kit's own look as the default, so a site sets a few in its CSS instead of keeping a copy of the view (bb: three tall tiles with a centred serif title). Unlayered,
+ * like the other kit CSS files, so a site's own rules (same specificity, later) win. Stable hooks for a site that wants a different design altogether (tcs: bordered
+ * tiles, numbering, small capitals): .pkde-tiles, .pkde-tile, .pkde-tile__media, .pkde-tile__title.
+ *
+ *   --pkde-tile-cols-sm, --pkde-tile-cols-lg   columns from 40rem and from 64rem (2 and 4; one column below)
+ *   --pkde-tile-gap-x, --pkde-tile-gap-y        the gaps (1.5rem, 2.5rem)
+ *   --pkde-tile-aspect                          the picture's shape (4 / 3)
+ *   --pkde-tile-radius                          its corners (1rem)
+ *   --pkde-tile-bg                              what shows behind a picture that is still loading (neutral-100)
+ *   --pkde-tile-image-fit, --pkde-tile-image-padding   how the picture sits in its box (cover, 0; `contain` and `6%` for products on white)
+ *   --pkde-tile-hover-scale, --pkde-tile-hover-duration   the zoom on hover (1.03, 500ms; scale 1 = none)
+ *   --pkde-tile-title-size, -weight, -leading, -spacing, -align, -transform, -gap, -color, -hover   the name under the picture (1.125rem, 600, 1.5556, -0.02em, start, none, 1rem, inherit, brand-700)
+ */
+.pkde-tiles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--pkde-tile-gap-x, 1.5rem);
+  row-gap: var(--pkde-tile-gap-y, 2.5rem);
+}
+@media (min-width: 40rem) {
+  .pkde-tiles {
+    grid-template-columns: repeat(var(--pkde-tile-cols-sm, 2), minmax(0, 1fr));
+  }
+}
+@media (min-width: 64rem) {
+  .pkde-tiles {
+    grid-template-columns: repeat(var(--pkde-tile-cols-lg, 4), minmax(0, 1fr));
+  }
+}
+.pkde-tile__media {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: var(--pkde-tile-aspect, 4 / 3);
+  border-radius: var(--pkde-tile-radius, 1rem);
+  background: var(--pkde-tile-bg, var(--color-neutral-100));
+}
+.pkde-tile__media img {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: var(--pkde-tile-image-padding, 0);
+  object-fit: var(--pkde-tile-image-fit, cover);
+  transition: transform var(--pkde-tile-hover-duration, 500ms) ease-out;
+}
+.pkde-tile:hover .pkde-tile__media img {
+  transform: scale(var(--pkde-tile-hover-scale, 1.03));
+}
+.pkde-tile__title {
+  margin-top: var(--pkde-tile-title-gap, 1rem);
+  font-family: var(--font-display, inherit);
+  font-size: var(--pkde-tile-title-size, 1.125rem);
+  font-weight: var(--pkde-tile-title-weight, 600);
+  line-height: var(--pkde-tile-title-leading, 1.5556);
+  letter-spacing: var(--pkde-tile-title-spacing, -0.02em);
+  text-align: var(--pkde-tile-title-align, start);
+  text-transform: var(--pkde-tile-title-transform, none);
+}
+.pkde-tile__title a {
+  color: var(--pkde-tile-title-color, inherit);
+  transition: color 0.15s ease;
+}
+.pkde-tile__title a:hover {
+  color: var(--pkde-tile-title-hover, var(--color-brand-700));
+}
