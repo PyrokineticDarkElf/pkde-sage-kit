@@ -17,6 +17,12 @@
  *   --pkde-page-header-intro-size    its font size          default: 1.125rem
  *   --pkde-page-header-intro-max-width  its measure          default: 42rem
  *
+ * The H1 (WP-99 A, owner 2026-11-19): when the theme defines an H1 style (theme.json styles.elements.h1) the H1 takes its family, size, weight, line height, spacing and
+ * colour from it, like an H1 in the content, and the --pkde-page-header-title-* variables above do nothing. When the theme defines none, App\page_title_follows_theme()
+ * is false, the H1 gets the class pkde-page-title--kit and the variables apply (a one-size reset would make it body text). A size set in the block editor on a heading
+ * still wins, as core has it. A site that wants the band's title smaller sets a size on `.page-header h1` in its own CSS (one class and one element beat WordPress's
+ * `:root :where(h1)`).
+ *
  * Contrast: the title and breadcrumbs must reach 4.5:1 on the band. The defaults are checked by `npm run theme:check` for the palette's brand
  * colour; a site that sets its own band colour checks its own text. Unlayered on purpose, like the other kit rules that must beat Tailwind
  * utilities and sit before the site's own CSS.
@@ -43,7 +49,7 @@
   background-color: var(--pkde-page-header-bg);
   border-bottom: 1px solid var(--pkde-page-header-border);
 }
-.page-header h1 {
+.page-header h1.pkde-page-title--kit {
   color: var(--pkde-page-header-title);
   font-family: var(--pkde-page-header-title-font);
   font-weight: var(--pkde-page-header-title-weight);
@@ -53,7 +59,7 @@
   line-height: var(--pkde-page-header-title-leading);
 }
 @media (min-width: 640px) {
-  .page-header h1 {
+  .page-header h1.pkde-page-title--kit {
     font-size: var(--pkde-page-header-title-size-lg);
   }
 }

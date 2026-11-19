@@ -80,9 +80,28 @@ it('links the byline to the author archive only while it exists, in the meta, th
     expect(file_get_contents("$root/app/single-post.php"))->toContain("'disable_author_archives'")->toContain("'pkde_kit/author_archives'");
 });
 
-it('sizes the page header title with variables and lets a site skip the header per page (tcs and bb parity, MGR-77)', function () use ($root) {
+it('keeps the kit\'s title look only for a theme with no H1 style, and lets a site skip the header per page (WP-99 A; was MGR-77)', function () use ($root) {
     $css = file_get_contents("$root/resources/css/page-header.css");
+    $view = file_get_contents("$root/resources/views/partials/page-header.blade.php");
 
-    expect($css)->toContain('--pkde-page-header-title-size:', '--pkde-page-header-title-size-lg:', '--pkde-page-header-title-leading:', 'font-size: var(--pkde-page-header-title-size)')
+    // the kit's look is scoped to the class the view adds only when the theme does not style the H1; the Tailwind size classes are gone either way
+    expect($css)->toContain('--pkde-page-header-title-size:', '--pkde-page-header-title-leading:', '.page-header h1.pkde-page-title--kit {', 'font-size: var(--pkde-page-header-title-size)')
+        ->and($css)->not->toMatch('/\n\.page-header h1 \{/')
+        ->and($view)->toContain('pkde-page-title--kit', 'page_title_follows_theme')->not->toContain('text-4xl')->not->toContain('font-display')
         ->and(file_get_contents("$root/resources/views/page.blade.php"))->toContain("'pkde_kit/page_header'", '! is_front_page()', 'partials.page-header');
+});
+
+it('leaves a heading size set in the block editor alone: the kit has no rule on block-content headings', function () use ($root) {
+    // core puts the editor's size on the block itself (a `has-*-font-size` class or an inline style); a kit rule on `.wp-block-heading` or on headings inside the
+    // content containers would outrank or fight it
+    $offenders = [];
+    foreach (glob("$root/resources/css/*.css") as $file) {
+        $css = (string) file_get_contents($file);
+        $css = (string) preg_replace('~/\*.*?\*/~s', '', $css);
+        if (preg_match('/wp-block-heading|\.entry-content\s+h[1-6]|\.wp-block-post-content\s+h[1-6]/', $css)) {
+            $offenders[] = basename($file);
+        }
+    }
+
+    expect($offenders)->toBe([]);
 });

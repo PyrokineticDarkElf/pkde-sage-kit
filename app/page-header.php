@@ -58,3 +58,17 @@ function page_header_intro(?array $ctx = null): string
 
     return trim((string) $filter('pkde_kit/page_header_intro', $intro, $ctx['object']));
 }
+
+/**
+ * Does the theme style the H1 itself (theme.json styles.elements.h1 with a font size, or the same set in the Site Editor)? When it does, the title band's H1 takes the
+ * theme's H1 style like any H1 in the content (WP-99 A, owner 2026-11-19). When it does not, an H1 would fall back to the browser's body-sized default (Tailwind's
+ * reset removes the heading sizes), so the band keeps the kit's own title look (resources/css/page-header.css). Filter: pkde_kit/page_title_follows_theme (bool).
+ */
+function page_title_follows_theme(): bool
+{
+    $size = function_exists('wp_get_global_styles') ? wp_get_global_styles(['elements', 'h1', 'typography', 'fontSize']) : '';
+
+    $follows = is_string($size) && trim($size) !== '';
+
+    return function_exists('apply_filters') ? (bool) apply_filters('pkde_kit/page_title_follows_theme', $follows) : $follows;
+}

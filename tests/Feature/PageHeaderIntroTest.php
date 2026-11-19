@@ -66,6 +66,9 @@ function render_page_header(array $data): string
     if (! function_exists('wp_kses_post')) {
         eval('function wp_kses_post($html) { return $html; }');
     }
+    if (! function_exists('wp_get_global_styles')) {
+        eval('function wp_get_global_styles($path) { return $GLOBALS["pkde_test_h1_size"] ?? ""; }');
+    }
     if (! function_exists('do_action')) {
         eval('function do_action($hook, ...$args) { foreach ((array) ($GLOBALS["pkde_test_actions"][$hook] ?? []) as $callback) { $callback(...$args); } }');
     }
@@ -122,4 +125,15 @@ it('calls the two page header actions around the title, so a site can decorate t
     // and nothing at all when nobody hooks them
     $plain = render_page_header(['title' => 'Services', 'intro' => '']);
     expect($plain)->not->toContain('sigil')->not->toContain('class="rule"');
+});
+
+it('lets the title follow the theme\'s H1 when the theme defines one, and keeps the kit\'s title look when it does not (WP-99 A)', function () {
+    unset($GLOBALS['pkde_test_h1_size']);
+    $none = render_page_header(['title' => 'Shop', 'intro' => '']);
+    expect($none)->toContain('<h1 class="mt-3 max-w-3xl pkde-page-title--kit">')->not->toContain('text-4xl');
+
+    $GLOBALS['pkde_test_h1_size'] = 'clamp(2rem, 5vw, 4.32rem)'; // theme.json styles.elements.h1.typography.fontSize
+    $follows = render_page_header(['title' => 'Shop', 'intro' => '']);
+    unset($GLOBALS['pkde_test_h1_size']);
+    expect($follows)->toContain('<h1 class="mt-3 max-w-3xl">')->not->toContain('pkde-page-title--kit')->not->toContain('text-4xl')->not->toContain('font-display');
 });
