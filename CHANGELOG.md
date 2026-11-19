@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.19.7
+
+Slots on the post card and the page header, so jsd drops two view copies (TPL-196, triage TPL-189 J-1 and J-3). **Adopt:** bump; nothing changes without a callback.
+
+- **Post card** (`partials/content.blade.php`): the filter `pkde_kit/card_media` (`string|null $html, WP_Post $post`) returns markup that replaces the card's picture (jsd: a themed icon tile for its services post type), and `pkde_kit/card_show_meta` (`bool $show, WP_Post $post`) hides the byline and date for a post type. The picture link, the title and the rest of the card stay the kit's.
+- **Page header** (`partials/page-header.blade.php`): the actions `pkde_kit/page_header_start` (first thing inside the band, before the container: a sigil or an initial letter, absolutely placed; give `.page-header` `position: relative; overflow: hidden` in the site's CSS) and `pkde_kit/page_header_after_title` (after the H1: a rule), both called with the title.
+- jsd's look differences (the hover ring, `font-bold`, `opacity-90`, the dark classes) are not slots: they are unlayered rules in `site.css` on the kit's classes, as the triage rule says.
+- Proved: a real Blade render in Pest (the two actions around the title, nothing when unhooked), and the card and header rendered on the template stack with callbacks that mimic jsd: the icon tile replaced the picture, the meta went, the title link stayed, the sigil came before the container and the rule after the H1; unhooked, the card and header are as before. Not shown on jsd. Pest 152.
+
 ## 2026.11.19.6
 
 Category tile look as variables (TPL-195, triage TPL-189 B-1/T-1). **Adopt:** bump. A site that keeps its own copy of `category-tiles.blade.php` keeps working and stops getting the kit's fixes; **bb and tcs can delete their copies** and set variables instead (below). Markup change for sites WITHOUT a copy: the wrapper is `.pkde-tiles` and each tile `.pkde-tile` (it was a Tailwind grid and `.group`), the picture link `.pkde-tile__media`, the name an `h3.pkde-tile__title`; the default look is the same.

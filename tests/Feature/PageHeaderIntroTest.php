@@ -66,6 +66,9 @@ function render_page_header(array $data): string
     if (! function_exists('wp_kses_post')) {
         eval('function wp_kses_post($html) { return $html; }');
     }
+    if (! function_exists('do_action')) {
+        eval('function do_action($hook, ...$args) { foreach ((array) ($GLOBALS["pkde_test_actions"][$hook] ?? []) as $callback) { $callback(...$args); } }');
+    }
     if (! function_exists('App\container_class')) {
         eval('namespace App; function container_class($default, $context = "") { return $default; }');
     }
@@ -102,4 +105,21 @@ it('never hands the intro to the view as a composer method (Acorn passes public 
 
     expect($composer)->not->toMatch('/function\s+intro\s*\(/')
         ->and($composer)->not->toMatch('/function\s+with\s*\(/');
+});
+
+it('calls the two page header actions around the title, so a site can decorate the band without a copy of the view (TPL-196)', function () {
+    $GLOBALS['pkde_test_actions'] = [
+        'pkde_kit/page_header_start' => [fn($title) => print '<i class="sigil" data-title="' . $title . '"></i>'],
+        'pkde_kit/page_header_after_title' => [fn($title) => print '<hr class="rule">'],
+    ];
+    $html = render_page_header(['title' => 'Services', 'intro' => '']);
+    unset($GLOBALS['pkde_test_actions']);
+
+    expect(strpos($html, 'class="sigil"'))->toBeLessThan(strpos($html, 'page-header__inner'))
+        ->and(strpos($html, '<h1'))->toBeLessThan(strpos($html, 'class="rule"'))
+        ->and($html)->toContain('data-title="Services"');
+
+    // and nothing at all when nobody hooks them
+    $plain = render_page_header(['title' => 'Services', 'intro' => '']);
+    expect($plain)->not->toContain('sigil')->not->toContain('class="rule"');
 });

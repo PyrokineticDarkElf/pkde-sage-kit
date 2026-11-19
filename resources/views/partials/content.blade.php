@@ -41,7 +41,11 @@
 
   {{-- The picture link repeats the title link below it: hide it from assistive tech and the tab order so there is one named link per card (axe link-name). --}}
   <a href="{{ get_permalink() }}" class="relative block overflow-hidden rounded-2xl bg-neutral-100" aria-hidden="true" tabindex="-1">
-    @if (has_post_thumbnail())
+    {{-- Slot: the filter pkde_kit/card_media (string|null $html, WP_Post $post) returns markup that replaces the picture (a themed icon tile for one post type, TPL-196). --}}
+    @php($cardMedia = apply_filters('pkde_kit/card_media', null, get_post()))
+    @if (is_string($cardMedia) && $cardMedia !== '')
+      {!! $cardMedia !!}
+    @elseif (has_post_thumbnail())
       <div class="aspect-[4/3] overflow-hidden bg-neutral-100">
         {!! get_the_post_thumbnail(null, 'medium_large', ['class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
       </div>
@@ -58,7 +62,10 @@
         </a>
       </h2>
 
-      @include('pkde-kit::partials.entry-meta')
+      {{-- Slot: the filter pkde_kit/card_show_meta (bool $show, WP_Post $post), false for a post type whose card has no byline and date. --}}
+      @if (apply_filters('pkde_kit/card_show_meta', true, get_post()))
+        @include('pkde-kit::partials.entry-meta')
+      @endif
     </header>
 
     <div class="entry-summary text-sm text-[color:var(--pkde-card-content)] opacity-75">

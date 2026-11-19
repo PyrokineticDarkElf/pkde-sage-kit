@@ -45,3 +45,16 @@ it('styles the category tiles from variables with stable class hooks, and import
         ->and($view)->toContain('class="pkde-tiles"')->toContain('pkde-tile__media')->toContain('pkde-tile__title')->toContain("apply_filters('pkde_kit/tile_image_size', 'medium_large')")
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./category-tiles.css";');
 });
+
+it('has slots on the post card and the page header, called with their defaults changing nothing', function () use ($root) {
+    $card = file_get_contents("$root/resources/views/partials/content.blade.php");
+    $header = file_get_contents("$root/resources/views/partials/page-header.blade.php");
+
+    expect($card)->toContain("apply_filters('pkde_kit/card_media', null, get_post())")
+        ->and($card)->toContain("apply_filters('pkde_kit/card_show_meta', true, get_post())")
+        ->and($card)->toContain('has_post_thumbnail()') // the default picture is still there when the filter returns nothing
+        ->and($header)->toContain("do_action('pkde_kit/page_header_start', \$title)")
+        ->and($header)->toContain("do_action('pkde_kit/page_header_after_title', \$title)")
+        ->and(strpos($header, "do_action('pkde_kit/page_header_start'"))->toBeLessThan(strpos($header, '<h1'))
+        ->and(strpos($header, '<h1'))->toBeLessThan(strpos($header, "do_action('pkde_kit/page_header_after_title'"));
+});
