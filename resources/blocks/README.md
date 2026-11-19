@@ -1,6 +1,6 @@
 # Native Gutenberg blocks
 
-Sixteen real, working blocks ship, editable via the native block editor (RichText,
+Twenty real, working blocks ship, editable via the native block editor (RichText,
 InspectorControls, MediaUpload, InnerBlocks where relevant) and rendered on the frontend by plain
 PHP — no ACF or third-party block plugin needed:
 
@@ -27,7 +27,7 @@ PHP — no ACF or third-party block plugin needed:
 | Hero Slider | A loopable, draggable row of miniature hero sections (Embla), each its own Hero Slide block. | No |
 | Hero Slide | One slide's heading, text, background image, button, and theme — only usable inside Hero Slider. | No |
 
-The five WooCommerce-dependent blocks aren't just inert when WooCommerce isn't installed — `../../app/blocks.php`
+The seven WooCommerce-dependent blocks aren't just inert when WooCommerce isn't installed — `../../app/blocks.php`
 skips registering them entirely in that case (checked against a hardcoded list, `$requires_woocommerce`),
 so they don't appear in the block inserter at all on a non-store site, rather than appearing and
 rendering nothing.
@@ -204,7 +204,7 @@ prose width. Pick whichever actually matches a given page's content shape.
 
 **Not every place `the_content()` renders is wrapped in `content-grid` yet** —
 `partials/content-single.blade.php` (single blog posts) deliberately isn't: its body sits inside an
-8-of-12-column area alongside a sidebar (`partials/sidebar-single.blade.php`), and "break out to the
+8-of-12-column area alongside its own rail (table of contents, share links, author box, related posts), and "break out to the
 viewport edge" doesn't have one obvious answer when a sidebar occupies the same vertical space (push
 it down? overlay it? that's a real design decision, not implied by fixing block-demo's layout). A
 wide/full block placed in a blog post's body today renders as an ordinary same-width block, not

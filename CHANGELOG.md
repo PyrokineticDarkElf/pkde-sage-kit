@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.19.10
+
+Redundancy clean-up, kit side (WP-99 D, TPL-202). **Adopt:** bump; deleted names were searched for in all nine sites first (read-only): no site includes any of them.
+
+- **Removed dead views and docs:** `partials/term-description` (the page header prints the term description as its intro since 2026.11.05.3), `partials/content-search` (search uses `post-grid`), `partials/sidebar-single` (the blog single builds its own rail), and the stale docs `single-post-layout.md` and `seo-and-breadcrumbs.md` (the still-true semantic-structure paragraph moved into `breadcrumbs.md`; `blog-single.md` is the single-post doc). Corrected `view-folders.md`, `woocommerce-templates.md` and the blocks README (twenty blocks, seven WooCommerce-dependent, no sidebar-single line).
+- **The "Primary" widget area is gone** (`sidebar-primary`): no file in the template or any site includes `sections.sidebar` or has a `@section('sidebar')`, and `dynamic_sidebar('sidebar-primary')` existed only in the dead view. Widgets an editor put in "Primary" rendered nowhere. `sidebar-footer` stays.
+- **`bin/relevanssi-settings.php` moved to pkde-deploy** (`bin/deploy/relevanssi-settings.php`, run with `bash bin/deploy/wp.sh eval-file bin/deploy/relevanssi-settings.php`); the kit file is a stub for this release that prints where it went and changes nothing. The provider's view-finder comment is corrected (the location is needed for the template hierarchy, not for old un-namespaced includes).
+- Pest 155.
+
 ## 2026.11.19.9
 
 The page title follows the theme's H1 (WP-99 A, TPL-200; owner 2026-11-19). **Adopt:** bump, then look at the title band once on staging. **tcs:** its page titles become the size of its content H1 (69 px on a desktop instead of 48 px) and the colour of its other text. **bb and any theme with no H1 style:** unchanged.

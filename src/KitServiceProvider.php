@@ -15,7 +15,8 @@ use Illuminate\Support\ServiceProvider;
  * The kit's views are the `pkde-kit` view namespace: `@include('pkde-kit::partials.breadcrumbs')`, `<x-pkde-kit::alert>`. A site overrides
  * one view by placing a file of the same path under resources/views/vendor/pkde-kit/ in its theme (Laravel's standard package
  * override; every other kit view still comes from the package). The kit's views directory is also added to the end of the view finder,
- * so a site's older un-namespaced includes (`partials.breadcrumbs`) keep resolving to the kit when the theme has no file of that name.
+ * which the template hierarchy needs (a kit `category` or `archive-product` is a template at all because WordPress finds it there); no template or site file includes a kit
+ * partial without the namespace any more.
  */
 class KitServiceProvider extends ServiceProvider
 {

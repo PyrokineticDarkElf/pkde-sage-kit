@@ -12,3 +12,12 @@ The trail is the same on every site, whatever its Rank Math settings: `Home / Bl
 Hooks: `pkde_kit/breadcrumb_standard` (array `settings`, `strings`), `pkde_kit/force_rank_math_breadcrumbs` (bool), `pkde_kit/breadcrumb_html` (string).
 Style the markup directly (`.breadcrumbs`, `.rank-math-breadcrumb`, `.separator`, `.last`); the page header colours it with `--pkde-page-header-crumb`.
 The drift check (pkde-deploy 2026.11.06.1) has a row for the standard and one for Rank Math's module.
+
+## Semantic structure, generally
+
+A single `<h1>` per page (the page or post title, or the front page's hero headline, never both), a correct heading hierarchy inside each section (feature grid items are
+`<h3>` under a section `<h2>`, blog cards are `<h2>` under the page's `<h1>`), proper landmarks (`<header>`, `<nav>`, `<main>`, `<footer>`, `<article>`), a skip-to-content link, and
+`lang`, `viewport` and `charset` set in `layouts/app.blade.php`. Rank Math owns the rest of the SEO surface (meta description, Open Graph, canonical URLs, sitemaps, schema.org); the
+theme deliberately adds none of it, so the tags do not conflict. Breadcrumbs are switched on by `bin/setup` (`rank-math-options-general.breadcrumbs = on`) and included by
+`partials/page-header.blade.php` and at the top of `content-single.blade.php`; Rank Math's own output already carries a `<nav aria-label="breadcrumbs">`, so the partial styles it
+instead of nesting a second landmark.

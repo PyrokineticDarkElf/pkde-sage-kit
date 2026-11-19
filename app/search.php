@@ -9,7 +9,7 @@ namespace App;
 |
 | tcs and bb carry the same code, so it lives here. Everything below does nothing while the two plugins are inactive (their filters never
 | fire); a site that wants it requires the plugins (`wpackagist-plugin/relevanssi` and `relevanssi-live-ajax-search`, the free editions),
-| runs `wp eval-file vendor/pkde/sage-kit/bin/relevanssi-settings.php` once per environment, and prints the form with
+| runs `bash bin/deploy/wp.sh eval-file bin/deploy/relevanssi-settings.php` (pkde-deploy) once per environment, and prints the form with
 | `@include('pkde-kit::partials.product-search')` (docs/woocommerce-templates.md, "Search").
 */
 

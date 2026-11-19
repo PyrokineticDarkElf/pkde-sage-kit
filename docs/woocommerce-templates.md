@@ -86,7 +86,7 @@ layout/paint to activate — nothing to build here once real gallery images exis
 the seeded data above: correct markup, correct `wc_single_product_params` config, scripts loading
 correctly). It just can't be visually demonstrated in a background browser pane during
 development, the same limitation as the ToC scroll-spy noted in
-[single-post-layout.md](single-post-layout.md).
+[blog-single.md](blog-single.md).
 
 ## Shop polish: stars, equal cards, category accordion, basket and checkout (`resources/css/shop-pages.css`)
 
@@ -104,7 +104,7 @@ Social profiles: the footer prints round icon links through `pkde-kit::partials.
 tcs and bb carried the same product search, so it lives in the kit. Everything is inert until a site asks for it:
 
 1. Require the plugins: `wpackagist-plugin/relevanssi` (^4.28) and `wpackagist-plugin/relevanssi-live-ajax-search` (^2.6). **Both sites use the FREE editions** (tcs and bb); Relevanssi Premium works the same. Nothing in the kit needs Premium.
-2. Run `wp eval-file vendor/pkde/sage-kit/bin/relevanssi-settings.php` once per environment (after a deploy): products only, the SKU and every product taxonomy indexed, AND between words with an OR fallback, partial words, titles weighing five times the body, no excerpts, searches logged without IP addresses, hidden and noindex products excluded; it rebuilds the index.
+2. Run `bash bin/deploy/wp.sh eval-file bin/deploy/relevanssi-settings.php` (pkde-deploy) once per environment (after a deploy): products only, the SKU and every product taxonomy indexed, AND between words with an OR fallback, partial words, titles weighing five times the body, no excerpts, searches logged without IP addresses, hidden and noindex products excluded; it rebuilds the index.
 3. Print the form where you want it: `@include('pkde-kit::partials.product-search', ['id' => 'site-search'])` (the header bar), or use the header panel below. `$id` keeps two copies on a page apart.
 
 What the kit does for you (`app/search.php`, `resources/css/live-search.css`): Relevanssi answers the query itself, so WooCommerce's price, popularity and rating sort choices are handed over as the meta fields they sort by; the live results are the kit's Blade view (`partials/live-search-results`: product image, title and price rows, arrow-key navigation, a last row that opens the full results) through the plugin's template filter, so no theme file is needed (a theme's own `relevanssi-live-ajax-search/search-results.php` still wins); the plugin's own stylesheet is dequeued; six results by default (`apply_filters('pkde_kit/live_search_results', 6)`); a product search (`?s=...&post_type=product`) lists products in the shop's template with its filters and sorting. A product search results page is titled "Search Results for ...", not "Shop" (the page-header composer now checks the search before the archive).
