@@ -20,14 +20,14 @@ class TableOfContents
         $document = new \DOMDocument();
 
         // DOMDocument assumes ISO-8859-1 without an explicit encoding hint,
-        // mangling anything non-ASCII in the content; the mb_convert_encoding
-        // trick forces it to treat the input as UTF-8 without needing a
+        // mangling anything non-ASCII in the content; writing the non-ASCII characters
+        // as numeric entities (mb_encode_numericentity: mb_convert_encoding with HTML-ENTITIES is deprecated since PHP 8.2) forces it to read the input as UTF-8 without needing a
         // <meta charset> in the fragment. Errors are suppressed because
         // block-rendered HTML fragments aren't full documents and libxml
         // otherwise warns about that.
         libxml_use_internal_errors(true);
         $document->loadHTML(
-            '<?xml encoding="utf-8" ?><div>' . mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8') . '</div>',
+            '<?xml encoding="utf-8" ?><div>' . mb_encode_numericentity($html, [0x80, 0x10FFFF, 0, 0x1FFFFF], 'UTF-8') . '</div>',
             LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD,
         );
         libxml_clear_errors();
