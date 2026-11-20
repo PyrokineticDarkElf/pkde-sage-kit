@@ -121,8 +121,8 @@ function pkde_card_style_wrapper_close(string $cardStyle): string
 
 /**
  * Animation settings: every block has two, On hover and When scrolled into view (the Animation panel, see
- * resources/js/animation.jsx). They live only in the block comment; the page gets the classes here when it renders and the motion
- * is CSS in app.css, so a saved block's HTML never changes and removing this never breaks a block.
+ * resources/js/animation.jsx). They live only in the block comment; the page gets the classes when it renders (app/motion.php) and the motion
+ * is CSS in motion.css, so a saved block's HTML never changes and removing this never breaks a block.
  */
 const PKDE_ANIMATIONS = ['animationHover' => 'pkde-hover-', 'animationEntrance' => 'pkde-entrance-'];
 
@@ -132,24 +132,7 @@ add_filter('register_block_type_args', function ($args) {
     return $args;
 });
 
-add_filter('render_block', function ($html, $block) {
-    $classes = [];
-    foreach (PKDE_ANIMATIONS as $attribute => $prefix) {
-        if (! empty($block['attrs'][$attribute])) {
-            $classes[] = $prefix . sanitize_html_class($block['attrs'][$attribute]);
-        }
-    }
-
-    $tags = new \WP_HTML_Tag_Processor($html);
-    if (! $classes || ! $tags->next_tag()) {
-        return $html;
-    }
-    foreach ($classes as $class) {
-        $tags->add_class($class);
-    }
-
-    return $tags->get_updated_html();
-}, 10, 2);
+// The classes themselves are added at render time in app/motion.php (the site switch, the guard rails, the reveal).
 
 add_action('init', function () {
     // The site's own blocks (resources/blocks in the theme) first, then the kit's. A site block with the same directory name as a kit

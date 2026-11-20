@@ -24,6 +24,7 @@
       "app/sections.php",
       "app/patterns.php",
       "app/faq.php",
+      "app/motion.php",
       "app/form-preview.php",
       "app/block-assets.php",
       "app/woocommerce.php",

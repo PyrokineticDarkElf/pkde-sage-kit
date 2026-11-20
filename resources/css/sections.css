@@ -358,11 +358,16 @@
   height: 0.5rem;
   border-radius: 9999px;
   background: var(--pkde-line);
-  transition: width 0.2s, background-color 0.2s;
+  transition: transform var(--pkde-motion-base) var(--pkde-ease-out), background-color var(--pkde-motion-base) var(--pkde-ease-out);
 }
 .pkde-quotes__dots button[data-active] span {
-  width: 1.25rem;
+  transform: scaleX(2.5); /* the active dot stretches by transform, not by width: no layout work per frame */
   background: var(--pkde-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkde-quotes__dots button span {
+    transition: none;
+  }
 }
 .pkde-quotes__dots button:focus-visible {
   outline: 2px solid var(--pkde-ink);

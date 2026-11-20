@@ -70,9 +70,10 @@ document.querySelectorAll('[data-carousel]').forEach((root) => {
   const nextButton = root.querySelector('[data-carousel-next]');
   const dots = Array.from(root.querySelectorAll('[data-carousel-dot]'));
 
-  prevButton?.addEventListener('click', () => emblaApi.scrollPrev());
-  nextButton?.addEventListener('click', () => emblaApi.scrollNext());
-  dots.forEach((dot, index) => dot.addEventListener('click', () => emblaApi.scrollTo(index)));
+  // A visitor who asked for less motion gets the next slide at once, not a slide (WP-103): the second argument is Embla's "jump".
+  prevButton?.addEventListener('click', () => emblaApi.scrollPrev(prefersReducedMotion));
+  nextButton?.addEventListener('click', () => emblaApi.scrollNext(prefersReducedMotion));
+  dots.forEach((dot, index) => dot.addEventListener('click', () => emblaApi.scrollTo(index, prefersReducedMotion)));
 
   if (dots.length) {
     const setActiveDot = () => {

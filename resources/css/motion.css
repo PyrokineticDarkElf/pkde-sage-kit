@@ -1,0 +1,110 @@
+/**
+ * The kit's motion system (WP-103). One place for the timings, the reveal, the hover and press states and the smooth accordion; nothing here moves anything that a
+ * visitor who asked their system for less motion would not want moved.
+ *
+ * TOKENS (a site overrides any of them in its own CSS; the template's theme.css also points Tailwind's default transition at them):
+ *   --pkde-motion-fast 150ms   colour, opacity, press feedback
+ *   --pkde-motion-base 250ms   hover lift, icon rotate, dots, other small movement
+ *   --pkde-motion-slow 400ms   the reveal
+ *   --pkde-zoom-duration 300ms the card image zoom
+ *   --pkde-ease-out            strong ease-out, for movement
+ *   --pkde-ease-in-out         Tailwind's own default curve, for colour and state
+ *
+ * THE SITE SWITCH is the filter `pkde_kit/motion` ('on', 'reduced', 'off'), set from config; it lands as a class on <html> (pkde-motion-on/-reduced/-off), the same for
+ * every visitor, so a cached page is never wrong. 'reduced': hover and press only, no reveals. 'off': none of it moves. The visitor's own prefers-reduced-motion always wins.
+ *
+ * Unlayered on purpose, like the accordion rules in kit.css: a layered rule would lose to Tailwind's utilities.
+ */
+:root {
+  --pkde-motion-fast: 150ms;
+  --pkde-motion-base: 250ms;
+  --pkde-motion-slow: 400ms;
+  --pkde-zoom-duration: 300ms;
+  --pkde-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --pkde-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --pkde-lift: -3px;
+  --pkde-zoom-scale: 1.03;
+  --pkde-press: 0.98;
+  --pkde-reveal-distance: 12px;
+}
+
+/**
+ * REVEAL ON SCROLL. The block carries `pkde-reveal` (app/motion.php: never the hero, a slider, the first block or anything below the switch). The hidden state exists ONLY
+ * while the script (resources/js/motion.js) has put `js-motion` on <html>: without it, or without IntersectionObserver, or for a visitor who prefers reduced motion, or in
+ * print, the block is simply there. The script shows at once anything already on screen when the page loads, and everything above or at the end of the page, so a block
+ * is never left hidden. An element that holds the LCP image (fetchpriority="high") is never hidden. Opacity and `translate` only (the transform property stays free for hover
+ * and press), so nothing changes size and nothing counts toward layout shift.
+ */
+.pkde-reveal {
+  transition: opacity var(--pkde-motion-slow) var(--pkde-ease-out), translate var(--pkde-motion-slow) var(--pkde-ease-out);
+}
+.pkde-reveal.pkde-hover-lift {
+  transition: opacity var(--pkde-motion-slow) var(--pkde-ease-out), translate var(--pkde-motion-slow) var(--pkde-ease-out), transform var(--pkde-motion-base) var(--pkde-ease-out), box-shadow var(--pkde-motion-base) var(--pkde-ease-out);
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html.js-motion:not(.pkde-motion-off, .pkde-motion-reduced) .pkde-reveal:not(.is-revealed, :has(img[fetchpriority="high"])) {
+    opacity: 0;
+    translate: 0 var(--pkde-reveal-distance);
+  }
+}
+
+/**
+ * HOVER: movement only for a pointer that can hover, and not for a visitor who asked for less motion, so a tap never leaves a lift or a zoom stuck on a phone.
+ * Keyboard focus shows the same state. Colour hovers (in the components) stay as they are.
+ */
+.pkde-hover-lift {
+  transition: transform var(--pkde-motion-base) var(--pkde-ease-out), box-shadow var(--pkde-motion-base) var(--pkde-ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pkde-hover-lift:is(:hover, :focus-within) {
+    box-shadow: 0 14px 30px -20px rgb(0 0 0 / 0.35);
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not(.pkde-motion-off) .pkde-hover-lift:is(:hover, :focus-within) {
+    transform: translateY(var(--pkde-lift));
+  }
+}
+
+/** CARD IMAGE ZOOM: one rule for every card (post, product, category, brand, related, tile): the image carries `pkde-zoom`, its card is a Tailwind `group`. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not(.pkde-motion-off) .pkde-zoom {
+    transition: transform var(--pkde-zoom-duration) var(--pkde-ease-out);
+  }
+  html:not(.pkde-motion-off) .group:is(:hover, :focus-within) .pkde-zoom {
+    transform: scale(var(--pkde-zoom-scale));
+  }
+}
+
+/**
+ * PRESS: a slight scale while a button or card is pressed. Transform only; not for a visitor who asked for less motion, not for the checkout's full-width buttons.
+ * Entering the pressed state carries the transition, leaving it is instant.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.pkde-motion-off) :is(.pkde-btn, .pkde-btn-alt, .wp-block-button__link, .wp-element-button, .woocommerce a.button, .woocommerce button.button, #primary-menu li.nav-cta > a):active:not(.checkout-button, #place_order, .wc-block-components-checkout-place-order-button) {
+    transform: scale(var(--pkde-press));
+    transition: transform var(--pkde-motion-fast) var(--pkde-ease-out);
+  }
+  html:not(.pkde-motion-off) :is(.pkde-card, .pkde-tile, .woocommerce ul.products li.product):active {
+    transform: scale(0.99);
+    transition: transform var(--pkde-motion-fast) var(--pkde-ease-out);
+  }
+}
+
+/**
+ * SMOOTH TOGGLES (from tcs): the kit's accordion items, the FAQ rows and the Details block open and close smoothly where the browser can animate to the content's own
+ * height (interpolate-size, ::details-content); elsewhere they stay instant, as they do for visitors who ask their system for less motion. Only on a click, never on load.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.pkde-motion-off) :is(.wp-block-sage-accordion-item, .wp-block-details, .pkde-details) {
+    interpolate-size: allow-keywords;
+  }
+  html:not(.pkde-motion-off) :is(.wp-block-sage-accordion-item, .wp-block-details, .pkde-details)::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size var(--pkde-motion-base) var(--pkde-ease-out), content-visibility var(--pkde-motion-base) allow-discrete;
+  }
+  html:not(.pkde-motion-off) :is(.wp-block-sage-accordion-item, .wp-block-details, .pkde-details)[open]::details-content {
+    block-size: auto;
+  }
+}
