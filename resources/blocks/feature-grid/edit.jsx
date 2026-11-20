@@ -4,14 +4,18 @@ import { PanelBody, RangeControl, SelectControl, TextControl, ToggleControl } fr
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
+import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 
 const TEMPLATE = [['sage/feature-item'], ['sage/feature-item'], ['sage/feature-item']];
 
 function Edit({ attributes, setAttributes }) {
-  const { eyebrow, heading, intro, columns, variant, centered, templateLock } = attributes;
+  const { eyebrow, heading, intro, columns, variant, centered, templateLock, cardTheme, cardButton } = attributes;
   const blockProps = useBlockProps({
-    className: `pkde-block pkde-features pkde-features--${variant} pkde-features--cols-${columns}${centered ? ' pkde-features--centered' : ''}`,
-    style: { '--pkde-features-cols': columns },
+    className: `pkde-block pkde-features pkde-features--${variant} pkde-features--cols-${columns}${centered ? ' pkde-features--centered' : ''}${cardTheme ? ` has-card-theme-${cardTheme}` : ''}`,
+    style: {
+      '--pkde-features-cols': columns,
+      ...(cardButton ? { '--section-card-button-bg': `var(--color-${cardButton})`, '--section-card-button-text': `var(--color-${cardButton}-fg)`, '--section-card-button-border': `var(--color-${cardButton})` } : {}),
+    },
   });
   const innerProps = useInnerBlocksProps({ className: 'pkde-features__grid' }, { allowedBlocks: ['sage/feature-item'], template: TEMPLATE, templateLock, orientation: 'horizontal' });
 
@@ -29,6 +33,7 @@ function Edit({ attributes, setAttributes }) {
           <ToggleControl label={__('Centre the items', 'sage')} checked={!!centered} onChange={(value) => setAttributes({ centered: value })} />
           <TextControl label={__('Small heading above the title', 'sage')} value={eyebrow} onChange={(value) => setAttributes({ eyebrow: value })} />
         </PanelBody>
+        <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>
 
       <div {...blockProps}>

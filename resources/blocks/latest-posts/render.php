@@ -58,9 +58,7 @@ if ($category_id) {
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
-$wrapper_attributes = get_block_wrapper_attributes([
-    'class' => \App\pkde_loop_theme_classes($theme),
-]);
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, \App\pkde_loop_theme_classes($theme)));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>

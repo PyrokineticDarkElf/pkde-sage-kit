@@ -54,9 +54,7 @@ $categories_page = get_page_by_path('categories');
 $view_all_url = $categories_page && ! is_page($categories_page->ID) ? get_permalink($categories_page) : '';
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
-$wrapper_attributes = get_block_wrapper_attributes([
-    'class' => \App\pkde_loop_theme_classes($theme),
-]);
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, \App\pkde_loop_theme_classes($theme)));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>

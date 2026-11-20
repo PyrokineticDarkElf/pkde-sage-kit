@@ -55,6 +55,14 @@
       },
       "default": [],
       "__experimentalRole": "content"
+    },
+    "cardTheme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardButton": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {

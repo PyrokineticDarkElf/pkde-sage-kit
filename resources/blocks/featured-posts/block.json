@@ -6,7 +6,12 @@
   "category": "widgets",
   "icon": "star-filled",
   "description": "A grid of highlighted posts — either whatever is marked \"Stick to the front page\", or a manually chosen set.",
-  "keywords": ["posts", "blog", "featured", "sticky"],
+  "keywords": [
+    "posts",
+    "blog",
+    "featured",
+    "sticky"
+  ],
   "textdomain": "sage",
   "attributes": {
     "heading": {
@@ -36,11 +41,22 @@
     "cardStyle": {
       "type": "string",
       "default": "white"
+    },
+    "cardTheme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardButton": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }

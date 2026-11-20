@@ -6,24 +6,80 @@
   "category": "widgets",
   "icon": "products",
   "description": "A grid of WooCommerce products: choose how many, in what order (newest, best selling, top rated and so on), and which categories to include or leave out. Optionally with a section heading, description, \"View all\" link and a section theme. Uses the shop's own product cards. Replaces the Recent Products and Best Selling Products blocks.",
-  "keywords": ["woocommerce", "shop", "products", "loop", "grid"],
+  "keywords": [
+    "woocommerce",
+    "shop",
+    "products",
+    "loop",
+    "grid"
+  ],
   "textdomain": "sage",
   "attributes": {
-    "limit": { "type": "number", "default": 8 },
-    "columns": { "type": "number", "default": 4 },
-    "orderby": { "type": "string", "default": "menu_order" },
-    "order": { "type": "string", "default": "ASC" },
-    "categories": { "type": "array", "items": { "type": "string" }, "default": [] },
-    "excludeCategories": { "type": "array", "items": { "type": "string" }, "default": [] },
-    "heading": { "type": "string", "default": "" },
-    "description": { "type": "string", "default": "" },
-    "viewAll": { "type": "boolean", "default": false },
-    "theme": { "type": "string", "default": "" },
-    "cardStyle": { "type": "string", "default": "white" }
+    "limit": {
+      "type": "number",
+      "default": 8
+    },
+    "columns": {
+      "type": "number",
+      "default": 4
+    },
+    "orderby": {
+      "type": "string",
+      "default": "menu_order"
+    },
+    "order": {
+      "type": "string",
+      "default": "ASC"
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "excludeCategories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "heading": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "viewAll": {
+      "type": "boolean",
+      "default": false
+    },
+    "theme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardStyle": {
+      "type": "string",
+      "default": "white"
+    },
+    "cardTheme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardButton": {
+      "type": "string",
+      "default": ""
+    }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }

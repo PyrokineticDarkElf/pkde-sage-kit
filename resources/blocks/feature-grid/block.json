@@ -54,6 +54,14 @@
         "contentOnly",
         false
       ]
+    },
+    "cardTheme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardButton": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {

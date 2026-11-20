@@ -168,3 +168,42 @@ function pattern_section(string $role, string $mode, string $inner, ?array $them
 
     return "<!-- wp:sage/section {$attrs} -->\n<div class=\"wp-block-sage-section alignfull" . ($class !== '' ? " {$class}" : '') . "\">\n{$inner}\n</div>\n<!-- /wp:sage/section -->\n";
 }
+
+/** The swatch slugs a card button may use (the theme's generated editor-palettes.php, the Button block's list). */
+function card_button_slugs(?string $file = null): array
+{
+    $file ??= function_exists('get_theme_file_path') ? get_theme_file_path('resources/generated/editor-palettes.php') : '';
+
+    return $file !== '' && is_file($file) ? array_values(array_filter((array) (((array) require $file)['button'] ?? []), 'is_string')) : [];
+}
+
+/**
+ * The class and inline style a block with cards adds to its wrapper for its "Card colour" and "Card button colour" settings:
+ *   cardTheme  '' (Auto: the cards follow the section they sit in) or a Brand theme id: `has-card-theme-<id>` re-themes only the cards from that theme's own matrix;
+ *   cardButton '' or a swatch slug from the Button list: the card button's colour, its label the readable foreground token of that swatch.
+ * Anything not in the generated lists is ignored (a stored value never reaches the page unchecked).
+ *
+ * @param  array<string,mixed>  $attributes
+ * @return array{class: string, style: string}
+ */
+function card_wrapper_args(array $attributes, string $class = '', string $style = '', ?array $themes = null, ?array $buttons = null): array
+{
+    $theme = (string) ($attributes['cardTheme'] ?? '');
+    $classes = [trim($class)];
+
+    if ($theme !== '' && in_array($theme, array_column($themes ?? section_themes(), 'name'), true)) {
+        $classes[] = "has-card-theme-{$theme}";
+    }
+
+    $slug = (string) ($attributes['cardButton'] ?? '');
+    $styles = [trim($style)];
+
+    if ($slug !== '' && preg_match('/^[a-z0-9-]+$/', $slug) && in_array($slug, $buttons ?? card_button_slugs(), true)) {
+        $neutral = ['white' => 'black', 'black' => 'white'][$slug] ?? null;
+        $background = $neutral !== null ? "var(--color-{$slug}-exact)" : "var(--color-{$slug})";
+        $label = $neutral !== null ? "var(--color-{$neutral}-exact)" : "var(--color-{$slug}-fg)";
+        $styles[] = "--section-card-button-bg: {$background}; --section-card-button-text: {$label}; --section-card-button-border: {$background};";
+    }
+
+    return ['class' => trim(implode(' ', array_filter($classes))), 'style' => trim(implode(' ', array_filter($styles)))];
+}

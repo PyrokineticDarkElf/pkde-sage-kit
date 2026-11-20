@@ -4,6 +4,7 @@ import { PanelBody, RangeControl, SelectControl, TextControl, TextareaControl, T
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
+import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 
 // Testimonials (sage/quotes). The page is rendered by the server (render.php), so the editor shows the same markup through ServerSideRender;
 // the carousel's sliding is front-end JavaScript, so in the editor the slides sit side by side.
@@ -73,6 +74,7 @@ function Edit({ attributes, setAttributes }) {
             <Button variant="secondary" onClick={() => setAttributes({ items: [...items, { quote: '', name: '', role: '', rating: 5 }] })}>{__('Add a quote', 'sage')}</Button>
           </PanelBody>
         )}
+        <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>
 
       <div {...blockProps}>

@@ -6,7 +6,12 @@
   "category": "widgets",
   "icon": "grid-view",
   "description": "A grid of the most recent items from any post type (blog posts by default), optionally filtered to one category.",
-  "keywords": ["posts", "blog", "recent", "latest"],
+  "keywords": [
+    "posts",
+    "blog",
+    "recent",
+    "latest"
+  ],
   "textdomain": "sage",
   "attributes": {
     "heading": {
@@ -36,11 +41,22 @@
     "cardStyle": {
       "type": "string",
       "default": "white"
+    },
+    "cardTheme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardButton": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }

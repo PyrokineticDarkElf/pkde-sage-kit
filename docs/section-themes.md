@@ -22,7 +22,8 @@ A theme sets these variables on its section; everything inside reads them (`--pk
 | `--section-muted` | captions, helper text (`.pkde-muted`) |
 | `--section-link` | links in running text |
 | `--section-button-bg` / `-button-text` | the filled button and its label |
-| `--section-button-alt-bg` / `-button-alt-text` | the secondary button (the Outline style) |
+| `--section-button-border` | the filled button's edge: its own colour (invisible) unless the button barely shows against the section (under 3:1), then its label colour |
+| `--section-button-alt-bg` / `-button-alt-text` | the secondary button, a **true outline**: no fill (`transparent`), the text colour for the label and the edge |
 | `--section-icon` | icons (`.pkde-icon`) |
 | `--section-border` | rules and separators |
 
@@ -30,6 +31,19 @@ Core headings, paragraphs, lists, links, buttons, separators and the kit's block
 carousel) read them. A block's **own** colour choice still wins: the rules carry no `!important`, and a `has-*-color` class or an inline style beats them.
 Kit blocks that manage their own colours (`.pkde-section`: hero overlay, CTA panel, FAQ, loop panels), cards and WooCommerce products are left out of the
 descendant rules. A site's own CSS that colours a heading, paragraph or button at a higher specificity still wins; move it onto the variables.
+
+## Cards
+
+Each theme also sets card roles for the cards inside it: `--section-card-bg`, `-card-heading`, `-card-text`, `-card-muted`, `-card-border`, `-card-button-bg`, `-card-button-text`,
+`-card-button-border`, `-card-icon`. Worked out from the palette unless declared: the card is **white** on a solid or tinted section (a sage section and a blush section both get
+white cards), the **brand colour's lightest tint** on a white section, a deep shade in dark mode; its text, icon and border follow from that background, and its button is the first
+brand colour that reaches 4.5:1 on it that is not the card's own hue (so a white card gets a sage or pink button). Declare any of them under `styles.card` (an object; the older string
+`card` is the older classes' pointer): `"card": { "background": "blush-50", "buttonBg": "slate" }`; `styles.light.card`, `styles.dark.card` and `styles.light.dark.card` do the same for the other
+matrices. `theme:check` covers every card pair, in both modes.
+
+The kit's cards read them (the older `--pkde-card-*` tokens point at them inside a Brand section): post and entry cards, product cards, the testimonials, the feature grid's boxed
+items. A block with cards (testimonials, feature grid, product loop, product categories, latest, featured and entry posts) has **Card colour** (Auto follows the section; or any
+`Brand <Label>` theme, which re-themes only that block's cards from that theme's own colours, `has-card-theme-<theme>`) and **Card button colour** (only colours that work on the card).
 
 ## Where the values come from
 

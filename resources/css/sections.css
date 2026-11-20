@@ -409,3 +409,20 @@
   max-width: 12rem;
   object-fit: contain;
 }
+
+/* Cards inside a section: a boxed quote or feature item is a card, so it takes the section's card roles (or the block's own Card colour); the same text variables are
+   redefined on the card, so everything inside follows the card's background */
+.pkde-quotes--strip .pkde-quote,
+.pkde-quotes--carousel .pkde-quote,
+.pkde-features--cards .pkde-feature {
+  background-color: var(--section-card-bg, transparent);
+  border-color: var(--section-card-border, var(--pkde-line));
+  --pkde-ink: var(--section-card-heading, var(--section-heading, var(--color-neutral-950)));
+  --pkde-body: var(--section-card-text, var(--section-text, var(--color-neutral-800)));
+  --pkde-quiet: var(--section-card-muted, var(--section-muted, var(--color-neutral-600)));
+  --pkde-accent: var(--section-card-heading, var(--section-link, var(--color-brand-700)));
+  --pkde-icon-color: var(--section-card-icon, var(--section-icon, var(--color-brand-600)));
+  --pkde-theme-btn-bg: var(--section-card-button-bg, var(--section-button-bg, var(--color-neutral-950)));
+  --pkde-theme-btn-text: var(--section-card-button-text, var(--section-button-text, var(--color-white)));
+  --pkde-theme-btn-border: var(--section-card-button-border, var(--section-button-border, var(--color-neutral-950)));
+}

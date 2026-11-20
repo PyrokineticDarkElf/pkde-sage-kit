@@ -16,10 +16,11 @@ $variant = ($attributes['variant'] ?? 'plain') === 'cards' ? 'cards' : 'plain';
 $centered = ! empty($attributes['centered']);
 
 echo view('pkde-kit::partials.blocks.feature-grid', [
-    'wrapper' => get_block_wrapper_attributes([
-        'class' => trim("pkde-block pkde-features pkde-features--{$variant} pkde-features--cols-{$columns}" . ($centered ? ' pkde-features--centered' : '')),
-        'style' => "--pkde-features-cols: {$columns};",
-    ]),
+    'wrapper' => get_block_wrapper_attributes(\App\card_wrapper_args(
+        $attributes,
+        trim("pkde-block pkde-features pkde-features--{$variant} pkde-features--cols-{$columns}" . ($centered ? ' pkde-features--centered' : '')),
+        "--pkde-features-cols: {$columns};",
+    )),
     'eyebrow' => (string) ($attributes['eyebrow'] ?? ''),
     'heading' => (string) ($attributes['heading'] ?? ''),
     'intro' => (string) ($attributes['intro'] ?? ''),

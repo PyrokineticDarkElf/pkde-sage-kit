@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import metadata from './block.json';
 import { CategoryField, useProductCategories } from '../../js/product-category-fields.jsx';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
+import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 
 // The same two lists the Recent, Best Selling and Featured blocks use (hero/edit.jsx explains the generated import).
 const THEME_OPTIONS = GENERATED_THEME_OPTIONS.map((option) => ({
@@ -100,6 +101,7 @@ function Edit({ attributes, setAttributes }) {
             help={__('Only visible once a Section theme above is set. Tinted/Bold recolour each card to match.', 'sage')}
           />
         </PanelBody>
+        <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>
 
       <div {...blockProps}>

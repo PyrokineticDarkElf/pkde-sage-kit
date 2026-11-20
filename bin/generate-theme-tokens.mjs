@@ -38,7 +38,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { formatHex } from 'culori';
 import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
-import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
+import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildCardColourCss, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
 // or PKDE_THEME_DIR. Never a path relative to this file, which lives in vendor/.
@@ -898,7 +898,7 @@ for (const color of palette.colors) {
 }
 
 const css = buildCss(palette.colors);
-const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}`;
+const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
 const editorPalettesPhp = buildEditorPalettesPhp(editorData);

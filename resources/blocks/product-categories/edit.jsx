@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 import metadata from './block.json';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
 import { CategoryField, useProductCategories } from '../../js/product-category-fields.jsx';
+import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 
 // Generated fresh from the actual palette — see hero/edit.jsx's own comment
 // on this same import for why it's not a hardcoded list here.
@@ -106,6 +107,7 @@ function Edit({ attributes, setAttributes }) {
             help={__('Re-skins this section’s background and text colours to match a palette colour.', 'sage')}
           />
         </PanelBody>
+        <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>
 
       <div {...blockProps}>

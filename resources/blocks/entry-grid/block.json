@@ -6,7 +6,14 @@
   "category": "widgets",
   "icon": "grid-view",
   "description": "A card grid of every published entry of any post type (blog posts by default), ordered by each entry's Order field then title. For listing pages such as Portfolio or Services; use Recent Posts for a 'latest N' teaser.",
-  "keywords": ["entries", "grid", "listing", "portfolio", "services", "archive"],
+  "keywords": [
+    "entries",
+    "grid",
+    "listing",
+    "portfolio",
+    "services",
+    "archive"
+  ],
   "textdomain": "sage",
   "attributes": {
     "heading": {
@@ -32,11 +39,22 @@
     "cardStyle": {
       "type": "string",
       "default": "white"
+    },
+    "cardTheme": {
+      "type": "string",
+      "default": ""
+    },
+    "cardButton": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }
