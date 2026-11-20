@@ -271,3 +271,69 @@ test('the palette is carried into the built theme.json (what WordPress reads in 
   assert.match(r.stdout, /Updated public\/build\/assets\/theme\.json/);
   assert.match(run(bb).stdout, /No public\/build\/assets\/theme\.json yet/);
 });
+
+// keepSwatches (TPL-249): exact colours in the editor palette that are not brand colours.
+const keep = [
+  { slug: 'peach', hex: '#F5EFE9', label: 'Peach' },
+  { slug: 'sage-tint', hex: '#eff1ef', label: 'Sage tint', editorVisible: true },
+  { slug: 'stone', hex: '#f4f1ec', label: 'Stone' },
+];
+
+test('keepSwatches are appended to theme.json after the generated swatches, and nowhere else', () => {
+  const plain = run(bb);
+  const r = run(bb, { keepSwatches: keep });
+  assert.equal(r.status, 0, r.stderr);
+  const palette = JSON.parse(r.themeJson).settings.color.palette;
+  const base = JSON.parse(plain.themeJson).settings.color.palette;
+  assert.deepEqual(palette.slice(0, base.length), base); // the generated ones are unchanged and first
+  assert.deepEqual(palette.slice(base.length), [
+    { slug: 'peach', name: 'Peach', color: '#f5efe9' },
+    { slug: 'sage-tint', name: 'Sage tint', color: '#eff1ef' },
+    { slug: 'stone', name: 'Stone', color: '#f4f1ec' },
+  ]);
+  // not a colour of the palette: no section theme, no ladder, no role auto-fill, not in the button or text palettes
+  assert.doesNotMatch(r.php, /peach|stone/);
+  assert.doesNotMatch(r.css, /peach|stone/);
+  assert.doesNotMatch(r.read('resources/css/generated/theme-tokens.css'), /peach|stone/);
+  assert.doesNotMatch(r.read('resources/js/generated/section-compat.js'), /peach|stone/);
+  const editor = r.read('resources/generated/editor-palettes.php');
+  assert.doesNotMatch(editor, /'(button|text)' => \[[^\]]*(peach|stone)/);
+  // only Administrators get the ones without editorVisible: the platform hides these from the editor
+  assert.match(editor, /'editorHidden' => \['peach', 'stone'\]/);
+  assert.equal(plain.read('resources/generated/editor-palettes.php').includes("'editorHidden' =>"), false);
+  // the config keeps them, normalised
+  assert.equal(JSON.parse(readFileSync(join(r.root, 'config/brand-palette.json'), 'utf8')).keepSwatches[0].hex, '#f5efe9');
+});
+
+test('keepSwatches: --check is clean and notes each swatch; a stale theme.json is reported', () => {
+  const r = run(bb, { keepSwatches: keep });
+  const check = spawnSync('node', [generator, '--check'], { cwd: r.theme, env: { ...process.env, PKDE_THEME_DIR: r.theme }, encoding: 'utf8' });
+  assert.equal(check.status, 0, check.stderr);
+  assert.match(check.stderr, /keepSwatches "peach" \(#f5efe9\).*Only Administrators can pick it/);
+  assert.match(check.stderr, /keepSwatches "sage-tint".*Editors can pick it/);
+  writeFileSync(join(r.theme, 'theme.json'), r.themeJson.replace('"slug": "stone"', '"slug": "stoned"'));
+  const stale = spawnSync('node', [generator, '--check'], { cwd: r.theme, env: { ...process.env, PKDE_THEME_DIR: r.theme }, encoding: 'utf8' });
+  assert.equal(stale.status, 1);
+  assert.match(stale.stderr, /settings\.color\.palette/);
+});
+
+test('keepSwatches are validated: slug, hex, label, no clash with a colour or a generated swatch', () => {
+  const bad = (entry, pattern) => { const r = run(bb, { keepSwatches: [entry] }); assert.equal(r.status, 1, JSON.stringify(entry)); assert.match(r.stderr, pattern); };
+  bad({ slug: 'Peach', hex: '#f5efe9', label: 'x' }, /slug must be lowercase/);
+  bad({ slug: 'peach', hex: '#f5e', label: 'x' }, /6-digit hex/);
+  bad({ slug: 'peach', hex: '#f5efe9', label: ' ' }, /needs a label/);
+  bad({ slug: 'peach', hex: '#f5efe9', label: 'x', editorVisible: 'yes' }, /editorVisible must be true or false/);
+  bad({ slug: 'sage', hex: '#f5efe9', label: 'x' }, /already a palette colour/);
+  bad({ slug: 'sage-600', hex: '#f5efe9', label: 'x' }, /already a palette colour/);
+  bad({ slug: 'neutral-100', hex: '#f5efe9', label: 'x' }, /already a palette colour/);
+  const twice = run(bb, { keepSwatches: [keep[0], keep[0]] });
+  assert.equal(twice.status, 1);
+  assert.match(twice.stderr, /duplicate slug "peach"/);
+});
+
+test('keepSwatches survive a regenerate from --color arguments', () => {
+  const r = run(bb, { keepSwatches: keep });
+  const again = spawnSync('node', [generator, '--color', 'sage=#637972', '--color', 'blush=#eac3bf', '--color', 'slate=#4d656b'], { cwd: r.theme, env: { ...process.env, PKDE_THEME_DIR: r.theme }, encoding: 'utf8' });
+  assert.equal(again.status, 0, again.stderr);
+  assert.match(readFileSync(join(r.theme, 'theme.json'), 'utf8'), /"slug": "stone"/);
+});

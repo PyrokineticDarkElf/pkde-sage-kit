@@ -617,15 +617,20 @@ function paletteSwatches(colors) {
   return rows;
 }
 
-function buildPalette(colors) {
-  return paletteSwatches(colors).map(({ slug, name, value }) => `        { "slug": "${slug}", "name": ${JSON.stringify(name)}, "color": "${value}" }`).join(',\n');
+/** keepSwatches as editor swatches: [{ slug, name, value }]. They follow the generated ones in theme.json and nowhere else. */
+function keepRows(keep) {
+  return keep.map(({ slug, hex, label }) => ({ slug, name: label, value: hex }));
+}
+
+function buildPalette(colors, keep = []) {
+  return [...paletteSwatches(colors), ...keepRows(keep)].map(({ slug, name, value }) => `        { "slug": "${slug}", "name": ${JSON.stringify(name)}, "color": "${value}" }`).join(',\n');
 }
 
 /** Returns theme.json with settings.color.palette replaced by the generated list; every other byte is left alone. */
-function withPalette(themeJson, colors) {
+function withPalette(themeJson, colors, keep = []) {
   const pattern = /("palette": \[)[\s\S]*?(\n {6}\])/;
   if (!pattern.test(themeJson)) fail('theme.json has no settings.color.palette array (expected `"palette": [` ... `      ]`).');
-  return themeJson.replace(pattern, (_, open, close) => `${open}\n${buildPalette(colors)}${close}`);
+  return themeJson.replace(pattern, (_, open, close) => `${open}\n${buildPalette(colors, keep)}${close}`);
 }
 
 /**
@@ -720,6 +725,40 @@ function validateFonts(fonts) {
   }
 
   return validated;
+}
+
+/**
+ * The optional `keepSwatches` setting: exact colours a site wants in the editor's palette that are NOT brand colours (a few soft
+ * backgrounds a designer picked, say). Each is { slug, hex, label } and, optionally, `editorVisible` (default false).
+ *   - They are appended to theme.json's palette after the generated swatches, so `has-<slug>-background-color` works and Administrators
+ *     always see them in the picker. Editors see one only when `editorVisible` is true (the platform's editor-settings module hides the
+ *     others from the editor; the frontend CSS keeps every class).
+ *   - They are NOT colours of the palette: no section theme, no `--color-*` ladder, no role auto-fill, and not in the Button or text
+ *     palettes. theme:check prints a note with each one's contrast so the site knows what it is putting text on.
+ * The slug must be new: it may not be a colour name or one of the generated swatch slugs.
+ */
+function validateKeepSwatches(keep, colors) {
+  if (keep === undefined || keep === null) return [];
+  if (!Array.isArray(keep)) fail('keepSwatches must be a list of { "slug", "hex", "label" }.');
+  const reserved = new Set(paletteSwatches(colors).map((swatch) => swatch.slug));
+  const seen = new Set();
+
+  return keep.map((entry, index) => {
+    const where = `keepSwatches[${index}]`;
+    if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) fail(`${where} must be { "slug", "hex", "label" }.`);
+    const slug = typeof entry.slug === 'string' ? entry.slug.trim() : '';
+    if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(slug)) fail(`${where}.slug must be lowercase letters, digits and dashes (got ${JSON.stringify(entry.slug)}).`);
+    if (!/^#[0-9a-f]{6}$/i.test(entry.hex ?? '')) fail(`${where} (${slug}) needs a 6-digit hex value.`);
+    if (typeof entry.label !== 'string' || !entry.label.trim()) fail(`${where} (${slug}) needs a label: the name the editor shows.`);
+    if (entry.editorVisible !== undefined && typeof entry.editorVisible !== 'boolean') fail(`${where} (${slug}): editorVisible must be true or false.`);
+    if (reserved.has(slug) || colors.some((color) => color.name === slug || new RegExp(`^${color.name}-(\\d+|exact)$`).test(slug))) {
+      fail(`${where}.slug "${slug}" is already a palette colour or one of its swatches; choose another slug.`);
+    }
+    if (seen.has(slug)) fail(`keepSwatches: duplicate slug "${slug}".`);
+    seen.add(slug);
+
+    return { slug, hex: entry.hex.toLowerCase(), label: entry.label.trim(), ...(entry.editorVisible === undefined ? {} : { editorVisible: entry.editorVisible }) };
+  });
 }
 
 /**
@@ -844,6 +883,10 @@ const existingHeader = options.colors.length && fs.existsSync(configPath) ? JSON
 const header = validateHeader(palette.header ?? existingHeader, palette.colors);
 if (header) palette.header = header;
 else delete palette.header;
+const existingKeep = options.colors.length && fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')).keepSwatches : undefined;
+const keepSwatches = validateKeepSwatches(palette.keepSwatches ?? existingKeep, palette.colors);
+if (keepSwatches.length) palette.keepSwatches = keepSwatches;
+else delete palette.keepSwatches;
 palette.fonts = validateFonts(palette.fonts);
 
 // Text on a colour's 600 step (bg-brand-600: the primary button and section look) needs 4.5:1. The kit sets its own text with the
@@ -904,11 +947,18 @@ for (const color of palette.colors) {
   }
 }
 
+// keepSwatches sit outside the section themes, so nothing checks them; a note says what text they can carry (never a failure).
+for (const swatch of keepSwatches) {
+  const onDark = wcagContrast(FOREGROUND_DARK, swatch.hex);
+  const onWhite = wcagContrast('#ffffff', swatch.hex);
+  contrastNotes.push(`keepSwatches "${swatch.slug}" (${swatch.hex}) is not in any section theme or text/button palette; near-black text on it measures ${onDark.toFixed(2)}:1 and white text ${onWhite.toFixed(2)}:1. ${swatch.editorVisible ? 'Editors can pick it.' : 'Only Administrators can pick it (editorVisible is not set).'}`);
+}
+
 const css = buildCss(palette.colors);
 const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
-const editorPalettesPhp = buildEditorPalettesPhp(editorData);
+const editorPalettesPhp = buildEditorPalettesPhp(editorData, keepSwatches.filter((swatch) => !swatch.editorVisible).map((swatch) => swatch.slug));
 const sectionCompatJs = buildSectionCompatJs(editorData);
 const cardThemesCss = buildCardThemesCss(palette.colors);
 const themeOptions = buildThemeOptions(palette.colors);
@@ -918,13 +968,13 @@ const headerOptions = buildHeaderOptions(header);
 // A site that curates its editor palette by hand sets "editorPalette": false in config/brand-palette.json: theme.json is then left alone
 // (and --check ignores it); the generated CSS and PHP are the same either way.
 const manualEditorPalette = palette.editorPalette === false;
-const themeJson = options.check || manualEditorPalette ? null : withPalette(fs.readFileSync(themeJsonPath, 'utf8'), palette.colors);
+const themeJson = options.check || manualEditorPalette ? null : withPalette(fs.readFileSync(themeJsonPath, 'utf8'), palette.colors, keepSwatches);
 
 function themeJsonPaletteUpToDate() {
   if (manualEditorPalette) return true;
   try {
     const have = JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')).settings?.color?.palette;
-    return JSON.stringify(have) === JSON.stringify(JSON.parse(`[${buildPalette(palette.colors)}]`));
+    return JSON.stringify(have) === JSON.stringify(JSON.parse(`[${buildPalette(palette.colors, keepSwatches)}]`));
   } catch {
     return false;
   }

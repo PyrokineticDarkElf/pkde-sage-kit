@@ -233,6 +233,22 @@ kit's own components (post and product badges, the menu button, the contact and 
 on a new `bg-brand-N` with a hard-coded `text-white`; do the same in a site's views. With them, `acceptLowContrast` stays an escape hatch for the rare colour where no text colour works. After a kit bump the generated `brand-tokens.css` changes: run `npm run theme:generate` and commit it
 (`theme:check` fails until you do).
 
+## Extra editor swatches that are not brand colours (`keepSwatches`)
+
+A site sometimes needs a few exact colours in the editor's palette that are not part of the brand (three soft section backgrounds a designer picked, say). Do not add them as palette colours: that would give each one a section theme, a 50 to 950 ladder and a place in the role auto-fill. List them in `config/brand-palette.json`:
+
+```json
+"keepSwatches": [
+  { "slug": "peach", "hex": "#f5efe9", "label": "Peach" },
+  { "slug": "sage-tint", "hex": "#eff1ef", "label": "Sage tint", "editorVisible": true }
+]
+```
+
+- They are appended to `theme.json`'s palette after the generated swatches, so `has-peach-background-color` and `var(--wp--preset--color--peach)` work. Nothing else is generated for them: no section theme, no `--color-*` ladder, no `bg-peach` class, and they are not in the Button or text palettes.
+- **Who sees them in the editor:** Administrators always. Editors only when the swatch has `"editorVisible": true` (default false). The platform's `editor-settings` module takes the others out of the editor's palette lists; the frontend CSS keeps every class, so a page that already uses one renders the same for everyone.
+- `slug` is lowercase letters, digits and dashes and must be new (not a colour name or a generated swatch such as `sage-600` or `neutral-100`); `hex` is six digits; `label` is the name the editor shows.
+- `npm run theme:check` prints a note for each one with the contrast of near-black and white text on it, because no section theme checks them.
+
 ## Section theme roles and styles
 
 Each colour in `config/brand-palette.json` looks like this once the generator has run at least
