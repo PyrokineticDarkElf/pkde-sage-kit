@@ -14,7 +14,12 @@
     "global"
   ],
   "textdomain": "sage",
-  "attributes": {},
+  "attributes": {
+    "align": {
+      "type": "string",
+      "default": "full"
+    }
+  },
   "supports": {
     "html": false,
     "align": [

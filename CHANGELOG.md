@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.20.4
+
+The site-wide CTA band (`sage/cta-band`) is full width in the editor canvas, as it is on the page (TPL-246, an owner bug). **Adopt:** bump the kit on any site that uses the band (bb); nothing else. Proved on the template stack in real Chrome with a page that carries the band and no `align` in its markup, as bb's does: **before** the band was 768 px wide in the canvas (the content width) while the page printed it 1440 px wide; **after** it is `alignfull` and 1160 px, the full canvas, with the paragraphs around it still 768 px, and the page is unchanged.
+
+- **The cause.** The page's render already prints `alignfull`, but the block declared `align: ["full"]` support with no default, so a band saved without `"align":"full"` (every existing one) got no `alignfull` class in the editor, and the canvas gave it the content width. The block now has the attribute `align` with the default `full` (as the Section block has); WordPress leaves a default out of the saved comment, so no saved page changes.
+- Pest 188.
+
 ## 2026.11.20.3
 
 Product gallery: no more tall flash before it settles (TPL-244, an owner bug on bb's product page; a follow-up to TPL-181 and TPL-190). **Adopt:** bump the kit on any shop (bb, tcs, js and every site with WooCommerce); a hotfix candidate for staging. Measured on the real dev product pages (read-only, the new rules injected in memory, Chrome, CPU 4x slower, 1.6 Mbit/s); NOT on a server.

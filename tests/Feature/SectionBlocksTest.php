@@ -164,3 +164,10 @@ it('previews every server-rendered kit block live in the editor instead of a pla
     expect(file_get_contents("$root/resources/js/server-preview.jsx"))->toContain('window.wp?.serverSideRender', 'EmptyResponsePlaceholder')
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("'/wp/v2/block-renderer/'", 'wc_load_cart()'); // product cards need the cart in the preview request
 });
+
+it('gives the site-wide CTA band a full default alignment, so the editor canvas shows it as wide as the page does (TPL-246)', function () {
+    $block = json_decode(file_get_contents(dirname(__DIR__, 2) . '/resources/blocks/cta-band/block.json'), true);
+
+    expect($block['supports']['align'])->toBe(['full'])
+        ->and($block['attributes']['align'])->toBe(['type' => 'string', 'default' => 'full']); // the page prints alignfull itself; without the attribute the canvas wrapper was content width
+});
