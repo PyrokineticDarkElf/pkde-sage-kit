@@ -9,6 +9,7 @@ addFilter('i18n.gettext', 'sage/gap-label', (translation, text) => (text === 'Bl
 import '../blocks/section/edit.jsx';
 import './animation.jsx';
 import './section-colors.js';
+import './section-colour-notice.jsx';
 import '../blocks/hero/edit.jsx';
 import '../blocks/text-and-image/edit.jsx';
 import '../blocks/feature-item/edit.jsx';

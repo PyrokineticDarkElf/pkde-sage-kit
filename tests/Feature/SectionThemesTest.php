@@ -28,8 +28,11 @@ it('paints a themed section from its roles and lets core blocks follow it, below
     $css = file_get_contents("$root/resources/css/section-themes.css");
 
     expect($css)->toContain('var(--section-bg)', 'var(--section-text)', 'var(--section-heading)', 'var(--section-link)', 'var(--section-button-bg)', 'var(--section-button-text)', 'var(--section-button-border)', 'var(--section-button-alt-text)', 'var(--section-border)', 'var(--section-icon)', 'var(--section-muted)')
-        // nothing here may outrank a block's own colour (has-*-color classes carry !important; inline styles beat selectors)
-        ->and(preg_replace('~/\*.*?\*/~s', '', $css))->not->toContain('!important')
+        // nothing here may outrank the own colour of a block INSIDE a section (has-*-color classes carry !important; inline styles beat selectors);
+        // the only !important is the Group or Section that has a Brand style AND its own background or text colour: the theme wins on that block
+        ->and(substr_count(preg_replace('~/\*.*?\*/~s', '', $css), '!important'))->toBe(2)
+        ->and(preg_replace('~/\*.*?\*/~s', '', $css))->toMatch('/\.has-background \{\s*background: var\(--section-bg\) !important;/')
+        ->and(preg_replace('~/\*.*?\*/~s', '', $css))->toMatch('/\.has-text-color \{\s*color: var\(--section-text\) !important;/')
         // kit blocks that colour themselves, and blocks with their own link colour, are left alone
         ->and($css)->toContain('.pkde-section', 'article', '.has-link-color', '[class*="wp-elements-"]')
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./section-themes.css";');

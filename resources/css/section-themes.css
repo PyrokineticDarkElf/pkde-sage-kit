@@ -7,8 +7,9 @@
  *  - above theme.json's element styles (`:root :where(h1)`) and a site's generic `.page-content p` / `.page-content h2.wp-block-heading` (the section's own
  *    class is repeated, so the descendant rules are one level above those), so a section colours its own headings, text, links and buttons; a site colour rule with
  *    three or more classes on content inside a section still wins and moves onto the --section-* variables;
- *  - below a block's OWN colour choice: `has-*-color` / `has-*-background-color` classes carry !important and inline styles beat any
- *    selector, so an editor who picks a colour on a block keeps it. Nothing here uses !important;
+ *  - below a block's OWN colour choice on the blocks INSIDE a section: `has-*-color` / `has-*-background-color` classes carry !important and
+ *    inline styles beat any selector, so an editor who picks a colour on a paragraph or button keeps it. The one !important here is the
+ *    Group or Section that carries a Brand style AND its own background or text colour: the theme wins on that block (see below);
  *  - kit blocks that manage their own colours (.pkde-section: hero, CTA, FAQ, loop panels; cards; WooCommerce products) are left out of
  *    the descendant rules, as are blocks with their own text or link colour (.has-link-color, wp-elements-*).
  *
@@ -19,6 +20,18 @@
   background-color: var(--section-bg);
   color: var(--section-text);
   border-color: var(--section-border);
+}
+
+/* A Brand style on a block that also has its own background or text colour (an older Section or Group, or a colour picked before the style):
+ * WordPress's colour classes and inline styles are !important, so without this the block keeps its own background while the theme sets the
+ * text for the theme's background (white text on a pale tint). The theme wins on the block itself; the editor panel says so
+ * (resources/js/section-colour-notice.jsx). Blocks inside the section keep their own colours. */
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"].has-background {
+  background: var(--section-bg) !important;
+}
+
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"].has-text-color {
+  color: var(--section-text) !important;
 }
 
 /* Headings */
