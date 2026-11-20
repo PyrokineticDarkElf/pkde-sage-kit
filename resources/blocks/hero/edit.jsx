@@ -33,7 +33,7 @@ const LAYOUT_OPTIONS = [
 function Edit({ attributes, setAttributes }) {
   const {
     heading, content, buttonText, buttonUrl, imageUrl, imageId, imageAlt, theme,
-    layout, imageSide, eyebrow, secondaryButtonText, secondaryButtonUrl, headingLevel,
+    layout, imageSide, imageFit, eyebrow, secondaryButtonText, secondaryButtonUrl, headingLevel,
   } = attributes;
   const overlay = layout !== 'split' && layout !== 'text';
 
@@ -43,7 +43,7 @@ function Edit({ attributes, setAttributes }) {
         'relative isolate flex min-h-[480px] flex-col justify-end overflow-hidden rounded-4xl pkde-section px-6 py-10 sm:px-10 sm:py-14 lg:min-h-[560px] lg:px-16 lg:py-16',
         theme ? `theme-${theme}` : '',
       ].filter(Boolean).join(' ')
-      : `pkde-block pkde-hero pkde-hero--${layout}${layout === 'split' && imageSide === 'left' ? ' pkde-split--media-left' : ''}`,
+      : `pkde-block pkde-hero pkde-hero--${layout}${layout === 'split' && imageSide === 'left' ? ' pkde-split--media-left' : ''}${layout === 'split' && imageFit === 'contain' ? ' pkde-hero--fit-contain' : ''}`,
   });
 
   const mediaButton = (label, className = 'mb-4') => (
@@ -72,6 +72,15 @@ function Edit({ attributes, setAttributes }) {
               value={imageSide}
               options={[{ value: 'right', label: __('Right', 'sage') }, { value: 'left', label: __('Left', 'sage') }]}
               onChange={(value) => setAttributes({ imageSide: value })}
+            />
+          )}
+          {layout === 'split' && (
+            <SelectControl
+              label={__('Picture fit', 'sage')}
+              value={imageFit === 'contain' ? 'contain' : 'cover'}
+              options={[{ value: 'cover', label: __('Fill the space (crops the edges)', 'sage') }, { value: 'contain', label: __('Show the whole picture', 'sage') }]}
+              onChange={(value) => setAttributes({ imageFit: value })}
+              help={__('Use “Show the whole picture” for a cut-out on a transparent background, so its edges are not cropped.', 'sage')}
             />
           )}
           {!overlay && (
