@@ -177,6 +177,11 @@ class ShopFilterCounts
             'orderby' => 'none',
         ]);
 
+        // A search plugin that takes over the MAIN search (Relevanssi) leaves this second query to WordPress's own search, which finds nothing the grid lists: every count
+        // is 0 beside a grid full of products (tcs staging). Relevanssi takes over any query flagged `relevanssi`; the filter lets a site do the same for another plugin.
+        $vars = self::searchBaseArgs($vars, function_exists('relevanssi_do_query'));
+        $vars = apply_filters('pkde_kit/filter_counts_base_args', $vars, $wp_query);
+
         // WooCommerce's price clause only applies to the main query, which this is not: its own filter lets it apply.
         add_filter('woocommerce_enable_post_clause_filtering', '__return_true');
         $query = new WP_Query($vars);
@@ -184,6 +189,21 @@ class ShopFilterCounts
         self::$queries['base'] = 1;
 
         return array_map('intval', $query->posts);
+    }
+
+    /**
+     * The base query's arguments for a search: flagged `relevanssi` when Relevanssi is active, so it answers this query as it does the main one.
+     *
+     * @param  array<string, mixed>  $vars
+     * @return array<string, mixed>
+     */
+    public static function searchBaseArgs(array $vars, bool $relevanssiActive): array
+    {
+        if (($vars['s'] ?? '') !== '' && $relevanssiActive) {
+            $vars['relevanssi'] = true;
+        }
+
+        return $vars;
     }
 
     /** @param list<mixed> $taxQuery  @return list<mixed> */

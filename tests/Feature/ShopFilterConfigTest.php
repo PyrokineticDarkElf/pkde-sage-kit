@@ -54,3 +54,14 @@ it('takes only the flagged filter clauses out of a tax query, whatever else the 
         ->and(ShopFilterCounts::withoutOurClauses([$visibility, 'relation' => 'AND']))->toBe([$visibility])
         ->and(ShopFilterCounts::withoutOurClauses([]))->toBe([]);
 });
+
+/** TPL-257 (tcs staging): on a search the counts' base query must be answered by Relevanssi like the main one, or every count is 0 and a search with no filter shows no groups. */
+it('flags the counts base query for Relevanssi on a search, and only then', function () {
+    expect(App\ShopFilterCounts::searchBaseArgs(['s' => 'clock', 'post_type' => ['product']], true))->toBe(['s' => 'clock', 'post_type' => ['product'], 'relevanssi' => true])
+        ->and(App\ShopFilterCounts::searchBaseArgs(['s' => 'clock'], false))->toBe(['s' => 'clock'])      // no Relevanssi: WordPress's own search, unchanged
+        ->and(App\ShopFilterCounts::searchBaseArgs(['post_type' => 'product'], true))->toBe(['post_type' => 'product']) // not a search
+        ->and(App\ShopFilterCounts::searchBaseArgs(['s' => ''], true))->toBe(['s' => '']);
+
+    $source = file_get_contents(dirname(__DIR__, 2) . '/app/ShopFilterCounts.php');
+    expect($source)->toContain('searchBaseArgs($vars, function_exists(\'relevanssi_do_query\'))', 'pkde_kit/filter_counts_base_args');
+});
