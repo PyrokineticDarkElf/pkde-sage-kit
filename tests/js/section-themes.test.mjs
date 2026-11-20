@@ -237,3 +237,23 @@ test('the generated CSS carries the card roles, the button edge, and points the 
   assert.match(css.match(/\[class\*="has-card-theme-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-card-background: var\(--section-card-bg\);/); // a per-block card colour re-points them on its own element
   assert.match(block(css, '.dark .is-style-brand-sage-light'), /--section-card-bg: var\(--color-sage-(700|800|950)\);/);
 });
+
+test('links get their own colour where one works (4.5:1 on the background, 3:1 against the text); otherwise they are the text colour and underlined', () => {
+  const css = run(bb).css;
+  const link = (selector) => block(css, selector).match(/--section-link: var\(--color-([a-z0-9-]+)\)/)?.[1];
+  const text = (selector) => block(css, selector).match(/--section-text: var\(--color-([a-z0-9-]+)\)/)?.[1];
+  assert.equal(link('.is-style-brand-black'), 'sage-exact'); // white text, a sage link: both readable and 3:1 apart
+  assert.equal(link('.is-style-brand-sage'), text('.is-style-brand-sage')); // nothing works on sage: the text colour
+  const rule = css.match(/:is\(([^)]*)\)\[class\*="is-style-brand-"\]\[class\*="is-style-brand-"\] :is\(p, li, dt, dd, td, th, blockquote, cite\) a:where\([^{]*\{\s*text-decoration: underline;/)?.[1] ?? '';
+  assert.match(rule, /\.is-style-brand-sage\b(?!-)/); // underlined
+  assert.doesNotMatch(rule, /\.is-style-brand-black\b(?!-)/); // its own colour: no forced underline
+  assert.match(css, /:not\(\.wp-block-button__link, \.pkde-btn, \.pkde-btn-alt, \.wp-element-button\)\)/); // buttons are left alone
+  assert.match(css, /nav,/); // and nav links
+});
+
+test('a declared link wins, and a declared link too close to the text is a warning, not a failure', () => {
+  const colors = bb.map((c) => (c.name === 'sage' ? { ...c, styles: { link: 'blush-200' } } : c));
+  const r = run(colors);
+  assert.equal(r.status, 0, r.stderr);
+  assert.match(block(r.css, '.is-style-brand-sage'), /--section-link: var\(--color-blush-200\);/);
+});

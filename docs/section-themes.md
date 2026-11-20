@@ -20,7 +20,7 @@ A theme sets these variables on its section; everything inside reads them (`--pk
 | `--section-heading` | headings |
 | `--section-text` | body text |
 | `--section-muted` | captions, helper text (`.pkde-muted`) |
-| `--section-link` | links in running text |
+| `--section-link` | links in running text: a palette colour that reaches 4.5:1 on the background and 3:1 against the text colour where one exists; otherwise the text colour, and those links are underlined (see below) |
 | `--section-button-bg` / `-button-text` | the filled button and its label |
 | `--section-button-border` | the filled button's edge: its own colour (invisible) unless the button barely shows against the section (under 3:1), then its label colour |
 | `--section-button-alt-bg` / `-button-alt-text` | the secondary button, a **true outline**: no fill (`transparent`), the text colour for the label and the edge |
@@ -71,6 +71,8 @@ never tied to `prefers-color-scheme`: a site without a dark switch is never flip
 solid theme keeps its colour and re-picks its text roles by contrast.
 
 ## The contrast check
+
+**Links.** The auto-fill gives `link` its own colour where a palette colour reaches 4.5:1 on the background and 3:1 against the text colour (so it is told apart by colour); a declared `link` always wins. Where none works (a dark solid section with white text, a theme whose text is already the palette's only readable colour) the link is the text colour, and links in running text (paragraphs, lists, table cells, quotes) are underlined, in the editor and on the page, so they are never told apart by nothing. Where the link has its own colour nothing is forced and the site's own link style applies. Buttons, cards, products and nav links are left alone. A declared link within 3:1 of the text is allowed, with a `theme:check` note, and is underlined too. The generated CSS lists only the themes that need the underline.
 
 `npm run theme:check` fails a pair under its threshold (4.5:1 text, muted and links; 3:1 headings and icons; the button label 4.5:1, in both modes). A colour in
 `acceptLowContrast` is reported as accepted instead. Two things only warn: a button whose shape is under 3:1 against the section, and a **weak** colour: one whose best

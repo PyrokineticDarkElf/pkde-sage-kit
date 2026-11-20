@@ -21,7 +21,7 @@ export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'butto
 export const CARD_KEYS = ['cardBg', 'cardHeading', 'cardText', 'cardMuted', 'cardBorder', 'cardButtonBg', 'cardButtonText', 'cardButtonBorder', 'cardIcon'];
 const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', icon: 'cardIcon' };
 const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
-export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3 };
+export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3, linkText: 3 };
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
 // the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
 export const WEAK_BELOW = 5.2;
@@ -126,8 +126,8 @@ export function createBuilder(colors) {
    * The matrix for a background, filled in by contrast alone. `ownerName` is the colour the background belongs to; a SOLID theme leaves
    * that colour out of the heading/link candidates (it would vanish on itself), a light theme keeps it (and its deep shades).
    */
-  function autofill(bgRef, ownerName, { solid, buttonMin = 3 }) {
-    const text = bestNeutral(bgRef);
+  function autofill(bgRef, ownerName, { solid, buttonMin = 3, textRef = null }) {
+    const text = textRef ?? bestNeutral(bgRef);
     const exacts = brandish.filter((color) => !(solid && color.name === ownerName)).map((color) => color.name);
     const ownerShades = solid ? [] : [`${ownerName}-800`, `${ownerName}-900`];
     const tints = brandish.flatMap((color) => (lightnessOf(bgRef) === 'dark' ? [`${color.name}-50`] : [`${color.name}-950`]));
@@ -161,7 +161,8 @@ export function createBuilder(colors) {
         heading: pick(4.5) ?? pick(3) ?? text,
         text,
         muted,
-        link: pick(4.5) ?? text,
+        // its own colour where one works: 4.5:1 on the background and 3:1 against the text, so it is told apart by colour; otherwise the text colour (underlined by the CSS)
+        link: candidates.find((ref) => ratio(ref, bgRef) >= 4.5 && (ratio(ref, text) ?? 21) >= THRESHOLD.linkText) ?? text,
         buttonBg,
         buttonText,
         buttonBorder,
@@ -253,7 +254,11 @@ export function createBuilder(colors) {
     const { background: _ignored, ...roles } = own;
     const declaredCard = declaredCards(color, kind);
     const cards = { ...cardFor(bgRef, color.name, kind === 'dark' || kind === 'lightDark' ? 'dark' : 'light', declaredCard.cardBg ?? null), ...declaredCard };
+    // a declared text colour moves the link's own colour (it has to stand apart from THAT text)
+    if (roles.text !== undefined && roles.link === undefined) auto.matrix.link = autofill(bgRef, color.name, { solid, textRef: roles.text }).matrix.link;
     const merged = { weak: auto.weak, bg: bgRef, ...auto.matrix, ...cards, ...roles, declared: Object.keys(roles) };
+    // links that colour cannot tell from the text are underlined (the generated rule at the end of the section CSS)
+    merged.underline = (ratio(merged.link, merged.text) ?? 1) < THRESHOLD.linkText;
     // the edges follow what was finally chosen: invisible unless the button barely shows, then the label colour (a declared edge wins)
     if (roles.buttonBorder === undefined) merged.buttonBorder = (ratio(merged.buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? merged.buttonText : merged.buttonBg;
     if (declaredCard.cardButtonBorder === undefined) merged.cardButtonBorder = (ratio(merged.cardButtonBg, merged.cardBg) ?? 21) < THRESHOLD.buttonSurface ? merged.cardButtonText : merged.cardButtonBg;
@@ -307,6 +312,8 @@ export function createBuilder(colors) {
     need('heading', THRESHOLD.heading);
     need('muted', THRESHOLD.muted);
     need('link', THRESHOLD.link);
+    const linkText = ratio(matrix.link, matrix.text);
+    if (linkText !== null && linkText > 1.05 && linkText < THRESHOLD.linkText) warns.push(`${where}: the link ${show(matrix.link)} measures ${linkText.toFixed(2)}:1 against the text ${show(matrix.text)}, too close to tell apart by colour; links are underlined there (give the link another colour, or accept the underline).`);
     need('icon', THRESHOLD.icon);
     // the button label on the button, the outline button's label on the section (or on its own fill)
     const buttonLabel = ratio(matrix.buttonText, matrix.buttonBg);
@@ -400,10 +407,19 @@ export function buildSectionRolesCss(colors, themeList) {
   for (const theme of themeList) {
     out.push(`.is-style-${theme.id} {`, ...declarations(resolver, theme.matrix), '}', '');
   }
+  const underlined = (key) => themeList.filter((theme) => theme[key].underline).map((theme) => `.is-style-${theme.id}`);
+  const linkRule = (themes, prefix = '') => `${prefix}:is(${themes.join(', ')})[class*="is-style-brand-"][class*="is-style-brand-"] :is(p, li, dt, dd, td, th, blockquote, cite) a:where(:not(.wp-block-button__link, .pkde-btn, .pkde-btn-alt, .wp-element-button)):not(:where(.pkde-section, .pkde-card, article, .product, nav, .has-link-color, [class*="wp-elements-"]) *) {\n  text-decoration: underline;\n}`;
+  const light = underlined('matrix');
+  const dark = underlined('dark').filter((id) => !light.includes(id));
   out.push('/* Dark mode: under the site\'s .dark class (the same switch the site\'s own dark: variants use). Without that class nothing here applies. */');
   for (const theme of themeList) {
     out.push(`.dark .is-style-${theme.id} {`, ...declarations(resolver, theme.dark), '}', '');
   }
+  // Links in running text that colour cannot tell from the text (the link role equals, or is within 3:1 of, the text role) are underlined; a link with its own colour is
+  // left to the site's link style. Only the themes that need it are listed.
+  if (light.length || dark.length) out.push('/* Links in running text that are not told apart by colour are underlined. Buttons, cards and nav links are left alone. */');
+  if (light.length) out.push(linkRule(light), '');
+  if (dark.length) out.push(linkRule(dark, '.dark '), '');
   return out.join('\n');
 }
 
