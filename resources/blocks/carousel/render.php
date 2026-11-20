@@ -48,10 +48,10 @@ $wrapper_attributes = get_block_wrapper_attributes();
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php if ($heading) : ?>
-        <h2 class="font-display text-2xl font-semibold tracking-[-0.02em] text-neutral-950 sm:text-3xl"><?php echo wp_kses_post($heading); ?></h2>
+        <h2 class="font-display text-2xl font-semibold tracking-[-0.02em] text-[color:var(--section-heading,var(--color-neutral-950))] sm:text-3xl"><?php echo wp_kses_post($heading); ?></h2>
     <?php endif; ?>
     <?php if ($description) : ?>
-        <p class="mt-2 max-w-2xl text-neutral-600"><?php echo wp_kses_post($description); ?></p>
+        <p class="mt-2 max-w-2xl text-[color:var(--section-muted,var(--color-neutral-600))]"><?php echo wp_kses_post($description); ?></p>
     <?php endif; ?>
 
     <?php if ($images) : ?>
@@ -113,12 +113,12 @@ $wrapper_attributes = get_block_wrapper_attributes();
                 <div class="mt-2 flex justify-center">
                     <?php foreach ($images as $index => $image) : ?>
                         <?php // The button is the 24px touch target (WCAG 2.2 target size); the span inside is the visible dot.?>
-                        <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group flex h-6 min-w-6 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-neutral-900"><span class="block h-2 w-2 rounded-full bg-neutral-300 transition-all group-data-[active]:w-5 group-data-[active]:bg-neutral-900"></span></button>
+                        <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group flex h-6 min-w-6 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[color:var(--section-text,var(--color-neutral-900))]"><span class="block h-2 w-2 rounded-full bg-[color:var(--section-border,var(--color-neutral-300))] transition-all group-data-[active]:w-5 group-data-[active]:bg-[color:var(--section-text,var(--color-neutral-900))]"></span></button>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </div>
     <?php else : ?>
-        <p class="mt-6 text-center text-neutral-600"><?php esc_html_e('No images selected yet.', 'sage'); ?></p>
+        <p class="mt-6 text-center text-[color:var(--section-muted,var(--color-neutral-600))]"><?php esc_html_e('No images selected yet.', 'sage'); ?></p>
     <?php endif; ?>
 </div>

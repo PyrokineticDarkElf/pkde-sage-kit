@@ -35,14 +35,14 @@
           <h2 @class([
             'font-display text-2xl font-semibold tracking-[-0.02em] sm:text-3xl',
             'text-[color:var(--pkde-theme-content)]' => $themed,
-            'text-neutral-950' => ! $themed,
+            'text-[color:var(--section-heading,var(--color-neutral-950))]' => ! $themed,
           ])>{{ $heading }}</h2>
         @endif
         @if ($description)
           <p @class([
             'mt-2',
             'text-[color:var(--pkde-theme-content)] opacity-75' => $themed,
-            'text-neutral-600' => ! $themed,
+            'text-[color:var(--section-muted,var(--color-neutral-600))]' => ! $themed,
           ])>{{ $description }}</p>
         @endif
       </div>
@@ -51,7 +51,7 @@
       'columns-1 gap-x-8 sm:columns-2',
       $hasHeader ? 'mt-8' : '',
       'border-t border-[color:var(--pkde-theme-border)]' => $themed,
-      'border-t border-neutral-200' => ! $themed,
+      'border-t border-[color:var(--section-border,var(--color-neutral-200))]' => ! $themed,
     ])>
       {!! $content !!}
     </div>
@@ -64,14 +64,14 @@
           <h2 @class([
             'font-display text-2xl font-semibold tracking-[-0.02em] sm:text-3xl',
             'text-[color:var(--pkde-theme-content)]' => $themed,
-            'text-neutral-950' => ! $themed,
+            'text-[color:var(--section-heading,var(--color-neutral-950))]' => ! $themed,
           ])>{{ $heading }}</h2>
         @endif
         @if ($description)
           <p @class([
             'mt-2',
             'text-[color:var(--pkde-theme-content)] opacity-75' => $themed,
-            'text-neutral-600' => ! $themed,
+            'text-[color:var(--section-muted,var(--color-neutral-600))]' => ! $themed,
           ])>{{ $description }}</p>
         @endif
       </div>
@@ -79,7 +79,7 @@
     <div @class([
       $hasHeader ? 'mt-6 lg:col-span-1 lg:mt-0' : 'lg:col-span-2',
       'border-t border-[color:var(--pkde-theme-border)]' => $themed,
-      'border-t border-neutral-200' => ! $themed,
+      'border-t border-[color:var(--section-border,var(--color-neutral-200))]' => ! $themed,
     ])>
       {!! $content !!}
     </div>

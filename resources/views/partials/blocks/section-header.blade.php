@@ -31,7 +31,7 @@
     <h2 @class([
       'font-display text-2xl font-semibold tracking-[-0.02em] sm:text-3xl',
       'text-[color:var(--pkde-theme-content)]' => $themed ?? false,
-      'text-neutral-950' => ! ($themed ?? false),
+      'text-[color:var(--section-heading,var(--color-neutral-950))]' => ! ($themed ?? false),
     ])>
       {{ $heading }}
     </h2>
@@ -39,7 +39,7 @@
       <a href="{{ $viewAllUrl }}" @class([
         'inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold transition',
         'text-[color:var(--pkde-theme-content)] opacity-90 hover:opacity-100 hover:text-[color:var(--pkde-theme-highlight)]' => $themed ?? false,
-        'text-neutral-900 hover:text-brand-700' => ! ($themed ?? false),
+        'text-[color:var(--section-link,var(--color-neutral-900))] hover:text-brand-700' => ! ($themed ?? false),
       ])>
         {{ $viewAllLabel }}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4">
@@ -52,7 +52,7 @@
     <p @class([
       'mt-2 max-w-2xl',
       'text-[color:var(--pkde-theme-content)] opacity-75' => $themed ?? false,
-      'text-neutral-600' => ! ($themed ?? false),
+      'text-[color:var(--section-muted,var(--color-neutral-600))]' => ! ($themed ?? false),
     ])>{{ $description }}</p>
   @endif
 </div>

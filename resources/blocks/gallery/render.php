@@ -43,10 +43,10 @@ $wrapper_attributes = get_block_wrapper_attributes();
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php if ($heading) : ?>
-        <h2 class="font-display text-2xl font-semibold tracking-[-0.02em] text-neutral-950 sm:text-3xl"><?php echo wp_kses_post($heading); ?></h2>
+        <h2 class="font-display text-2xl font-semibold tracking-[-0.02em] text-[color:var(--section-heading,var(--color-neutral-950))] sm:text-3xl"><?php echo wp_kses_post($heading); ?></h2>
     <?php endif; ?>
     <?php if ($description) : ?>
-        <p class="mt-2 max-w-2xl text-neutral-600"><?php echo wp_kses_post($description); ?></p>
+        <p class="mt-2 max-w-2xl text-[color:var(--section-muted,var(--color-neutral-600))]"><?php echo wp_kses_post($description); ?></p>
     <?php endif; ?>
 
     <?php if ($images) : ?>
@@ -85,6 +85,6 @@ $wrapper_attributes = get_block_wrapper_attributes();
             <?php endforeach; ?>
         </div>
     <?php else : ?>
-        <p class="mt-6 text-center text-neutral-600"><?php esc_html_e('No images selected yet.', 'sage'); ?></p>
+        <p class="mt-6 text-center text-[color:var(--section-muted,var(--color-neutral-600))]"><?php esc_html_e('No images selected yet.', 'sage'); ?></p>
     <?php endif; ?>
 </div>

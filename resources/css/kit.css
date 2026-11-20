@@ -19,6 +19,7 @@
 @import "./category-tiles.css";
 @import "./shop-filter-actions.css";
 @import "./cart-checkout-blocks.css";
+@import "./section-themes.css";
 
 :root {
   --pkde-theme-background: var(--color-neutral-950);

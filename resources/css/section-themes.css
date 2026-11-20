@@ -1,0 +1,64 @@
+/**
+ * Section themes (WP-100): what a Brand <Label> / Brand <Label> (light) section does with its role variables. The variables themselves are
+ * generated per site (generated/section-themes.css, from config/brand-palette.json); this file paints a section from them and lets the
+ * core blocks inside it follow.
+ *
+ * The rules are unlayered and at a middle specificity on purpose:
+ *  - above theme.json's element styles (`:root :where(h1)`) and a site's `.page-content h1`, so a section colours its own headings, links
+ *    and buttons;
+ *  - below a block's OWN colour choice: `has-*-color` / `has-*-background-color` classes carry !important and inline styles beat any
+ *    selector, so an editor who picks a colour on a block keeps it. Nothing here uses !important;
+ *  - kit blocks that manage their own colours (.pkde-section: hero, CTA, FAQ, loop panels; cards; WooCommerce products) are left out of
+ *    the descendant rules, as are blocks with their own text or link colour (.has-link-color, wp-elements-*).
+ *
+ * A site's own CSS that colours a heading, paragraph or button inside a section at a higher specificity than this still wins; it moves
+ * onto the --section-* variables (docs/section-themes.md).
+ */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] {
+  background-color: var(--section-bg);
+  color: var(--section-text);
+  border-color: var(--section-border);
+}
+
+/* Headings */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(h1, h2, h3, h4, h5, h6):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+  color: var(--section-heading);
+}
+
+/* Muted text: captions, and anything marked .pkde-muted */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(figcaption, .pkde-muted):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+  color: var(--section-muted);
+}
+
+/* Links in running content (not buttons, not a block with its own link colour) */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] a:where(:not(.wp-block-button__link, .pkde-btn, .pkde-btn-alt, .wp-element-button)):not(:where(.pkde-section, .pkde-card, article, .product, .has-link-color, [class*="wp-elements-"]) *) {
+  color: var(--section-link);
+}
+
+/* Core buttons: the filled button is the primary pair, the Outline style the secondary one */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] .wp-block-button:not(.is-style-outline) > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product) *) {
+  background-color: var(--section-button-bg);
+  color: var(--section-button-text);
+  border-color: var(--section-button-bg);
+}
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] .wp-block-button.is-style-outline > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product) *) {
+  background-color: var(--section-button-alt-bg);
+  color: var(--section-button-alt-text);
+  border-color: var(--section-button-alt-text);
+}
+
+/* Separators take the border role */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(hr, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+  color: var(--section-border);
+  border-color: var(--section-border);
+}
+
+/* Icons: the kit's icons (.pkde-icon, drawn in currentColor) and core's logos-only social links */
+:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(.pkde-icon, .wp-block-social-links.is-style-logos-only .wp-social-link a):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+  color: var(--section-icon);
+}
+
+/* A muted helper any block can use inside or outside a section (outside, it falls back to the inherited colour). */
+.pkde-muted {
+  color: var(--section-muted, inherit);
+}
