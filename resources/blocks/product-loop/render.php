@@ -15,10 +15,7 @@ if (! function_exists('wc_get_products')) {
     return;
 }
 
-// In the editor preview (a REST request) WooCommerce has not loaded its cart/session; the product cards need them.
-if (function_exists('wc_load_cart') && (defined('REST_REQUEST') && REST_REQUEST) && ! WC()->cart) {
-    wc_load_cart();
-}
+// In the editor preview (a REST request) WooCommerce has not loaded its cart/session; the product cards need them: app/woocommerce.php loads them for the block-renderer route.
 
 $limit = max(1, min(48, (int) ($attributes['limit'] ?? 8)));
 $columns = max(1, min(6, (int) ($attributes['columns'] ?? 4)));
