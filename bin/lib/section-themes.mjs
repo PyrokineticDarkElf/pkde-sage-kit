@@ -15,8 +15,12 @@
  */
 import { wcagContrast, toRgb, shade, steps } from './color-math.mjs';
 
-export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonAltBg', 'buttonAltText', 'icon', 'border'];
-const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border' };
+export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonBorder', 'buttonAltBg', 'buttonAltText', 'icon', 'border'];
+// The roles of a card sitting in the section (a testimonial, a product, a post, a feature item). Declared under `styles.card` (an object; the older string `card`
+// is a pointer for the older .pkde-card-* classes and is not read here) as { background, heading, text, muted, border, buttonBg, buttonText, buttonBorder, icon }.
+export const CARD_KEYS = ['cardBg', 'cardHeading', 'cardText', 'cardMuted', 'cardBorder', 'cardButtonBg', 'cardButtonText', 'cardButtonBorder', 'cardIcon'];
+const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', icon: 'cardIcon' };
+const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
 export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3 };
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
 // the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
@@ -122,7 +126,7 @@ export function createBuilder(colors) {
    * The matrix for a background, filled in by contrast alone. `ownerName` is the colour the background belongs to; a SOLID theme leaves
    * that colour out of the heading/link candidates (it would vanish on itself), a light theme keeps it (and its deep shades).
    */
-  function autofill(bgRef, ownerName, { solid }) {
+  function autofill(bgRef, ownerName, { solid, buttonMin = 3 }) {
     const text = bestNeutral(bgRef);
     const exacts = brandish.filter((color) => !(solid && color.name === ownerName)).map((color) => color.name);
     const ownerShades = solid ? [] : [`${ownerName}-800`, `${ownerName}-900`];
@@ -135,7 +139,7 @@ export function createBuilder(colors) {
 
     if (weak) {
       // Only one text colour is readable on this colour, so every text role uses it (no brand-coloured heading or link, no muted tone).
-      return { weak, matrix: { heading: text, text, muted: text, link: text, buttonBg: text, buttonText: bgRef, buttonAltBg: 'transparent', buttonAltText: text, icon: text, border } };
+      return { weak, matrix: { heading: text, text, muted: text, link: text, buttonBg: text, buttonText: bgRef, buttonBorder: text, buttonAltBg: 'transparent', buttonAltText: text, icon: text, border } };
     }
 
     let muted = text;
@@ -145,10 +149,11 @@ export function createBuilder(colors) {
 
     const button = brandish
       .map((color) => color.name)
-      .find((ref) => ratio(ref, bgRef) >= 3 && Math.max(...neutrals.map((n) => ratio(n, ref))) >= 4.5 && ref !== ownerName);
+      .find((ref) => ratio(ref, bgRef) >= buttonMin && Math.max(...neutrals.map((n) => ratio(n, ref))) >= 4.5 && ref !== ownerName);
     const buttonBg = button ?? text;
     const buttonText = button ? bestNeutral(button) : bgRef;
-    const buttonAltBg = text;
+    // The button's edge: invisible (its own colour) unless the button barely shows against the section (under 3:1), then the label colour, so its shape is visible.
+    const buttonBorder = (ratio(buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? buttonText : buttonBg;
 
     return {
       weak,
@@ -159,12 +164,66 @@ export function createBuilder(colors) {
         link: pick(4.5) ?? text,
         buttonBg,
         buttonText,
-        buttonAltBg,
-        buttonAltText: bestNeutral(buttonAltBg),
+        buttonBorder,
+        // a true outline: no fill, the text colour for the label and the edge
+        buttonAltBg: 'transparent',
+        buttonAltText: text,
         icon: pick(3) ?? text,
         border,
       },
     };
+  }
+
+  /**
+   * The card roles for a section: the card is white on a solid or tinted section (or the palette's white), the brand colour's lightest tint on a white section
+   * (a white card would vanish), a deep shade in dark mode; its text, icon and border follow from that background, and its button is the first brand colour that
+   * reaches 4.5:1 on it (so a white card gets a sage or a pink button), never the card's own hue.
+   */
+  function cardFor(bgRef, ownerName, scope, declaredBg = null) {
+    const white = whiteColor?.name ?? 'white';
+    const brand = colors.find((color) => color.role === 'brand') ?? brandish[0];
+    let cardBg;
+    let cardOwner;
+
+    if (scope === 'dark') {
+      cardOwner = ownerName;
+      cardBg = [`${ownerName}-800`, `${ownerName}-950`, `${ownerName}-700`].find((ref) => { const r = ratio(ref, bgRef); return r !== null && r >= 1.08 && r <= 2.2; }) ?? `${ownerName}-800`;
+    } else if ((ratio(white, bgRef) ?? 21) < 1.15) {
+      cardOwner = brand.name;
+      cardBg = `${brand.name}-50`;
+    } else {
+      cardOwner = white;
+      cardBg = white;
+    }
+
+    if (declaredBg) {
+      // the palette names the card's background: its text, icon, border and button are worked out for THAT background
+      const parsed = resolver.parse(normalise(declaredBg).color);
+      cardBg = declaredBg;
+      cardOwner = parsed?.name ?? cardOwner;
+    }
+
+    const auto = autofill(cardBg, cardOwner, { solid: false, buttonMin: 4.5 });
+    const m = auto.matrix;
+
+    return { cardBg, cardHeading: m.heading, cardText: m.text, cardMuted: m.muted, cardBorder: m.border, cardButtonBg: m.buttonBg, cardButtonText: m.buttonText, cardButtonBorder: m.buttonBorder, cardIcon: m.icon };
+  }
+
+  /** The declared card roles of a theme ({ cardBg?, cardHeading?, ... }), references checked. */
+  function declaredCards(color, kind) {
+    const styles = color.styles ?? {};
+    const source = kind === 'solid' ? styles : kind === 'light' ? styles.light : kind === 'dark' ? styles.dark : styles.light?.dark;
+    const card = source?.card;
+    const result = {};
+    if (!card || typeof card !== 'object') return result;
+
+    for (const [key, role] of Object.entries(CARD_DECLARED)) {
+      if (card[key] === undefined) continue;
+      if (!resolver.parse(normalise(card[key]).color)) throw new Error(`${color.name}: styles${kind === 'solid' ? '' : `.${kind === 'light' ? 'light' : kind === 'dark' ? 'dark' : 'light.dark'}`}.card.${key} is not a known colour reference (${JSON.stringify(card[key])}).`);
+      result[role] = card[key];
+    }
+
+    return result;
   }
 
   /** The declared values of a theme: { background?, <role>? } with references checked. */
@@ -192,7 +251,13 @@ export function createBuilder(colors) {
     const auto = autofill(bgRef, color.name, { solid });
     const own = declared(color, kind);
     const { background: _ignored, ...roles } = own;
-    return { weak: auto.weak, bg: bgRef, ...auto.matrix, ...roles, declared: Object.keys(roles) };
+    const declaredCard = declaredCards(color, kind);
+    const cards = { ...cardFor(bgRef, color.name, kind === 'dark' || kind === 'lightDark' ? 'dark' : 'light', declaredCard.cardBg ?? null), ...declaredCard };
+    const merged = { weak: auto.weak, bg: bgRef, ...auto.matrix, ...cards, ...roles, declared: Object.keys(roles) };
+    // the edges follow what was finally chosen: invisible unless the button barely shows, then the label colour (a declared edge wins)
+    if (roles.buttonBorder === undefined) merged.buttonBorder = (ratio(merged.buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? merged.buttonText : merged.buttonBg;
+    if (declaredCard.cardButtonBorder === undefined) merged.cardButtonBorder = (ratio(merged.cardButtonBg, merged.cardBg) ?? 21) < THRESHOLD.buttonSurface ? merged.cardButtonText : merged.cardButtonBg;
+    return merged;
   }
 
   /** Every theme of the palette: solid and light, each with its light-mode and dark-mode matrix. */
@@ -250,7 +315,20 @@ export function createBuilder(colors) {
     const altLabel = ratio(matrix.buttonAltText, altSurface);
     if (altLabel !== null && altLabel + 1e-9 < THRESHOLD.buttonAltText) fails.push(`${where}: the outline button label ${show(matrix.buttonAltText)} measures ${altLabel.toFixed(2)}:1 on ${altSurface}; it needs 4.5:1.`);
     const surface = ratio(matrix.buttonBg, matrix.bg);
-    if (surface !== null && surface + 1e-9 < THRESHOLD.buttonSurface) warns.push(`${where}: the button (${show(matrix.buttonBg)}) measures ${surface.toFixed(2)}:1 against the section background; its label is readable but the button's shape is hard to see (3:1 is the guide).`);
+    if (surface !== null && surface + 1e-9 < THRESHOLD.buttonSurface && (ratio(matrix.buttonBorder, matrix.bg) ?? 0) < THRESHOLD.buttonSurface) warns.push(`${where}: the button (${show(matrix.buttonBg)}) measures ${surface.toFixed(2)}:1 against the section background; its label is readable but the button's shape is hard to see (3:1 is the guide).`);
+    // the card in the section
+    const needCard = (role, min, label) => {
+      const r = ratio(matrix[role], matrix.cardBg);
+      if (r !== null && r + 1e-9 < min) fails.push(`${where}: card ${label} ${show(matrix[role])} measures ${r.toFixed(2)}:1 on the card (${matrix.cardBg}); it needs ${min}:1.`);
+    };
+    needCard('cardText', THRESHOLD.text, 'text');
+    needCard('cardHeading', THRESHOLD.heading, 'heading');
+    needCard('cardMuted', THRESHOLD.muted, 'muted text');
+    needCard('cardIcon', THRESHOLD.icon, 'icon');
+    const cardLabel = ratio(matrix.cardButtonText, matrix.cardButtonBg);
+    if (cardLabel !== null && cardLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the card button label ${show(matrix.cardButtonText)} measures ${cardLabel.toFixed(2)}:1 on the card button ${show(matrix.cardButtonBg)}; it needs 4.5:1.`);
+    const cardSurface = ratio(matrix.cardButtonBg, matrix.cardBg);
+    if (cardSurface !== null && cardSurface + 1e-9 < THRESHOLD.buttonSurface && ratio(matrix.cardButtonBorder, matrix.cardBg) < THRESHOLD.buttonSurface) warns.push(`${where}: the card button (${show(matrix.cardButtonBg)}) measures ${cardSurface.toFixed(2)}:1 against the card; its shape is hard to see.`);
     if (matrix.weak && scope !== 'dark') warns.push(`${where}: a weak colour. Only ${show(matrix.text)} is readable on it (${ratio(matrix.text, matrix.bg).toFixed(2)}:1), so every text role uses it: no brand-coloured heading or link and no muted tone, and links look like body text.`);
     return { fails, warns };
   }
@@ -280,7 +358,7 @@ const cssValue = (resolver, spec) => {
 
 function declarations(resolver, matrix) {
   const lines = [`  --section-bg: ${resolver.css(matrix.bg)};`];
-  for (const role of ROLE_KEYS) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
+  for (const role of [...ROLE_KEYS, ...CARD_KEYS]) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
   // The kit's blocks and buttons read the older --pkde-theme-* tokens: inside a section theme they follow it.
   lines.push(
     '  --pkde-theme-background: var(--section-bg);',
@@ -288,11 +366,15 @@ function declarations(resolver, matrix) {
     '  --pkde-theme-highlight: var(--section-link);',
     '  --pkde-theme-btn-bg: var(--section-button-bg);',
     '  --pkde-theme-btn-text: var(--section-button-text);',
-    '  --pkde-theme-btn-border: var(--section-button-bg);',
+    '  --pkde-theme-btn-border: var(--section-button-border);',
     '  --pkde-theme-alt-btn-bg: var(--section-button-alt-bg);',
     '  --pkde-theme-alt-btn-text: var(--section-button-alt-text);',
     '  --pkde-theme-alt-btn-border: var(--section-button-alt-text);',
     '  --pkde-theme-border: var(--section-border);',
+    // the kit's cards read these: inside a section theme they take the card roles
+    '  --pkde-card-background: var(--section-card-bg);',
+    '  --pkde-card-content: var(--section-card-text);',
+    '  --pkde-card-accent: var(--section-card-heading);',
   );
   return lines;
 }

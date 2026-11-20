@@ -23,17 +23,17 @@
   --pkde-theme-alt-btn-border: var(--section-button-alt-text, var(--color-neutral-950));
   color: var(--pkde-body);
 }
-.pkde-block :where(h1, h2, h3, h4) {
+.pkde-block.pkde-block :where(h1, h2, h3, h4) {
   color: var(--pkde-ink);
 }
-.pkde-eyebrow {
+.pkde-block .pkde-eyebrow {
   margin: 0;
   font: 600 0.8rem / 1.2 var(--font-sans, inherit);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--pkde-accent);
 }
-.pkde-muted-text {
+.pkde-block .pkde-muted-text {
   color: var(--pkde-quiet);
 }
 .pkde-block .pkde-btn,
@@ -46,6 +46,7 @@
   gap: 0.75rem;
   margin-top: 2rem;
 }
+.pkde-block .pkde-icon,
 .pkde-icon {
   width: 2rem;
   height: 2rem;
@@ -84,7 +85,8 @@
   line-height: 1.05;
   letter-spacing: -0.03em;
 }
-.pkde-hero__text {
+.pkde-block .pkde-hero__text {
+  color: var(--pkde-body);
   max-width: 34rem;
   margin: 1.25rem 0 0;
   font-size: 1.125rem;
@@ -154,7 +156,7 @@
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
-.pkde-features__intro {
+.pkde-block .pkde-features__intro {
   margin: 1rem 0 0;
   font-size: 1.0625rem;
   line-height: 1.7;
@@ -203,19 +205,19 @@
   font-weight: 600;
   line-height: 1.25;
 }
-.pkde-feature__text {
+.pkde-block .pkde-feature__text {
   margin: 0.5rem 0 0;
   line-height: 1.65;
   color: var(--pkde-body);
 }
-.pkde-feature__title a {
+.pkde-block .pkde-feature__title a {
   color: inherit;
   text-decoration: none;
 }
 .pkde-feature__title a:hover {
   text-decoration: underline;
 }
-.pkde-feature__link {
+.pkde-block .pkde-feature__link {
   display: inline-block;
   margin-top: 0.75rem;
   font-weight: 600;
@@ -254,7 +256,8 @@
   gap: 1rem;
   height: 100%;
 }
-.pkde-quote blockquote {
+.pkde-block .pkde-quote blockquote,
+.pkde-block .pkde-quote blockquote p {
   margin: 0;
   padding: 0;
   border: 0;
@@ -269,16 +272,16 @@
 .pkde-quote blockquote > p + p {
   margin-top: 0.75rem;
 }
-.pkde-quote figcaption {
+.pkde-block .pkde-quote figcaption {
   margin-top: auto;
   font-size: 0.9rem;
   color: var(--pkde-quiet);
 }
-.pkde-quote__name {
+.pkde-block .pkde-quote__name {
   font-weight: 600;
   color: var(--pkde-ink);
 }
-.pkde-stars {
+.pkde-block .pkde-stars {
   display: inline-flex;
   gap: 0.15rem;
   color: var(--pkde-icon-color);
@@ -391,7 +394,7 @@
   padding-inline: var(--page-gutter, 1.5rem);
   text-align: center;
 }
-.pkde-cta-band__text {
+.pkde-block .pkde-cta-band__text {
   margin: 0;
   max-width: 40rem;
   font-family: var(--font-display, inherit);

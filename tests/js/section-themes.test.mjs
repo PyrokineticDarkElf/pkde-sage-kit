@@ -176,3 +176,55 @@ test('brand-colours.csv (--colors-csv) and --label give the palette its labels, 
   assert.notEqual(bad.status, 0);
   assert.match(bad.stderr, /brand-colours\.csv row 2/);
 });
+
+test('the secondary button is a true outline, and the button edge shows only where the button barely shows against the section', () => {
+  const themes = createBuilder(bb).themes();
+  const slate = themes.find((t) => t.id === 'brand-slate').matrix;
+  assert.equal(slate.buttonAltBg, 'transparent'); // no fill
+  assert.equal(slate.buttonAltText, 'white'); // the text colour for the label and the edge
+  assert.equal(slate.buttonBorder, slate.buttonBg); // visible already: the edge is invisible (its own colour)
+  // blush-200 on sage-200 is 1.02:1: the edge becomes the label colour
+  const declaredBb = bb.map((c) => (c.name === 'sage' ? { ...c, styles: { light: { background: 'sage-200', buttonBg: 'blush-200', buttonText: 'slate-950' } } } : c));
+  const light = createBuilder(declaredBb).themes().find((t) => t.id === 'brand-sage-light').matrix;
+  assert.equal(light.buttonBorder, 'slate-950');
+  const kept = createBuilder(declaredBb.map((c) => (c.name === 'sage' ? { ...c, styles: { light: { ...c.styles.light, buttonBorder: 'sage-800' } } } : c))).themes().find((t) => t.id === 'brand-sage-light').matrix;
+  assert.equal(kept.buttonBorder, 'sage-800'); // a declared edge wins
+});
+
+test('card roles: white cards on a solid or tinted section, the lightest brand tint on a white one, a sage or pink button chosen by contrast, declared values win', () => {
+  const themes = createBuilder(bb).themes();
+  const get = (id) => themes.find((t) => t.id === id);
+  const sage = get('brand-sage').matrix;
+  assert.equal(sage.cardBg, 'white');
+  assert.equal(get('brand-blush-light').matrix.cardBg, 'white');
+  assert.equal(get('brand-white').matrix.cardBg, 'sage-50'); // the brand colour's lightest tint
+  assert.equal(sage.cardButtonBg, 'sage'); // pink fails 4.5:1 on white; the brand colour passes
+  assert.notEqual(sage.cardButtonBg, sage.cardBg);
+  assert.match(String(get('brand-sage-light').dark.cardBg), /^sage-(700|800|950)$/); // dark mode: a deep shade, not a white card on a dark section
+  const declared = createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { card: { background: 'blush-50', buttonBg: 'slate' } } } : c))).themes().find((t) => t.id === 'brand-sage').matrix;
+  assert.equal(declared.cardBg, 'blush-50');
+  assert.equal(declared.cardButtonBg, 'slate');
+  assert.match(declared.cardText, /black|slate-950|white/); // worked out for the declared card background
+  // the older string `card` pointer is not a card matrix
+  assert.equal(createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { card: 'white' } } : c))).themes()[0].matrix.cardBg, 'white');
+});
+
+test('every card pair of every theme, in both modes, passes on a varied palette, and a card pair under its threshold FAILs by name', () => {
+  const palette = [
+    { name: 'brand', hex: '#334155', role: 'brand' }, { name: 'accent', hex: '#64748b', role: 'accent' }, { name: 'gold', hex: '#eccd7c' }, { name: 'neon', hex: '#39ff14' },
+    { name: 'navy', hex: '#002457' }, { name: 'sand', hex: '#efe9de' }, { name: 'teal', hex: '#38bbcf' }, ...bb.slice(0, 3).map((c) => ({ ...c, name: `x${c.name}`, role: undefined })), ...neutrals,
+  ];
+  const b = createBuilder(palette);
+  assert.deepEqual(b.checkAll(b.themes()).fails.filter((line) => /card/.test(line)), []);
+  const bad = createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { card: { background: 'white', text: 'blush' } } } : c)));
+  assert.ok(bad.checkAll(bad.themes()).fails.some((line) => /brand-sage: card text blush measures [0-9.]+:1 on the card/.test(line)));
+});
+
+test('the generated CSS carries the card roles, the button edge, and points the kit\'s card tokens at them', () => {
+  const css = run(bb).css;
+  const sage = block(css, '.is-style-brand-sage');
+  for (const role of ['card-bg', 'card-heading', 'card-text', 'card-muted', 'card-border', 'card-button-bg', 'card-button-text', 'card-button-border', 'card-icon', 'button-border']) assert.match(sage, new RegExp(`--section-${role}:`), role);
+  assert.match(sage, /--pkde-card-background: var\(--section-card-bg\);/);
+  assert.match(sage, /--pkde-theme-btn-border: var\(--section-button-border\);/);
+  assert.match(block(css, '.dark .is-style-brand-sage-light'), /--section-card-bg: var\(--color-sage-(700|800|950)\);/);
+});
