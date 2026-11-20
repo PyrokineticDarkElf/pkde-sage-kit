@@ -28,16 +28,18 @@
 --}}
 <div class="mb-8">
   <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-    <h2 @class([
-      'font-display text-2xl font-semibold tracking-[-0.02em] sm:text-3xl',
-      'text-[color:var(--pkde-theme-content)]' => $themed ?? false,
-      'text-[color:var(--section-heading,var(--color-neutral-950))]' => ! ($themed ?? false),
-    ])>
-      {{ $heading }}
-    </h2>
+    @if (trim((string) $heading) !== '')
+      <h2 @class([
+        'font-display text-2xl font-semibold tracking-[-0.02em] sm:text-3xl',
+        'text-[color:var(--pkde-theme-content)]' => $themed ?? false,
+        'text-[color:var(--section-heading,var(--color-neutral-950))]' => ! ($themed ?? false),
+      ])>
+        {{ $heading }}
+      </h2>
+    @endif
     @if ($viewAllUrl)
       <a href="{{ $viewAllUrl }}" @class([
-        'inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold transition',
+        'ml-auto inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold transition',
         'text-[color:var(--pkde-theme-content)] opacity-90 hover:opacity-100 hover:text-[color:var(--pkde-theme-highlight)]' => $themed ?? false,
         'text-[color:var(--section-link,var(--color-neutral-900))] hover:text-brand-700' => ! ($themed ?? false),
       ])>
