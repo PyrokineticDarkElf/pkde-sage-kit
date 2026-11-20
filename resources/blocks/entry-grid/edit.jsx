@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n';
 import metadata from './block.json';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
 import { CardColourPanel } from '../../js/card-colour-panel.jsx';
+import { ServerPreview } from '../../js/server-preview.jsx';
 
 // Generated fresh from the actual palette — see hero/edit.jsx's own comment
 // on this same import for why it's not a hardcoded list here.
@@ -97,9 +98,7 @@ function Edit({ attributes, setAttributes }) {
       </InspectorControls>
 
       <div {...blockProps}>
-        <Placeholder icon="grid-view" label={__('Entry Grid', 'sage')}>
-          {__('Displays every published entry of the chosen post type as a card grid. Configure it in the block settings.', 'sage')}
-        </Placeholder>
+        <ServerPreview block={metadata.name} attributes={attributes} icon="grid-view" label={__('Entry Grid', 'sage')} empty={__('Displays every published entry of the chosen post type as a card grid. Configure it in the block settings.', 'sage')} />
       </div>
     </>
   );

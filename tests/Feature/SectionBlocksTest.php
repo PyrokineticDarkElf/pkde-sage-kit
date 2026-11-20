@@ -152,3 +152,15 @@ it('turns a block\'s Card colour and Card button colour into a class and a style
             ->and(file_get_contents("$root/resources/blocks/$block/edit.jsx"))->toContain('CardColourPanel');
     }
 });
+
+it('previews every server-rendered kit block live in the editor instead of a placeholder box (WP-100 trial)', function () use ($root) {
+    foreach (['product-categories', 'brands', 'recent-products', 'best-selling-products', 'featured-products', 'latest-posts', 'featured-posts', 'entry-grid'] as $block) {
+        $edit = file_get_contents("$root/resources/blocks/$block/edit.jsx");
+
+        expect($edit)->toContain("import { ServerPreview } from '../../js/server-preview.jsx'", '<ServerPreview block={metadata.name} attributes={attributes}')
+            ->and($edit)->not->toMatch('/<Placeholder icon=/', $block);
+    }
+
+    expect(file_get_contents("$root/resources/js/server-preview.jsx"))->toContain('window.wp?.serverSideRender', 'EmptyResponsePlaceholder')
+        ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("'/wp/v2/block-renderer/'", 'wc_load_cart()'); // product cards need the cart in the preview request
+});

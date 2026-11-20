@@ -45,3 +45,13 @@ add_action('after_setup_theme', function () {
     add_theme_support('wc-product-gallery-lightbox');
     add_theme_support('wc-product-gallery-slider');
 });
+
+// The editor previews a server-rendered block through the block-renderer REST route (ServerSideRender). A product card needs WooCommerce's cart and session, which a REST
+// request has not loaded (the Product Loop block did this for itself; every block with product cards needs it).
+add_filter('rest_pre_dispatch', function ($result, $server, $request) {
+    if (str_starts_with((string) $request->get_route(), '/wp/v2/block-renderer/') && function_exists('wc_load_cart') && function_exists('WC') && ! WC()->cart) {
+        wc_load_cart();
+    }
+
+    return $result;
+}, 10, 3);

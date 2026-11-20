@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
+import { ServerPreview } from '../../js/server-preview.jsx';
 
 // Generated fresh from the actual palette — see hero/edit.jsx's own comment
 // on this same import for why it's not a hardcoded list here.
@@ -92,9 +93,7 @@ function Edit({ attributes, setAttributes }) {
       </InspectorControls>
 
       <div {...blockProps}>
-        <Placeholder icon="star-filled" label={__('Featured Products', 'sage')}>
-          {__('Displays featured or manually chosen products (WooCommerce only). Configure the source in the block settings.', 'sage')}
-        </Placeholder>
+        <ServerPreview block={metadata.name} attributes={attributes} icon="star-filled" label={__('Featured Products', 'sage')} empty={__('Displays featured or manually chosen products (WooCommerce only). Configure the source in the block settings.', 'sage')} />
       </div>
     </>
   );

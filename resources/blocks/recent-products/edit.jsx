@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
+import { ServerPreview } from '../../js/server-preview.jsx';
 
 // Generated fresh from the actual palette — see hero/edit.jsx's own comment
 // on this same import for why it's not a hardcoded list here.
@@ -71,9 +72,7 @@ function Edit({ attributes, setAttributes }) {
       </InspectorControls>
 
       <div {...blockProps}>
-        <Placeholder icon="clock" label={__('Recent Products', 'sage')}>
-          {__('Displays the most recently added products (WooCommerce only). Configure the count in the block settings.', 'sage')}
-        </Placeholder>
+        <ServerPreview block={metadata.name} attributes={attributes} icon="clock" label={__('Recent Products', 'sage')} empty={__('Displays the most recently added products (WooCommerce only). Configure the count in the block settings.', 'sage')} />
       </div>
     </>
   );

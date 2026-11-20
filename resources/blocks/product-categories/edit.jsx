@@ -7,6 +7,7 @@ import metadata from './block.json';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
 import { CategoryField, useProductCategories } from '../../js/product-category-fields.jsx';
 import { CardColourPanel } from '../../js/card-colour-panel.jsx';
+import { ServerPreview } from '../../js/server-preview.jsx';
 
 // Generated fresh from the actual palette — see hero/edit.jsx's own comment
 // on this same import for why it's not a hardcoded list here.
@@ -111,9 +112,7 @@ function Edit({ attributes, setAttributes }) {
       </InspectorControls>
 
       <div {...blockProps}>
-        <Placeholder icon="category" label={__('Product Categories', 'sage')}>
-          {__('Displays a card grid of product categories (WooCommerce only). Configure the count in the block settings.', 'sage')}
-        </Placeholder>
+        <ServerPreview block={metadata.name} attributes={attributes} icon="category" label={__('Product Categories', 'sage')} empty={__('Displays a card grid of product categories (WooCommerce only). Configure the count in the block settings.', 'sage')} />
       </div>
     </>
   );
