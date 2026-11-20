@@ -65,3 +65,19 @@ it('flags the counts base query for Relevanssi on a search, and only then', func
     $source = file_get_contents(dirname(__DIR__, 2) . '/app/ShopFilterCounts.php');
     expect($source)->toContain('searchBaseArgs($vars, function_exists(\'relevanssi_do_query\'))', 'pkde_kit/filter_counts_base_args');
 });
+
+/** TPL-262 (tcs, kit .7): the counts were still LOW beside the grid on a big search, and a bump kept serving the old cached counts. */
+it('lifts Relevanssi\'s hit limit for the counts base set, so every hit is counted before the choices narrow it', function () {
+    expect(App\ShopFilterCounts::offFilter())->toBe('off');
+
+    $source = file_get_contents(dirname(__DIR__, 2) . '/app/ShopFilterCounts.php');
+    expect($source)->toContain("add_filter('pre_option_relevanssi_throttle', [self::class, 'offFilter'])", "remove_filter('pre_option_relevanssi_throttle', [self::class, 'offFilter'])")
+        ->and($source)->toContain('relevanssi_throttle');
+});
+
+it('puts the counts logic version and the kit version in the cache key, so an upgrade drops the old counts', function () {
+    expect(App\ShopFilterCounts::codeVersion())->toStartWith(App\ShopFilterCounts::SCHEMA . '|');
+
+    $source = file_get_contents(dirname(__DIR__, 2) . '/app/ShopFilterCounts.php');
+    expect($source)->toContain('self::version(), self::codeVersion(), $query');
+});

@@ -24,6 +24,9 @@ class ShopFilterCounts
 {
     private const CHUNK = 5000;
 
+    /** Raise when the way the counts are worked out changes, so counts cached by the old way are dropped even when no kit version tells the difference (a working copy, a dev site). */
+    public const SCHEMA = 2;
+
     /** @var array<string, array<int, int>>|null */
     private static ?array $result = null;
 
@@ -61,6 +64,17 @@ class ShopFilterCounts
         return self::$result = $counts;
     }
 
+    /**
+     * Part of the cache key: the counts' logic version and the installed kit version, so a kit upgrade (or a change of the counting itself) never serves counts cached by the
+     * old code. Without it a site kept serving the old all-zero counts for up to the cache lifetime after the bump (tcs, TPL-262).
+     */
+    public static function codeVersion(): string
+    {
+        $kit = class_exists(\Composer\InstalledVersions::class) && \Composer\InstalledVersions::isInstalled('pkde/sage-kit') ? (string) \Composer\InstalledVersions::getPrettyVersion('pkde/sage-kit') : '';
+
+        return self::SCHEMA . '|' . $kit;
+    }
+
     /** Bumped when the catalogue changes, so every cached count is stale at once. */
     public static function version(): int
     {
@@ -90,7 +104,7 @@ class ShopFilterCounts
         }
         $groups = array_map(fn($g) => $g['source'] . ($g['hierarchical'] ? '+h' : ''), ShopFilters::groups());
 
-        return 'pkde_sfc_' . md5(wp_json_encode([self::version(), $query, $state['selection'], $state['stock'], $price, $_GET['sage_view'] ?? '', $_GET['featured'] ?? '', $groups, get_option('woocommerce_hide_out_of_stock_items')]));
+        return 'pkde_sfc_' . md5(wp_json_encode([self::version(), self::codeVersion(), $query, $state['selection'], $state['stock'], $price, $_GET['sage_view'] ?? '', $_GET['featured'] ?? '', $groups, get_option('woocommerce_hide_out_of_stock_items')]));
     }
 
     /** @return array<string, array<int, int>> */
@@ -184,11 +198,27 @@ class ShopFilterCounts
 
         // WooCommerce's price clause only applies to the main query, which this is not: its own filter lets it apply.
         add_filter('woocommerce_enable_post_clause_filtering', '__return_true');
+        // Relevanssi keeps only its top hits (relevanssi_throttle, 500 by default). The grid runs the search WITH the visitor's choices inside it, so it keeps the top hits among the
+        // matching products; this base set has no choices, so with more hits than the limit it would be cut BEFORE the choices narrow it and every count would come out low
+        // (tcs: "abs" 3 against a grid of 7). The base set must be every hit.
+        $unthrottle = ! empty($vars['relevanssi']);
+        if ($unthrottle) {
+            add_filter('pre_option_relevanssi_throttle', [self::class, 'offFilter']);
+        }
         $query = new WP_Query($vars);
+        if ($unthrottle) {
+            remove_filter('pre_option_relevanssi_throttle', [self::class, 'offFilter']);
+        }
         remove_filter('woocommerce_enable_post_clause_filtering', '__return_true');
         self::$queries['base'] = 1;
 
         return array_map('intval', $query->posts);
+    }
+
+    /** `pre_option_relevanssi_throttle`: Relevanssi's hit limit switched off. */
+    public static function offFilter(): string
+    {
+        return 'off';
     }
 
     /**
