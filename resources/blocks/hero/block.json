@@ -59,6 +59,10 @@
       "type": "string",
       "default": "right"
     },
+    "imageFit": {
+      "type": "string",
+      "default": "cover"
+    },
     "eyebrow": {
       "type": "string",
       "default": "",

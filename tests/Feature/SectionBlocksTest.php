@@ -15,6 +15,7 @@ it('keeps every attribute the hero and the CTA already had, with the same defaul
         ->and(array_keys($hero))->toContain('buttonText', 'buttonUrl', 'imageUrl', 'imageId', 'imageAlt', 'theme')
         ->and($hero['layout']['default'])->toBe('overlay') // the full-width image with its overlay stays the default
         ->and($hero['imageSide']['default'])->toBe('right')
+        ->and($hero['imageFit']['default'])->toBe('cover') // TPL-250: a hero saved before the option crops exactly as before
         ->and($hero['headingLevel']['default'])->toBe(2);
 
     $cta = $block('cta')['attributes'];
@@ -170,4 +171,12 @@ it('gives the site-wide CTA band a full default alignment, so the editor canvas 
 
     expect($block['supports']['align'])->toBe(['full'])
         ->and($block['attributes']['align'])->toBe(['type' => 'string', 'default' => 'full']); // the page prints alignfull itself; without the attribute the canvas wrapper was content width
+});
+
+it('lets a split hero show the whole picture instead of cropping it (TPL-250, a cut-out on a transparent background)', function () use ($root) {
+    $render = file_get_contents("$root/resources/blocks/hero/render.php");
+    $css = file_get_contents("$root/resources/css/sections.css");
+
+    expect($render)->toContain("'imageFit'", "' pkde-hero--fit-contain'")
+        ->and($css)->toMatch('/\.pkde-hero--fit-contain \.pkde-split__media img \{\s*aspect-ratio: auto;\s*object-fit: contain;/');
 });

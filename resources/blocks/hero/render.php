@@ -29,6 +29,8 @@ $layout = in_array($attributes['layout'] ?? 'overlay', ['split', 'text'], true) 
 
 if ($layout !== 'overlay') {
     $image_side = ($attributes['imageSide'] ?? 'right') === 'left' ? 'left' : 'right';
+    // "contain" shows the whole picture at its own proportions (a cut-out on a transparent background); the default fills the half and crops.
+    $image_fit = ($attributes['imageFit'] ?? 'cover') === 'contain' ? ' pkde-hero--fit-contain' : '';
     $hero_image = '';
 
     if ($layout === 'split' && ($image_id || $image_url)) {
@@ -37,7 +39,7 @@ if ($layout !== 'overlay') {
     }
 
     echo view('pkde-kit::partials.blocks.hero-layout', [
-        'wrapper' => get_block_wrapper_attributes(['class' => trim('pkde-block pkde-hero pkde-hero--' . $layout . ($layout === 'split' && $image_side === 'left' ? ' pkde-split--media-left' : ''))]),
+        'wrapper' => get_block_wrapper_attributes(['class' => trim('pkde-block pkde-hero pkde-hero--' . $layout . ($layout === 'split' && $image_side === 'left' ? ' pkde-split--media-left' : '') . ($layout === 'split' ? $image_fit : ''))]),
         'layout' => $layout,
         'eyebrow' => (string) ($attributes['eyebrow'] ?? ''),
         'heading' => $heading,

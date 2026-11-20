@@ -95,6 +95,11 @@
 .pkde-hero--split .pkde-split__media img {
   aspect-ratio: var(--pkde-hero-image-ratio, 4 / 5);
 }
+/* Picture fit "Show the whole picture" (a cut-out on a transparent background): its own proportions, nothing cropped */
+.pkde-hero--fit-contain .pkde-split__media img {
+  aspect-ratio: auto;
+  object-fit: contain;
+}
 .pkde-hero--text {
   max-width: 48rem;
   margin-inline: auto;
