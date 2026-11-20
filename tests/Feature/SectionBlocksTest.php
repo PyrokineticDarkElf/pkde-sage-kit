@@ -131,3 +131,24 @@ it('reads only section roles in the new blocks\' CSS, with a plain-page fallback
     expect($css)->not->toMatch('/#[0-9a-f]{3,6}\b(?!.*var)/i') // no hard-coded colour of its own
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./sections.css";');
 });
+
+it('turns a block\'s Card colour and Card button colour into a class and a style, and ignores anything that is not in the generated lists', function () use ($root) {
+    $themes = [['name' => 'brand-sage'], ['name' => 'brand-sage-light']];
+    $buttons = ['sage-600', 'blush-600', 'white'];
+
+    expect(\App\card_wrapper_args([], 'pkde-block', '', $themes, $buttons))->toBe(['class' => 'pkde-block', 'style' => '']) // Auto: nothing added
+        ->and(\App\card_wrapper_args(['cardTheme' => 'brand-sage'], 'x', '', $themes, $buttons)['class'])->toBe('x has-card-theme-brand-sage')
+        ->and(\App\card_wrapper_args(['cardTheme' => 'brand-evil"><script>'], '', '', $themes, $buttons)['class'])->toBe('') // not a theme of this palette
+        ->and(\App\card_wrapper_args(['cardButton' => 'sage-600'], '', '--a: 1;', $themes, $buttons)['style'])->toBe('--a: 1; --section-card-button-bg: var(--color-sage-600); --section-card-button-text: var(--color-sage-600-fg); --section-card-button-border: var(--color-sage-600);')
+        ->and(\App\card_wrapper_args(['cardButton' => 'white'], '', '', $themes, $buttons)['style'])->toContain('var(--color-white-exact)', 'var(--color-black-exact)')
+        ->and(\App\card_wrapper_args(['cardButton' => 'red; background: url(x)'], '', '', $themes, $buttons)['style'])->toBe('')
+        ->and(\App\card_wrapper_args(['cardButton' => 'stone-600'], '', '', $themes, $buttons)['style'])->toBe(''); // not in the Button list
+
+    foreach (['quotes', 'feature-grid', 'product-loop', 'product-categories', 'entry-grid', 'latest-posts', 'featured-posts'] as $block) {
+        $json = json_decode(file_get_contents("$root/resources/blocks/$block/block.json"), true);
+
+        expect($json['attributes']['cardTheme']['default'])->toBe('', $block)->and($json['attributes']['cardButton']['default'])->toBe('', $block)
+            ->and(file_get_contents("$root/resources/blocks/$block/render.php"))->toContain('card_wrapper_args(')
+            ->and(file_get_contents("$root/resources/blocks/$block/edit.jsx"))->toContain('CardColourPanel');
+    }
+});
