@@ -38,9 +38,13 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ]);
 ?>
 <div <?php echo $wrapper_attributes; ?>>
-    <?php if ($slot && $is_banner) { echo $slot; } ?>
+    <?php if ($slot && $is_banner) {
+        echo $slot;
+    } ?>
     <div class="<?php echo $is_banner ? 'min-w-0' : 'mx-auto max-w-2xl'; ?>">
-        <?php if ($slot && ! $is_banner) { echo $slot; } ?>
+        <?php if ($slot && ! $is_banner) {
+            echo $slot;
+        } ?>
         <?php if ($heading) : ?>
             <h2 class="font-display text-2xl font-semibold leading-tight tracking-[-0.03em] sm:text-3xl"><?php echo wp_kses_post($heading); ?></h2>
         <?php endif; ?>

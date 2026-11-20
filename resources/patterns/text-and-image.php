@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Title: Text and picture
  * Slug: pkde/text-and-image

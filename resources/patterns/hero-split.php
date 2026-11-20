@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Title: Hero, text beside a picture
  * Slug: pkde/hero-split
