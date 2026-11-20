@@ -135,3 +135,19 @@ test('the dark matrices are checked too', () => {
   const builder = createBuilder(bad);
   assert.ok(builder.checkAll(builder.themes()).fails.some((line) => /brand-slate \(dark\): text slate-800/.test(line)));
 });
+
+test('the editor gets per-block palettes (button swatches, text-safe swatches) and a readable-colours list per section theme', () => {
+  const r = run(bb);
+  const palettes = r.read('resources/generated/editor-palettes.php');
+  const button = /'button' => \[([^\]]*)\]/.exec(palettes)[1];
+  const text = /'text' => \[([^\]]*)\]/.exec(palettes)[1];
+  assert.match(button, /'white'/);
+  assert.match(button, /'sage-600'/); // a swatch a theme draws a button or its label in
+  assert.doesNotMatch(button, /sage-200/); // a pale tint is not a button colour
+  assert.match(text, /'slate-800'/);
+  assert.match(text, /'sage-50'/); // light text for dark sections
+  assert.doesNotMatch(text, /'sage-400'/); // mid tones are not text-safe
+  const compat = r.read('resources/js/generated/section-compat.js');
+  assert.match(compat, /"brand-sage": \[\s+"white"/); // white is what is readable on sage
+  assert.match(compat, /"brand-sage-light": \[\s+"black"/);
+});

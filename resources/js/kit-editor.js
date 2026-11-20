@@ -8,6 +8,7 @@ addFilter('i18n.gettext', 'sage/gap-label', (translation, text) => (text === 'Bl
 // separate per-block asset (see app/blocks.php and should_load_separate_core_block_assets).
 import '../blocks/section/edit.jsx';
 import './animation.jsx';
+import './section-colors.js';
 import '../blocks/hero/edit.jsx';
 import '../blocks/latest-posts/edit.jsx';
 import '../blocks/entry-grid/edit.jsx';

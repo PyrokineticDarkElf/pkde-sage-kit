@@ -38,7 +38,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { formatHex } from 'culori';
 import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
-import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, labelOf } from './lib/section-themes.mjs';
+import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
 // or PKDE_THEME_DIR. Never a path relative to this file, which lives in vendor/.
@@ -52,6 +52,8 @@ const themeJsonPath = path.join(themeDirectory, 'theme.json');
 const themeOptionsOutputPath = path.join(themeDirectory, 'resources/js/generated/theme-options.js');
 const themeOptionsPhpOutputPath = path.join(themeDirectory, 'resources/generated/theme-options.php');
 const sectionThemesPhpOutputPath = path.join(themeDirectory, 'resources/generated/section-themes.php');
+const editorPalettesPhpOutputPath = path.join(themeDirectory, 'resources/generated/editor-palettes.php');
+const sectionCompatJsOutputPath = path.join(themeDirectory, 'resources/js/generated/section-compat.js');
 const headerOptionsOutputPath = path.join(themeDirectory, 'resources/generated/header-options.php');
 
 // Tailwind's own neutral greys, by lightness. The views and blocks use neutral-* for text, borders and quiet
@@ -579,25 +581,30 @@ function titleCase(slug) {
 const PALETTE_STEPS = [50, 200, 400, 600, 800, 950];
 const PALETTE_NEUTRAL_STEPS = [100, 300, 500, 700, 900];
 
-function buildPalette(colors) {
-  const entry = (slug, color, name = titleCase(slug)) => `        { "slug": "${slug}", "name": ${JSON.stringify(name)}, "color": "${color}" }`;
+/** The editor swatches as data: [{ slug, name, value }]. buildPalette() writes them into theme.json; the editor data is computed from them. */
+function paletteSwatches(colors) {
   const rows = [];
+  const entry = (slug, value, name = titleCase(slug)) => rows.push({ slug, name, value });
 
   for (const color of colors) {
     if (color.role === 'black' || color.role === 'white') {
-      rows.push(entry(color.name, color.hex, labelOf(color)));
+      entry(color.name, color.hex, labelOf(color));
       continue;
     }
-    for (const step of PALETTE_STEPS) rows.push(entry(`${color.name}-${step}`, shade(color, step), `${labelOf(color)} ${step}`));
+    for (const step of PALETTE_STEPS) entry(`${color.name}-${step}`, shade(color, step), `${labelOf(color)} ${step}`);
   }
 
   const brand = colors.find((color) => color.role === 'brand') ?? colors[0];
   const brandOklch = toOklch(brand.hex);
   const tint = Math.min(0.02, (brandOklch?.c ?? 0) * 0.12);
   const tintHue = (brandOklch?.h ?? 0).toFixed(2);
-  for (const step of PALETTE_NEUTRAL_STEPS) rows.push(entry(`neutral-${step}`, `oklch(${neutralLightness[step]} ${tint.toFixed(3)} ${tintHue})`));
+  for (const step of PALETTE_NEUTRAL_STEPS) entry(`neutral-${step}`, `oklch(${neutralLightness[step]} ${tint.toFixed(3)} ${tintHue})`);
 
-  return rows.join(',\n');
+  return rows;
+}
+
+function buildPalette(colors) {
+  return paletteSwatches(colors).map(({ slug, name, value }) => `        { "slug": "${slug}", "name": ${JSON.stringify(name)}, "color": "${value}" }`).join(',\n');
 }
 
 /** Returns theme.json with settings.color.palette replaced by the generated list; every other byte is left alone. */
@@ -853,6 +860,9 @@ for (const color of palette.colors) {
 const css = buildCss(palette.colors);
 const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes);
+const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
+const editorPalettesPhp = buildEditorPalettesPhp(editorData);
+const sectionCompatJs = buildSectionCompatJs(editorData);
 const cardThemesCss = buildCardThemesCss(palette.colors);
 const themeOptions = buildThemeOptions(palette.colors);
 const headerOptions = buildHeaderOptions(header);
@@ -884,6 +894,8 @@ if (options.check) {
     [rel(themeOptionsPhpOutputPath), upToDate(themeOptionsPhpOutputPath, themeOptions.php)],
     [rel(headerOptionsOutputPath), upToDate(headerOptionsOutputPath, headerOptions)],
     [rel(sectionThemesPhpOutputPath), upToDate(sectionThemesPhpOutputPath, sectionThemesPhp)],
+    [rel(editorPalettesPhpOutputPath), upToDate(editorPalettesPhpOutputPath, editorPalettesPhp)],
+    [rel(sectionCompatJsOutputPath), upToDate(sectionCompatJsOutputPath, sectionCompatJs)],
     [`${rel(themeJsonPath)} (settings.color.palette)`, themeJsonPaletteUpToDate()],
   ].filter(([, ok]) => !ok).map(([label]) => label);
   if (stale.length) {
@@ -918,6 +930,8 @@ fs.writeFileSync(themeOptionsOutputPath, themeOptions.js);
 fs.writeFileSync(themeOptionsPhpOutputPath, themeOptions.php);
 fs.writeFileSync(headerOptionsOutputPath, headerOptions);
 fs.writeFileSync(sectionThemesPhpOutputPath, sectionThemesPhp);
+fs.writeFileSync(editorPalettesPhpOutputPath, editorPalettesPhp);
+fs.writeFileSync(sectionCompatJsOutputPath, sectionCompatJs);
 if (themeJson !== null) fs.writeFileSync(themeJsonPath, themeJson);
 const aliases = palette.colors.map((color, index) => `${color.name}/${POSITIONAL_ALIASES[index] ?? '—'}`);
 process.stdout.write(`Generated ${palette.colors.length} colour palette(s): ${palette.colors.map((color) => color.name).join(', ')}\n`);
