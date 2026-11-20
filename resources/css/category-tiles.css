@@ -42,10 +42,15 @@
   height: 100%;
   padding: var(--pkde-tile-image-padding, 0);
   object-fit: var(--pkde-tile-image-fit, cover);
-  transition: transform var(--pkde-tile-hover-duration, 500ms) ease-out;
 }
-.pkde-tile:hover .pkde-tile__media img {
-  transform: scale(var(--pkde-tile-hover-scale, 1.03));
+/* the hover zoom is one rule for every card: motion.css (.pkde-zoom, 300ms); a site's --pkde-tile-hover-duration and -scale still apply to the tiles */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html:not(.pkde-motion-off) .pkde-tile__media img {
+    transition: transform var(--pkde-tile-hover-duration, var(--pkde-zoom-duration)) var(--pkde-ease-out);
+  }
+  html:not(.pkde-motion-off) .pkde-tile:is(:hover, :focus-within) .pkde-tile__media img {
+    transform: scale(var(--pkde-tile-hover-scale, var(--pkde-zoom-scale)));
+  }
 }
 .pkde-tile__title {
   margin-top: var(--pkde-tile-title-gap, 1rem);
@@ -59,7 +64,7 @@
 }
 .pkde-tile__title a {
   color: var(--pkde-tile-title-color, inherit);
-  transition: color 0.15s ease;
+  transition: color var(--pkde-motion-fast) var(--pkde-ease-in-out);
 }
 .pkde-tile__title a:hover {
   color: var(--pkde-tile-title-hover, var(--color-brand-700));

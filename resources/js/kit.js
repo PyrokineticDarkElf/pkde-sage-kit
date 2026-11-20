@@ -3,6 +3,7 @@ import './cart-badge.js';
 import './cart-count.js';
 import './carousel.js';
 import './lightbox.js';
+import './motion.js';
 import './phone.js';
 import './product-carousel.js';
 import './recently-viewed.js';

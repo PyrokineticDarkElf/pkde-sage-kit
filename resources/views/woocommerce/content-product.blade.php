@@ -33,7 +33,7 @@
         <div class="aspect-square overflow-hidden bg-neutral-100">
           @php($imageSizes = (string) apply_filters('pkde_kit/card_image_sizes', ''))
           {{-- object-fit comes from --pkde-card-image-fit (shop-pages.css; cover unless a site says contain); `sizes` from the filter pkde_kit/card_image_sizes (default: WordPress's). --}}
-          {!! get_the_post_thumbnail($productId, 'medium_large', ['class' => 'h-full w-full transition duration-500 ease-out group-hover:scale-[1.03]'] + ($imageSizes !== '' ? ['sizes' => $imageSizes] : [])) !!}
+          {!! get_the_post_thumbnail($productId, 'medium_large', ['class' => 'h-full w-full pkde-zoom'] + ($imageSizes !== '' ? ['sizes' => $imageSizes] : [])) !!}
         </div>
       @else
         <x-pkde-kit::placeholder-image ratio="aspect-square" label="{{ __('Product image', 'sage') }}" />

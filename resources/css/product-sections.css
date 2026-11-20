@@ -57,7 +57,7 @@
   background: var(--pkde-carousel-bg, #fff);
   color: var(--pkde-carousel-color, var(--color-neutral-900));
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition: border-color var(--pkde-motion-fast) var(--pkde-ease-in-out), color var(--pkde-motion-fast) var(--pkde-ease-in-out);
 }
 .pkde-carousel__button:hover {
   border-color: var(--pkde-carousel-hover, var(--color-brand-600));

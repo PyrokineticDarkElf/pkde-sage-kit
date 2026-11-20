@@ -28,13 +28,9 @@ A full-width band: the background runs edge to edge, the content keeps the page 
 
 WordPress labels the block-gap control "Block spacing", which clients do not understand. `resources/js/editor.js` relabels it to **Gap** with an `i18n.gettext` filter.
 
-## Animation panel
+## Animation settings and the motion system
 
-Every block gets an **Animation** panel with two choices, `On hover` (None, Lift) and `When scrolled into view` (None, Fade up).
-
-* The choice is stored as a block attribute (`animationHover`, `animationEntrance`), never in the saved HTML. `app/blocks.php` adds the class (`pkde-hover-lift`, `pkde-entrance-fade-up`) when the page renders, so removing the feature never invalidates a saved block.
-* The motion is CSS only (`resources/css/app.css`) and lives inside `@media (prefers-reduced-motion: no-preference)`. The scroll-driven entrance additionally needs `animation-timeline: view()` (`@supports`); a browser without it shows the block as normal.
-* To add an option, add it to `SETTINGS` in `resources/js/animation.jsx` and write its CSS class with the same prefix.
+The two settings, `On hover` (None, Lift) and `When scrolled into view` (None, Fade up, which is the **reveal on scroll**), are block attributes (`animationHover`, `animationEntrance`), never saved HTML: `app/motion.php` adds the classes (`pkde-hover-lift`, `pkde-reveal`) when the page renders, so removing a setting never invalidates a block, and settings saved on any block keep rendering. Everything about motion (the tokens, the guard rails, the site switch, what each role sees) is in [motion.md](motion.md).
 
 ## The editor palette is the brand's own
 

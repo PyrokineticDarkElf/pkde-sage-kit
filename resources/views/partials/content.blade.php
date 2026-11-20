@@ -47,7 +47,7 @@
       {!! $cardMedia !!}
     @elseif (has_post_thumbnail())
       <div class="aspect-[4/3] overflow-hidden bg-neutral-100">
-        {!! get_the_post_thumbnail(null, 'medium_large', ['class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
+        {!! get_the_post_thumbnail(null, 'medium_large', ['class' => 'h-full w-full object-cover pkde-zoom']) !!}
       </div>
     @else
       <x-pkde-kit::placeholder-image ratio="aspect-[4/3]" label="{{ __('Featured image', 'sage') }}" />

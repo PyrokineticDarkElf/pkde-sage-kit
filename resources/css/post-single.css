@@ -185,7 +185,7 @@ html {
   color: var(--pkde-post-muted, var(--color-neutral-600));
   line-height: 1.4;
   text-decoration: none;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color var(--pkde-motion-fast) var(--pkde-ease-in-out), border-color var(--pkde-motion-fast) var(--pkde-ease-in-out);
 }
 .post-toc a:hover {
   color: var(--pkde-post-ink, var(--color-neutral-950));

@@ -16,7 +16,7 @@
       @php($imageId = get_term_meta($term->term_id, 'thumbnail_id', true))
       <a href="{{ get_term_link($term) }}" class="group block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
         @if ($imageId)
-          {!! wp_get_attachment_image($imageId, 'medium_large', false, ['alt' => $term->name, 'loading' => 'lazy', 'class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
+          {!! wp_get_attachment_image($imageId, 'medium_large', false, ['alt' => $term->name, 'loading' => 'lazy', 'class' => 'h-full w-full object-cover pkde-zoom']) !!}
         @else
           <div class="flex h-full w-full items-center justify-center p-4">
             <h3 class="text-center font-display text-lg font-semibold text-neutral-700">{{ $term->name }}</h3>

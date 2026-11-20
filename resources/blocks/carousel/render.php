@@ -113,7 +113,7 @@ $wrapper_attributes = get_block_wrapper_attributes();
                 <div class="mt-2 flex justify-center">
                     <?php foreach ($images as $index => $image) : ?>
                         <?php // The button is the 24px touch target (WCAG 2.2 target size); the span inside is the visible dot.?>
-                        <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group flex h-6 min-w-6 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[color:var(--section-text,var(--color-neutral-900))]"><span class="block h-2 w-2 rounded-full bg-[color:var(--section-border,var(--color-neutral-300))] transition-all group-data-[active]:w-5 group-data-[active]:bg-[color:var(--section-text,var(--color-neutral-900))]"></span></button>
+                        <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group flex h-6 min-w-6 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[color:var(--section-text,var(--color-neutral-900))]"><span class="block h-2 w-2 rounded-full bg-[color:var(--section-border,var(--color-neutral-300))] transition-[transform,background-color] duration-[var(--pkde-motion-base)] ease-[var(--pkde-ease-out)] motion-reduce:transition-none group-data-[active]:scale-x-[2.5] group-data-[active]:bg-[color:var(--section-text,var(--color-neutral-900))]"></span></button>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>

@@ -8,6 +8,7 @@
  * against these tokens are a no-op migration from their old hardcoded
  * classes — see resources/blocks/hero/render.php.
  */
+@import "./motion.css";
 @import "./page-measure.css";
 @import "./page-header.css";
 @import "./post-single.css";
@@ -172,7 +173,7 @@
     padding: 0.75rem 1.25rem;
     font-size: 0.875rem;
     font-weight: 600;
-    transition: opacity 0.2s;
+    transition: opacity var(--pkde-motion-fast) var(--pkde-ease-in-out);
   }
   .pkde-btn {
     background-color: var(--pkde-theme-btn-bg);
@@ -286,7 +287,7 @@
     border-radius: 0.375rem;
     color: var(--color-neutral-400);
     opacity: 0;
-    transition: color 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+    transition: color var(--pkde-motion-fast) var(--pkde-ease-in-out), opacity var(--pkde-motion-fast) var(--pkde-ease-in-out), background-color var(--pkde-motion-fast) var(--pkde-ease-in-out);
   }
   .heading-anchor-copy svg {
     width: 1rem;
@@ -467,7 +468,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: white;
-    transition: background-color 0.2s;
+    transition: background-color var(--pkde-motion-fast) var(--pkde-ease-in-out);
   }
   .woocommerce .button:hover,
   .woocommerce a.button:hover,
@@ -820,7 +821,7 @@
     display: block;
     aspect-ratio: 1;
     opacity: 0.6;
-    transition: opacity 0.2s ease;
+    transition: opacity var(--pkde-motion-fast) var(--pkde-ease-in-out);
   }
   .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs img.flex-active,
   .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs img:hover {
@@ -1062,7 +1063,7 @@
   background-color: var(--color-brand-600);
   padding: 0.5rem 1.25rem;
   color: var(--color-brand-600-fg, #fff);
-  transition: background-color 0.2s;
+  transition: background-color var(--pkde-motion-fast) var(--pkde-ease-in-out);
 }
 #primary-menu li.nav-cta > a:hover,
 #primary-menu-mobile li.nav-cta > a:hover {
@@ -1074,35 +1075,7 @@
   color: inherit;
 }
 
-/**
- * Animation settings (a block's Animation panel, resources/js/animation.jsx; classes added in app/blocks.php). Movement only for
- * visitors who have not asked their system to reduce it. Fade up uses the browser's scroll-driven animations, so browsers without
- * them simply show the block. No JavaScript on the front end.
- */
-.pkde-hover-lift {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-.pkde-hover-lift:is(:hover, :focus-within) {
-  box-shadow: 0 14px 30px -20px rgb(0 0 0 / 0.35);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .pkde-hover-lift:is(:hover, :focus-within) {
-    transform: translateY(-3px);
-  }
-  @supports (animation-timeline: view()) {
-    .pkde-entrance-fade-up {
-      animation: pkde-fade-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 30%;
-    }
-  }
-}
-@keyframes pkde-fade-up {
-  from {
-    opacity: 0;
-    translate: 0 2rem;
-  }
-}
+/* Animation settings (a block's Animation panel): the hover lift, the reveal on scroll and the other motion are in motion.css. */
 
 /* An embedded map or video must show where keyboard focus is (WCAG 2.4.7); the frame's own content cannot be styled from here. */
 iframe:focus-visible {

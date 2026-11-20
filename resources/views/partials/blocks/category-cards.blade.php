@@ -16,7 +16,7 @@
       @php($label = trim((string) (($labels ?? [])[$term->slug] ?? '')) ?: $term->name)
       <a href="{{ get_term_link($term) }}" class="group relative block aspect-[4/3] overflow-hidden rounded-2xl bg-neutral-100">
         @if ($imageId)
-          {!! wp_get_attachment_image($imageId, 'medium_large', false, ['alt' => $label, 'loading' => 'lazy', 'class' => 'h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.03]']) !!}
+          {!! wp_get_attachment_image($imageId, 'medium_large', false, ['alt' => $label, 'loading' => 'lazy', 'class' => 'h-full w-full object-cover pkde-zoom']) !!}
         @else
           <x-pkde-kit::placeholder-image ratio="aspect-[4/3]" label="{{ $label }}" />
         @endif
