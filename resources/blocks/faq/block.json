@@ -5,7 +5,7 @@
   "title": "FAQs",
   "category": "widgets",
   "icon": "editor-help",
-  "description": "A frequently-asked-questions section — add an Accordion Item block for each question. Also outputs FAQPage structured data for search engines.",
+  "description": "The FAQs of one or more FAQ groups, kept in the FAQs screen and shown here; one FAQPage structured data block per page. (Typing the questions into this block is deprecated.)",
   "keywords": ["faq", "questions", "accordion", "schema"],
   "textdomain": "sage",
   "attributes": {
@@ -28,6 +28,20 @@
     "cardStyle": {
       "type": "string",
       "default": "white"
+    },
+    "groups": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "default": []
+    },
+    "order": {
+      "type": "string",
+      "enum": ["manual", "az"],
+      "default": "manual"
+    },
+    "limit": {
+      "type": "number",
+      "default": 0
     }
   },
   "supports": {

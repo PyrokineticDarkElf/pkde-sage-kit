@@ -22,6 +22,8 @@ if (! defined('ABSPATH')) {
  * @var array $attributes
  * @var string $content
  * @var WP_Block $block
+ *
+ * Two modes: GROUP MODE (`groups` is set: the FAQs of those groups, from the platform's pkde_faq post type) and the deprecated HAND-TYPED MODE (Accordion Item blocks inside).
  */
 
 $heading = $attributes['heading'] ?? '';
@@ -30,55 +32,46 @@ $column_threshold = max(1, (int) ($attributes['columnThreshold'] ?? 6));
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
 
-// Built from the parsed accordion-item children directly (each child's own
-// "heading" attribute is the question) rather than scraping the rendered
-// $content HTML — re-rendering each child in isolation to get its answer
-// text is simpler and more reliable than parsing markup back out of HTML.
-// Rendering just the item's OWN inner blocks (not render_block() on the
-// whole accordion-item) matters: the item's full render includes its
-// <summary> heading too, which would otherwise duplicate the question
-// inside "text" — confirmed directly by generating the schema and seeing
-// the question repeated at the start of its own answer.
-$faq_entities = [];
+$group_ids = array_values(array_filter(array_map('intval', (array) ($attributes['groups'] ?? []))));
+$order = ($attributes['order'] ?? 'manual') === 'az' ? 'az' : 'manual';
+$limit = max(0, (int) ($attributes['limit'] ?? 0));
+$pairs = []; // [question, answer html] of every row shown, for the page's one FAQPage
 $item_count = 0;
 
-foreach ($block->parsed_block['innerBlocks'] ?? [] as $inner_block) {
-    if (($inner_block['blockName'] ?? '') !== 'sage/accordion-item') {
-        continue;
+if ($group_ids) {
+    // GROUP MODE (WP-102): the FAQs of the chosen groups, from the platform's faq module, in each group's own order. Nothing to show (module off, no published FAQ yet): nothing printed.
+    $rows = function_exists('App\MuPlugins\faqs_for_groups') ? \App\MuPlugins\faqs_for_groups($group_ids, $order, $limit) : [];
+    $made = \App\faq_group_content($rows, fn($faq) => do_blocks($faq->post_content));
+
+    if (! $made['count']) {
+        return;
     }
 
-    $item_count++;
+    $content = $made['html'];
+    $item_count = $made['count'];
+    $pairs = $made['pairs'];
+} else {
+    // HAND-TYPED MODE (deprecated, kept so pages keep rendering until they are migrated): built from the parsed accordion-item children directly (each child's own
+    // "heading" attribute is the question) rather than scraping the rendered $content HTML. Rendering just the item's OWN inner blocks (not render_block() on the whole
+    // accordion-item) matters: the item's full render includes its <summary> heading too, which would otherwise duplicate the question inside the answer.
+    foreach ($block->parsed_block['innerBlocks'] ?? [] as $inner_block) {
+        if (($inner_block['blockName'] ?? '') !== 'sage/accordion-item') {
+            continue;
+        }
 
-    $question = trim(wp_strip_all_tags($inner_block['attrs']['heading'] ?? ''));
-    $answer_html = '';
+        $item_count++;
+        $answer_html = '';
 
-    foreach ($inner_block['innerBlocks'] ?? [] as $answer_block) {
-        $answer_html .= render_block($answer_block);
-    }
+        foreach ($inner_block['innerBlocks'] ?? [] as $answer_block) {
+            $answer_html .= render_block($answer_block);
+        }
 
-    $answer_text = trim(wp_strip_all_tags($answer_html));
-
-    if ($question && $answer_text) {
-        $faq_entities[] = [
-            '@type' => 'Question',
-            'name' => $question,
-            'acceptedAnswer' => [
-                '@type' => 'Answer',
-                'text' => $answer_text,
-            ],
-        ];
+        $pairs[] = [(string) ($inner_block['attrs']['heading'] ?? ''), $answer_html];
     }
 }
 
-if ($faq_entities) {
-    add_action('wp_footer', function () use ($faq_entities) {
-        echo '<script type="application/ld+json">' . wp_json_encode([
-            '@context' => 'https://schema.org',
-            '@type' => 'FAQPage',
-            'mainEntity' => $faq_entities,
-        ]) . '</script>' . "\n";
-    });
-}
+// one FAQPage per page, merged across every FAQ block and de-duplicated (App\faq_schema_add; skipped when Rank Math's own FAQ block is on the page)
+\App\faq_schema_add(\App\faq_entities($pairs));
 
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => $theme ? "rounded-4xl pkde-section theme-{$theme} p-6 sm:p-8 lg:p-10" : '',

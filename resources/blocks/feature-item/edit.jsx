@@ -5,10 +5,11 @@ import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
+import { editorSetting } from '../../js/editor-settings.js';
 
 function Edit({ attributes, setAttributes }) {
   const { icon, imageUrl, imageId, imageAlt, heading, text, linkText, linkUrl } = attributes;
-  const icons = useSelect((select) => select('core/block-editor').getSettings().pkdeIcons || {}, []);
+  const icons = useSelect((select) => editorSetting(select, 'pkdeIcons', {}), []);
   const blockProps = useBlockProps({ className: 'pkde-feature' });
 
   return (

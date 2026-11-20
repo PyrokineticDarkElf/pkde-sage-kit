@@ -1,12 +1,14 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InnerBlocks, RichText, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl } from '@wordpress/components';
+import { PanelBody, RangeControl, SelectControl, FormTokenField, Notice, Placeholder, Button, TextControl, TextareaControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { Fragment } from '@wordpress/element';
+import { Fragment, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
 import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
+import { ServerPreview } from '../../js/server-preview.jsx';
+import { editorSetting } from '../../js/editor-settings.js';
 
 // Generated fresh from the actual palette — see hero/edit.jsx's own comment
 // on this same import for why it's not a hardcoded list here.
@@ -33,8 +35,47 @@ const TEMPLATE = [
   ['sage/accordion-item', { heading: __('Question three?', 'sage') }],
 ];
 
+// The FAQ groups of the site, from the editor settings (App\faq.php): anyone who can edit the page may choose them, whether or not they may edit the FAQs.
+function useFaqGroups() {
+  return useSelect((select) => {
+    return { groups: editorSetting(select, 'pkdeFaqGroups', []), adminUrl: editorSetting(select, 'pkdeFaqAdmin', '') };
+  }, []);
+}
+
+// The groups the block shows, in display order: type a group's name, or pick it from the list. The order of the chips is the order on the page.
+function GroupField({ value, onChange }) {
+  const { groups } = useFaqGroups();
+  const byId = new Map(groups.map((group) => [group.id, group]));
+  const byName = new Map(groups.map((group) => [group.name, group]));
+
+  return (
+    <FormTokenField
+      label={__('FAQ groups', 'sage')}
+      value={value.map((id) => byId.get(id)?.name).filter(Boolean)}
+      suggestions={groups.map((group) => group.name)}
+      onChange={(tokens) => onChange(tokens.map((token) => byName.get(typeof token === 'string' ? token : token.value)?.id).filter(Boolean))}
+      __experimentalExpandOnFocus
+      __experimentalShowHowTo={false}
+      __next40pxDefaultSize
+      __nextHasNoMarginBottom
+    />
+  );
+}
+
+// "Edit these FAQs": only for people who may manage FAQs (the platform's manage_pkde_faqs; the address is empty for everyone else).
+function EditFaqsLink({ groupIds }) {
+  const { adminUrl } = useFaqGroups();
+
+  if (!adminUrl) return null;
+
+  const url = groupIds.length ? `${adminUrl}&faq_group=${groupIds[0]}` : adminUrl;
+
+  return <p><a href={url} target="_blank" rel="noreferrer">{__('Edit these FAQs', 'sage')}</a></p>;
+}
+
 function Edit({ attributes, setAttributes, clientId }) {
-  const { heading, description, columnThreshold, theme, cardStyle } = attributes;
+  const { heading, description, columnThreshold, theme, cardStyle, groups = [], order = 'manual', limit = 0 } = attributes;
+  const [manual, setManual] = useState(false);
   // Unlike Hero (always a panel), the rounded/padded look is conditional —
   // see accordion/render.php's own comment on the same choice.
   const blockProps = useBlockProps({
@@ -54,10 +95,42 @@ function Edit({ attributes, setAttributes, clientId }) {
     [clientId]
   );
   const useColumns = itemCount > columnThreshold;
+  const groupMode = groups.length > 0;
+  const handTyped = !groupMode && (itemCount > 0 || manual);
+
+  // FAQs: the groups, and how they are ordered (the Section theme and the colours follow the Section the block sits in)
+  const faqPanel = (
+    <PanelBody title={__('FAQs', 'sage')}>
+      <GroupField value={groups} onChange={(value) => setAttributes({ groups: value })} />
+      {groupMode && (
+        <>
+          <SelectControl
+            label={__('Order', 'sage')}
+            value={order}
+            options={[{ value: 'manual', label: __('As arranged in each group', 'sage') }, { value: 'az', label: __('A to Z', 'sage') }]}
+            onChange={(value) => setAttributes({ order: value })}
+            __next40pxDefaultSize
+            __nextHasNoMarginBottom
+          />
+          <RangeControl
+            label={__('Show at most (0 = all)', 'sage')}
+            min={0}
+            max={50}
+            value={limit}
+            onChange={(value) => setAttributes({ limit: value || 0 })}
+          />
+          <TextControl label={__('Heading', 'sage')} value={heading} onChange={(value) => setAttributes({ heading: value })} __next40pxDefaultSize __nextHasNoMarginBottom />
+          <TextareaControl label={__('Description', 'sage')} value={description} onChange={(value) => setAttributes({ description: value })} __nextHasNoMarginBottom />
+        </>
+      )}
+      <EditFaqsLink groupIds={groups} />
+    </PanelBody>
+  );
 
   return (
     <>
       <InspectorControls>
+        {faqPanel}
         <PanelBody title={__('Layout', 'sage')}>
           <RangeControl
             label={__('Switch to columns above', 'sage')}
@@ -86,7 +159,33 @@ function Edit({ attributes, setAttributes, clientId }) {
         </PanelBody>
       </InspectorControls>
 
+      {groupMode && (
+        <div {...blockProps}>
+          <ServerPreview
+            block="sage/faq"
+            attributes={attributes}
+            icon="editor-help"
+            label={__('FAQs', 'sage')}
+            empty={__('The chosen groups have no published FAQs yet. Add them in the FAQs screen.', 'sage')}
+          />
+        </div>
+      )}
+
+      {!groupMode && !handTyped && (
+        <div {...blockProps}>
+          <Placeholder icon="editor-help" label={__('FAQs', 'sage')} instructions={__('Choose the FAQ groups to show here. The questions and answers are written once, in the FAQs screen, and show wherever their group is shown.', 'sage')}>
+            <GroupField value={groups} onChange={(value) => setAttributes({ groups: value })} />
+            <EditFaqsLink groupIds={groups} />
+            <Button variant="link" onClick={() => setManual(true)}>{__('Type the questions here instead (deprecated)', 'sage')}</Button>
+          </Placeholder>
+        </div>
+      )}
+
+      {handTyped && (
       <div {...blockProps}>
+        <Notice status="warning" isDismissible={false}>
+          {__('Typing the questions into this block is deprecated: keep them as FAQs and pick their groups above, so every page that needs them shows the same answers.', 'sage')}
+        </Notice>
         <CardStyleWrapper {...cardStyleWrapperProps}>
         {useColumns ? (
           <div>
@@ -135,6 +234,7 @@ function Edit({ attributes, setAttributes, clientId }) {
         )}
         </CardStyleWrapper>
       </div>
+      )}
     </>
   );
 }
