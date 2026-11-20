@@ -1,6 +1,10 @@
 # Changelog
 
-## 2026.11.19.11
+## 2026.11.20
+
+One release holding three finished items (WP-99): the shop filter and term-toggle markup (E), the redundancy clean-up with Product Loop (D) and the page title that follows the theme (A). Each has its own **Adopt:** line below.
+
+### Filter and term-toggle markup (E, TPL-203)
 
 The shop filter panel and the term toggle get the right landmarks and headings (WP-99 E, TPL-203; owner question C, 2026-11-19). **Adopt:** bump, then look at a shop page and a category with a description once on staging; nothing should move. A read-only search of the nine sites found no rule that targets `aside#shop-filters`, `#shop-filters`, `summary h2` or the recently viewed box; a site that has one points it at `search`, `#shop-filters` or `summary > span`.
 
@@ -11,7 +15,7 @@ The shop filter panel and the term toggle get the right landmarks and headings (
 - **No visible change, proved** on the template stack with WooCommerce and 20 seeded products: layout fingerprints of the shop, a category with a description, a category without, and two filtered URLs, at 1440 and 390, before (kit HEAD) and after. Every box of every visible element has the same position and size and the page text is identical; the only boxes that differ are the wrappers that were replaced (the `<aside>`, now a `<search>` and a `<div>`). The accessibility tree changes as intended: an unnamed `complementary` becomes `search "Filter your search"`, and the "Read more about X" `heading` becomes part of a `button`. With the recently viewed box on and filled from `localStorage`, its position and height match HEAD at both widths (a first run caught that the list lost the panel's 14 rem cap; fixed above).
 - Pest 158.
 
-## 2026.11.19.10
+### Redundancy clean-up and Product Loop (D, TPL-202)
 
 Redundancy clean-up, kit side (WP-99 D, TPL-202). **Adopt:** bump; jsd moves (or deletes) the Recent Products and Best Selling Products blocks on its `block-demo` page before the release after next; deleted names were searched for in all nine sites first (read-only): no site includes any of them.
 
@@ -22,7 +26,7 @@ Redundancy clean-up, kit side (WP-99 D, TPL-202). **Adopt:** bump; jsd moves (or
 - **The Brands and Categories blocks print no "View all" link on the directory page itself** (it pointed at the page it was on). `template-brands`, `template-categories` and `template-custom` page templates leave the template (U-2/U-3, below); a directory page is now an ordinary page holding the block.
 - Pest 161.
 
-## 2026.11.19.9
+### The page title follows the theme's H1 (A, TPL-200)
 
 The page title follows the theme's H1 (WP-99 A, TPL-200; owner 2026-11-19). **Adopt:** bump, then look at the title band once on staging. **tcs:** its page titles become the size of its content H1 (69 px on a desktop instead of 48 px) and the colour of its other text. **bb and any theme with no H1 style:** unchanged.
 
