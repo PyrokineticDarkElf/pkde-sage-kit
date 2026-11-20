@@ -54,6 +54,21 @@ add_filter('taxonomy_template_hierarchy', function (array $templates): array {
     if (is_product_taxonomy()) {
         $at = array_search('taxonomy.php', $templates, true);
         array_splice($templates, $at === false ? count($templates) : $at, 0, ['archive-product.php', 'shop/archive-product.php']);
+
+        // The kit's own taxonomy views sit at the end of the view finder, so they would win over a SITE's archive-product (TPL-251): drop them in that case.
+        $kitViews = dirname(__DIR__, 2) . '/resources/views';
+        $siteHas = function (string $view) use ($kitViews): bool {
+            $paths = function_exists('view') ? (array) view()->getFinder()->getPaths() : [];
+
+            foreach (array_diff(array_map(fn($path) => rtrim((string) $path, '/'), $paths), [$kitViews]) as $path) {
+                if (is_file("$path/$view.blade.php")) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+        $templates = site_archive_beats_kit_taxonomy($templates, $siteHas);
     }
 
     return $templates;
