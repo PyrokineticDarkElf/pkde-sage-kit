@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.20.8
+
+The table of contents no longer uses a PHP 8.2 deprecated conversion (TPL-260). **Adopt:** bump the kit on every site with the next push (bb, tcs first); nothing else, and no visible change.
+
+- `TableOfContents` converted the content with `mb_convert_encoding(..., 'HTML-ENTITIES')`, deprecated since PHP 8.2 (removed in PHP 9) and logging a deprecation on every blog single and legal document. It now writes the non-ASCII characters as numeric entities with `mb_encode_numericentity`. The output is byte-identical (checked on a text with accents, dashes, CJK, emoji and entities) and the deprecation is gone; a test keeps accents, dashes, CJK and emoji intact with no deprecation raised. Pest 206.
+
 ## 2026.11.20.7
 
 The shop filter counts are right on a product search (TPL-257, tcs staging). **Adopt:** bump the kit on every shop with Relevanssi (tcs first, the staging pilot; bb if it searches products with Relevanssi); no change for a shop without it.
