@@ -5,31 +5,13 @@
 import { addFilter } from '@wordpress/hooks';
 import { select } from '@wordpress/data';
 import { SECTION_COMPAT } from '@generated/section-compat.js';
-
-/** The section theme id ("brand-sage-light") of the nearest styled ancestor of a block, or null. */
-export function sectionThemeOf(store, clientId) {
-  for (const parentId of store.getBlockParents(clientId, true)) {
-    const className = store.getBlockAttributes(parentId)?.className ?? '';
-    const match = /(?:^|\s)is-style-(brand-[a-z0-9-]+)(?:\s|$)/.exec(className);
-
-    if (match && SECTION_COMPAT[match[1]]) return match[1];
-  }
-
-  return null;
-}
-
-/** The theme palette with the colours readable on the section first; the order of the rest is kept. */
-export function compatibleFirst(palette, compatible) {
-  const rank = new Map(compatible.map((slug, index) => [slug, index]));
-
-  return [...palette].sort((a, b) => (rank.has(a.slug) ? rank.get(a.slug) : Infinity) - (rank.has(b.slug) ? rank.get(b.slug) : Infinity) || 0);
-}
+import { sectionThemeOf, compatibleFirst } from './section-colors-lib.js';
 
 addFilter('blockEditor.useSetting.before', 'pkde/section-compatible-colors', (result, path, clientId) => {
   if (result !== undefined || path !== 'color.palette.theme' || !clientId) return result;
 
   const store = select('core/block-editor');
-  const theme = sectionThemeOf(store, clientId);
+  const theme = sectionThemeOf(store, clientId, SECTION_COMPAT);
 
   if (!theme) return result;
 
