@@ -1,0 +1,69 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/quotes",
+  "title": "Testimonials",
+  "category": "design",
+  "icon": "format-quote",
+  "description": "Customer quotes as a carousel, a strip of three or one large panel. From WooCommerce reviews, a testimonials post type, or typed in by hand. Takes its colours from the section it sits in.",
+  "keywords": [
+    "testimonials",
+    "reviews",
+    "quotes",
+    "customers"
+  ],
+  "textdomain": "sage",
+  "attributes": {
+    "eyebrow": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "heading": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "source": {
+      "type": "string",
+      "default": "reviews"
+    },
+    "count": {
+      "type": "number",
+      "default": 6
+    },
+    "minRating": {
+      "type": "number",
+      "default": 4
+    },
+    "postType": {
+      "type": "string",
+      "default": "testimonial"
+    },
+    "layout": {
+      "type": "string",
+      "default": "carousel"
+    },
+    "showStars": {
+      "type": "boolean",
+      "default": true
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": [],
+      "__experimentalRole": "content"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true
+  },
+  "render": "file:./render.php"
+}

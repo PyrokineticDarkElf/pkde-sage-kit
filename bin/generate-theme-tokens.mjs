@@ -859,7 +859,7 @@ for (const color of palette.colors) {
 
 const css = buildCss(palette.colors);
 const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}`;
-const sectionThemesPhp = buildSectionThemesPhp(sectionThemes);
+const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
 const editorPalettesPhp = buildEditorPalettesPhp(editorData);
 const sectionCompatJs = buildSectionCompatJs(editorData);

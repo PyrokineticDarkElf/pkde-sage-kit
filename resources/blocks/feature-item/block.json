@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/feature-item",
+  "title": "Feature",
+  "category": "design",
+  "icon": "star-filled",
+  "parent": [
+    "sage/feature-grid"
+  ],
+  "description": "One item of a feature grid: an icon or picture, a heading, a short text and an optional link.",
+  "keywords": [
+    "feature",
+    "benefit",
+    "service"
+  ],
+  "textdomain": "sage",
+  "attributes": {
+    "icon": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "imageId": {
+      "type": "number",
+      "__experimentalRole": "content"
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "heading": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "text": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "linkText": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    }
+  },
+  "supports": {
+    "html": false,
+    "reusable": false
+  },
+  "render": "file:./render.php"
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/text-and-image",
+  "title": "Text and image",
+  "category": "design",
+  "icon": "align-pull-left",
+  "description": "Text on one side, a picture on the other (or three pictures as a mosaic). Write the text side with ordinary blocks: heading, paragraphs, a list, buttons. Takes its colours from the section it sits in.",
+  "keywords": [
+    "text",
+    "image",
+    "feature",
+    "media",
+    "about"
+  ],
+  "textdomain": "sage",
+  "attributes": {
+    "imageUrl": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "imageId": {
+      "type": "number",
+      "__experimentalRole": "content"
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "extraImages": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": [],
+      "__experimentalRole": "content"
+    },
+    "imageSide": {
+      "type": "string",
+      "default": "right"
+    },
+    "imageRatio": {
+      "type": "string",
+      "default": "4-3"
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "templateLock": {
+      "type": [
+        "string",
+        "boolean"
+      ],
+      "enum": [
+        "all",
+        "insert",
+        "contentOnly",
+        false
+      ]
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true
+  },
+  "render": "file:./render.php"
+}

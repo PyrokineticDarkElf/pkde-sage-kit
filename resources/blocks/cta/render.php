@@ -22,6 +22,10 @@ $primary_text = $attributes['primaryButtonText'] ?? '';
 $primary_url = $attributes['primaryButtonUrl'] ?? '';
 $secondary_text = $attributes['secondaryButtonText'] ?? '';
 $secondary_url = $attributes['secondaryButtonUrl'] ?? '';
+$slot_id = (int) ($attributes['imageId'] ?? 0);
+$slot_url = (string) ($attributes['imageUrl'] ?? '');
+// A logo or picture beside (banner) or above (section) the text: a plain image that keeps its shape, never cropped.
+$slot = ($slot_id || $slot_url) ? \App\block_image($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium', ['loading' => 'lazy', 'class' => 'pkde-cta-slot' . ($is_banner ? '' : ' mx-auto mb-6')]) : '';
 
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => trim(implode(' ', array_filter([
@@ -34,7 +38,9 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ]);
 ?>
 <div <?php echo $wrapper_attributes; ?>>
+    <?php if ($slot && $is_banner) { echo $slot; } ?>
     <div class="<?php echo $is_banner ? 'min-w-0' : 'mx-auto max-w-2xl'; ?>">
+        <?php if ($slot && ! $is_banner) { echo $slot; } ?>
         <?php if ($heading) : ?>
             <h2 class="font-display text-2xl font-semibold leading-tight tracking-[-0.03em] sm:text-3xl"><?php echo wp_kses_post($heading); ?></h2>
         <?php endif; ?>

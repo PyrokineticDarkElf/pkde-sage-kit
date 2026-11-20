@@ -8,6 +8,6 @@ import metadata from './block.json';
 // wrapper. Its padding and gap defaults come from theme.json (styles.blocks["sage/section"]). Do not add settings here: anything
 // else is a Group inside the Section. The List View name is editable with the block's own Rename option.
 registerBlockType(metadata, {
-  edit: () => <div {...useInnerBlocksProps(useBlockProps())} />,
+  edit: ({ attributes }) => <div {...useInnerBlocksProps(useBlockProps(), { templateLock: attributes.templateLock })} />, // templateLock: a pattern locks its Section to content only
   save: () => <div {...useInnerBlocksProps.save(useBlockProps.save())} />,
 });

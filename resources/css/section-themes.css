@@ -14,47 +14,47 @@
  * A site's own CSS that colours a heading, paragraph or button inside a section at a higher specificity than this still wins; it moves
  * onto the --section-* variables (docs/section-themes.md).
  */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] {
   background-color: var(--section-bg);
   color: var(--section-text);
   border-color: var(--section-border);
 }
 
 /* Headings */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(h1, h2, h3, h4, h5, h6):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] :is(h1, h2, h3, h4, h5, h6):not(:where(.pkde-section, .pkde-card, article, .product) *) {
   color: var(--section-heading);
 }
 
 /* Muted text: captions, and anything marked .pkde-muted */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(figcaption, .pkde-muted):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] :is(figcaption, .pkde-muted):not(:where(.pkde-section, .pkde-card, article, .product) *) {
   color: var(--section-muted);
 }
 
 /* Links in running content (not buttons, not a block with its own link colour) */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] a:where(:not(.wp-block-button__link, .pkde-btn, .pkde-btn-alt, .wp-element-button)):not(:where(.pkde-section, .pkde-card, article, .product, .has-link-color, [class*="wp-elements-"]) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] a:where(:not(.wp-block-button__link, .pkde-btn, .pkde-btn-alt, .wp-element-button)):not(:where(.pkde-section, .pkde-card, article, .product, .has-link-color, [class*="wp-elements-"]) *) {
   color: var(--section-link);
 }
 
 /* Core buttons: the filled button is the primary pair, the Outline style the secondary one */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] .wp-block-button:not(.is-style-outline) > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] .wp-block-button:not(.is-style-outline) > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product) *) {
   background-color: var(--section-button-bg);
   color: var(--section-button-text);
   border-color: var(--section-button-bg);
 }
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] .wp-block-button.is-style-outline > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] .wp-block-button.is-style-outline > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product) *) {
   background-color: var(--section-button-alt-bg);
   color: var(--section-button-alt-text);
   border-color: var(--section-button-alt-text);
 }
 
 /* Separators take the border role */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(hr, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] :is(hr, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product) *) {
   color: var(--section-border);
   border-color: var(--section-border);
 }
 
 /* Icons: the kit's icons (.pkde-icon, drawn in currentColor) and core's logos-only social links */
-:is(.wp-block-group, .wp-block-sage-section)[class*="is-style-brand-"] :is(.pkde-icon, .wp-block-social-links.is-style-logos-only .wp-social-link a):not(:where(.pkde-section, .pkde-card, article, .product) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] :is(.pkde-icon, .wp-block-social-links.is-style-logos-only .wp-social-link a):not(:where(.pkde-section, .pkde-card, article, .product) *) {
   color: var(--section-icon);
 }
 

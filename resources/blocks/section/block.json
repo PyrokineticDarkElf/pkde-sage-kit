@@ -6,18 +6,36 @@
   "category": "design",
   "icon": "align-wide",
   "description": "A full-width band of the page. Its content keeps the page width and side margins. Background, text and link colour, border, padding and gap are the usual block settings.",
-  "keywords": ["section", "band", "container"],
+  "keywords": [
+    "section",
+    "band",
+    "container"
+  ],
   "textdomain": "sage",
   "attributes": {
     "align": {
       "type": "string",
       "default": "full"
+    },
+    "templateLock": {
+      "type": [
+        "string",
+        "boolean"
+      ],
+      "enum": [
+        "all",
+        "insert",
+        "contentOnly",
+        false
+      ]
     }
   },
   "supports": {
     "html": false,
     "anchor": true,
-    "align": ["full"],
+    "align": [
+      "full"
+    ],
     "color": {
       "background": true,
       "text": true,
@@ -30,7 +48,9 @@
       "margin": false
     },
     "layout": {
-      "default": { "type": "constrained" },
+      "default": {
+        "type": "constrained"
+      },
       "allowSwitching": false
     },
     "__experimentalBorder": {

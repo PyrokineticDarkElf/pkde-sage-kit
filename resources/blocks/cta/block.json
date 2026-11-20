@@ -5,8 +5,12 @@
   "title": "CTA",
   "category": "widgets",
   "icon": "megaphone",
-  "description": "A call-to-action section — heading, text, and up to two buttons. Two styles: a full section, or a compact banner strip.",
-  "keywords": ["cta", "call to action", "banner"],
+  "description": "A call-to-action section — heading, text, and up to two buttons. Two styles: a full section, or a compact banner strip. Optionally with a logo or picture beside the text.",
+  "keywords": [
+    "cta",
+    "call to action",
+    "banner"
+  ],
   "textdomain": "sage",
   "attributes": {
     "style": {
@@ -19,32 +23,55 @@
     },
     "heading": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "content": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "primaryButtonText": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "primaryButtonUrl": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "secondaryButtonText": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "secondaryButtonUrl": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "imageId": {
+      "type": "number",
+      "__experimentalRole": "content"
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }

@@ -35,7 +35,8 @@ test('a colour label is optional, never changes the slug, and names the swatches
   assert.match(r.themeJson, /"slug": "sage-600", "name": "Sage 600"/);
   assert.match(r.themeJson, /"slug": "blush-600", "name": "Blush 600"/); // no label: the name, title-cased
   assert.match(r.options, /"value": "sage",\s+"label": "Sage"/);
-  assert.match(r.php, /'name' => 'brand-sage', 'label' => 'Brand Sage'/);
+  assert.match(r.php, /'name' => 'brand-sage', 'label' => 'Brand Sage', 'mode' => 'solid', 'colour' => 'sage', 'role' => 'brand'/);
+  assert.match(r.php, /'name' => 'brand-slate', 'label' => 'Brand Slate', 'mode' => 'solid', 'colour' => 'slate', 'role' => null/);
   assert.match(r.php, /'name' => 'brand-sage-light', 'label' => 'Brand Sage \(light\)'/);
   const labelled = run([{ ...bb[0], label: 'Moss' }, ...bb.slice(1)]);
   assert.match(labelled.php, /'name' => 'brand-sage', 'label' => 'Brand Moss'/); // the label changed, the name (the class) did not

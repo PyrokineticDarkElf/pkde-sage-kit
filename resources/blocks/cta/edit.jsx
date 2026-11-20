@@ -1,6 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
-import { useBlockProps, RichText, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
+import { useBlockProps, RichText, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
+import { PanelBody, SelectControl, TextControl, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
@@ -28,6 +28,9 @@ function Edit({ attributes, setAttributes }) {
     primaryButtonUrl,
     secondaryButtonText,
     secondaryButtonUrl,
+    imageUrl,
+    imageId,
+    imageAlt,
   } = attributes;
 
   const isBanner = style === 'banner';
@@ -60,6 +63,17 @@ function Edit({ attributes, setAttributes }) {
             help={__('Re-skins this section’s background, text, and button colours at once.', 'sage')}
           />
         </PanelBody>
+        <PanelBody title={__('Logo or picture (optional)', 'sage')} initialOpen={false}>
+          <MediaUploadCheck>
+            <MediaUpload
+              onSelect={(media) => setAttributes({ imageUrl: media.url, imageId: media.id, imageAlt: media.alt || '' })}
+              allowedTypes={['image']}
+              value={imageId}
+              render={({ open }) => <Button variant="secondary" onClick={open}>{imageUrl ? __('Change the picture', 'sage') : __('Choose a picture', 'sage')}</Button>}
+            />
+          </MediaUploadCheck>
+          {imageUrl ? <Button variant="link" isDestructive onClick={() => setAttributes({ imageUrl: '', imageId: undefined, imageAlt: '' })}>{__('Remove it', 'sage')}</Button> : null}
+        </PanelBody>
         <PanelBody title={__('Primary button', 'sage')}>
           <TextControl
             label={__('Text', 'sage')}
@@ -87,7 +101,9 @@ function Edit({ attributes, setAttributes }) {
       </InspectorControls>
 
       <div {...blockProps}>
+        {imageUrl && isBanner ? <img src={imageUrl} alt={imageAlt} className="pkde-cta-slot" /> : null}
         <div className={isBanner ? 'min-w-0' : 'mx-auto max-w-2xl'}>
+          {imageUrl && !isBanner ? <img src={imageUrl} alt={imageAlt} className="pkde-cta-slot mx-auto mb-6" /> : null}
           <RichText
             tagName="h2"
             className="font-display text-2xl font-semibold leading-tight tracking-[-0.03em] sm:text-3xl"

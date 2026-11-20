@@ -5,45 +5,86 @@
   "title": "Hero",
   "category": "design",
   "icon": "cover-image",
-  "description": "A full-width hero section with a heading, supporting text, optional background image, and a button.",
-  "keywords": ["hero", "banner", "cover"],
+  "description": "A hero section with a heading, supporting text, an image and buttons: over a full-width image (the default), split (text beside the image) or text only. Split and text-only take their colours from the section they sit in.",
+  "keywords": [
+    "hero",
+    "banner",
+    "cover"
+  ],
   "textdomain": "sage",
   "attributes": {
     "heading": {
       "type": "string",
-      "default": "Your heading here"
+      "default": "Your heading here",
+      "__experimentalRole": "content"
     },
     "content": {
       "type": "string",
-      "default": "A short supporting sentence goes here."
+      "default": "A short supporting sentence goes here.",
+      "__experimentalRole": "content"
     },
     "buttonText": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "buttonUrl": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "imageUrl": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "imageId": {
-      "type": "number"
+      "type": "number",
+      "__experimentalRole": "content"
     },
     "imageAlt": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "__experimentalRole": "content"
     },
     "theme": {
       "type": "string",
       "default": ""
+    },
+    "layout": {
+      "type": "string",
+      "default": "overlay"
+    },
+    "imageSide": {
+      "type": "string",
+      "default": "right"
+    },
+    "eyebrow": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "secondaryButtonText": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "secondaryButtonUrl": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "headingLevel": {
+      "type": "number",
+      "default": 2
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }
