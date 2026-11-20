@@ -94,7 +94,7 @@ function slugify(value) {
 }
 
 function parseArguments() {
-  const result = { colors: [], displayFont: null, sansFont: null, monoFont: null, dryRun: false, check: false };
+  const result = { colors: [], labels: {}, colorsCsv: null, displayFont: null, sansFont: null, monoFont: null, dryRun: false, check: false };
   const args = process.argv.slice(2);
 
   for (let index = 0; index < args.length; index += 1) {
@@ -103,6 +103,13 @@ function parseArguments() {
       const pair = args[++index] ?? '';
       const [name, hex] = pair.split('=', 2);
       result.colors.push({ name, hex });
+    } else if (argument === '--label') {
+      const pair = args[++index] ?? '';
+      const cut = pair.indexOf('=');
+      if (cut < 1) fail('--label expects name=Label.');
+      result.labels[pair.slice(0, cut)] = pair.slice(cut + 1);
+    } else if (argument === '--colors-csv') {
+      result.colorsCsv = args[++index] ?? '';
     } else if (argument === '--display-font') {
       result.displayFont = args[++index] ?? '';
     } else if (argument === '--sans-font') {
@@ -758,7 +765,40 @@ return ${header ? `['theme' => '${header.theme}']` : '[]'};
 `;
 }
 
+/**
+ * brand-colours.csv (read by bin/setup next to users.csv): `name,label,hex` and an optional `role` (brand, accent, black or white), one colour
+ * per row, a header row first; blank lines and lines starting with # are ignored. The name is the slug the stored content and the CSS use; the
+ * label is what the editor shows ("Sage"). An empty label falls back to the name, title-cased.
+ */
+export function parseColoursCsv(text) {
+  const rows = text.split(/\r?\n/).map((line) => line.trim()).filter((line) => line !== '' && !line.startsWith('#'));
+  const cells = (line) => line.split(',').map((cell) => cell.trim().replace(/^"(.*)"$/, '$1'));
+  const header = cells(rows.shift() ?? '').map((cell) => cell.toLowerCase());
+
+  for (const required of ['name', 'hex']) {
+    if (!header.includes(required)) fail(`brand-colours.csv needs a header row with the columns name, label, hex (and optionally role); "${required}" is missing.`);
+  }
+
+  return rows.map((line, index) => {
+    const row = Object.fromEntries(cells(line).map((cell, at) => [header[at], cell]));
+    const color = { name: row.name, hex: row.hex };
+    if (!color.name || !/^#[0-9a-f]{6}$/i.test(color.hex ?? '')) fail(`brand-colours.csv row ${index + 2}: needs a name and a 6-digit hex value (got ${JSON.stringify(line)}).`);
+    if (row.label) color.label = row.label;
+    if (row.role) color.role = row.role.toLowerCase();
+    return color;
+  });
+}
+
 const options = parseArguments();
+if (options.colorsCsv) {
+  const csvPath = path.resolve(rootDirectory, options.colorsCsv);
+  if (!fs.existsSync(csvPath)) fail(`${options.colorsCsv} not found (looked in ${rootDirectory}).`);
+  options.colors.push(...parseColoursCsv(fs.readFileSync(csvPath, 'utf8')));
+}
+for (const color of options.colors) {
+  const label = options.labels[color.name];
+  if (label !== undefined && label.trim() !== '') color.label = label;
+}
 let palette;
 if (options.colors.length) {
   palette = {

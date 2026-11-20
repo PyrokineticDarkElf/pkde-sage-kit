@@ -405,3 +405,5 @@ fonts from `public/build/fonts-manifest.json`, a completely different code path)
 back off before `laravel-vite-plugin`'s middleware ever sees the request; see that function's own
 comment for the exact mechanism, including why it has to register its middleware eagerly rather
 than as Vite's more common post-hook style.
+
+See also [Section themes](section-themes.md): the optional `label` of a colour, the Brand <Label> themes and their role matrix.

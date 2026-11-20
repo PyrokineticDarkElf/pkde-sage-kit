@@ -152,3 +152,27 @@ test('the editor gets per-block palettes (button swatches, text-safe swatches) a
   assert.match(compat, /"brand-sage": \[\s+"white"/); // white is what is readable on sage
   assert.match(compat, /"brand-sage-light": \[\s+"black"/);
 });
+
+test('brand-colours.csv (--colors-csv) and --label give the palette its labels, roles and hex values; bin/setup uses both', () => {
+  const root = mkdtempSync(join(tmpdir(), 'pkde-kit-csv-'));
+  const theme = join(root, 'web/app/themes/sage');
+  mkdirSync(join(root, 'config'), { recursive: true });
+  mkdirSync(theme, { recursive: true });
+  writeFileSync(join(theme, 'theme.json'), '{\n  "settings": {\n    "color": {\n      "palette": [\n      ]\n    }\n  }\n}\n');
+  writeFileSync(join(root, 'brand-colours.csv'), '# the client\'s colours\nname,label,hex,role\nsage,Sage,#637972,brand\nblush,,#eac3bf,accent\nslate,Deep Slate,#4d656b,\n');
+  const generate = (...args) => spawnSync('node', [generator, ...args], { cwd: theme, env: { ...process.env, PKDE_THEME_DIR: theme }, encoding: 'utf8' });
+  const first = generate('--colors-csv', 'brand-colours.csv', '--label', 'blush=Blush Pink');
+  assert.equal(first.status, 0, first.stderr);
+  const palette = JSON.parse(readFileSync(join(root, 'config/brand-palette.json'), 'utf8'));
+  assert.deepEqual(palette.colors.slice(0, 3).map((c) => [c.name, c.label, c.role]), [['sage', 'Sage', 'brand'], ['blush', 'Blush Pink', 'accent'], ['slate', 'Deep Slate', undefined]]); // --label beats an empty CSV label
+  assert.match(readFileSync(join(theme, 'theme.json'), 'utf8'), /"name": "Deep Slate 600"/);
+  assert.match(readFileSync(join(theme, 'resources/generated/section-themes.php'), 'utf8'), /'label' => 'Brand Deep Slate \(light\)'/);
+  // the labels are kept the next time the generator runs from the saved palette
+  assert.equal(generate().status, 0);
+  assert.equal(JSON.parse(readFileSync(join(root, 'config/brand-palette.json'), 'utf8')).colors[2].label, 'Deep Slate');
+  // a broken row stops with the row number
+  writeFileSync(join(root, 'brand-colours.csv'), 'name,label,hex\nsage,Sage,not-a-hex\n');
+  const bad = generate('--colors-csv', 'brand-colours.csv');
+  assert.notEqual(bad.status, 0);
+  assert.match(bad.stderr, /brand-colours\.csv row 2/);
+});
