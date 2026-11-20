@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.20.3
+
+Product gallery: no more tall flash before it settles (TPL-244, an owner bug on bb's product page; a follow-up to TPL-181 and TPL-190). **Adopt:** bump the kit on any shop (bb, tcs, js and every site with WooCommerce); a hotfix candidate for staging. Measured on the real dev product pages (read-only, the new rules injected in memory, Chrome, CPU 4x slower, 1.6 Mbit/s); NOT on a server.
+
+- **The cause.** WooCommerce's script builds the slider's viewport first and sets its inline height about 100 ms later. In between, the viewport has no height of its own (the kit keeps `height: auto`), and the slides, still four times too wide, stack: bb's gallery was 14,300 px tall on a desktop and 8,200 px on a phone for one frame, which made the page below jump twice. Layout shift on bb: **0.247 (1440) and 0.673 (390)**; on tcs 0.048 and 0.521.
+- **The fix.** Until the inline height is there (`.flex-viewport:not([style*="height"])`) the viewport has the ratio of the picture the kit shows, **4:3**, or the site's `--pkde-gallery-ratio`; once the script has set its height the viewport follows the content again, so a gallery that shows its pictures at another ratio is never clipped. The gallery pictures take the same `--pkde-gallery-ratio` (4:3 by default, as before), so a site that sets it gets pictures and viewport at one ratio.
+- **Result.** bb: layout shift **0 on a desktop (median of 3; one run 0.007) and 0 on a phone**, the viewport 447 px from the first frame. tcs (square photos): the flash is gone (0.048 to 0.019 and 0.521 to 0.073) and the photos are not clipped (viewport 620 px, picture 618 px); **a site that shows its pictures at another ratio sets `--pkde-gallery-ratio` to it** (tcs: `1`) and measures 0.0001 and 0.
+- Pest 187.
+
 ## 2026.11.20.2
 
 FAQs as their own content (WP-102, TPL-232 to TPL-236; needs pkde/platform 2026.11.20.1). **Adopt:** bb now (staging pilot); tcs, js and el now (local and staging); rp, bp, mds, jsd and cs after their December production release. Not Train-ready. Proved on the template stack in real Chrome as Administrator, SEO and Editor; NOT on a site or a 20i server.

@@ -197,7 +197,7 @@ The kit shows the gallery from the first paint and keeps its viewport as high as
 builds the slider (kit.css, "The gallery has its final height from the first paint"). The viewport follows the picture whatever its shape (square,
 3:2, 4:3). A site that wants every slide forced to one ratio sets `--pkde-gallery-ratio` (for example `1` or `4 / 3`) on `:root` or on the gallery and
 gives its slide images the same ratio; leave it unset otherwise. Kit 2026.11.19 shipped a fixed 4:3 here, which clipped square pictures (tcs, TCS-131);
-2026.11.19.3 removes it.
+2026.11.19.3 removes it. For the instant between the script building the viewport and setting its inline height, the viewport has no height of its own and took every stacked picture's height (bb: 14,000 px, a layout shift of 0.25 to 0.67 on a throttled load, TPL-244); until that inline height is there it is now the ratio of the picture the kit shows (4:3), or the site's `--pkde-gallery-ratio`, which also sets the pictures' ratio. A site that shows its pictures at another ratio in its own CSS (tcs: square) sets `--pkde-gallery-ratio: 1` to match.
 
 ## Category tiles: the look is variables (TPL-195)
 

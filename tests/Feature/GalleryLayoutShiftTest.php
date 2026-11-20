@@ -28,3 +28,14 @@ it('gives the first hero the LCP attributes, and the category and brand cards a 
         expect($source)->toContain("wp_get_attachment_image(\$imageId, 'medium_large', false, [")->toContain("'loading' => 'lazy'")->not->toContain('<img');
     }
 });
+
+it('gives the viewport a box for the instant before the script sets its height, from the picture ratio the kit shows (TPL-244)', function () {
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $gallery = '.woocommerce div.product .woocommerce-product-gallery';
+
+    // until FlexSlider's inline height is there the viewport is 4:3 (or the site's ratio): without it the stacked pictures made it 14,000 px tall for a moment
+    expect($css)->toContain("$gallery .flex-viewport:not([style*=\"height\"]) {\n    aspect-ratio: var(--pkde-gallery-ratio, 4 / 3);")
+        // the pictures follow the same variable, so a site that sets it gets viewport and pictures at one ratio
+        ->and($css)->toContain("$gallery img {\n    width: 100%;\n    aspect-ratio: var(--pkde-gallery-ratio, 4 / 3);")
+        ->and($css)->not->toContain('--pkde-gallery-first-ratio'); // a picture's own ratio is not the one the kit shows it at (it crops to 4:3): bb would be clipped
+});

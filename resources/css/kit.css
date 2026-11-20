@@ -560,7 +560,7 @@
   }
   .woocommerce div.product .woocommerce-product-gallery img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: var(--pkde-gallery-ratio, 4 / 3);
     object-fit: cover;
     background-color: var(--color-neutral-100);
   }
@@ -832,8 +832,10 @@
      into one picture and a row of thumbnails: the page below jumped up by three pictures' height and the LCP picture stayed invisible until
      then. So: (1) show the gallery from the start (the inline opacity:0 is WooCommerce's, hence !important); (2) until the script has built the
      viewport, show the first picture only; (3) the viewport is as high as the picture, whatever its shape (flexslider sets an inline height
-     later; --pkde-gallery-ratio forces a ratio only for a site that wants one: a fixed 4:3 here clipped square pictures, tcs TCS-131, 2026.11.19);
-     (4) keep room for the thumbnail row until it exists. */
+     later; a fixed 4:3 here clipped square pictures, tcs TCS-131, 2026.11.19; --pkde-gallery-ratio forces a ratio only for a site that wants one);
+     (3b) but for the instant between the script building the viewport and setting that inline height, the viewport has no height of its own and takes
+     every stacked picture's height (bb: 14,000 px, a layout shift of 0.25 to 0.67 on a throttled load, TPL-244): so until the inline height is there it is
+     the ratio of the picture the kit shows, 4:3, or the site's --pkde-gallery-ratio; (4) keep room for the thumbnail row until it exists. */
   .woocommerce div.product .woocommerce-product-gallery {
     opacity: 1 !important;
   }
@@ -843,6 +845,9 @@
   .woocommerce div.product .woocommerce-product-gallery .flex-viewport {
     height: auto !important;
     aspect-ratio: var(--pkde-gallery-ratio, auto);
+  }
+  .woocommerce div.product .woocommerce-product-gallery .flex-viewport:not([style*="height"]) {
+    aspect-ratio: var(--pkde-gallery-ratio, 4 / 3);
   }
   .woocommerce div.product .woocommerce-product-gallery:has(.woocommerce-product-gallery__image:nth-child(2)):not(:has(.flex-control-thumbs))::after {
     content: "";
