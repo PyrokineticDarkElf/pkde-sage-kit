@@ -48,7 +48,7 @@ it('registers the new blocks with the names the brief gave, a feature item only 
         ->and($block('feature-item')['parent'])->toBe(['sage/feature-grid'])
         ->and($block('quotes')['name'])->toBe('sage/quotes')->not->toBe('sage/testimonials')
         ->and($block('cta-band')['name'])->toBe('sage/cta-band')
-        ->and($block('cta-band')['attributes'])->toBe([]) // a global block: no editable field on the page
+        ->and(array_keys($block('cta-band')['attributes']))->toBe(['align']) // a global block: no editable field on the page, only its alignment
         ->and($block('text-and-image')['attributes']['templateLock']['enum'])->toContain('contentOnly')
         ->and($block('feature-grid')['attributes']['templateLock']['enum'])->toContain('contentOnly')
         ->and($block('section')['attributes']['templateLock']['enum'])->toContain('contentOnly');
