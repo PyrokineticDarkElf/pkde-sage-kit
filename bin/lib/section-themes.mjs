@@ -1,0 +1,324 @@
+/**
+ * Section themes (WP-100): one SOLID and one LIGHT theme per palette colour, each a role matrix of CSS variables
+ * (--section-bg, -heading, -text, -muted, -link, -button-bg, -button-text, -button-alt-bg, -button-alt-text, -icon, -border), plus a
+ * dark-mode matrix applied under the site's `.dark` class. Pure functions (no file access, no process.exit): the generator
+ * (bin/generate-theme-tokens.mjs) calls them and writes the files; tests/js/section-themes.test.mjs calls them directly.
+ *
+ * Where the values come from, in order (the first wins, per role):
+ *   1. what the palette declares: `styles.<role>` for the solid theme, `styles.light.<role>` for the light theme, `styles.dark.<role>`
+ *      for the solid theme in dark mode and `styles.light.dark.<role>` for the light theme in dark mode. The older keys (`content`,
+ *      `highlight`, `buttonPrimary*`, `buttonSecondary*`, `card`) belong to the older .theme-{name} classes and are NOT read here, so
+ *      adopting the new themes never turns an existing palette red;
+ *   2. otherwise the best-contrast palette colour, worked out here (autofill).
+ * A value is a palette reference: `sage-200` (a step), `sage-exact` or `sage` (the colour's exact hex), `#ffffff`, `transparent`, or for
+ * `muted` an object { "color": <reference>, "opacity": 70 }. Bare `white` and `black` are the palette's own white and black exacts.
+ */
+import { wcagContrast, toRgb, shade, steps } from './color-math.mjs';
+
+export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonAltBg', 'buttonAltText', 'icon', 'border'];
+const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border' };
+export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3 };
+// A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
+// the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
+export const WEAK_BELOW = 5.2;
+const OPACITY_STEPS = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
+
+export function titleCase(slug) {
+  return slug.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
+/** The human label of a colour: its `label`, else its name title-cased. The name (the slug) never changes. */
+export function labelOf(color) {
+  return typeof color.label === 'string' && color.label.trim() ? color.label.trim() : titleCase(color.name);
+}
+
+export function createResolver(colors) {
+  const byName = new Map(colors.map((color) => [color.name, color]));
+
+  function parse(ref) {
+    if (typeof ref !== 'string') return null;
+    if (ref === 'transparent') return { kind: 'transparent' };
+    if (/^#[0-9a-f]{6}$/i.test(ref)) return { kind: 'hex', hex: ref.toLowerCase() };
+    if (byName.has(ref)) return { kind: 'exact', name: ref };
+    const cut = ref.lastIndexOf('-');
+    if (cut < 1) return null;
+    const owner = byName.get(ref.slice(0, cut));
+    const tail = ref.slice(cut + 1);
+    if (!owner) return null;
+    if (tail === 'exact') return { kind: 'exact', name: owner.name };
+    const step = Number(tail);
+    return steps.includes(step) ? { kind: 'token', name: owner.name, step } : null;
+  }
+
+  /** A colour culori can read, or null for transparent. */
+  function value(ref) {
+    const parsed = parse(ref);
+    if (!parsed || parsed.kind === 'transparent') return null;
+    if (parsed.kind === 'hex') return parsed.hex;
+    const owner = byName.get(parsed.name);
+    return parsed.kind === 'exact' ? owner.hex : shade(owner, parsed.step);
+  }
+
+  /** The CSS for a reference (a custom property of the generated tokens, so a hand-tuned token still flows through). */
+  function css(ref) {
+    const parsed = parse(ref);
+    if (!parsed) throw new Error(`Unknown colour reference ${JSON.stringify(ref)}`);
+    if (parsed.kind === 'transparent') return 'transparent';
+    if (parsed.kind === 'hex') return parsed.hex;
+    return parsed.kind === 'exact' ? `var(--color-${parsed.name}-exact)` : `var(--color-${parsed.name}-${parsed.step})`;
+  }
+
+  return { parse, value, css, byName };
+}
+
+/** A matrix value as { color: <reference>, opacity: 1..100 }; a plain reference is opacity 100. */
+function normalise(spec) {
+  if (spec && typeof spec === 'object') return { color: spec.color, opacity: Math.max(1, Math.min(100, Number(spec.opacity ?? 100))) };
+  return { color: spec, opacity: 100 };
+}
+
+export function createBuilder(colors) {
+  const resolver = createResolver(colors);
+  const whiteColor = colors.find((color) => color.role === 'white');
+  const blackColor = colors.find((color) => color.role === 'black');
+  const neutrals = [whiteColor, blackColor].filter(Boolean).map((color) => color.name);
+  // The colours a heading, link, icon or button can be drawn in: the palette's exact colours, accent first, then brand, then the rest.
+  const brandish = colors
+    .filter((color) => color.role !== 'black' && color.role !== 'white')
+    .sort((a, b) => (a.role === 'accent' ? -1 : b.role === 'accent' ? 1 : 0) || (a.role === 'brand' ? -1 : b.role === 'brand' ? 1 : 0));
+
+  function ratio(spec, bgRef) {
+    const { color, opacity } = normalise(spec);
+    const fg = resolver.value(color);
+    const bg = resolver.value(bgRef);
+    if (fg === null || bg === null) return null; // transparent: nothing to measure here
+    if (opacity >= 100) return wcagContrast(fg, bg);
+    const f = toRgb(fg);
+    const b = toRgb(bg);
+    const a = opacity / 100;
+    return wcagContrast({ mode: 'rgb', r: f.r * a + b.r * (1 - a), g: f.g * a + b.g * (1 - a), b: f.b * a + b.b * (1 - a) }, bg);
+  }
+
+  function bestNeutral(bgRef) {
+    return [...neutrals].sort((a, b) => ratio(b, bgRef) - ratio(a, bgRef))[0];
+  }
+
+  function lightnessOf(bgRef) {
+    return wcagContrast(resolver.value(bgRef), '#ffffff') < 3 ? 'light' : 'dark';
+  }
+
+  /** The step of `owner` whose contrast against the background is nearest 1.6:1 (a decorative rule, no minimum). */
+  function borderFor(ownerName, bgRef) {
+    let best = null;
+    for (const step of steps) {
+      const r = ratio(`${ownerName}-${step}`, bgRef);
+      if (r === null || r < 1.05) continue;
+      if (best === null || Math.abs(r - 1.6) < Math.abs(best.r - 1.6)) best = { step, r };
+    }
+    return best ? `${ownerName}-${best.step}` : bestNeutral(bgRef);
+  }
+
+  /**
+   * The matrix for a background, filled in by contrast alone. `ownerName` is the colour the background belongs to; a SOLID theme leaves
+   * that colour out of the heading/link candidates (it would vanish on itself), a light theme keeps it (and its deep shades).
+   */
+  function autofill(bgRef, ownerName, { solid }) {
+    const text = bestNeutral(bgRef);
+    const exacts = brandish.filter((color) => !(solid && color.name === ownerName)).map((color) => color.name);
+    const ownerShades = solid ? [] : [`${ownerName}-800`, `${ownerName}-900`];
+    const tints = brandish.flatMap((color) => (lightnessOf(bgRef) === 'dark' ? [`${color.name}-50`] : [`${color.name}-950`]));
+    const candidates = [...exacts, ...ownerShades, ...tints];
+    const pick = (min) => candidates.find((ref) => ratio(ref, bgRef) >= min) ?? null;
+
+    const weak = ratio(text, bgRef) < WEAK_BELOW && !exacts.some((ref) => ratio(ref, bgRef) >= 4.5);
+    const border = borderFor(ownerName, bgRef);
+
+    if (weak) {
+      // Only one text colour is readable on this colour, so every text role uses it (no brand-coloured heading or link, no muted tone).
+      return { weak, matrix: { heading: text, text, muted: text, link: text, buttonBg: text, buttonText: bgRef, buttonAltBg: 'transparent', buttonAltText: text, icon: text, border } };
+    }
+
+    let muted = text;
+    for (const opacity of OPACITY_STEPS) {
+      if (ratio({ color: text, opacity }, bgRef) >= 4.5) { muted = { color: text, opacity }; break; }
+    }
+
+    const button = brandish
+      .map((color) => color.name)
+      .find((ref) => ratio(ref, bgRef) >= 3 && Math.max(...neutrals.map((n) => ratio(n, ref))) >= 4.5 && ref !== ownerName);
+    const buttonBg = button ?? text;
+    const buttonText = button ? bestNeutral(button) : bgRef;
+    const buttonAltBg = text;
+
+    return {
+      weak,
+      matrix: {
+        heading: pick(4.5) ?? pick(3) ?? text,
+        text,
+        muted,
+        link: pick(4.5) ?? text,
+        buttonBg,
+        buttonText,
+        buttonAltBg,
+        buttonAltText: bestNeutral(buttonAltBg),
+        icon: pick(3) ?? text,
+        border,
+      },
+    };
+  }
+
+  /** The declared values of a theme: { background?, <role>? } with references checked. */
+  function declared(color, kind) {
+    const styles = color.styles ?? {};
+    const source = kind === 'solid' ? styles : kind === 'light' ? styles.light : kind === 'dark' ? styles.dark : styles.light?.dark;
+    const result = {};
+    if (!source || typeof source !== 'object') return result;
+    for (const role of ROLE_KEYS) {
+      const spec = source[role];
+      if (spec === undefined) continue;
+      const parts = normalise(spec);
+      if (!resolver.parse(parts.color)) throw new Error(`${color.name}: styles${kind === 'solid' ? '' : `.${kind === 'light' ? 'light' : kind === 'dark' ? 'dark' : 'light.dark'}`}.${role} is not a known colour reference (${JSON.stringify(spec)}); use a palette step such as "${color.name}-800", "${color.name}-exact", "#ffffff" or "transparent".`);
+      result[role] = spec;
+    }
+    if (kind !== 'solid' && typeof source.background === 'string') {
+      if (!resolver.parse(source.background)) throw new Error(`${color.name}: styles.${kind === 'light' ? 'light' : 'dark'}.background is not a known colour reference (${JSON.stringify(source.background)}).`);
+      result.background = source.background;
+    }
+    if (kind === 'solid' && typeof styles.sectionBackground === 'string' && resolver.parse(styles.sectionBackground)) result.background = styles.sectionBackground;
+    return result;
+  }
+
+  function matrixFor(color, kind, bgRef, { solid }) {
+    const auto = autofill(bgRef, color.name, { solid });
+    const own = declared(color, kind);
+    const { background: _ignored, ...roles } = own;
+    return { weak: auto.weak, bg: bgRef, ...auto.matrix, ...roles, declared: Object.keys(roles) };
+  }
+
+  /** Every theme of the palette: solid and light, each with its light-mode and dark-mode matrix. */
+  function themes() {
+    const list = [];
+    for (const color of colors) {
+      const label = labelOf(color);
+      const solidBg = declared(color, 'solid').background ?? color.name;
+      list.push({
+        id: `brand-${color.name}`,
+        label: `Brand ${label}`,
+        colour: color.name,
+        mode: 'solid',
+        matrix: matrixFor(color, 'solid', solidBg, { solid: true }),
+        dark: matrixFor(color, 'dark', declared(color, 'dark').background ?? solidBg, { solid: true }),
+      });
+      if (color.role === 'white') continue; // a light version of white is just white
+      const lightBg = declared(color, 'light').background ?? `${color.name}-100`;
+      const darkBg = declared(color, 'lightDark').background ?? `${color.name}-900`;
+      list.push({
+        id: `brand-${color.name}-light`,
+        label: `Brand ${label} (light)`,
+        colour: color.name,
+        mode: 'light',
+        matrix: matrixFor(color, 'light', lightBg, { solid: false }),
+        dark: matrixFor(color, 'lightDark', darkBg, { solid: false }),
+      });
+    }
+    return list;
+  }
+
+  const show = (spec) => {
+    const { color, opacity } = normalise(spec);
+    return opacity >= 100 ? color : `${color} at ${opacity}%`;
+  };
+
+  /** The contrast problems of one matrix: fails (below the threshold) and warns (the button surface, weak colours). */
+  function check(theme, matrix, scope) {
+    const fails = [];
+    const warns = [];
+    const where = `${theme.id}${scope === 'dark' ? ' (dark)' : ''}`;
+    const need = (role, min, against = matrix.bg, label = role) => {
+      const r = ratio(matrix[role], against);
+      if (r !== null && r + 1e-9 < min) fails.push(`${where}: ${label} ${show(matrix[role])} measures ${r.toFixed(2)}:1 on ${against === matrix.bg ? 'the background' : against} (${against === matrix.bg ? matrix.bg : against}); it needs ${min}:1.`);
+    };
+    need('text', THRESHOLD.text);
+    need('heading', THRESHOLD.heading);
+    need('muted', THRESHOLD.muted);
+    need('link', THRESHOLD.link);
+    need('icon', THRESHOLD.icon);
+    // the button label on the button, the outline button's label on the section (or on its own fill)
+    const buttonLabel = ratio(matrix.buttonText, matrix.buttonBg);
+    if (buttonLabel !== null && buttonLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the button label ${show(matrix.buttonText)} measures ${buttonLabel.toFixed(2)}:1 on the button ${show(matrix.buttonBg)}; it needs 4.5:1.`);
+    const altSurface = matrix.buttonAltBg === 'transparent' ? matrix.bg : matrix.buttonAltBg;
+    const altLabel = ratio(matrix.buttonAltText, altSurface);
+    if (altLabel !== null && altLabel + 1e-9 < THRESHOLD.buttonAltText) fails.push(`${where}: the outline button label ${show(matrix.buttonAltText)} measures ${altLabel.toFixed(2)}:1 on ${altSurface}; it needs 4.5:1.`);
+    const surface = ratio(matrix.buttonBg, matrix.bg);
+    if (surface !== null && surface + 1e-9 < THRESHOLD.buttonSurface) warns.push(`${where}: the button (${show(matrix.buttonBg)}) measures ${surface.toFixed(2)}:1 against the section background; its label is readable but the button's shape is hard to see (3:1 is the guide).`);
+    if (matrix.weak && scope !== 'dark') warns.push(`${where}: a weak colour. Only ${show(matrix.text)} is readable on it (${ratio(matrix.text, matrix.bg).toFixed(2)}:1), so every text role uses it: no brand-coloured heading or link and no muted tone, and links look like body text.`);
+    return { fails, warns };
+  }
+
+  function checkAll(list, { accept = [] } = {}) {
+    const fails = [];
+    const warns = [];
+    for (const theme of list) {
+      for (const [scope, matrix] of [['light', theme.matrix], ['dark', theme.dark]]) {
+        const result = check(theme, matrix, scope);
+        const accepted = accept.includes(theme.colour);
+        (accepted ? warns : fails).push(...result.fails.map((line) => (accepted ? `${line} (accepted: acceptLowContrast)` : line)));
+        warns.push(...result.warns);
+      }
+    }
+    return { fails, warns };
+  }
+
+  return { resolver, autofill, themes, check, checkAll, ratio };
+}
+
+const cssValue = (resolver, spec) => {
+  const { color, opacity } = normalise(spec);
+  const base = resolver.css(color);
+  return opacity >= 100 || base === 'transparent' ? base : `color-mix(in srgb, ${base} ${opacity}%, transparent)`;
+};
+
+function declarations(resolver, matrix) {
+  const lines = [`  --section-bg: ${resolver.css(matrix.bg)};`];
+  for (const role of ROLE_KEYS) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
+  // The kit's blocks and buttons read the older --pkde-theme-* tokens: inside a section theme they follow it.
+  lines.push(
+    '  --pkde-theme-background: var(--section-bg);',
+    '  --pkde-theme-content: var(--section-text);',
+    '  --pkde-theme-highlight: var(--section-link);',
+    '  --pkde-theme-btn-bg: var(--section-button-bg);',
+    '  --pkde-theme-btn-text: var(--section-button-text);',
+    '  --pkde-theme-btn-border: var(--section-button-bg);',
+    '  --pkde-theme-alt-btn-bg: var(--section-button-alt-bg);',
+    '  --pkde-theme-alt-btn-text: var(--section-button-alt-text);',
+    '  --pkde-theme-alt-btn-border: var(--section-button-alt-text);',
+    '  --pkde-theme-border: var(--section-border);',
+  );
+  return lines;
+}
+
+/** The generated CSS of every section theme: the variables only (the kit's section.css paints the section from them). */
+export function buildSectionRolesCss(colors, themeList) {
+  const resolver = createResolver(colors);
+  const out = [
+    '/**',
+    ' * Section themes: Brand <Label> and Brand <Label> (light) for every palette colour, as block styles (is-style-brand-*) of core/group and',
+    ' * sage/section. Generated by bin/generate-theme-tokens.mjs from config/brand-palette.json; do not edit. Set a role by hand in the colour\'s',
+    ' * `styles` (see docs/section-themes.md), then regenerate.',
+    ' */',
+  ];
+  for (const theme of themeList) {
+    out.push(`.is-style-${theme.id} {`, ...declarations(resolver, theme.matrix), '}', '');
+  }
+  out.push('/* Dark mode: under the site\'s .dark class (the same switch the site\'s own dark: variants use). Without that class nothing here applies. */');
+  for (const theme of themeList) {
+    out.push(`.dark .is-style-${theme.id} {`, ...declarations(resolver, theme.dark), '}', '');
+  }
+  return out.join('\n');
+}
+
+/** resources/generated/section-themes.php: the block styles the kit registers for core/group and sage/section. */
+export function buildSectionThemesPhp(themeList) {
+  const rows = themeList.map((theme) => `    ['name' => '${theme.id}', 'label' => '${theme.label.replace(/'/g, "\\'")}', 'mode' => '${theme.mode}', 'colour' => '${theme.colour}'],`);
+  return ['<?php', '', '/**', ' * Generated by bin/generate-theme-tokens.mjs from config/brand-palette.json.', ' * Do not edit directly. Read by the kit (app/section-themes.php) to register the Brand <Label> block styles.', ' */', '', 'return [', ...rows, '];', ''].join('\n');
+}

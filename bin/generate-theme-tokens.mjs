@@ -36,7 +36,9 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { converter, formatHex, wcagContrast } from 'culori';
+import { formatHex } from 'culori';
+import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
+import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, labelOf } from './lib/section-themes.mjs';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
 // or PKDE_THEME_DIR. Never a path relative to this file, which lives in vendor/.
@@ -49,11 +51,8 @@ const cardThemesOutputPath = path.join(themeDirectory, 'resources/css/generated/
 const themeJsonPath = path.join(themeDirectory, 'theme.json');
 const themeOptionsOutputPath = path.join(themeDirectory, 'resources/js/generated/theme-options.js');
 const themeOptionsPhpOutputPath = path.join(themeDirectory, 'resources/generated/theme-options.php');
+const sectionThemesPhpOutputPath = path.join(themeDirectory, 'resources/generated/section-themes.php');
 const headerOptionsOutputPath = path.join(themeDirectory, 'resources/generated/header-options.php');
-const toOklch = converter('oklch');
-
-const shadeLightness = { 50: 0.97, 100: 0.94, 200: 0.88, 300: 0.8, 400: 0.71, 500: 0.62, 700: 0.46, 800: 0.36, 900: 0.27, 950: 0.18 };
-const steps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 
 // Tailwind's own neutral greys, by lightness. The views and blocks use neutral-* for text, borders and quiet
 // surfaces; buildCss() redefines the scale at these same lightnesses with a faint tint of the brand hue, so a
@@ -137,7 +136,7 @@ function validatePalette(colors) {
   }
 
   const names = new Set();
-  const validated = colors.map(({ name, hex, role, styles }) => {
+  const validated = colors.map(({ name, hex, role, styles, label }) => {
     const slug = slugify(name ?? '');
     if (!slug) fail(`Invalid colour name: ${name}`);
     if (!/^#[0-9a-f]{6}$/i.test(hex ?? '')) fail(`${name} must use a 6-digit hex value.`);
@@ -149,6 +148,10 @@ function validatePalette(colors) {
     const result = { name: slug, hex: hex.toLowerCase() };
     if (role !== undefined) result.role = role;
     if (styles !== undefined) result.styles = styles;
+    if (label !== undefined) {
+      if (typeof label !== 'string' || !label.trim()) fail(`${name} has an empty or non-text label.`);
+      result.label = label.trim();
+    }
     return result;
   });
 
@@ -198,38 +201,7 @@ function ensureNeutralRoles(colors) {
   return colors;
 }
 
-// The 600 step normally *is* the exact source colour (distance 0 below), so
-// it reads back precisely what was typed in. But a bright/light source (a
-// saturated yellow, say) can have a natural lightness above 500's fixed
-// 0.62 — left unclamped, 600 would then render lighter than 500, breaking
-// the scale's monotonic darkening (confirmed on #eab308: 600 came out
-// lighter than 500 and nearly as light as 300). Clamping keeps 600 exactly
-// on the source for every colour that was already well-behaved, and only
-// pulls outliers back into a band strictly between 500 and 700 (with a
-// small margin so 600 never lands exactly on either neighbour) rather than
-// letting them invert the scale.
-const SIX_HUNDRED_MIN = shadeLightness[700] + 0.01;
-const SIX_HUNDRED_MAX = shadeLightness[500] - 0.01;
-
-function shade(color, step) {
-  const base = toOklch(color.hex);
-  if (!base) fail(`Unable to convert ${color.hex}.`);
-  const lightness = step === 600
-    ? Math.min(SIX_HUNDRED_MAX, Math.max(SIX_HUNDRED_MIN, base.l))
-    : shadeLightness[step];
-  // Chroma falls toward both white and black, reducing out-of-gamut colours
-  // while preserving the supplied hue and the exact source wherever a step's
-  // lightness matches the source's own (always true at 600, unless clamped
-  // above).
-  const distance = Math.abs(lightness - base.l);
-  const chroma = Math.max(0, base.c * (1 - distance * 1.15));
-  // culori omits `h` entirely for a fully achromatic source (chroma 0 — a
-  // pure #000000/#ffffff, the default role:black/role:white hex) since hue
-  // is meaningless without any chroma to begin with. Falls back to 0 rather
-  // than crashing; harmless either way once chroma is also 0.
-  const hue = base.h ?? 0;
-  return `oklch(${lightness.toFixed(3)} ${chroma.toFixed(3)} ${hue.toFixed(2)})`;
-}
+// shade() and the 600-step clamp live in bin/lib/color-math.mjs (shared with the section-theme matrices).
 
 /**
  * Picks whichever of role:black/role:white has better *measured* WCAG
@@ -304,7 +276,8 @@ function backfillStyles(colors) {
   const whiteColor = colors.find((color) => color.role === 'white');
 
   for (const color of colors) {
-    if (color.styles) continue;
+    // A colour may already carry `styles` (hand-edited, or only the new section-theme roles); only the keys it lacks are filled in.
+    const declared = color.styles;
 
     if (color.role === 'black' || color.role === 'white') {
       const isBlack = color.role === 'black';
@@ -324,6 +297,7 @@ function backfillStyles(colors) {
         buttonSecondaryText: `${opposite.name}-${oppositeStep}`,
         border: `${color.name}-${isBlack ? 800 : 200}`,
         card: opposite.name,
+        ...declared,
       };
       continue;
     }
@@ -340,6 +314,7 @@ function backfillStyles(colors) {
       buttonSecondaryText: winnerRef,
       border: `${color.name}-500`,
       card: winner.color.name,
+      ...declared,
     };
   }
 
@@ -480,31 +455,48 @@ function buildCss(colors) {
  * invents its own values any more.
  */
 function buildSectionThemesCss(colors) {
+  const resolver = createResolver(colors);
   const lines = [
     '/**',
     ' * Generated by bin/generate-theme-tokens.mjs from config/brand-palette.json.',
     ' * Do not edit directly — edit each colour\'s own `styles` in',
     ' * config/brand-palette.json instead, then regenerate.',
+    ' *',
+    ' * The .theme-{name} classes below are the older section themes (the `theme` attribute of the hero, CTA, FAQ and loop blocks, and',
+    ' * `theme-*` classes in views). They keep their values and also set the --section-* roles the new Brand <Label> section themes use,',
+    ' * so a block inside one reads the same variables either way. The Brand themes follow (is-style-brand-*).',
     ' */',
   ];
+  const value = (ref) => resolver.css(ref);
 
   colors.forEach((color, index) => {
     const alias = POSITIONAL_ALIASES[index];
     const selectors = alias ? [`.theme-${color.name}`, `.theme-${alias}`] : [`.theme-${color.name}`];
     const s = color.styles;
-    const altBtnBg = s.buttonSecondaryBackground === 'transparent' ? 'transparent' : `var(--color-${s.buttonSecondaryBackground})`;
+    const altBtnBg = value(s.buttonSecondaryBackground);
     lines.push(`${selectors.join(',\n')} {`);
     lines.push(
-      `  --pkde-theme-background: var(--color-${s.background});`,
-      `  --pkde-theme-content: var(--color-${s.content});`,
-      `  --pkde-theme-highlight: var(--color-${s.highlight});`,
-      `  --pkde-theme-btn-bg: var(--color-${s.buttonPrimaryBackground});`,
-      `  --pkde-theme-btn-text: var(--color-${s.buttonPrimaryText});`,
-      `  --pkde-theme-btn-border: var(--color-${s.buttonPrimaryBackground});`,
+      `  --pkde-theme-background: ${value(s.background)};`,
+      `  --pkde-theme-content: ${value(s.content)};`,
+      `  --pkde-theme-highlight: ${value(s.highlight)};`,
+      `  --pkde-theme-btn-bg: ${value(s.buttonPrimaryBackground)};`,
+      `  --pkde-theme-btn-text: ${value(s.buttonPrimaryText)};`,
+      `  --pkde-theme-btn-border: ${value(s.buttonPrimaryBackground)};`,
       `  --pkde-theme-alt-btn-bg: ${altBtnBg};`,
-      `  --pkde-theme-alt-btn-text: var(--color-${s.buttonSecondaryText});`,
-      `  --pkde-theme-alt-btn-border: var(--color-${s.buttonSecondaryText});`,
-      `  --pkde-theme-border: var(--color-${s.border});`,
+      `  --pkde-theme-alt-btn-text: ${value(s.buttonSecondaryText)};`,
+      `  --pkde-theme-alt-btn-border: ${value(s.buttonSecondaryText)};`,
+      `  --pkde-theme-border: ${value(s.border)};`,
+      '  --section-bg: var(--pkde-theme-background);',
+      '  --section-heading: var(--pkde-theme-content);',
+      '  --section-text: var(--pkde-theme-content);',
+      '  --section-muted: color-mix(in srgb, var(--pkde-theme-content) 75%, transparent);',
+      '  --section-link: var(--pkde-theme-highlight);',
+      '  --section-button-bg: var(--pkde-theme-btn-bg);',
+      '  --section-button-text: var(--pkde-theme-btn-text);',
+      '  --section-button-alt-bg: var(--pkde-theme-alt-btn-bg);',
+      '  --section-button-alt-text: var(--pkde-theme-alt-btn-text);',
+      '  --section-icon: var(--pkde-theme-highlight);',
+      '  --section-border: var(--pkde-theme-border);',
       '}',
       '',
     );
@@ -588,15 +580,15 @@ const PALETTE_STEPS = [50, 200, 400, 600, 800, 950];
 const PALETTE_NEUTRAL_STEPS = [100, 300, 500, 700, 900];
 
 function buildPalette(colors) {
-  const entry = (slug, color) => `        { "slug": "${slug}", "name": "${titleCase(slug)}", "color": "${color}" }`;
+  const entry = (slug, color, name = titleCase(slug)) => `        { "slug": "${slug}", "name": ${JSON.stringify(name)}, "color": "${color}" }`;
   const rows = [];
 
   for (const color of colors) {
     if (color.role === 'black' || color.role === 'white') {
-      rows.push(entry(color.name, color.hex));
+      rows.push(entry(color.name, color.hex, labelOf(color)));
       continue;
     }
-    for (const step of PALETTE_STEPS) rows.push(entry(`${color.name}-${step}`, shade(color, step)));
+    for (const step of PALETTE_STEPS) rows.push(entry(`${color.name}-${step}`, shade(color, step), `${labelOf(color)} ${step}`));
   }
 
   const brand = colors.find((color) => color.role === 'brand') ?? colors[0];
@@ -633,7 +625,7 @@ function withPalette(themeJson, colors) {
  * section is a real, selectable theme option, not just implementation detail.
  */
 function buildThemeOptions(colors) {
-  const options = [{ value: '', label: 'Default' }, ...colors.map((color) => ({ value: color.name, label: titleCase(color.name) }))];
+  const options = [{ value: '', label: 'Default' }, ...colors.map((color) => ({ value: color.name, label: labelOf(color) }))];
 
   const js = [
     '/**',
@@ -653,7 +645,7 @@ function buildThemeOptions(colors) {
     ' */',
     '',
     'return [',
-    ...colors.map((color) => `    ['value' => '${color.name}', 'label' => '${titleCase(color.name).replace("'", "\\'")}'],`),
+    ...colors.map((color) => `    ['value' => '${color.name}', 'label' => '${labelOf(color).replace("'", "\\'")}'],`),
     '];',
     '',
   ];
@@ -780,6 +772,19 @@ if (options.colors.length) {
 
 palette.colors = ensureNeutralRoles(palette.colors);
 palette.colors = backfillStyles(palette.colors);
+
+// Section themes (WP-100): Brand <Label> and Brand <Label> (light) for every colour. They read only the new role keys of `styles`
+// (heading, text, muted, link, buttonBg, buttonText, buttonAltBg, buttonAltText, icon, border, and the light and dark objects) and work
+// out the rest by contrast; the older keys keep serving the older .theme-{name} classes and are not read, so an existing palette is
+// never turned red by adopting them.
+let sectionThemeResult;
+try {
+  const builder = createBuilder(palette.colors);
+  sectionThemeResult = { builder, themes: builder.themes() };
+} catch (error) {
+  fail(error.message);
+}
+const sectionThemes = sectionThemeResult.themes;
 // A palette built from --color arguments has no header of its own: keep the existing file's one (if still valid).
 const existingHeader = options.colors.length && fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')).header : undefined;
 const header = validateHeader(palette.header ?? existingHeader, palette.colors);
@@ -805,6 +810,12 @@ function darkerHexForWhiteText(color) {
 }
 const contrastProblems = [];
 const contrastNotes = [];
+// The section themes' role pairs (both modes of every theme): a pair under its threshold FAILs; weak colours and thin button surfaces WARN.
+{
+  const result = sectionThemeResult.builder.checkAll(sectionThemes, { accept: palette.acceptLowContrast ?? [] });
+  contrastProblems.push(...result.fails);
+  contrastNotes.push(...result.warns);
+}
 for (const color of palette.colors) {
   if (!['brand', 'accent'].includes(color.role) || (palette.acceptLowContrast ?? []).includes(color.name)) continue;
   const background = shade(color, 600);
@@ -840,7 +851,8 @@ for (const color of palette.colors) {
 }
 
 const css = buildCss(palette.colors);
-const sectionThemesCss = buildSectionThemesCss(palette.colors);
+const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}`;
+const sectionThemesPhp = buildSectionThemesPhp(sectionThemes);
 const cardThemesCss = buildCardThemesCss(palette.colors);
 const themeOptions = buildThemeOptions(palette.colors);
 const headerOptions = buildHeaderOptions(header);
@@ -871,6 +883,7 @@ if (options.check) {
     [rel(themeOptionsOutputPath), upToDate(themeOptionsOutputPath, themeOptions.js)],
     [rel(themeOptionsPhpOutputPath), upToDate(themeOptionsPhpOutputPath, themeOptions.php)],
     [rel(headerOptionsOutputPath), upToDate(headerOptionsOutputPath, headerOptions)],
+    [rel(sectionThemesPhpOutputPath), upToDate(sectionThemesPhpOutputPath, sectionThemesPhp)],
     [`${rel(themeJsonPath)} (settings.color.palette)`, themeJsonPaletteUpToDate()],
   ].filter(([, ok]) => !ok).map(([label]) => label);
   if (stale.length) {
@@ -904,7 +917,9 @@ fs.writeFileSync(cardThemesOutputPath, cardThemesCss);
 fs.writeFileSync(themeOptionsOutputPath, themeOptions.js);
 fs.writeFileSync(themeOptionsPhpOutputPath, themeOptions.php);
 fs.writeFileSync(headerOptionsOutputPath, headerOptions);
+fs.writeFileSync(sectionThemesPhpOutputPath, sectionThemesPhp);
 if (themeJson !== null) fs.writeFileSync(themeJsonPath, themeJson);
 const aliases = palette.colors.map((color, index) => `${color.name}/${POSITIONAL_ALIASES[index] ?? '—'}`);
 process.stdout.write(`Generated ${palette.colors.length} colour palette(s): ${palette.colors.map((color) => color.name).join(', ')}\n`);
 process.stdout.write(`Section themes (name/alias): ${aliases.join(', ')}\n`);
+process.stdout.write(`Brand section themes: ${sectionThemes.map((theme) => theme.id).join(', ')}\n`);
