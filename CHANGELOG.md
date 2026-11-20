@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026.11.20.2
+
+FAQs as their own content (WP-102, TPL-232 to TPL-236; needs pkde/platform 2026.11.20.1). **Adopt:** bb now (staging pilot); tcs, js and el now (local and staging); rp, bp, mds, jsd and cs after their December production release. Not Train-ready. Proved on the template stack in real Chrome as Administrator, SEO and Editor; NOT on a site or a 20i server.
+
+- **The FAQ block in group mode.** `sage/faq` gets `groups` (one or more FAQ group ids, in display order), `order` (as arranged in each group, or A to Z) and `limit`, next to its heading, description, column threshold and theme. It shows the published FAQs of those groups from the platform's FAQs post type, server-side, with a live preview in the editor, a group picker anyone who can edit the page can use, and an "Edit these FAQs" link for people who may manage FAQs. A FAQ that is in two of the chosen groups is shown once, in the first; with several groups each group's name sits above its questions. The rows follow the section's colours (`--section-*`), with the old neutral colours as the fallback outside a section.
+- **Typing the questions into the block is deprecated.** The Accordion Items inside the block still render exactly as before, and the editor warns; the drift check lists those pages.
+- **One FAQPage per page.** Every FAQ block (group mode or typed) adds to the same list: merged across blocks, a repeated question once, and none at all when Rank Math's own FAQ block is on the page or a site turns it off (`pkde_kit/faq_schema`).
+- **Fix: the feature item's icon list was empty in the editor.** The kit's editor settings (`pkdeIcons`, and now `pkdeFaqGroups`) are kept by the `core/editor` store, not by `core/block-editor`; both are read from the right place now (`resources/js/editor-settings.js`).
+- Pest 186, Node 47.
+
 ## 2026.11.20.1
 
 The section editor (WP-100, TPL-205 to TPL-231): a client edits a page from locked sections, patterns and a few blocks, and cannot break the design. Pilot on bb staging; **Adopt: bb only for now** (every other site: the February train, through a manager brief; not Train-ready for the live sites). Proved on the template stack and, as a trial, on bb.test in real Chrome; NOT on a 20i server. Reports: `reports/template/2026-11-20-section-editor-*.md`.
