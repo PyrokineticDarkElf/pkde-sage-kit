@@ -10,6 +10,7 @@ import '../blocks/section/edit.jsx';
 import './animation.jsx';
 import './section-colors.js';
 import './section-colour-notice.jsx';
+import './form-preview.jsx';
 import '../blocks/hero/edit.jsx';
 import '../blocks/text-and-image/edit.jsx';
 import '../blocks/feature-item/edit.jsx';

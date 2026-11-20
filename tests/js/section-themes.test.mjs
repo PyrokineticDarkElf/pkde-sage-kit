@@ -13,13 +13,14 @@ const generator = fileURLToPath(new URL('../../bin/generate-theme-tokens.mjs', i
 const neutrals = [{ name: 'black', hex: '#000000', role: 'black' }, { name: 'white', hex: '#ffffff', role: 'white' }];
 const bb = [{ name: 'sage', hex: '#637972', role: 'brand', label: 'Sage' }, { name: 'blush', hex: '#eac3bf', role: 'accent' }, { name: 'slate', hex: '#4d656b' }, ...neutrals];
 
-function run(colors, extra = {}, args = []) {
+function run(colors, extra = {}, args = [], files = {}) {
   const root = mkdtempSync(join(tmpdir(), 'pkde-kit-'));
   const theme = join(root, 'web/app/themes/sage');
   mkdirSync(join(root, 'config'), { recursive: true });
   mkdirSync(theme, { recursive: true });
   writeFileSync(join(root, 'config/brand-palette.json'), JSON.stringify({ colors, fonts: { display: 'Poppins', sans: 'Inter' }, ...extra }));
   writeFileSync(join(theme, 'theme.json'), '{\n  "settings": {\n    "color": {\n      "palette": [\n      ]\n    }\n  }\n}\n');
+  for (const [file, content] of Object.entries(files)) { mkdirSync(join(theme, file, '..'), { recursive: true }); writeFileSync(join(theme, file), content); }
   const result = spawnSync('node', [generator, ...args], { cwd: theme, env: { ...process.env, PKDE_THEME_DIR: theme }, encoding: 'utf8' });
   const read = (file) => { try { return readFileSync(join(theme, file), 'utf8'); } catch { return ''; } };
   return { ...result, theme, read, css: read('resources/css/generated/section-themes.css'), php: read('resources/generated/section-themes.php'), themeJson: read('theme.json'), options: read('resources/js/generated/theme-options.js'), root };
@@ -256,4 +257,17 @@ test('a declared link wins, and a declared link too close to the text is a warni
   const r = run(colors);
   assert.equal(r.status, 0, r.stderr);
   assert.match(block(r.css, '.is-style-brand-sage'), /--section-link: var\(--color-blush-200\);/);
+});
+
+test('the palette is carried into the built theme.json (what WordPress reads in dev), the rest of it untouched; without one the generator says to build', () => {
+  const built = JSON.stringify({ __processed__: 'x', settings: { color: { palette: [{ slug: 'old', color: '#000' }], custom: false }, typography: { fontFamilies: [{ slug: 'sans' }] } } });
+  const r = run(bb, {}, [], { 'public/build/assets/theme.json': built });
+  assert.equal(r.status, 0, r.stderr);
+  const after = JSON.parse(r.read('public/build/assets/theme.json'));
+  assert.equal(after.settings.color.palette.some((swatch) => swatch.slug === 'sage-600'), true);
+  assert.equal(after.settings.color.palette.some((swatch) => swatch.slug === 'old'), false);
+  assert.equal(after.settings.color.custom, false);
+  assert.deepEqual(after.settings.typography, { fontFamilies: [{ slug: 'sans' }] });
+  assert.match(r.stdout, /Updated public\/build\/assets\/theme\.json/);
+  assert.match(run(bb).stdout, /No public\/build\/assets\/theme\.json yet/);
 });

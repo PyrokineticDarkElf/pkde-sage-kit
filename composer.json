@@ -23,6 +23,7 @@
       "app/section-themes.php",
       "app/sections.php",
       "app/patterns.php",
+      "app/form-preview.php",
       "app/block-assets.php",
       "app/woocommerce.php",
       "app/search.php",

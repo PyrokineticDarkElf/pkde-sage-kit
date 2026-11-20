@@ -426,3 +426,14 @@
   --pkde-theme-btn-text: var(--section-card-button-text, var(--section-button-text, var(--color-white)));
   --pkde-theme-btn-border: var(--section-card-button-border, var(--section-button-border, var(--color-neutral-950)));
 }
+
+/* The editor's preview of a Contact Form 7 form (resources/js/form-preview.jsx): inert, with a note under it. */
+.pkde-form-preview [inert] {
+  pointer-events: none;
+  opacity: 0.9;
+}
+.pkde-form-preview .pkde-form-preview__note {
+  margin-block: 0.5rem 0;
+  font-size: 0.75rem;
+  color: var(--section-muted, currentColor);
+}

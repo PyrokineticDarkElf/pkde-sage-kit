@@ -980,6 +980,19 @@ fs.writeFileSync(sectionThemesPhpOutputPath, sectionThemesPhp);
 fs.writeFileSync(editorPalettesPhpOutputPath, editorPalettesPhp);
 fs.writeFileSync(sectionCompatJsOutputPath, sectionCompatJs);
 if (themeJson !== null) fs.writeFileSync(themeJsonPath, themeJson);
+
+// WordPress reads the theme.json that Vite BUILDS (public/build/assets/theme.json), and the dev server never rebuilds it (the plugin only writes it in a build), so after a
+// palette change a site would keep serving the old editor palette and colour classes until the next `vite build` (WP-100, bb). Carry the new palette over to that file now.
+// Fonts, font sizes and radii in it come from the CSS, so a change to those still needs a build (or a restart of Vite).
+const builtThemeJsonPath = path.join(themeDirectory, 'public/build/assets/theme.json');
+if (themeJson !== null && fs.existsSync(builtThemeJsonPath)) {
+  const built = JSON.parse(fs.readFileSync(builtThemeJsonPath, 'utf8'));
+  built.settings = { ...built.settings, color: { ...built.settings?.color, palette: JSON.parse(themeJson).settings.color.palette } };
+  fs.writeFileSync(builtThemeJsonPath, `${JSON.stringify(built, null, 2)}\n`);
+  process.stdout.write('Updated public/build/assets/theme.json with the new palette (the file WordPress reads). Changed fonts need a Vite restart or `npm run build`.\n');
+} else if (themeJson !== null) {
+  process.stdout.write('No public/build/assets/theme.json yet: run `npm run build` (or restart Vite) so WordPress reads the new palette.\n');
+}
 const aliases = palette.colors.map((color, index) => `${color.name}/${POSITIONAL_ALIASES[index] ?? '—'}`);
 process.stdout.write(`Generated ${palette.colors.length} colour palette(s): ${palette.colors.map((color) => color.name).join(', ')}\n`);
 process.stdout.write(`Section themes (name/alias): ${aliases.join(', ')}\n`);
