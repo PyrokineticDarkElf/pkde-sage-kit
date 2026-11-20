@@ -148,3 +148,6 @@ tablet, and four-row three-column desktop grids.
 
 ## Counts on a search with Relevanssi (2026.11.20.7)
 The counts beside the options come from a second query of the products the grid lists (the main query's arguments without the filter choices). Relevanssi answers only the MAIN search (or a query flagged `relevanssi`), so on a search the second query found nothing: every count was 0 and a search with no filter showed no groups at all. The kit now flags that query for Relevanssi when it is active. A site with another search plugin changes the query's arguments with the filter `pkde_kit/filter_counts_base_args` (`array $vars, WP_Query $mainQuery`).
+
+## Counts on a big search, and after an upgrade (2026.11.20.9)
+Relevanssi keeps only its top hits (`relevanssi_throttle`, 500 by default). The grid runs the search with the visitor's choices inside it, so it keeps the top hits among the matching products. The counts' base set has no choices, so with more hits than the limit it was cut before the choices narrowed it and every count came out low (tcs: "abs" 3 against a grid of 7). The counts' base query now runs with the limit off, so it holds every hit. The cache key of the counts also holds the kit version and a counts-logic version (`ShopFilterCounts::SCHEMA`), so an upgrade never serves counts cached by the old code.

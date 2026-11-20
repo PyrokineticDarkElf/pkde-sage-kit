@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.20.9
+
+The shop filter counts are right on a big search and after an upgrade (TPL-262, tcs). **Adopt:** bump the kit on tcs (staging pilot) and every shop with Relevanssi; no change without it.
+
+- **Counts LOW against the grid (tcs: "abs" 3 against 7, "acrylic" 3 against 4).** Relevanssi keeps only its top hits (`relevanssi_throttle`, 500 by default). The grid runs the search WITH the visitor's choice inside it, so it keeps the top 500 among the matching products; the counts' base set has no choices, so with more than 500 hits it was cut first and the choice then narrowed what was left. tcs has 1,300+ products and "clock" matches most of them; bb has fewer hits than the limit, which is why its checks were equal. The base query now runs with the limit off, so it holds every hit.
+- **Stale counts after a bump.** The cached counts (`pkde_sfc_*`, up to an hour) had no code version in their key, so a site kept serving the old all-zero counts after kit .7. The key now holds the installed kit version and a counts-logic version, so an upgrade drops the old counts by itself (no hand-clearing of transients).
+- **Proved** on the template stack with real WooCommerce 11.3 and Relevanssi 4.28: with the limit set to 8 (a small catalogue standing in for tcs's 500 limit on 1,300 products) the Material counts were 2, 2, 2, 2 against a grid of 4, 3, 4, 4; after, 4, 3, 4, 4 equal to the grid, and the stale cached counts were replaced without clearing anything. A search whose terms are only in the product's content, its SKU or its excerpt: every count equal to the grid (also with the limit at 3). Not tested: variable products' variations, or tcs's own catalogue. Pest 208.
+
 ## 2026.11.20.8
 
 The table of contents no longer uses a PHP 8.2 deprecated conversion (TPL-260). **Adopt:** bump the kit on every site with the next push (bb, tcs first); nothing else, and no visible change.
