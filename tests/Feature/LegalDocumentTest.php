@@ -1,0 +1,52 @@
+<?php
+
+// app/legal.php (WP-104): the dates line and the contents list of a legal document; plain values, no WordPress. The view is proved in a browser on the template stack.
+require_once dirname(__DIR__, 2) . '/app/TableOfContents.php';
+require_once dirname(__DIR__, 2) . '/app/legal.php';
+
+use function App\legal_meta_parts;
+use function App\legal_toc;
+
+$root = dirname(__DIR__, 2);
+$format = fn(string $ymd) => date('j F Y', strtotime($ymd));
+
+it('prints the dates line with only the parts that are set, the reviewed date winning over the modified one', function () use ($format) {
+    expect(legal_meta_parts(['effective' => '2026-11-01', 'reviewed' => '2026-11-12', 'version' => '1.3'], '2026-11-20', $format))
+        ->toBe(['Effective from 1 November 2026', 'Last updated 12 November 2026', 'Version 1.3'])
+        ->and(legal_meta_parts(['effective' => '2026-11-01'], '2026-11-20', $format))->toBe(['Effective from 1 November 2026', 'Last updated 20 November 2026'])
+        ->and(legal_meta_parts([], '2026-11-20', $format))->toBe(['Last updated 20 November 2026'])
+        ->and(legal_meta_parts(['version' => '2'], '', $format))->toBe(['Version 2'])
+        ->and(legal_meta_parts([], '', $format))->toBe([]);
+});
+
+it('adds ids to the headings and lists only h2 and h3, from three of them', function () {
+    foreach (['sanitize_title' => fn($t) => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $t), '-')), '__' => fn($t) => $t] as $name => $impl) {
+        if (! function_exists($name)) {
+            $GLOBALS['pkde_stub_' . $name] = $impl;
+            eval("function $name(\$a) { return \$GLOBALS['pkde_stub_$name'](\$a); }");
+        }
+    }
+
+    $html = '<p>Intro</p><h2>Who we are</h2><p>a</p><h3>Contact</h3><p>b</p><h4>Detail</h4><h2>Your rights</h2><p>c</p>';
+    $toc = legal_toc($html);
+
+    expect(array_column($toc['headings'], 'text'))->toBe(['Who we are', 'Contact', 'Your rights']) // the h4 is not listed
+        ->and(array_column($toc['headings'], 'id'))->toBe(['who-we-are', 'contact', 'your-rights'])
+        ->and($toc['show'])->toBeTrue()
+        ->and($toc['content'])->toContain('id="who-we-are"')->and($toc['content'])->toContain('id="detail"'); // every heading has an anchor
+
+    // two headings: no list
+    expect(legal_toc('<h2>One</h2><p>x</p><h2>Two</h2>')['show'])->toBeFalse()
+        ->and(legal_toc('')['show'])->toBeFalse();
+});
+
+it('ships the view, the styles and the print rules, loaded from the package', function () use ($root) {
+    $view = file_get_contents("$root/resources/views/single-pkde_legal.blade.php");
+    $css = file_get_contents("$root/resources/css/legal.css");
+
+    expect($view)->toContain('_pkde_legal_effective', 'legal_toc', 'pkde-kit::partials.breadcrumbs', 'pkde-kit::partials.toc')
+        ->and($view)->not->toContain('revisions')->and($view)->not->toContain('wp_get_post_revisions') // no public version history
+        ->and($css)->toContain('@media print', 'attr(href)', '.banner', '.content-info')
+        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./legal.css";')
+        ->and(file_get_contents("$root/composer.json"))->toContain('app/legal.php');
+});

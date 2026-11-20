@@ -1,0 +1,61 @@
+/**
+ * The legal document view (single-pkde_legal): the blog single's type and rail (post-single.css, the --pkde-post-* variables) plus the dates line, the layout
+ * without a contents list, and the print styles. A site sets --pkde-post-* , not these classes.
+ */
+.pkde-legal__meta {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--pkde-post-muted, var(--color-neutral-600));
+}
+/* a short document with no contents list: the text column on its own, as wide as the reading measure */
+.pkde-legal__body--no-toc {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pkde-legal__text :where(h2, h3)[id] {
+  scroll-margin-top: var(--pkde-post-sticky-top, 6.5rem);
+}
+.pkde-legal__text :where(table) {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.pkde-legal__text :where(th, td) {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+  text-align: left;
+  vertical-align: top;
+}
+/* the copy-link control the contents anchors add is for screens */
+@media print {
+  /* the page chrome, the contents list and every control: the document alone */
+  body.single-pkde_legal :is(.banner, .content-info, .breadcrumbs, .post-rail, .heading-anchor-copy, #wpadminbar, [class*="cky-"], .skip-link, [href="#main"]) {
+    display: none !important;
+  }
+  body.single-pkde_legal main,
+  body.single-pkde_legal .pkde-legal__body {
+    display: block;
+    padding: 0;
+  }
+  .pkde-legal__text {
+    max-width: none;
+    color: #000;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+  .pkde-legal__text :where(h2, h3) {
+    break-after: avoid;
+    color: #000;
+  }
+  .pkde-legal__text :where(table, details, blockquote, li) {
+    break-inside: avoid;
+  }
+  /* a link's address after it, except a link inside the page */
+  .pkde-legal__text a[href]:not([href^="#"])::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+  .pkde-legal__meta {
+    color: #000;
+  }
+}
