@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.20.7
+
+The shop filter counts are right on a product search (TPL-257, tcs staging). **Adopt:** bump the kit on every shop with Relevanssi (tcs first, the staging pilot; bb if it searches products with Relevanssi); no change for a shop without it.
+
+- **The cause.** The counts come from a second query (the main query's arguments without the filter choices). Relevanssi blanks WordPress's own search for every search query but fills results only for the MAIN one (or one flagged `relevanssi`), so on a search that second query found nothing: with a filter chosen every count was 0 beside a grid full of products, and with no filter the groups were hidden altogether (no counts, no groups). The kit now flags the counts' query for Relevanssi when it is active; the filter `pkde_kit/filter_counts_base_args` (`array $vars, WP_Query $mainQuery`) lets a site do the same for another search plugin.
+- **Proved** on the template stack with real WooCommerce 11.3 and Relevanssi 4.28 (products indexed with the deploy's own settings): `/?s=sample&post_type=product` listed 15 products; before, no groups at all, and `...&sage_filter_pa_colour[]=black` listed 3 products with Colour counts 0, 0, 0, 0; after, every group with its counts (Black 3, Blue 4, Red 4, Silver 4; Material Plastic 3) and the grid still 15 and 3. NOT proved on tcs itself, or with the "no result count" tcs also saw (the result count printed on the stack).
+- Pest 204.
+
 ## 2026.11.20.6
 
 The legal document page (`single-pkde_legal`, TPL-254, WP-104). **Adopt:** with platform 2026.11.20.3: bb (staging pilot) and cs (after its December release); every other site through a later manager brief. Not Train-ready. A site with no legal documents sees no change.
