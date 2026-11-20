@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.20.6
+
+The legal document page (`single-pkde_legal`, TPL-254, WP-104). **Adopt:** with platform 2026.11.20.3: bb (staging pilot) and cs (after its December release); every other site through a later manager brief. Not Train-ready. A site with no legal documents sees no change.
+
+- **`single-pkde_legal.blade.php`:** the title, the breadcrumbs, a line under the title with only the parts that are set (Effective from {date} · Last updated {the reviewed date, else the day it changed} · Version {v}), the text in a readable column in the blog single's type (`--pkde-post-*` variables, so the site's typography applies), every heading given an anchor id on the server, and a contents list from the h2 and h3 headings from three of them (scroll-spied; smooth scrolling that respects reduced motion; collapsed above the text on a narrow screen). **No public version history.**
+- **Print styles** (`legal.css`): no header, footer, breadcrumbs or contents list, black text, each link's address printed after it.
+- Proved in real Chrome on the template stack at 1440 and 390 (no horizontal scroll; a document with fewer than three headings has no list and no rail) and by computed styles under print emulation; the PDF itself was not viewed. Pest 203. Kit `docs/legal-documents.md`.
+
 ## 2026.11.20.5
 
 The motion system (WP-103, TPL-237 to TPL-242), `keepSwatches` in the palette generator (TPL-249), a Hero picture fit for cut-outs (TPL-250) and a fix for category pages on sites that override only `archive-product` (TPL-251). **Adopt:** bb and tcs now (staging pilots); every other site in the February train. Not Train-ready. Proved on the template stack in real Chrome; not on a site, a real device or a server.
