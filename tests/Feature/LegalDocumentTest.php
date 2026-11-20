@@ -50,3 +50,25 @@ it('ships the view, the styles and the print rules, loaded from the package', fu
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./legal.css";')
         ->and(file_get_contents("$root/composer.json"))->toContain('app/legal.php');
 });
+
+it('keeps accents, dashes, CJK and emoji intact and raises no deprecation (TPL-260)', function () {
+    foreach (['sanitize_title' => fn($t) => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $t), '-')), '__' => fn($t) => $t] as $name => $impl) {
+        if (! function_exists($name)) {
+            $GLOBALS['pkde_stub_' . $name] = $impl;
+            eval("function $name(\$a) { return \$GLOBALS['pkde_stub_$name'](\$a); }");
+        }
+    }
+
+    $deprecations = [];
+    set_error_handler(function ($no, $message) use (&$deprecations) {
+        $deprecations[] = $message;
+
+        return true;
+    }, E_DEPRECATED);
+    $toc = App\TableOfContents::fromContent('<p>Café — “quoted” 日本語 😀 &amp; naïve</p><h2>Qué es esto — ¿ahora?</h2><p>Zoë’s 😀</p><h3>日本語 heading</h3>');
+    restore_error_handler();
+
+    expect($deprecations)->toBe([])
+        ->and($toc['content'])->toContain('Café — “quoted” 日本語 😀 &amp; naïve')->toContain('Zoë’s 😀')
+        ->and(array_column($toc['headings'], 'text'))->toBe(['Qué es esto — ¿ahora?', '日本語 heading']);
+});
