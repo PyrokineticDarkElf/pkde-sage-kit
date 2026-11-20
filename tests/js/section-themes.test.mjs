@@ -53,12 +53,19 @@ test('every colour gets a solid and a light theme (white has no light one), and 
   assert.equal(block(r.css, '.is-style-brand-white-light'), '');
   const old = r.css.match(/\.theme-sage,\n\.theme-alpha \{[^}]*\}/)?.[0] ?? '';
   assert.match(old, /--pkde-theme-background: var\(--color-sage-600\);/); // unchanged: the 600 step
-  assert.match(old, /--section-bg: var\(--pkde-theme-background\);/);
+  assert.doesNotMatch(old, /--section-bg:/); // the roles follow the values in ONE shared rule, not in every theme
+  const shared = r.css.split('}').find((rule) => rule.includes('--section-bg: var(--pkde-theme-background);')) ?? '';
+  assert.match(shared, /\.theme-sage,\n\.theme-alpha,\n\.theme-blush/);
+  assert.match(shared, /--section-border: var\(--pkde-theme-border\);/);
+  assert.equal(r.css.split('--section-bg: var(--pkde-theme-background);').length - 1, 1);
   const solid = block(r.css, '.is-style-brand-sage');
   for (const role of ['bg', 'heading', 'text', 'muted', 'link', 'button-bg', 'button-text', 'button-alt-bg', 'button-alt-text', 'icon', 'border']) assert.match(solid, new RegExp(`--section-${role}:`), role);
   assert.match(solid, /--section-bg: var\(--color-sage-exact\);/); // the colour itself
   assert.match(block(r.css, '.is-style-brand-sage-light'), /--section-bg: var\(--color-sage-100\);/); // its tint
-  assert.match(solid, /--pkde-theme-background: var\(--section-bg\);/); // the kit's blocks follow it through the older tokens
+  // the kit's blocks follow it through the older tokens: declared once for every Brand style, not in every theme
+  assert.doesNotMatch(solid, /--pkde-theme-/);
+  assert.match(r.css.match(/\[class\*="is-style-brand-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-theme-background: var\(--section-bg\);/);
+  assert.equal(r.css.split('--pkde-theme-background: var(--section-bg);').length - 1, 1);
 });
 
 test('dark mode: a matrix per theme under .dark; a light theme goes to its 900 shade, a solid one keeps its colour', () => {
@@ -224,7 +231,9 @@ test('the generated CSS carries the card roles, the button edge, and points the 
   const css = run(bb).css;
   const sage = block(css, '.is-style-brand-sage');
   for (const role of ['card-bg', 'card-heading', 'card-text', 'card-muted', 'card-border', 'card-button-bg', 'card-button-text', 'card-button-border', 'card-icon', 'button-border']) assert.match(sage, new RegExp(`--section-${role}:`), role);
-  assert.match(sage, /--pkde-card-background: var\(--section-card-bg\);/);
-  assert.match(sage, /--pkde-theme-btn-border: var\(--section-button-border\);/);
+  assert.doesNotMatch(sage, /--pkde-/);
+  assert.match(css.match(/\[class\*="is-style-brand-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-card-background: var\(--section-card-bg\);[^}]*--pkde-card-accent: var\(--section-card-heading\);/s);
+  assert.match(css.match(/\[class\*="is-style-brand-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-theme-btn-border: var\(--section-button-border\);/);
+  assert.match(css.match(/\[class\*="has-card-theme-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-card-background: var\(--section-card-bg\);/); // a per-block card colour re-points them on its own element
   assert.match(block(css, '.dark .is-style-brand-sage-light'), /--section-card-bg: var\(--color-sage-(700|800|950)\);/);
 });

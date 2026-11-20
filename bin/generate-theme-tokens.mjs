@@ -478,6 +478,24 @@ function buildSectionThemesCss(colors) {
   ];
   const value = (ref) => resolver.css(ref);
 
+  // The --section-* roles follow the --pkde-theme-* values the same way in every theme: one rule for all of them.
+  lines.push(
+    `${colors.flatMap((color, index) => [`.theme-${color.name}`, ...(POSITIONAL_ALIASES[index] ? [`.theme-${POSITIONAL_ALIASES[index]}`] : [])]).join(',\n')} {`,
+    '  --section-bg: var(--pkde-theme-background);',
+    '  --section-heading: var(--pkde-theme-content);',
+    '  --section-text: var(--pkde-theme-content);',
+    '  --section-muted: color-mix(in srgb, var(--pkde-theme-content) 75%, transparent);',
+    '  --section-link: var(--pkde-theme-highlight);',
+    '  --section-button-bg: var(--pkde-theme-btn-bg);',
+    '  --section-button-text: var(--pkde-theme-btn-text);',
+    '  --section-button-alt-bg: var(--pkde-theme-alt-btn-bg);',
+    '  --section-button-alt-text: var(--pkde-theme-alt-btn-text);',
+    '  --section-icon: var(--pkde-theme-highlight);',
+    '  --section-border: var(--pkde-theme-border);',
+    '}',
+    '',
+  );
+
   colors.forEach((color, index) => {
     const alias = POSITIONAL_ALIASES[index];
     const selectors = alias ? [`.theme-${color.name}`, `.theme-${alias}`] : [`.theme-${color.name}`];
@@ -495,17 +513,6 @@ function buildSectionThemesCss(colors) {
       `  --pkde-theme-alt-btn-text: ${value(s.buttonSecondaryText)};`,
       `  --pkde-theme-alt-btn-border: ${value(s.buttonSecondaryText)};`,
       `  --pkde-theme-border: ${value(s.border)};`,
-      '  --section-bg: var(--pkde-theme-background);',
-      '  --section-heading: var(--pkde-theme-content);',
-      '  --section-text: var(--pkde-theme-content);',
-      '  --section-muted: color-mix(in srgb, var(--pkde-theme-content) 75%, transparent);',
-      '  --section-link: var(--pkde-theme-highlight);',
-      '  --section-button-bg: var(--pkde-theme-btn-bg);',
-      '  --section-button-text: var(--pkde-theme-btn-text);',
-      '  --section-button-alt-bg: var(--pkde-theme-alt-btn-bg);',
-      '  --section-button-alt-text: var(--pkde-theme-alt-btn-text);',
-      '  --section-icon: var(--pkde-theme-highlight);',
-      '  --section-border: var(--pkde-theme-border);',
       '}',
       '',
     );
