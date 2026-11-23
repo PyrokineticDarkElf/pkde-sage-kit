@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/site-contact",
+  "title": "Contact details",
+  "category": "widgets",
+  "icon": "phone",
+  "description": "The phone numbers, email addresses and addresses of Site details (Settings > Site details), with the section colours. Nothing to type here.",
+  "keywords": [
+    "contact",
+    "details",
+    "site details"
+  ],
+  "textdomain": "sage",
+  "attributes": {
+    "showPhones": {
+      "type": "boolean",
+      "default": true
+    },
+    "showEmails": {
+      "type": "boolean",
+      "default": true
+    },
+    "showAddresses": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "render": "file:./render.php"
+}

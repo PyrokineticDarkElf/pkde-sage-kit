@@ -1,0 +1,51 @@
+/**
+ * Site details (components, blocks, shortcodes; WP-106): they take their colours from the section they sit in (--pkde-ink, --pkde-body, --pkde-link of the Brand section theme,
+ * with plain-page fallbacks), so the same block is right in "Brand Sage (light)" and in "Brand Slate". A site changes the spacing with --pkde-site-gap.
+ */
+.pkde-site-contact__list {
+  display: grid;
+  gap: var(--pkde-site-gap, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--pkde-body, var(--color-neutral-800));
+}
+.pkde-site-contact a,
+.pkde-site-hours-block a,
+.pkde-site-address a {
+  color: var(--pkde-link, inherit);
+  text-underline-offset: 3px;
+}
+.pkde-site-label {
+  font-weight: 600;
+  color: var(--pkde-ink, inherit);
+}
+.pkde-site-hours__rows {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  color: var(--pkde-body, var(--color-neutral-800));
+}
+.pkde-site-hours__rows > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  max-width: 24rem;
+  padding-block: 0.25rem;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+.pkde-site-hours__rows dt {
+  font-weight: 600;
+  color: var(--pkde-ink, inherit);
+}
+.pkde-site-hours__rows dd {
+  margin: 0;
+}
+.pkde-site-hours__exceptions {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--pkde-body, var(--color-neutral-700));
+}

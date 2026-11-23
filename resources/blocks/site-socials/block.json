@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/site-socials",
+  "title": "Social links",
+  "category": "widgets",
+  "icon": "share",
+  "description": "The social profiles of Site details as icon links. Nothing to type here.",
+  "keywords": [
+    "contact",
+    "details",
+    "site details"
+  ],
+  "textdomain": "sage",
+  "attributes": {},
+  "supports": {
+    "html": false
+  },
+  "render": "file:./render.php"
+}
