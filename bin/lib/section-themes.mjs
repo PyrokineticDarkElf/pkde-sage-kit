@@ -14,19 +14,20 @@
  * `muted` an object { "color": <reference>, "opacity": 70 }. Bare `white` and `black` are the palette's own white and black exacts.
  */
 import { wcagContrast, toRgb, shade, steps } from './color-math.mjs';
+import { resolveButtonsFor, BUTTON_VARIANTS, TYPE_CASES, TYPE_SIZES } from './buttons.mjs';
 
 // Optional roles (WP-108 A): written to the CSS only where a theme declares them, so a palette without them generates exactly what it did before.
 //   buttonRing       the filled button's inset ring (falls back to buttonBorder, as before); `transparent` for no ring
 //   buttonHoverText  the filled button's label on hover and keyboard focus (without it the label keeps its colour)
 //   buttonStyle      "filled" (default) or "underline": a text button, no fill or ring or radius, an underline of --pkde-button-underline-width in the buttonBorder colour
-export const OPTIONAL_ROLES = ['buttonRing', 'buttonHoverText'];
+export const OPTIONAL_ROLES = ['buttonRing', 'buttonHoverText', 'buttonAltBorder'];
 export const BUTTON_STYLES = ['filled', 'underline'];
 export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonBorder', 'buttonAltBg', 'buttonAltText', 'icon', 'border'];
 // The roles of a card sitting in the section (a testimonial, a product, a post, a feature item). Declared under `styles.card` (an object; the older string `card`
 // is a pointer for the older .pkde-card-* classes and is not read here) as { background, heading, text, muted, border, buttonBg, buttonText, buttonBorder, icon }.
 export const CARD_KEYS = ['cardBg', 'cardHeading', 'cardText', 'cardMuted', 'cardBorder', 'cardButtonBg', 'cardButtonText', 'cardButtonBorder', 'cardIcon'];
 const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', buttonHoverText: 'cardButtonHoverText', icon: 'cardIcon' };
-const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonRing: 'button-ring', buttonHoverText: 'button-hover-text', cardButtonHoverText: 'card-button-hover-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
+const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonRing: 'button-ring', buttonHoverText: 'button-hover-text', buttonAltBorder: 'button-alt-border', cardButtonHoverText: 'card-button-hover-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
 export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3, linkText: 3 };
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
 // the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
@@ -87,7 +88,12 @@ function normalise(spec) {
   return { color: spec, opacity: 100 };
 }
 
-export function createBuilder(colors) {
+/**
+ * @param {Array} colors the palette
+ * @param {{ buttons?: object|null }} [options] `buttons`: the resolved `buttons` declaration (bin/lib/buttons.mjs); with it the button roles of every section and card are OUTPUTS of one declaration
+ *   (a role a colour declares itself still wins), without it nothing changes.
+ */
+export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
   const resolver = createResolver(colors);
   const whiteColor = colors.find((color) => color.role === 'white');
   const blackColor = colors.find((color) => color.role === 'black');
@@ -263,6 +269,29 @@ export function createBuilder(colors) {
     return result;
   }
 
+  /** The three variants on a surface and the section and card button roles they imply (WP-109): the roles are outputs of the one declaration. */
+  function buttonOutputs(bgRef, cardBgRef, where) {
+    const helpers = { resolver, ratio, bestNeutral };
+    const btn = resolveButtonsFor(bgRef, buttonsDecl, helpers, where);
+    const cardBtn = resolveButtonsFor(cardBgRef ?? bgRef, buttonsDecl, helpers, `${where}, card`);
+    const p = btn.primary;
+    const roles = {
+      buttonBg: p.bg, buttonText: p.text, buttonBorder: p.border, buttonHoverText: p.hoverText,
+      buttonAltBg: btn.secondary.bg, buttonAltText: btn.secondary.text, buttonAltBorder: btn.secondary.border,
+      cardButtonBg: cardBtn.primary.bg, cardButtonText: cardBtn.primary.text, cardButtonBorder: cardBtn.primary.border, cardButtonHoverText: cardBtn.primary.hoverText,
+    };
+    if (p.style === 'text') roles.buttonStyle = 'underline';
+    return { roles, btn, cardBtn, notes: [...btn.notes, ...cardBtn.notes] };
+  }
+
+  /** The three variants on the page itself (a white page, cards on it): the :root values. */
+  function pageButtons() {
+    if (!buttonsDecl) return null;
+    const page = whiteColor?.name ?? 'white';
+    const result = resolveButtonsFor(page, buttonsDecl, { resolver, ratio, bestNeutral }, 'the page');
+    return result;
+  }
+
   function matrixFor(color, kind, bgRef, { solid }) {
     const auto = autofill(bgRef, color.name, { solid });
     const own = declared(color, kind);
@@ -271,12 +300,13 @@ export function createBuilder(colors) {
     const cards = { ...cardFor(bgRef, color.name, kind === 'dark' || kind === 'lightDark' ? 'dark' : 'light', declaredCard.cardBg ?? null), ...declaredCard };
     // a declared text colour moves the link's own colour (it has to stand apart from THAT text)
     if (roles.text !== undefined && roles.link === undefined) auto.matrix.link = autofill(bgRef, color.name, { solid, textRef: roles.text }).matrix.link;
-    const merged = { weak: auto.weak, bg: bgRef, ...auto.matrix, ...cards, ...roles, declared: Object.keys(roles) };
+    const out = buttonsDecl ? buttonOutputs(bgRef, cards.cardBg, `${labelOf(color)} (${kind})`) : { roles: {} };
+    const merged = { weak: auto.weak, bg: bgRef, ...auto.matrix, ...cards, ...out.roles, ...declaredCard, ...roles, declared: Object.keys(roles), ...(buttonsDecl ? { btn: out.btn, cardBtn: out.cardBtn, btnNotes: out.notes } : {}) };
     // links that colour cannot tell from the text are underlined (the generated rule at the end of the section CSS)
     merged.underline = (ratio(merged.link, merged.text) ?? 1) < THRESHOLD.linkText;
     // the edges follow what was finally chosen: invisible unless the button barely shows, then the label colour (a declared edge wins)
-    if (roles.buttonBorder === undefined) merged.buttonBorder = (ratio(merged.buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? merged.buttonText : merged.buttonBg;
-    if (declaredCard.cardButtonBorder === undefined) merged.cardButtonBorder = (ratio(merged.cardButtonBg, merged.cardBg) ?? 21) < THRESHOLD.buttonSurface ? merged.cardButtonText : merged.cardButtonBg;
+    if (!buttonsDecl && roles.buttonBorder === undefined) merged.buttonBorder = (ratio(merged.buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? merged.buttonText : merged.buttonBg;
+    if (!buttonsDecl && declaredCard.cardButtonBorder === undefined) merged.cardButtonBorder = (ratio(merged.cardButtonBg, merged.cardBg) ?? 21) < THRESHOLD.buttonSurface ? merged.cardButtonText : merged.cardButtonBg;
     return merged;
   }
 
@@ -355,6 +385,7 @@ export function createBuilder(colors) {
     if (cardLabel !== null && cardLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the card button label ${show(matrix.cardButtonText)} measures ${cardLabel.toFixed(2)}:1 on the card button ${show(matrix.cardButtonBg)}; it needs 4.5:1.`);
     const cardSurface = ratio(matrix.cardButtonBg, matrix.cardBg);
     if (cardSurface !== null && cardSurface + 1e-9 < THRESHOLD.buttonSurface && ratio(matrix.cardButtonBorder, matrix.cardBg) < THRESHOLD.buttonSurface) warns.push(`${where}: the card button (${show(matrix.cardButtonBg)}) measures ${cardSurface.toFixed(2)}:1 against the card; its shape is hard to see.`);
+    for (const note of matrix.btnNotes ?? []) warns.push(`${note}`);
     if (matrix.weak && scope !== 'dark') warns.push(`${where}: a weak colour. Only ${show(matrix.text)} is readable on it (${ratio(matrix.text, matrix.bg).toFixed(2)}:1), so every text role uses it: no brand-coloured heading or link and no muted tone, and links look like body text.`);
     return { fails, warns };
   }
@@ -373,7 +404,7 @@ export function createBuilder(colors) {
     return { fails, warns };
   }
 
-  return { resolver, autofill, themes, check, checkAll, ratio };
+  return { resolver, autofill, themes, check, checkAll, ratio, pageButtons, buttons: buttonsDecl };
 }
 
 const cssValue = (resolver, spec) => {
@@ -382,10 +413,94 @@ const cssValue = (resolver, spec) => {
   return opacity >= 100 || base === 'transparent' ? base : `color-mix(in srgb, ${base} ${opacity}%, transparent)`;
 };
 
+const HOVER_KEYS = [['hoverBg', 'hover-bg'], ['hoverText', 'hover-text'], ['hoverBorder', 'hover-border']];
+
+/** `--btn-<variant>-bg|text|border|hover-bg|hover-text|hover-border` for the three variants on one surface (prefix `--btn-` or `--btn-card-`). */
+function buttonVariables(resolver, btn, prefix) {
+  const lines = [];
+  for (const variant of BUTTON_VARIANTS) {
+    const v = btn[variant];
+    lines.push(`  ${prefix}${variant}-bg: ${resolver.css(v.bg)};`, `  ${prefix}${variant}-text: ${resolver.css(v.text)};`, `  ${prefix}${variant}-border: ${resolver.css(v.border)};`);
+    for (const [key, name] of HOVER_KEYS) lines.push(`  ${prefix}${variant}-${name}: ${resolver.css(v[key])};`);
+  }
+  return lines;
+}
+
+// The classes every button of the site is drawn from, listed per variant. The kit's own buttons carry .pkde-btn (--primary, --secondary, --text), the core Button block its
+// block styles (Solid is the default, Outline, Text), WooCommerce and Contact Form 7 their own markup.
+const BUTTON_SELECTORS = {
+  primary: [
+    '.pkde-btn:not(.pkde-btn-alt):not(.pkde-btn--secondary):not(.pkde-btn--text)', '.pkde-btn--primary',
+    '.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link', '.wp-block-search__button',
+    '.woocommerce a.button:not(.pkde-btn--secondary):not(.pkde-btn--text)', '.woocommerce button.button:not(.pkde-btn--secondary):not(.pkde-btn--text)', '.woocommerce input.button', '.woocommerce .comment-form input[type="submit"]',
+    '.woocommerce a.button.alt', '.woocommerce button.button.alt', '.single_add_to_cart_button', '.add_to_cart_button', 'a.checkout-button', 'button[name="woocommerce_checkout_place_order"]', '.comment-form input[type="submit"]',
+    '.wpcf7-submit', '.wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button)',
+  ],
+  secondary: [
+    '.pkde-btn-alt', '.pkde-btn--secondary', '.wp-block-button.is-style-outline > .wp-block-button__link',
+    '.woocommerce table.cart td.actions button[name="update_cart"]', '.pkde-product-section__more-button', '.pkde-recent__button',
+  ],
+  text: ['.pkde-btn--text', '.wp-block-button.is-style-text > .wp-block-button__link'],
+};
+// where a card is: the variables of the card's own surface replace the section's inside it
+const CARD_CONTEXTS = ['article', '.woocommerce ul.products > .product', '.pkde-quotes--strip .pkde-quote', '.pkde-quotes--carousel .pkde-quote', '.pkde-features--cards .pkde-feature', '.pkde-card'];
+
+/**
+ * The structure of each variant (surface independent) and the type of every button, on :root, then the rules that draw every button from the variables. The selectors are
+ * repeated so they stand one level above the older per-component button rules without !important.
+ */
+function globalButtonCss(decl, page, resolver) {
+  const out = [];
+  const style = (variant) => decl[variant].style;
+  const structure = (variant) => (style(variant) === 'text'
+    ? { bw: '0 0 var(--pkde-button-underline-width) 0', radius: '0', pad: '0 0 0.25rem' }
+    : { bw: 'var(--pkde-border-thick)', radius: 'var(--pkde-radius-full)', pad: '0.75rem 1.25rem' });
+
+  out.push('/**', ' * One global button system (WP-109): `buttons` in config/brand-palette.json, resolved for every surface below. Every button of the site is drawn from these variables.', ' */', ':root {');
+  for (const variant of BUTTON_VARIANTS) {
+    const st = structure(variant);
+    out.push(`  --btn-${variant}-border-width: ${st.bw};`, `  --btn-${variant}-radius: ${st.radius};`, `  --btn-${variant}-padding: ${st.pad};`);
+  }
+  out.push(...buttonVariables(resolver, page, '--btn-'), ...buttonVariables(resolver, page, '--btn-card-'), '}', '');
+
+  // a card replaces the section's button variables with its own surface's
+  const cardVars = BUTTON_VARIANTS.flatMap((variant) => [`bg`, `text`, `border`, `hover-bg`, `hover-text`, `hover-border`].map((k) => `  --btn-${variant}-${k}: var(--btn-card-${variant}-${k});`));
+  out.push(`${CARD_CONTEXTS.map((c) => `:is(${c})`).join(',\n')} {`, ...cardVars, '}', '');
+
+  const type = [];
+  if (decl.type.case) type.push(`  text-transform: ${TYPE_CASES[decl.type.case]};`);
+  if (decl.type.weight) type.push(`  font-weight: ${decl.type.weight};`);
+  if (decl.type.tracking) type.push(`  letter-spacing: ${decl.type.tracking};`);
+  if (decl.type.size) type.push(`  font-size: ${TYPE_SIZES[decl.type.size]};`);
+
+  for (const variant of BUTTON_VARIANTS) {
+    const list = BUTTON_SELECTORS[variant];
+    // the whole list three times: the selector stands at three times its strongest member (one level above the older per-component and card button rules, no id, no !important)
+    const group = `:is(${list.join(', ')})`;
+    const bump = (suffix = '') => `${group}${group}${group}${suffix}`;
+    out.push(
+      `/* ${variant} (${style(variant)}) */`,
+      `${bump()} {`,
+      '  display: inline-flex;', '  align-items: center;', '  justify-content: center;', '  box-sizing: border-box;',
+      `  background-color: var(--btn-${variant}-bg);`, `  color: var(--btn-${variant}-text);`,
+      '  border-style: solid;', `  border-width: var(--btn-${variant}-border-width);`, `  border-color: var(--btn-${variant}-border);`,
+      `  border-radius: var(--btn-${variant}-radius);`, `  padding: var(--btn-${variant}-padding);`,
+      '  box-shadow: none;', '  text-decoration: none;', '  cursor: pointer;', '  transition: background-color var(--pkde-motion-fast, 150ms) ease, color var(--pkde-motion-fast, 150ms) ease, border-color var(--pkde-motion-fast, 150ms) ease;',
+      ...type, '}',
+      `${bump(':is(:hover, :focus-visible)')} {`,
+      `  background-color: var(--btn-${variant}-hover-bg);`, `  color: var(--btn-${variant}-hover-text);`, `  border-color: var(--btn-${variant}-hover-border);`, '  opacity: 1;', '}',
+      `${bump(':focus-visible')} {`, `  outline: 2px solid var(--btn-${variant}-border);`, '  outline-offset: 2px;', '}',
+      '',
+    );
+  }
+  return out.join('\n');
+}
+
 function declarations(resolver, matrix) {
   const lines = [`  --section-bg: ${resolver.css(matrix.bg)};`];
   for (const role of [...ROLE_KEYS, ...CARD_KEYS]) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
   for (const role of [...OPTIONAL_ROLES, 'cardButtonHoverText']) if (matrix[role] !== undefined) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
+  if (matrix.btn) lines.push(...buttonVariables(resolver, matrix.btn, '--btn-'), ...buttonVariables(resolver, matrix.cardBtn, '--btn-card-'));
   return lines;
 }
 
@@ -400,7 +515,7 @@ const THEME_ALIASES = [
   '  --pkde-theme-btn-border: var(--section-button-border);',
   '  --pkde-theme-alt-btn-bg: var(--section-button-alt-bg);',
   '  --pkde-theme-alt-btn-text: var(--section-button-alt-text);',
-  '  --pkde-theme-alt-btn-border: var(--section-button-alt-text);',
+  '  --pkde-theme-alt-btn-border: var(--section-button-alt-border, var(--section-button-alt-text));',
   '  --pkde-theme-border: var(--section-border);',
 ];
 const CARD_ALIASES = [
@@ -451,7 +566,7 @@ function buttonRules(themeList, key, prefix) {
 }
 
 /** The generated CSS of every section theme: the variables only (the kit's section.css paints the section from them). */
-export function buildSectionRolesCss(colors, themeList) {
+export function buildSectionRolesCss(colors, themeList, buttons = null) {
   const resolver = createResolver(colors);
   const out = [
     '/**',
@@ -483,6 +598,8 @@ export function buildSectionRolesCss(colors, themeList) {
   if (light.length || dark.length) out.push('/* Links in running text that are not told apart by colour are underlined. Buttons, cards and nav links are left alone. */');
   if (light.length) out.push(linkRule(light), '');
   if (dark.length) out.push(linkRule(dark, '.dark '), '');
+  // The one global button system: only for a palette that declares `buttons`.
+  if (buttons?.declaration) out.push(globalButtonCss(buttons.declaration, buttons.page, resolver));
   return out.join('\n');
 }
 

@@ -389,3 +389,44 @@ test('buttonRing, buttonHoverText and buttonStyle "underline" are optional: noth
   assert.throws(() => createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonStyle: 'pill' } } : c))).themes(), /buttonStyle must be one of/);
   assert.throws(() => createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonRing: 'nope-1' } } : c))).themes(), /buttonRing is not a known colour reference/);
 });
+
+test('buttons (WP-109): one declaration is resolved for every surface; the button roles of sections and cards are its outputs; a palette without it is unchanged', () => {
+  const plain = run(bb);
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.doesNotMatch(plain.css, /--btn-|One global button system/);
+
+  const buttons = { primary: { style: 'solid', colour: 'blush' }, secondary: { style: 'outline', colour: 'slate' }, text: { style: 'text', colour: 'slate', underline: 'blush' }, type: { case: 'upper', weight: 600, tracking: '0.12em', size: 'sm' }, hover: 'darken' };
+  const r = run(bb, { buttons });
+  assert.equal(r.status, 0, r.stderr);
+  // the variables of every surface: a section, its card, and the page
+  for (const variant of ['primary', 'secondary', 'text']) for (const part of ['bg', 'text', 'border', 'hover-bg', 'hover-text', 'hover-border']) {
+    assert.match(block(r.css, '.is-style-brand-sage'), new RegExp(`--btn-${variant}-${part}: `));
+    assert.match(block(r.css, '.is-style-brand-sage'), new RegExp(`--btn-card-${variant}-${part}: `));
+  }
+  assert.match(r.css, /:root \{[^}]*--btn-primary-border-width: var\(--pkde-border-thick\);[^}]*--btn-text-border-width: 0 0 var\(--pkde-button-underline-width\) 0;/s);
+  // the type applies to every button, the variants are drawn from classes, the card replaces the section's variables with its own
+  assert.match(r.css, /text-transform: uppercase;\s*font-weight: 600;\s*letter-spacing: 0\.12em;\s*font-size: 0\.875rem;/);
+  assert.match(r.css, /\.pkde-btn--secondary/);
+  assert.match(r.css, /--btn-primary-bg: var\(--btn-card-primary-bg\);/);
+  // the roles are outputs: the section's button fill is the declared primary, or the substitute where blush fails against the surface
+  const sage = block(r.css, '.is-style-brand-sage-light');
+  assert.match(sage, /--section-button-bg: var\(--color-(blush|sage|slate)-/);
+  // the substitutions are listed by theme:check
+  assert.match(r.stdout + r.stderr, /fails contrast, [a-z]+-\d+ used/);
+  // a role a colour declares itself still wins over the output
+  const o = run(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonBg: 'slate-800', buttonText: 'white' } } : c)), { buttons });
+  assert.match(block(o.css, '.is-style-brand-sage'), /--section-button-bg: var\(--color-slate-800\);/);
+});
+
+test('buttons (WP-109): a bad declaration stops the generator naming the key; defaults fill what is not declared', () => {
+  const bad = (buttons, expected) => { const r = run(bb, { buttons }); assert.notEqual(r.status, 0); assert.match(r.stderr, expected); };
+  bad({ primary: { style: 'pill' } }, /buttons\.primary\.style must be one of solid, outline, text/);
+  bad({ primary: { colour: 'nope' } }, /buttons\.primary\.colour is not a known colour reference/);
+  bad({ secondary: { style: 'outline', underline: 'blush' } }, /underline only applies/);
+  bad({ type: { weight: 50 } }, /buttons\.type\.weight/);
+  bad({ hover: 'glow' }, /buttons\.hover must be darken, lighten, invert or colour:<palette name>/);
+  bad({ colour: 'x' }, /buttons\.colour is not a setting/);
+  const ok = run(bb, { buttons: {} });
+  assert.equal(ok.status, 0, ok.stderr);
+  assert.match(ok.css, /--btn-primary-bg: /); // an empty declaration is the defaults: a solid primary, an outline secondary, a text button
+});

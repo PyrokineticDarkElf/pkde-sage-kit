@@ -39,6 +39,7 @@ import path from 'node:path';
 import { formatHex } from 'culori';
 import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
 import { resolveShape, buildShapeCss, buildShapePhp } from './lib/shape.mjs';
+import { resolveButtonsDeclaration } from './lib/buttons.mjs';
 import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildCardColourCss, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
@@ -874,8 +875,9 @@ palette.colors = backfillStyles(palette.colors);
 // never turned red by adopting them.
 let sectionThemeResult;
 try {
-  const builder = createBuilder(palette.colors);
-  sectionThemeResult = { builder, themes: builder.themes() };
+  const buttonsDeclaration = resolveButtonsDeclaration(palette.buttons, { resolver: createResolver(palette.colors), colors: palette.colors }, fail);
+  const builder = createBuilder(palette.colors, { buttons: buttonsDeclaration });
+  sectionThemeResult = { builder, themes: builder.themes(), buttons: buttonsDeclaration ? { declaration: buttonsDeclaration, page: builder.pageButtons() } : null };
 } catch (error) {
   fail(error.message);
 }
@@ -964,7 +966,7 @@ if (shapeInput !== undefined) palette.shape = shapeInput;
 else delete palette.shape;
 const css = buildCss(palette.colors) + buildShapeCss(shape);
 const shapePhp = buildShapePhp(shape);
-const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
+const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes, sectionThemeResult.buttons)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
 const editorPalettesPhp = buildEditorPalettesPhp(editorData, keepSwatches.filter((swatch) => !swatch.editorVisible).map((swatch) => swatch.slug));
