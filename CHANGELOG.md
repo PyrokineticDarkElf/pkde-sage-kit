@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026.11.24
+
+Site details in the theme (WP-106, TPL-264). **Adopt:** bb and tcs now (staging pilots) with platform 2026.11.24; every other site with the next push (nothing changes without the platform module: the footer keeps reading its `client_*` options). Not Train-ready.
+
+- **The helper and the components:** `\App\site_detail('phones.0.display')` and `site_phones()`, `site_emails()`, `site_locations()`; `<x-site-phone />`, `<x-site-email />` (written as character references against scrapers), `<x-site-address />`, `<x-site-hours />` (consecutive days with the same hours are one row, then the holidays still to come) and `<x-social-links />`, also `<x-pkde-kit::site-phone />`.
+- **Three blocks, nothing to type:** Contact details, Social links and Opening hours, with a live preview in the editor and the colours of the section they sit in (Brand solid, light and white checked); they are in the inserter for Editors too. Shortcodes `[site_phone]`, `[site_email]`, `[site_address]`, `[site_hours]` (`index="1"` picks the second).
+- **The footer and the contact template follow with no change to their views:** `contact_lines()` and `social_links()` read Site details (the first phone, email and address, every profile in the order set); a site without the platform module reads its `client_*` options exactly as before. Five more social icons (TikTok, Pinterest, Threads, Google Business Profile, a generic one).
+- **An optional header slot** with the first phone and the social icons, OFF by default: `add_filter('pkde_kit/header_site_details', '__return_true')` (the template's header includes it).
+- Proved in real Chrome on the template stack at 1440 and 390 (no horizontal scroll; two labelled phones, tel: links, hours grouped, the Christmas exception, socials; white text on Brand solid, black on light), the footer, the header slot on and off, and the editor as Editor and as Administrator (the blocks registered and insertable, the preview showing the values, 0 invalid blocks). A site with a running Vite dev server restarts it to pick up the new editor imports. Pest 213. Kit `docs/site-details.md`.
+
 ## 2026.11.20.9
 
 The shop filter counts are right on a big search and after an upgrade (TPL-262, tcs). **Adopt:** bump the kit on tcs (staging pilot) and every shop with Relevanssi; no change without it.
