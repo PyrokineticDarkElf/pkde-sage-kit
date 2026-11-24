@@ -337,3 +337,39 @@ test('keepSwatches survive a regenerate from --color arguments', () => {
   assert.equal(again.status, 0, again.stderr);
   assert.match(readFileSync(join(r.theme, 'theme.json'), 'utf8'), /"slug": "stone"/);
 });
+
+// Shape tokens (TPL-266, WP-108 A)
+test('shape: soft is the default and writes the tokens, the derived Tailwind scale and shape.php; sharp and round change them; a bad value stops the generator', () => {
+  const soft = run(bb);
+  assert.equal(soft.status, 0, soft.stderr);
+  const css = soft.read('resources/css/generated/brand-tokens.css');
+  assert.match(css, /:root \{\n  --pkde-radius-sm: 0\.5rem;\n  --pkde-radius-md: 1rem;\n  --pkde-radius-lg: 2rem;\n  --pkde-radius-full: 9999px;\n  --pkde-border-thin: 1px;\n  --pkde-border-thick: 2px;\n\}/);
+  assert.match(css, /@theme static \{\n  --radius-xs: calc\(var\(--pkde-radius-sm\) \* 0\.25\);/);
+  assert.match(css, /--radius-4xl: calc\(var\(--pkde-radius-lg\) \* 1\);/);
+  assert.match(soft.read('resources/generated/shape.php'), /'preset' => 'soft'/);
+  assert.equal(JSON.parse(readFileSync(join(soft.root, 'config/brand-palette.json'), 'utf8')).shape, undefined); // no `shape` key stays no key
+
+  const sharp = run(bb, { shape: { preset: 'sharp' } });
+  assert.match(sharp.read('resources/css/generated/brand-tokens.css'), /--pkde-radius-sm: 0px;/);
+  assert.match(sharp.read('resources/css/generated/brand-tokens.css'), /--pkde-radius-full: 0px;/);
+
+  const round = run(bb, { shape: { preset: 'round', radius: { full: '9999px' }, border: { thick: '3px' } } });
+  assert.match(round.read('resources/css/generated/brand-tokens.css'), /--pkde-radius-md: 1\.5rem;/);
+  assert.match(round.read('resources/css/generated/brand-tokens.css'), /--pkde-border-thick: 3px;/);
+
+  for (const [shape, pattern] of [[{ preset: 'pointy' }, /shape\.preset must be one of/], [{ radius: { sm: 'big' } }, /must be a length/], [{ radius: { xl: '1rem' } }, /is not a token/], [{ border: { thin: '1' } }, /must be a length/]]) {
+    const bad = run(bb, { shape });
+    assert.equal(bad.status, 1, JSON.stringify(shape));
+    assert.match(bad.stderr, pattern);
+  }
+});
+
+test('shape: --check notices a changed preset and an old shape.php', () => {
+  const r = run(bb, { shape: { preset: 'round' } });
+  const check = spawnSync('node', [generator, '--check'], { cwd: r.theme, env: { ...process.env, PKDE_THEME_DIR: r.theme }, encoding: 'utf8' });
+  assert.equal(check.status, 0, check.stderr);
+  writeFileSync(join(r.theme, 'resources/generated/shape.php'), '<?php return [];');
+  const stale = spawnSync('node', [generator, '--check'], { cwd: r.theme, env: { ...process.env, PKDE_THEME_DIR: r.theme }, encoding: 'utf8' });
+  assert.equal(stale.status, 1);
+  assert.match(stale.stderr, /shape\.php/);
+});

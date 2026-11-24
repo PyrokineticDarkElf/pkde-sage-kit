@@ -38,6 +38,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { formatHex } from 'culori';
 import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
+import { resolveShape, buildShapeCss, buildShapePhp } from './lib/shape.mjs';
 import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildCardColourCss, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
@@ -55,6 +56,7 @@ const sectionThemesPhpOutputPath = path.join(themeDirectory, 'resources/generate
 const editorPalettesPhpOutputPath = path.join(themeDirectory, 'resources/generated/editor-palettes.php');
 const sectionCompatJsOutputPath = path.join(themeDirectory, 'resources/js/generated/section-compat.js');
 const headerOptionsOutputPath = path.join(themeDirectory, 'resources/generated/header-options.php');
+const shapePhpOutputPath = path.join(themeDirectory, 'resources/generated/shape.php');
 
 // Tailwind's own neutral greys, by lightness. The views and blocks use neutral-* for text, borders and quiet
 // surfaces; buildCss() redefines the scale at these same lightnesses with a faint tint of the brand hue, so a
@@ -954,7 +956,14 @@ for (const swatch of keepSwatches) {
   contrastNotes.push(`keepSwatches "${swatch.slug}" (${swatch.hex}) is not in any section theme or text/button palette; near-black text on it measures ${onDark.toFixed(2)}:1 and white text ${onWhite.toFixed(2)}:1. ${swatch.editorVisible ? 'Editors can pick it.' : 'Only Administrators can pick it (editorVisible is not set).'}`);
 }
 
-const css = buildCss(palette.colors);
+// A palette built from --color arguments keeps the existing file's shape, like its header.
+const existingShape = options.colors.length && fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')).shape : undefined;
+const shapeInput = palette.shape ?? existingShape;
+const shape = resolveShape(shapeInput, fail);
+if (shapeInput !== undefined) palette.shape = shapeInput;
+else delete palette.shape;
+const css = buildCss(palette.colors) + buildShapeCss(shape);
+const shapePhp = buildShapePhp(shape);
 const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
@@ -990,6 +999,7 @@ if (options.check) {
     [rel(themeOptionsOutputPath), upToDate(themeOptionsOutputPath, themeOptions.js)],
     [rel(themeOptionsPhpOutputPath), upToDate(themeOptionsPhpOutputPath, themeOptions.php)],
     [rel(headerOptionsOutputPath), upToDate(headerOptionsOutputPath, headerOptions)],
+    [rel(shapePhpOutputPath), upToDate(shapePhpOutputPath, shapePhp)],
     [rel(sectionThemesPhpOutputPath), upToDate(sectionThemesPhpOutputPath, sectionThemesPhp)],
     [rel(editorPalettesPhpOutputPath), upToDate(editorPalettesPhpOutputPath, editorPalettesPhp)],
     [rel(sectionCompatJsOutputPath), upToDate(sectionCompatJsOutputPath, sectionCompatJs)],
@@ -1026,6 +1036,7 @@ fs.writeFileSync(cardThemesOutputPath, cardThemesCss);
 fs.writeFileSync(themeOptionsOutputPath, themeOptions.js);
 fs.writeFileSync(themeOptionsPhpOutputPath, themeOptions.php);
 fs.writeFileSync(headerOptionsOutputPath, headerOptions);
+fs.writeFileSync(shapePhpOutputPath, shapePhp);
 fs.writeFileSync(sectionThemesPhpOutputPath, sectionThemesPhp);
 fs.writeFileSync(editorPalettesPhpOutputPath, editorPalettesPhp);
 fs.writeFileSync(sectionCompatJsOutputPath, sectionCompatJs);
@@ -1046,4 +1057,5 @@ if (themeJson !== null && fs.existsSync(builtThemeJsonPath)) {
 const aliases = palette.colors.map((color, index) => `${color.name}/${POSITIONAL_ALIASES[index] ?? '—'}`);
 process.stdout.write(`Generated ${palette.colors.length} colour palette(s): ${palette.colors.map((color) => color.name).join(', ')}\n`);
 process.stdout.write(`Section themes (name/alias): ${aliases.join(', ')}\n`);
+process.stdout.write(`Shape: ${shape.preset} (radius sm ${shape.radius.sm}, md ${shape.radius.md}, lg ${shape.radius.lg}, full ${shape.radius.full}; border ${shape.border.thin} / ${shape.border.thick})\n`);
 process.stdout.write(`Brand section themes: ${sectionThemes.map((theme) => theme.id).join(', ')}\n`);
