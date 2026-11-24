@@ -511,7 +511,7 @@ function globalButtonCss(decl, page, resolver) {
     out.push(
       `/* ${variant} (${style(variant)}) */`,
       `${bump()} {`,
-      '  display: inline-flex;', '  align-items: center;', '  justify-content: center;', '  box-sizing: border-box;',
+      '  display: inline-flex;', '  align-items: center;', '  justify-content: center;', '  box-sizing: border-box;', '  font-family: inherit;', '  line-height: 1.25;',
       `  background-color: var(--btn-${variant}-bg);`, `  color: var(--btn-${variant}-text);`,
       '  border-style: solid;', `  border-width: var(--btn-${variant}-border-width);`, `  border-color: var(--btn-${variant}-border);`,
       `  border-radius: var(--btn-${variant}-radius);`, `  padding: var(--btn-${variant}-padding);`,
