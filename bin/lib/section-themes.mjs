@@ -401,10 +401,40 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
         warns.push(...result.warns);
       }
     }
-    return { fails, warns };
+    return { fails, warns: groupButtonNotes(warns) };
   }
 
-  return { resolver, autofill, themes, check, checkAll, ratio, pageButtons, buttons: buttonsDecl };
+  /** The button substitution notes are one per surface; group them by what changed ("the primary button fill accent fails contrast, accent-500 used: 12 surfaces"). */
+  function groupButtonNotes(warns) {
+    const groups = new Map();
+    const rest = [];
+    for (const line of warns) {
+      const m = /^(.*?): (the [a-z]+ button [^:]*? fails contrast, \S+ used\.|no \S+ step reaches .*)$/.exec(line);
+      if (!m) { rest.push(line); continue; }
+      const key = m[2].replace(/\.$/, '');
+      groups.set(key, [...(groups.get(key) ?? []), m[1]]);
+    }
+    const grouped = [...groups].map(([what, where]) => `Buttons: ${what}, on ${where.length} surface${where.length === 1 ? '' : 's'} (${[...new Set(where)].slice(0, 3).join('; ')}${where.length > 3 ? '; ...' : ''}).`);
+    return [...rest, ...grouped];
+  }
+
+  /**
+   * The button variables of a legacy `.theme-<name>` section (the hero, CTA, FAQ and loop blocks' `theme` attribute): resolved against that theme's own background, so a
+   * hero on a dark theme gets readable buttons from the same declaration. Empty without `buttons`.
+   */
+  function legacyThemeButtons(list, aliases) {
+    if (!buttonsDecl) return '';
+    const out = [];
+    list.forEach((color, index) => {
+      const bgRef = typeof color.styles?.background === 'string' && resolver.parse(color.styles.background) ? color.styles.background : color.name;
+      const btn = resolveButtonsFor(bgRef, buttonsDecl, { resolver, ratio, bestNeutral }, `${labelOf(color)} (older theme-${color.name} class)`);
+      const selectors = [`.theme-${color.name}`, ...(aliases[index] ? [`.theme-${aliases[index]}`] : [])];
+      out.push(`${selectors.join(',\n')} {`, ...buttonVariables(resolver, btn, '--btn-'), '}', '');
+    });
+    return out.join('\n');
+  }
+
+  return { resolver, autofill, themes, check, checkAll, ratio, pageButtons, legacyThemeButtons, buttons: buttonsDecl };
 }
 
 const cssValue = (resolver, spec) => {

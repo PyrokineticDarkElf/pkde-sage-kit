@@ -92,6 +92,8 @@ offered like any other theme; its matrix uses the one readable text colour for e
 `.theme-{name}` and `.theme-{alias}` and the `--pkde-theme-*` variables keep their values and also set the `--section-*` roles, so nothing changes visually.
 
 
+> **One declaration for every button:** a site that declares `buttons` in its palette gets all of the button roles below as outputs, for sections and cards alike (see [buttons.md](buttons.md)). The roles stay as per-surface overrides.
+
 ## Text buttons: `buttonStyle: "underline"`
 
 Declare `"buttonStyle": "underline"` in a colour's `styles` (the colour's own, or its `light`, `dark` and `light.dark` objects) and the filled button of that theme, and the buttons of the cards in it, become **text buttons**: no fill, no ring, no radius, the label on a rule of `--pkde-button-underline-width` (the thick border, 2px, unless a site sets the variable) in the `buttonBorder` colour (`card.buttonBorder` for a card's button). Fill the label with `buttonText`, take the fill away with `"buttonBg": "transparent"`, and give the hover colour with `buttonHoverText`:

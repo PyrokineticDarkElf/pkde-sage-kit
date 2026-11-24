@@ -22,7 +22,7 @@ export const HOVER_MODES = ['darken', 'lighten', 'invert'];
 export const TYPE_SIZES = { xs: '0.75rem', sm: '0.875rem', md: '1rem', lg: '1.125rem' };
 export const TYPE_CASES = { upper: 'uppercase', lower: 'lowercase', capitalise: 'capitalize', none: 'none' };
 
-const THRESHOLD = { surface: 3, label: 4.5 };
+const THRESHOLD = { surface: 3, label: 4.5, underline: 1.5 };
 
 /**
  * Validates the declaration and fills the defaults. `ref` helpers: `resolver.parse` knows a palette reference. The defaults are the kit's own: a solid primary in the palette's
@@ -120,7 +120,8 @@ export function resolveButtonsFor(surface, declaration, { resolver, ratio, bestN
     }
     const edgeAndLabel = pass(colour, (c) => r(c, surface) >= THRESHOLD.label, `the ${label} ${style === 'outline' ? 'label and edge' : 'label'}`) ?? bestNeutral(surface);
     if (style === 'outline') return { style, bg: 'transparent', text: edgeAndLabel, border: edgeAndLabel };
-    const line = pass(underline ?? colour, (c) => r(c, surface) >= THRESHOLD.surface, `the ${label} underline`) ?? edgeAndLabel;
+    // the underline is decoration under a label that is itself 4.5:1, so it only has to show (1.5:1), not carry 3:1
+    const line = pass(underline ?? colour, (c) => r(c, surface) >= THRESHOLD.underline, `the ${label} underline`) ?? edgeAndLabel;
     return { style, bg: 'transparent', text: edgeAndLabel, border: line };
   }
 

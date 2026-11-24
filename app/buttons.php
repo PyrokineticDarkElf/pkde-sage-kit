@@ -76,8 +76,8 @@ function button_block_styles(array $styles): array
 function button_editor_restrictions(): array
 {
     return ['settings' => ['blocks' => ['core/button' => [
-        'color' => ['text' => false, 'background' => false, 'gradients' => false, 'custom' => false, 'customGradient' => false, 'defaultPalette' => false, 'palette' => ['theme' => []]],
-        'typography' => ['fontSize' => false, 'customFontSize' => false, 'fontFamily' => false, 'fontStyle' => false, 'fontWeight' => false, 'letterSpacing' => false, 'textTransform' => false, 'lineHeight' => false],
+        'color' => ['text' => false, 'background' => false, 'custom' => false, 'customGradient' => false, 'defaultGradients' => false, 'defaultPalette' => false, 'palette' => ['theme' => []]],
+        'typography' => ['customFontSize' => false, 'fontFamily' => false, 'fontStyle' => false, 'fontWeight' => false, 'letterSpacing' => false, 'textTransform' => false, 'lineHeight' => false],
         'border' => ['radius' => false, 'color' => false, 'width' => false, 'style' => false],
         'spacing' => ['padding' => false, 'margin' => false],
         'shadow' => ['defaultPresets' => false],

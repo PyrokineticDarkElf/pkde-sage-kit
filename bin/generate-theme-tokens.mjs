@@ -973,7 +973,8 @@ else delete palette.shape;
 const css = buildCss(palette.colors) + buildShapeCss(shape);
 const shapePhp = buildShapePhp(shape);
 const buttonsPhp = sectionThemeResult.buttons ? buildButtonsPhp(sectionThemeResult.buttons.declaration) : null; // only a site that declares `buttons` has the file
-const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes, sectionThemeResult.buttons)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
+const legacyThemeButtonsCss = sectionThemeResult.builder.legacyThemeButtons(palette.colors, POSITIONAL_ALIASES);
+const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes, sectionThemeResult.buttons)}\n${legacyThemeButtonsCss}${buildCardColourCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
 const editorPalettesPhp = buildEditorPalettesPhp(editorData, keepSwatches.filter((swatch) => !swatch.editorVisible).map((swatch) => swatch.slug));

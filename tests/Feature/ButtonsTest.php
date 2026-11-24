@@ -28,7 +28,7 @@ it('takes the colour, size, border and spacing controls off the Button block for
 
     expect($core['color']['custom'])->toBeFalse()
         ->and($core['color']['background'])->toBeFalse()
-        ->and($core['typography']['fontSize'])->toBeFalse()
+        ->and($core['typography']['customFontSize'])->toBeFalse()
         ->and($core['border']['radius'])->toBeFalse()
         ->and($core['spacing']['padding'])->toBeFalse()
         ->and($core)->not->toHaveKey('styles'); // the style picker is not a setting: it stays
