@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.24.3
+
+Concentric card radii (TPL-273) and the global buttons' font fix (TPL-272). **Adopt:** tcs and bb now (staging pilots), the others in February; take this tag instead of 2026.11.24.2 (the same buttons, without the submit-input alignment fix). Not Train-ready.
+
+- **`--pkde-card-radius` and `--pkde-card-padding`:** a card's corner radius (the shape tokens' `radius-2xl`, 1rem in soft) and padding (1rem; the feature and quote cards 1.5rem). A picture inset in a padded card takes `max(0px, radius - padding)`: the Brand-section post and product cards, the feature cards' pictures, the CTA panel's picture; category tiles and the quote, feature and tile boxes read the card radius (the older `--pkde-feature-radius`, `--pkde-quote-radius` and `--pkde-tile-radius` still win). Sharp gives 0 everywhere. **soft changes only where a padded card holds a picture:** its corners were rounded (1rem) and are now concentric (0 in soft, 8px in round with 1rem padding); nothing else moves (the template's pages compare identical).
+- **Flush pictures:** `.pkde-card--flush` (overflow: clip, no padding) with `.pkde-card__media--flush` (top corners; `--flush-bottom`, `--flush-left`, `--flush-right`) takes the card's radius on the corners it shares with the card; `.pkde-card__media--inset` is the padded kind for a site's own markup. The post card's picture link carries `.pkde-card__media`.
+- **Global buttons:** every button now sets the font family and a 1.25 line height, so a submit input lines up with the links beside it.
+
 ## 2026.11.24.2
 
 One global button system from the palette (WP-109, TPL-272). **Adopt:** tcs and bb now (staging pilots), the others in February; nothing changes for a site that does not declare `buttons`. Not Train-ready.

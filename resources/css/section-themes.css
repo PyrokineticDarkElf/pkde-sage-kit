@@ -97,8 +97,12 @@
   background-color: var(--section-card-bg);
   color: var(--section-card-text);
   border: var(--pkde-border-thin) solid var(--section-card-border);
-  border-radius: var(--radius-2xl);
-  padding: 1rem;
+  border-radius: var(--pkde-card-radius);
+  padding: var(--pkde-card-padding);
+}
+/* the picture of a padded card is concentric with it (WP-108) */
+:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(.pkde-card__media, .pkde-product-card__media):not(.pkde-card__media--flush, .pkde-card__media--flush-bottom, .pkde-card__media--flush-left, .pkde-card__media--flush-right) {
+  border-radius: max(0px, calc(var(--pkde-card-radius) - var(--pkde-card-padding)));
 }
 :is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(a.button, button.button, input.button, .pkde-btn):not(.pkde-btn-alt) {
   background-color: var(--section-card-button-bg);

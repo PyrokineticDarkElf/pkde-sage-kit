@@ -33,7 +33,7 @@
   display: block;
   overflow: hidden;
   aspect-ratio: var(--pkde-tile-aspect, 4 / 3);
-  border-radius: var(--pkde-tile-radius, var(--radius-2xl));
+  border-radius: var(--pkde-tile-radius, var(--pkde-card-radius));
   background: var(--pkde-tile-bg, var(--color-neutral-100));
 }
 .pkde-tile__media img {

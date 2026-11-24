@@ -25,6 +25,33 @@
 @import "./section-themes.css";
 @import "./sections.css";
 
+/* Concentric cards (WP-108): a card's corner radius and padding. An image or other media INSET in a padded card takes the radius minus the padding, so its corners sit
+   concentric with the card's (0 when the padding is as large as the radius, and 0 everywhere in the sharp preset); a FLUSH (edge to edge) picture takes the card's radius on the
+   corners it shares with the card. A site sets either token in its own CSS. */
+:root {
+  --pkde-card-radius: var(--radius-2xl);
+  --pkde-card-padding: 1rem;
+}
+.pkde-card__media--inset {
+  border-radius: max(0px, calc(var(--pkde-card-radius) - var(--pkde-card-padding)));
+}
+.pkde-card--flush {
+  overflow: clip;
+  padding: 0;
+}
+.pkde-card__media--flush {
+  border-radius: var(--pkde-card-radius) var(--pkde-card-radius) 0 0;
+}
+.pkde-card__media--flush-bottom {
+  border-radius: 0 0 var(--pkde-card-radius) var(--pkde-card-radius);
+}
+.pkde-card__media--flush-left {
+  border-radius: var(--pkde-card-radius) 0 0 var(--pkde-card-radius);
+}
+.pkde-card__media--flush-right {
+  border-radius: 0 var(--pkde-card-radius) var(--pkde-card-radius) 0;
+}
+
 :root {
   --pkde-theme-background: var(--color-neutral-950);
   --pkde-theme-content: var(--color-white);

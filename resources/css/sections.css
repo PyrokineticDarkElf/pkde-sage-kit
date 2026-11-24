@@ -230,9 +230,14 @@
   text-underline-offset: 3px;
 }
 .pkde-features--cards .pkde-feature {
-  padding: 1.5rem;
+  --pkde-card-padding: 1.5rem;
+  padding: var(--pkde-card-padding);
   border: var(--pkde-border-thin) solid var(--pkde-line);
-  border-radius: var(--pkde-feature-radius, var(--radius-2xl));
+  border-radius: var(--pkde-feature-radius, var(--pkde-card-radius));
+}
+/* a picture inset in the padded feature card is concentric with it */
+.pkde-features--cards .pkde-feature__media img {
+  border-radius: max(0px, calc(var(--pkde-feature-radius, var(--pkde-card-radius)) - var(--pkde-card-padding)));
 }
 .pkde-features--centered .pkde-feature {
   text-align: center;
@@ -317,9 +322,10 @@
   }
 }
 .pkde-quotes--strip .pkde-quote {
-  padding: 1.5rem;
+  --pkde-card-padding: 1.5rem;
+  padding: var(--pkde-card-padding);
   border: var(--pkde-border-thin) solid var(--pkde-line);
-  border-radius: var(--pkde-quote-radius, var(--radius-2xl));
+  border-radius: var(--pkde-quote-radius, var(--pkde-card-radius));
 }
 .pkde-quotes--carousel [data-carousel-track] {
   display: flex;
@@ -337,9 +343,10 @@
   .pkde-quotes--carousel .pkde-quotes__slide { width: 33.3333%; }
 }
 .pkde-quotes--carousel .pkde-quote {
-  padding: 1.5rem;
+  --pkde-card-padding: 1.5rem;
+  padding: var(--pkde-card-padding);
   border: var(--pkde-border-thin) solid var(--pkde-line);
-  border-radius: var(--pkde-quote-radius, var(--radius-2xl));
+  border-radius: var(--pkde-quote-radius, var(--pkde-card-radius));
 }
 .pkde-quotes__dots {
   display: flex;
@@ -387,6 +394,8 @@
   width: auto;
   max-width: 10rem;
   object-fit: contain;
+  /* a picture inset in the padded CTA panel (the panel is rounded-4xl, the smallest padding 1.5rem) is concentric with it */
+  border-radius: max(0px, calc(var(--radius-4xl) - 1.5rem));
 }
 
 /* The global CTA band (tier 3): a full-width band, its content from the site's declaration file */
