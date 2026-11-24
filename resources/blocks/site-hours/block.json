@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/site-hours",
+  "title": "Opening hours",
+  "category": "widgets",
+  "icon": "clock",
+  "description": "The opening hours of Site details, and the holidays still to come. Nothing to type here.",
+  "keywords": [
+    "contact",
+    "details",
+    "site details"
+  ],
+  "textdomain": "sage",
+  "attributes": {
+    "showExceptions": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "render": "file:./render.php"
+}

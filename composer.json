@@ -26,6 +26,7 @@
       "app/faq.php",
       "app/motion.php",
       "app/legal.php",
+      "app/site-details.php",
       "app/form-preview.php",
       "app/block-assets.php",
       "app/woocommerce.php",

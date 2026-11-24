@@ -119,7 +119,7 @@ it('lists the social profiles that have a valid URL, in a fixed order', function
     ];
 
     expect(array_keys(\App\social_links()))->toBe(['facebook', 'youtube'])
-        ->and(\App\social_links()['facebook'])->toBe(['label' => 'Facebook', 'url' => 'https://www.facebook.com/example']);
+        ->and(\App\social_links()['facebook'])->toBe(['network' => 'facebook', 'label' => 'Facebook', 'url' => 'https://www.facebook.com/example']);
 
     $GLOBALS['pkde_test_options'] = [];
     expect(\App\social_links())->toBe([]);

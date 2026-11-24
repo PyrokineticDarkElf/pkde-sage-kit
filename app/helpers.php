@@ -51,43 +51,41 @@ function cached_oembed(string $url, array $args = []): string
 }
 
 /**
- * The client's contact details that are set (an unset option is simply absent), keyed email / phone / address,
- * each with its value and a link (mailto:, tel:, or null for the address). Shared by the footer and Contact page.
+ * The site's contact details that are set, keyed email / phone / address, each with its value and a link (mailto:, tel:, or the map link / null for the address). Shared by the
+ * footer and the Contact page. The values are Site details (Settings > Site details, the platform's site-details module: the FIRST phone, email and address); a site without
+ * the module reads its `client_*` options, as it always did (WP-106).
  */
 function contact_lines(): array
 {
     $lines = [];
-    foreach (['email', 'phone', 'address'] as $kind) {
-        if (! $value = get_option("client_$kind")) {
-            continue;
-        }
 
-        $lines[$kind] = ['value' => $value, 'href' => match ($kind) {
-            'email' => "mailto:$value",
-            'phone' => 'tel:' . preg_replace('/[^0-9+]/', '', $value),
-            default => null,
-        }];
+    if (($email = (string) (site_emails()[0]['address'] ?? '')) !== '') {
+        $lines['email'] = ['value' => $email, 'href' => "mailto:$email"];
+    }
+
+    if ($phone = site_phones()[0] ?? null) {
+        $lines['phone'] = ['value' => ($phone['display'] ?? '') !== '' ? $phone['display'] : $phone['number'], 'href' => site_tel_href($phone['number'])];
+    }
+
+    if (($place = site_locations()[0] ?? null) && ($address = implode(', ', site_address_lines($place))) !== '') {
+        $lines['address'] = ['value' => $address, 'href' => ($place['map_url'] ?? '') !== '' ? $place['map_url'] : null];
     }
 
     return $lines;
 }
 
 /**
- * The social profiles a site has set (options `client_facebook`, `client_instagram`, `client_linkedin`, `client_x`, `client_youtube`, the
- * same `client_*` convention as contact_lines()), as [network => ['label' => ..., 'url' => ...]] in a fixed order. Only profiles with a
- * URL are listed; the footer prints icons for them through the pkde-kit::partials.social-links partial.
+ * The social profiles a site has set, as [network => ['network' => ..., 'label' => ..., 'url' => ...]] in the order they were set (Settings > Site details; a site without the
+ * platform module: the `client_*` options in the footer's fixed order). Only profiles with a web address are listed; a network set twice is keyed `network#2`. The footer prints
+ * icons for them through the pkde-kit::partials.social-links partial.
  */
 function social_links(): array
 {
-    $networks = ['facebook' => 'Facebook', 'instagram' => 'Instagram', 'linkedin' => 'LinkedIn', 'x' => 'X', 'youtube' => 'YouTube'];
     $links = [];
 
-    foreach ($networks as $key => $label) {
-        $url = trim((string) get_option("client_$key"));
-
-        if ($url !== '' && filter_var($url, FILTER_VALIDATE_URL)) {
-            $links[$key] = ['label' => $label, 'url' => $url];
-        }
+    foreach (site_social_list((array) site_detail('socials', [])) as $social) {
+        $key = isset($links[$social['network']]) ? $social['network'] . '#' . (count($links) + 1) : $social['network'];
+        $links[$key] = $social;
     }
 
     return $links;

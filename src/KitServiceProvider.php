@@ -35,6 +35,8 @@ class KitServiceProvider extends ServiceProvider
 
         // <x-pkde-kit::alert> resolves to the view pkde-kit::components.alert, so a vendor/pkde-kit override applies to components too.
         Blade::anonymousComponentNamespace('components', 'pkde-kit');
+        // the Site details components are also `<x-site-phone/>`, `<x-social-links/>` without the namespace (a site's own component of that name wins: it is on the path first)
+        Blade::anonymousComponentPath($views . '/components');
 
         foreach ([AppComposer::class, PostComposer::class, ProductArchiveComposer::class] as $composer) {
             View::composer($composer::views(), $composer);
