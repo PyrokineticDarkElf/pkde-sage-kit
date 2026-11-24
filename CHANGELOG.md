@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.24.1
+
+Shape tokens, the ring and hover roles and the underline text button (WP-108 A, TPL-266). **Adopt:** bb and tcs now (staging pilots), with the template's `theme.css` change below; every other site in February. Not Train-ready. **A site with no `shape` in its palette looks exactly as before** (soft is today's values).
+
+- **`shape` in `config/brand-palette.json`:** `preset` (`sharp`, `soft`, `round`; none means soft) and optional `radius` (`sm`, `md`, `lg`, `full`) and `border` (`thin`, `thick`) overrides. The generator writes `--pkde-radius-*` and `--pkde-border-*` on `:root`, Tailwind's whole `--radius-*` scale as exact multiples of the three radius steps (every `rounded-*` class follows), `resources/generated/shape.php`, and `settings.custom.pkde` in theme.json (the button radius too when the full radius is not the default pill). `theme:check` covers the new file; a bad value stops the generator naming the key.
+- **Every kit component reads the tokens:** every `border-radius` and 1px/2px border in the kit's CSS, views, blocks and scripts. Soft is proved identical (computed radii and border widths of every element on 11 template pages at 1440 and 390). A site sets any token in its own CSS; there is no editor control. **Adopt step:** delete the three `--radius-xl`, `--radius-2xl` and `--radius-4xl` lines in the site's `theme.css` (they are the template's own defaults, 0.75rem, 1rem, 2rem, which soft derives anyway); a site that keeps them keeps those three steps off the preset. In the site's own views, `rounded-full` becomes `rounded-(--pkde-radius-full)` and `border` becomes `border-(length:--pkde-border-thin)` (with `!` where a class overrides a component's own radius).
+- **`buttonRing`, `buttonHoverText`, `buttonStyle` (section themes):** optional roles written only where declared (a palette that declares none generates the same CSS, byte for byte: checked for bb and tcs). `buttonRing` splits the filled button's inset ring from `buttonBorder` (it falls back to it); `buttonHoverText` is the label on hover and focus (checked 4.5:1); `buttonStyle: "underline"` makes the filled button and the cards' buttons text buttons, an underline of `--pkde-button-underline-width` (the thick border) in the `buttonBorder` colour, no fill, ring or radius. tcs's text button (no fill, ink label, 2px orange underline, bronze hover, no ring) is now palette roles with no CSS.
+- Docs: `docs/branding-tokens.md` (Shape), `docs/section-themes.md` (the roles and text buttons).
+
 ## 2026.11.24
 
 Site details in the theme (WP-106, TPL-264). **Adopt:** bb and tcs now (staging pilots) with platform 2026.11.24; every other site with the next push (nothing changes without the platform module: the footer keeps reading its `client_*` options). Not Train-ready.
