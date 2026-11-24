@@ -15,12 +15,18 @@
  */
 import { wcagContrast, toRgb, shade, steps } from './color-math.mjs';
 
+// Optional roles (WP-108 A): written to the CSS only where a theme declares them, so a palette without them generates exactly what it did before.
+//   buttonRing       the filled button's inset ring (falls back to buttonBorder, as before); `transparent` for no ring
+//   buttonHoverText  the filled button's label on hover and keyboard focus (without it the label keeps its colour)
+//   buttonStyle      "filled" (default) or "underline": a text button, no fill or ring or radius, an underline of --pkde-button-underline-width in the buttonBorder colour
+export const OPTIONAL_ROLES = ['buttonRing', 'buttonHoverText'];
+export const BUTTON_STYLES = ['filled', 'underline'];
 export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonBorder', 'buttonAltBg', 'buttonAltText', 'icon', 'border'];
 // The roles of a card sitting in the section (a testimonial, a product, a post, a feature item). Declared under `styles.card` (an object; the older string `card`
 // is a pointer for the older .pkde-card-* classes and is not read here) as { background, heading, text, muted, border, buttonBg, buttonText, buttonBorder, icon }.
 export const CARD_KEYS = ['cardBg', 'cardHeading', 'cardText', 'cardMuted', 'cardBorder', 'cardButtonBg', 'cardButtonText', 'cardButtonBorder', 'cardIcon'];
-const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', icon: 'cardIcon' };
-const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
+const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', buttonHoverText: 'cardButtonHoverText', icon: 'cardIcon' };
+const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonRing: 'button-ring', buttonHoverText: 'button-hover-text', cardButtonHoverText: 'card-button-hover-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
 export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3, linkText: 3 };
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
 // the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
@@ -240,6 +246,15 @@ export function createBuilder(colors) {
       if (!resolver.parse(parts.color)) throw new Error(`${color.name}: styles${kind === 'solid' ? '' : `.${kind === 'light' ? 'light' : kind === 'dark' ? 'dark' : 'light.dark'}`}.${role} is not a known colour reference (${JSON.stringify(spec)}); use a palette step such as "${color.name}-800", "${color.name}-exact", "#ffffff" or "transparent".`);
       result[role] = spec;
     }
+    for (const role of OPTIONAL_ROLES) {
+      if (source[role] === undefined) continue;
+      if (!resolver.parse(normalise(source[role]).color)) throw new Error(`${color.name}: styles${kind === 'solid' ? '' : `.${kind === 'light' ? 'light' : kind === 'dark' ? 'dark' : 'light.dark'}`}.${role} is not a known colour reference (${JSON.stringify(source[role])}).`);
+      result[role] = source[role];
+    }
+    if (source.buttonStyle !== undefined) {
+      if (!BUTTON_STYLES.includes(source.buttonStyle)) throw new Error(`${color.name}: styles${kind === 'solid' ? '' : `.${kind === 'light' ? 'light' : kind === 'dark' ? 'dark' : 'light.dark'}`}.buttonStyle must be one of ${BUTTON_STYLES.join(', ')}; got ${JSON.stringify(source.buttonStyle)}.`);
+      result.buttonStyle = source.buttonStyle;
+    }
     if (kind !== 'solid' && typeof source.background === 'string') {
       if (!resolver.parse(source.background)) throw new Error(`${color.name}: styles.${kind === 'light' ? 'light' : 'dark'}.background is not a known colour reference (${JSON.stringify(source.background)}).`);
       result.background = source.background;
@@ -318,6 +333,10 @@ export function createBuilder(colors) {
     // the button label on the button, the outline button's label on the section (or on its own fill)
     const buttonLabel = ratio(matrix.buttonText, matrix.buttonBg);
     if (buttonLabel !== null && buttonLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the button label ${show(matrix.buttonText)} measures ${buttonLabel.toFixed(2)}:1 on the button ${show(matrix.buttonBg)}; it needs 4.5:1.`);
+    if (matrix.buttonHoverText !== undefined) {
+      const hoverLabel = ratio(matrix.buttonHoverText, matrix.buttonBg === 'transparent' ? matrix.bg : matrix.buttonBg);
+      if (hoverLabel !== null && hoverLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the button label on hover ${show(matrix.buttonHoverText)} measures ${hoverLabel.toFixed(2)}:1 on the button; it needs 4.5:1.`);
+    }
     const altSurface = matrix.buttonAltBg === 'transparent' ? matrix.bg : matrix.buttonAltBg;
     const altLabel = ratio(matrix.buttonAltText, altSurface);
     if (altLabel !== null && altLabel + 1e-9 < THRESHOLD.buttonAltText) fails.push(`${where}: the outline button label ${show(matrix.buttonAltText)} measures ${altLabel.toFixed(2)}:1 on ${altSurface}; it needs 4.5:1.`);
@@ -366,6 +385,7 @@ const cssValue = (resolver, spec) => {
 function declarations(resolver, matrix) {
   const lines = [`  --section-bg: ${resolver.css(matrix.bg)};`];
   for (const role of [...ROLE_KEYS, ...CARD_KEYS]) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
+  for (const role of [...OPTIONAL_ROLES, 'cardButtonHoverText']) if (matrix[role] !== undefined) lines.push(`  --section-${CSS_NAME[role]}: ${cssValue(resolver, matrix[role])};`);
   return lines;
 }
 
@@ -388,6 +408,47 @@ const CARD_ALIASES = [
   '  --pkde-card-content: var(--section-card-text);',
   '  --pkde-card-accent: var(--section-card-heading);',
 ];
+
+const SECTION = (ids, prefix) => `${prefix}:is(${ids.map((id) => `.is-style-${id}`).join(', ')})[class*="is-style-brand-"][class*="is-style-brand-"][class*="is-style-brand-"]`;
+const NOT_OWN = ':not(:where(.pkde-section, .pkde-card, article, .product) *)';
+const CARD_BUTTONS = ':is(article, .woocommerce ul.products > .product) :is(a.button, button.button, input.button, .pkde-btn):not(.pkde-btn-alt)';
+
+/** The rules of the text button and the hover label, for the themes (in one mode: `matrix` or `dark`) that declare them. */
+function buttonRules(themeList, key, prefix) {
+  const out = [];
+  const text = themeList.filter((theme) => theme[key].buttonStyle === 'underline').map((theme) => theme.id);
+  const hover = themeList.filter((theme) => theme[key].buttonHoverText !== undefined).map((theme) => theme.id);
+  const cardHover = themeList.filter((theme) => theme[key].cardButtonHoverText !== undefined).map((theme) => theme.id);
+  if (text.length) {
+    out.push(
+      `/* Text buttons (buttonStyle "underline"): no fill, ring or radius; the underline is --pkde-button-underline-width in the button's edge colour. */`,
+      `${SECTION(text, prefix)} :is(.wp-block-button:not(.is-style-outline) > .wp-block-button__link, .pkde-btn:not(.pkde-btn-alt))${NOT_OWN} {`,
+      '  padding: 0 0 0.25rem;',
+      '  border-radius: 0;',
+      '  border-style: solid;',
+      '  border-width: 0 0 var(--pkde-button-underline-width) 0;',
+      '  border-color: transparent transparent var(--section-button-border) transparent;',
+      '  box-shadow: none;',
+      '}',
+      `${SECTION(text, prefix)} ${CARD_BUTTONS} {`,
+      '  padding: 0 0 0.25rem;',
+      '  border-radius: 0;',
+      '  border-style: solid;',
+      '  border-width: 0 0 var(--pkde-button-underline-width) 0;',
+      '  border-color: transparent transparent var(--section-card-button-border) transparent;',
+      '  box-shadow: none;',
+      '}',
+      '',
+    );
+  }
+  if (hover.length) {
+    out.push(`${SECTION(hover, prefix)} :is(.wp-block-button:not(.is-style-outline) > .wp-block-button__link, .pkde-btn:not(.pkde-btn-alt)):is(:hover, :focus-visible)${NOT_OWN} {`, '  color: var(--section-button-hover-text);', '}', '');
+  }
+  if (cardHover.length) {
+    out.push(`${SECTION(cardHover, prefix)} ${CARD_BUTTONS}:is(:hover, :focus-visible) {`, '  color: var(--section-card-button-hover-text);', '}', '');
+  }
+  return out;
+}
 
 /** The generated CSS of every section theme: the variables only (the kit's section.css paints the section from them). */
 export function buildSectionRolesCss(colors, themeList) {
@@ -415,6 +476,8 @@ export function buildSectionRolesCss(colors, themeList) {
   for (const theme of themeList) {
     out.push(`.dark .is-style-${theme.id} {`, ...declarations(resolver, theme.dark), '}', '');
   }
+  // Text buttons (buttonStyle "underline") and the hover label (buttonHoverText): rules only for the themes that declare them, so nothing else changes.
+  out.push(...buttonRules(themeList, 'matrix', ''), ...buttonRules(themeList, 'dark', '.dark '));
   // Links in running text that colour cannot tell from the text (the link role equals, or is within 3:1 of, the text role) are underlined; a link with its own colour is
   // left to the site's link style. Only the themes that need it are listed.
   if (light.length || dark.length) out.push('/* Links in running text that are not told apart by colour are underlined. Buttons, cards and nav links are left alone. */');

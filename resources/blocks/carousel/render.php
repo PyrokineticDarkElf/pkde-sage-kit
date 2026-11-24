@@ -94,17 +94,17 @@ $wrapper_attributes = get_block_wrapper_attributes();
             </div>
 
             <?php if ($autoplay) : ?>
-                <button type="button" data-carousel-autoplay-toggle data-label-pause="<?php esc_attr_e('Pause slideshow', 'sage'); ?>" data-label-play="<?php esc_attr_e('Start slideshow', 'sage'); ?>" aria-label="<?php esc_attr_e('Pause slideshow', 'sage'); ?>" aria-pressed="false" class="group absolute bottom-3 left-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-neutral-900 shadow transition hover:bg-white">
+                <button type="button" data-carousel-autoplay-toggle data-label-pause="<?php esc_attr_e('Pause slideshow', 'sage'); ?>" data-label-play="<?php esc_attr_e('Start slideshow', 'sage'); ?>" aria-label="<?php esc_attr_e('Pause slideshow', 'sage'); ?>" aria-pressed="false" class="group absolute bottom-3 left-3 z-10 flex h-9 w-9 items-center justify-center rounded-(--pkde-radius-full) bg-white/90 text-neutral-900 shadow transition hover:bg-white">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 group-data-[paused]:hidden" aria-hidden="true"><path d="M6 4h3v12H6zM11 4h3v12h-3z" /></svg>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="hidden h-4 w-4 group-data-[paused]:block" aria-hidden="true"><path d="M6 4l10 6-10 6z" /></svg>
                 </button>
             <?php endif; ?>
 
             <?php if ($show_arrows) : ?>
-                <button type="button" data-carousel-prev aria-label="<?php esc_attr_e('Previous slide', 'sage'); ?>" class="absolute left-2 top-1/2 -mt-5 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-neutral-900 shadow-lg transition hover:bg-neutral-100">
+                <button type="button" data-carousel-prev aria-label="<?php esc_attr_e('Previous slide', 'sage'); ?>" class="absolute left-2 top-1/2 -mt-5 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-(--pkde-radius-full) bg-white text-neutral-900 shadow-lg transition hover:bg-neutral-100">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 11-1.06 1.06l-4.25-4.24a.75.75 0 010-1.06l4.25-4.24a.75.75 0 011.06 0z" clip-rule="evenodd" /></svg>
                 </button>
-                <button type="button" data-carousel-next aria-label="<?php esc_attr_e('Next slide', 'sage'); ?>" class="absolute right-2 top-1/2 -mt-5 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white text-neutral-900 shadow-lg transition hover:bg-neutral-100">
+                <button type="button" data-carousel-next aria-label="<?php esc_attr_e('Next slide', 'sage'); ?>" class="absolute right-2 top-1/2 -mt-5 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-(--pkde-radius-full) bg-white text-neutral-900 shadow-lg transition hover:bg-neutral-100">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 010-1.06L10.94 10 7.21 6.29a.75.75 0 111.06-1.06l4.25 4.24a.75.75 0 010 1.06l-4.25 4.24a.75.75 0 01-1.06 0z" clip-rule="evenodd" /></svg>
                 </button>
             <?php endif; ?>
@@ -113,7 +113,7 @@ $wrapper_attributes = get_block_wrapper_attributes();
                 <div class="mt-2 flex justify-center">
                     <?php foreach ($images as $index => $image) : ?>
                         <?php // The button is the 24px touch target (WCAG 2.2 target size); the span inside is the visible dot.?>
-                        <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group flex h-6 min-w-6 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[color:var(--section-text,var(--color-neutral-900))]"><span class="block h-2 w-2 rounded-full bg-[color:var(--section-border,var(--color-neutral-300))] transition-[transform,background-color] duration-[var(--pkde-motion-base)] ease-[var(--pkde-ease-out)] motion-reduce:transition-none group-data-[active]:scale-x-[2.5] group-data-[active]:bg-[color:var(--section-text,var(--color-neutral-900))]"></span></button>
+                        <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group flex h-6 min-w-6 items-center justify-center rounded-(--pkde-radius-full) focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[color:var(--section-text,var(--color-neutral-900))]"><span class="block h-2 w-2 rounded-(--pkde-radius-full) bg-[color:var(--section-border,var(--color-neutral-300))] transition-[transform,background-color] duration-[var(--pkde-motion-base)] ease-[var(--pkde-ease-out)] motion-reduce:transition-none group-data-[active]:scale-x-[2.5] group-data-[active]:bg-[color:var(--section-text,var(--color-neutral-900))]"></span></button>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>

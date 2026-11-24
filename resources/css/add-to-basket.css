@@ -20,7 +20,7 @@
   width: var(--pkde-atc-spinner-size, 1em);
   height: var(--pkde-atc-spinner-size, 1em);
   margin-inline-start: 0.5em;
-  border: 2px solid var(--pkde-atc-spinner-color, currentColor);
+  border: 2px solid var(--pkde-atc-spinner-color, currentColor); /* a loading ring, not a design border: not a shape token */
   border-inline-end-color: transparent;
   border-radius: 50%;
   vertical-align: -0.15em;

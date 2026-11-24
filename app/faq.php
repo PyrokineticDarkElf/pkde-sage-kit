@@ -12,7 +12,7 @@ namespace App;
 /** One question as a <details> row: the same markup as the Accordion Item block, following the section's colours (--section-*), with the old neutral colours as the fallback. */
 function faq_item_html(string $question, string $answerHtml, bool $open = false, string $wrapperAttributes = ''): string
 {
-    $wrapperAttributes = $wrapperAttributes !== '' ? $wrapperAttributes : 'class="wp-block-sage-accordion-item group break-inside-avoid border-b border-[color:var(--section-border,var(--color-neutral-200))] py-4"';
+    $wrapperAttributes = $wrapperAttributes !== '' ? $wrapperAttributes : 'class="wp-block-sage-accordion-item group break-inside-avoid border-b-(length:--pkde-border-thin) border-[color:var(--section-border,var(--color-neutral-200))] py-4"';
     $question = function_exists('wp_kses_post') ? wp_kses_post($question) : htmlspecialchars($question, ENT_QUOTES);
 
     return '<details ' . $wrapperAttributes . ($open ? ' open' : '') . '>'

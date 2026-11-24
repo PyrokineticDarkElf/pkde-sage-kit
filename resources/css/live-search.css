@@ -10,7 +10,7 @@
   width: 9.5rem;
   padding: 0.35rem 0.1rem;
   border: 0;
-  border-bottom: 1px solid var(--color-neutral-400);
+  border-bottom: var(--pkde-border-thin) solid var(--color-neutral-400);
   background: transparent;
   color: var(--color-neutral-900);
   font-size: 0.9rem;
@@ -45,8 +45,8 @@
   width: min(24rem, calc(100vw - 2rem));
   max-height: min(32rem, 70vh);
   padding: 0.5rem;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: 1rem;
+  border: var(--pkde-border-thin) solid var(--color-neutral-200);
+  border-radius: var(--radius-2xl);
   background: var(--color-white);
   box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.35);
 }
@@ -71,7 +71,7 @@
   gap: 0.75rem;
   align-items: center;
   padding: 0.45rem 0.5rem;
-  border-radius: 0.75rem;
+  border-radius: var(--radius-xl);
   color: var(--color-neutral-900);
   text-decoration: none;
 }
@@ -79,7 +79,7 @@
   width: 3.25rem;
   height: 3.25rem;
   object-fit: cover;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-lg);
   background: var(--color-neutral-100);
 }
 .live-search__title {
@@ -107,7 +107,7 @@
   display: block;
   margin-top: 0.25rem;
   padding: 0.75rem 0.5rem;
-  border-top: 1px solid var(--color-neutral-200);
+  border-top: var(--pkde-border-thin) solid var(--color-neutral-200);
   color: var(--color-neutral-900);
   font-size: 0.8rem;
   font-weight: 600;
@@ -131,7 +131,7 @@
   width: 1.25rem;
   height: 1.25rem;
   margin: 0.75rem;
-  border: 2px solid var(--color-neutral-200);
+  border: var(--pkde-border-thick) solid var(--color-neutral-200);
   border-top-color: var(--color-neutral-900);
   border-radius: 50%;
   animation: pkde-live-search-spin 0.8s linear infinite;

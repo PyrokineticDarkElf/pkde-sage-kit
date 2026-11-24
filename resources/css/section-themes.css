@@ -62,7 +62,7 @@
   background-color: var(--section-button-bg);
   color: var(--section-button-text);
   border-color: var(--section-button-border);
-  box-shadow: inset 0 0 0 2px var(--section-button-border);
+  box-shadow: inset 0 0 0 var(--pkde-border-thick) var(--section-button-ring, var(--section-button-border));
 }
 :is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] .wp-block-button.is-style-outline > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   background-color: transparent;
@@ -96,8 +96,8 @@
 :is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product):not(:where(.pkde-section) *) {
   background-color: var(--section-card-bg);
   color: var(--section-card-text);
-  border: 1px solid var(--section-card-border);
-  border-radius: var(--radius-2xl, 1rem);
+  border: var(--pkde-border-thin) solid var(--section-card-border);
+  border-radius: var(--radius-2xl);
   padding: 1rem;
 }
 :is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(a.button, button.button, input.button, .pkde-btn):not(.pkde-btn-alt) {

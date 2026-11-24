@@ -18,13 +18,13 @@
   gap: 0.75rem 1rem;
   padding: 0.75rem 0;
   background: var(--pkde-filter-actions-bg, var(--color-white, #fff));
-  border-top: 1px solid var(--pkde-line, var(--color-neutral-200));
+  border-top: var(--pkde-border-thin) solid var(--pkde-line, var(--color-neutral-200));
 }
 .pkde-filter-apply {
   min-height: 2.75rem;
   padding: 0.625rem 1.5rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--pkde-radius-full);
   background: var(--pkde-filter-apply-bg, var(--color-brand-600));
   color: var(--pkde-filter-apply-fg, var(--color-brand-600-fg, var(--color-white, #fff)));
   font-size: 0.875rem;

@@ -47,7 +47,7 @@
 
 .page-header {
   background-color: var(--pkde-page-header-bg);
-  border-bottom: 1px solid var(--pkde-page-header-border);
+  border-bottom: var(--pkde-border-thin) solid var(--pkde-page-header-border);
 }
 .page-header h1.pkde-page-title--kit {
   color: var(--pkde-page-header-title);

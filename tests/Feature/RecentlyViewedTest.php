@@ -58,7 +58,7 @@ it('is off until a site opts in, and the list lives in the browser (no cookie, n
 it('gives the Cart and Checkout blocks the shortcode pages\' look from the same tokens (TPL-131)', function () use ($root) {
     $css = file_get_contents("$root/resources/css/cart-checkout-blocks.css");
 
-    expect($css)->toContain('.wc-block-cart__submit-button', '.wc-block-components-checkout-place-order-button', 'var(--color-brand-600)', 'var(--color-brand-600-fg)', 'border-radius: 999px', 'outline: 2px solid var(--color-brand-600)')
+    expect($css)->toContain('.wc-block-cart__submit-button', '.wc-block-components-checkout-place-order-button', 'var(--color-brand-600)', 'var(--color-brand-600-fg)', 'border-radius: var(--pkde-radius-full)', 'outline: 2px solid var(--color-brand-600)')
         ->and($css)->not->toMatch('/#[0-9a-f]{3,6}\b/i')
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('cart-checkout-blocks.css');
 });

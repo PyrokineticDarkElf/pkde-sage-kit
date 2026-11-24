@@ -13,7 +13,7 @@ const TEMPLATE = [['core/paragraph', { placeholder: __('Write the answer…', 's
 
 function Edit({ attributes, setAttributes }) {
   const { heading, open } = attributes;
-  const blockProps = useBlockProps({ className: 'border-b border-neutral-200 py-4' });
+  const blockProps = useBlockProps({ className: 'border-b-(length:--pkde-border-thin) border-neutral-200 py-4' });
 
   return (
     <>

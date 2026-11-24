@@ -169,7 +169,7 @@
   .pkde-btn-alt {
     display: inline-flex;
     align-items: center;
-    border-radius: 9999px;
+    border-radius: var(--pkde-radius-full);
     border-width: 2px;
     border-style: solid;
     padding: 0.75rem 1.25rem;
@@ -286,7 +286,7 @@
     align-items: center;
     justify-content: center;
     vertical-align: middle;
-    border-radius: 0.375rem;
+    border-radius: var(--radius-md);
     color: var(--color-neutral-400);
     opacity: 0;
     transition: color var(--pkde-motion-fast) var(--pkde-ease-in-out), opacity var(--pkde-motion-fast) var(--pkde-ease-in-out), background-color var(--pkde-motion-fast) var(--pkde-ease-in-out);
@@ -343,7 +343,7 @@
     height: auto;
   }
   .prose-content blockquote {
-    border-left: 2px solid var(--color-neutral-300);
+    border-left: var(--pkde-border-thick) solid var(--color-neutral-300);
     padding-left: 1em;
     font-style: italic;
     color: var(--color-neutral-600);
@@ -364,14 +364,14 @@
     margin-top: 0.25rem;
     width: 100%;
     max-width: 32rem;
-    border: 1px solid var(--color-neutral-300);
-    border-radius: 0.25rem;
+    border: var(--pkde-border-thin) solid var(--color-neutral-300);
+    border-radius: var(--radius-sm);
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
   }
   .comment-form #submit {
     margin-top: 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm);
     background-color: var(--color-neutral-900);
     padding: 0.75rem 1.5rem;
     font-size: 0.875rem;
@@ -492,7 +492,7 @@
     align-items: flex-start;
     gap: 1rem;
     margin: 0 0 1rem;
-    border: 1px solid var(--color-neutral-200);
+    border: var(--pkde-border-thin) solid var(--color-neutral-200);
     border-left: 3px solid var(--color-brand-600);
     border-radius: var(--radius-2xl);
     background: var(--color-neutral-50);
@@ -579,7 +579,7 @@
     margin: 0.5rem 0;
   }
   .woocommerce div.product form.cart .quantity input {
-    border: 1px solid var(--color-neutral-300);
+    border: var(--pkde-border-thin) solid var(--color-neutral-300);
     border-radius: var(--radius-xl);
     padding: 0.5rem;
     width: 4rem;
@@ -587,7 +587,7 @@
   .woocommerce .woocommerce-tabs ul.tabs {
     display: flex;
     gap: 1.5rem;
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: var(--pkde-border-thin) solid var(--color-neutral-200);
     margin-top: 2rem;
     list-style: none;
   }
@@ -606,7 +606,7 @@
   }
   .woocommerce table.shop_table th,
   .woocommerce table.shop_table td {
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: var(--pkde-border-thin) solid var(--color-neutral-200);
     padding: 0.75rem;
     text-align: left;
   }
@@ -619,7 +619,7 @@
     font-size: 0.875rem;
   }
   .woocommerce table.shop_attributes tr {
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: var(--pkde-border-thin) solid var(--color-neutral-200);
   }
   .woocommerce table.shop_attributes th {
     width: 33%;
@@ -677,8 +677,8 @@
     flex-shrink: 0;
     width: 1rem;
     height: 1rem;
-    border: 1px solid var(--color-neutral-300);
-    border-radius: 0.25rem;
+    border: var(--pkde-border-thin) solid var(--color-neutral-300);
+    border-radius: var(--radius-sm);
     background-color: var(--color-white);
     background-position: center;
     background-repeat: no-repeat;
@@ -711,7 +711,7 @@
     position: relative;
     height: 0.25rem;
     margin: 0.625rem 0;
-    border-radius: 9999px;
+    border-radius: var(--pkde-radius-full);
     background: var(--color-neutral-200);
   }
   .woocommerce .widget_price_filter .ui-slider-range {
@@ -727,8 +727,8 @@
     width: 1rem;
     height: 1rem;
     margin: -0.375rem 0 0 -0.5rem;
-    border: 2px solid var(--color-neutral-950);
-    border-radius: 9999px;
+    border: var(--pkde-border-thick) solid var(--color-neutral-950);
+    border-radius: var(--pkde-radius-full);
     background: white;
     cursor: grab;
   }
@@ -741,8 +741,8 @@
     display: block !important;
     width: 100%;
     min-width: 0;
-    border: 1px solid var(--color-neutral-300);
-    border-radius: 0.75rem;
+    border: var(--pkde-border-thin) solid var(--color-neutral-300);
+    border-radius: var(--radius-xl);
     padding: 0.625rem 0.75rem;
     font-size: 0.875rem;
   }
@@ -756,7 +756,7 @@
     grid-column: 1 / -1;
     justify-self: start;
     margin: 0;
-    border-radius: 9999px;
+    border-radius: var(--pkde-radius-full);
     padding: 0.625rem 1rem;
     font-size: 0.75rem;
     letter-spacing: 0;
@@ -785,7 +785,7 @@
     height: 2.25rem;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px;
+    border-radius: var(--pkde-radius-full);
     color: var(--color-neutral-600);
     font-size: 0.875rem;
     font-weight: 500;
@@ -872,7 +872,7 @@
   .woocommerce form .form-row textarea {
     margin-top: 0.25rem;
     width: 100%;
-    border: 1px solid var(--color-neutral-300);
+    border: var(--pkde-border-thin) solid var(--color-neutral-300);
     border-radius: var(--radius-xl);
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
@@ -882,7 +882,7 @@
     list-style: none;
   }
   .woocommerce-MyAccount-navigation li {
-    border-bottom: 1px solid var(--color-neutral-200);
+    border-bottom: var(--pkde-border-thin) solid var(--color-neutral-200);
   }
   .woocommerce-MyAccount-navigation li a {
     display: block;
@@ -1003,7 +1003,7 @@
 }
 .wpcf7-form-control {
   width: 100%;
-  border: 1px solid var(--pkde-form-field-border, var(--color-neutral-300));
+  border: var(--pkde-border-thin) solid var(--pkde-form-field-border, var(--color-neutral-300));
   border-radius: var(--pkde-form-field-radius, var(--radius-xl));
   background-color: var(--pkde-form-field-bg, var(--color-white));
   padding: 0.75rem 1rem;
@@ -1021,7 +1021,7 @@
      explicitly rather than left to stretch full-width like a text input. */
   width: auto;
   display: inline-flex;
-  border-radius: var(--pkde-form-submit-radius, 9999px);
+  border-radius: var(--pkde-form-submit-radius, var(--pkde-radius-full));
   background-color: var(--pkde-form-submit-bg, var(--color-neutral-950));
   padding: 0.75rem 1.25rem;
   font-size: 0.875rem;
@@ -1066,7 +1066,7 @@
 #primary-menu-mobile li.nav-cta > a {
   display: inline-flex;
   align-items: center;
-  border-radius: 9999px;
+  border-radius: var(--pkde-radius-full);
   background-color: var(--color-brand-600);
   padding: 0.5rem 1.25rem;
   color: var(--color-brand-600-fg, #fff);

@@ -46,7 +46,7 @@ it('puts a section\'s descendant rules one level above a site\'s generic .page-c
         ->and($css)->toContain('[class*="is-style-brand-"] {') // the paint rule
         ->and($css)->toContain(':is(p, li, dt, dd, td, th, blockquote, cite):not([class*="pkde-"])') // running text: a site's .page-content p must not beat inheriting the theme's text colour
         ->and($css)->toMatch('/\.is-style-outline > \.wp-block-button__link[^{]*\{[^}]*background-color: transparent;[^}]*box-shadow: none;/s')
-        ->and($css)->toMatch('/box-shadow: inset 0 0 0 2px var\(--section-button-border\)/');
+        ->and($css)->toMatch('/box-shadow: inset 0 0 0 var\(--pkde-border-thick\) var\(--section-button-ring, var\(--section-button-border\)\)/');
 
     $blocks = file_get_contents("$root/resources/css/sections.css");
 

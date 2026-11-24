@@ -21,14 +21,14 @@ if (triggers.length) {
   // JS, where (unlike each render.php's own server-side __()) there's no
   // translation catalogue loaded to call at all.
   overlay.innerHTML = `
-    <button type="button" data-lightbox-close aria-label="Close" class="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20">
+    <button type="button" data-lightbox-close aria-label="Close" class="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-(--pkde-radius-full) bg-white/10 text-white transition hover:bg-white/20">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5"><path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" /></svg>
     </button>
-    <button type="button" data-lightbox-prev aria-label="Previous image" class="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 sm:left-4">
+    <button type="button" data-lightbox-prev aria-label="Previous image" class="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-(--pkde-radius-full) bg-white/10 text-white transition hover:bg-white/20 sm:left-4">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 11-1.06 1.06l-4.25-4.24a.75.75 0 010-1.06l4.25-4.24a.75.75 0 011.06 0z" clip-rule="evenodd" /></svg>
     </button>
     <img data-lightbox-image class="max-h-full max-w-full rounded-lg object-contain" alt="" />
-    <button type="button" data-lightbox-next aria-label="Next image" class="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 sm:right-4">
+    <button type="button" data-lightbox-next aria-label="Next image" class="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-(--pkde-radius-full) bg-white/10 text-white transition hover:bg-white/20 sm:right-4">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6"><path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 010-1.06L10.94 10 7.21 6.29a.75.75 0 111.06-1.06l4.25 4.24a.75.75 0 010 1.06l-4.25 4.24a.75.75 0 01-1.06 0z" clip-rule="evenodd" /></svg>
     </button>
   `;

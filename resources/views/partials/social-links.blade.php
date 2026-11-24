@@ -11,7 +11,7 @@
     @foreach ($socialLinks as $link)
       @php($network = $link['network'] ?? '')
       <li>
-        <a href="{{ $link['url'] }}" rel="noopener" aria-label="{{ $link['label'] }}" class="grid h-11 w-11 place-items-center rounded-full border border-current/25 transition hover:border-current">
+        <a href="{{ $link['url'] }}" rel="noopener" aria-label="{{ $link['label'] }}" class="grid h-11 w-11 place-items-center rounded-(--pkde-radius-full) border-(length:--pkde-border-thin) border-current/25 transition hover:border-current">
           <svg viewBox="0 0 24 24" class="h-5 w-5" aria-hidden="true" focusable="false">
             @switch($network)
               @case('facebook')

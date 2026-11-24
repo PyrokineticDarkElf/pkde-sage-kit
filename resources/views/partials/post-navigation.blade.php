@@ -5,7 +5,7 @@
 
 @if ($prevLink || $nextLink)
   <nav
-    class="mt-12 flex items-center justify-between gap-6 border-t border-neutral-200 pt-8 text-sm font-medium [&_a]:transition [&_a:hover]:text-neutral-500"
+    class="mt-12 flex items-center justify-between gap-6 border-t-(length:--pkde-border-thin) border-neutral-200 pt-8 text-sm font-medium [&_a]:transition [&_a:hover]:text-neutral-500"
     aria-label="{{ __('Post navigation', 'sage') }}"
   >
     <div>{!! $prevLink !!}</div>

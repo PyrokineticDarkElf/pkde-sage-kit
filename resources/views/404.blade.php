@@ -24,7 +24,7 @@
       {!! get_search_form(false) !!}
     </div>
 
-    <a href="{{ home_url('/') }}" class="mt-8 inline-flex rounded-full bg-neutral-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 hover:text-brand-700-fg">
+    <a href="{{ home_url('/') }}" class="mt-8 inline-flex rounded-(--pkde-radius-full) bg-neutral-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 hover:text-brand-700-fg">
       {{ __('Back to homepage', 'sage') }}
     </a>
   </div>
