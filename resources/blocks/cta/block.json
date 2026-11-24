@@ -41,6 +41,16 @@
       "default": "",
       "__experimentalRole": "content"
     },
+    "buttonStyle": {
+      "type": "string",
+      "enum": ["primary", "secondary", "text"],
+      "default": "primary"
+    },
+    "secondaryButtonStyle": {
+      "type": "string",
+      "enum": ["primary", "secondary", "text"],
+      "default": "secondary"
+    },
     "secondaryButtonText": {
       "type": "string",
       "default": "",

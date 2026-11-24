@@ -434,13 +434,13 @@ const BUTTON_SELECTORS = {
     '.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link', '.wp-block-search__button',
     '.woocommerce a.button:not(.pkde-btn--secondary):not(.pkde-btn--text)', '.woocommerce button.button:not(.pkde-btn--secondary):not(.pkde-btn--text)', '.woocommerce input.button', '.woocommerce .comment-form input[type="submit"]',
     '.woocommerce a.button.alt', '.woocommerce button.button.alt', '.single_add_to_cart_button', '.add_to_cart_button', 'a.checkout-button', 'button[name="woocommerce_checkout_place_order"]', '.comment-form input[type="submit"]',
-    '.wpcf7-submit', '.wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button)',
+    '.wpcf7-submit', '.wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button)', '.pkde-filter-apply', 'li.nav-cta > a',
   ],
   secondary: [
     '.pkde-btn-alt', '.pkde-btn--secondary', '.wp-block-button.is-style-outline > .wp-block-button__link',
     '.woocommerce table.cart td.actions button[name="update_cart"]', '.pkde-product-section__more-button', '.pkde-recent__button',
   ],
-  text: ['.pkde-btn--text', '.wp-block-button.is-style-text > .wp-block-button__link'],
+  text: ['.pkde-btn--text', '.wp-block-button.is-style-text > .wp-block-button__link', '.pkde-filter-reset'],
 };
 // where a card is: the variables of the card's own surface replace the section's inside it
 const CARD_CONTEXTS = ['article', '.woocommerce ul.products > .product', '.pkde-quotes--strip .pkde-quote', '.pkde-quotes--carousel .pkde-quote', '.pkde-features--cards .pkde-feature', '.pkde-card'];
@@ -492,6 +492,7 @@ function globalButtonCss(decl, page, resolver) {
       `${bump(':focus-visible')} {`, `  outline: 2px solid var(--btn-${variant}-border);`, '  outline-offset: 2px;', '}',
       '',
     );
+    if (variant === 'primary') out.push('/* the filter form\'s Apply button is quieter while nothing is pending (it is never disabled) */', `${group}${group}${group}[data-pending="0"]:not(:hover):not(:focus-visible) {`, '  opacity: 0.6;', '}', '');
   }
   return out.join('\n');
 }

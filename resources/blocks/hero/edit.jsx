@@ -30,10 +30,17 @@ const LAYOUT_OPTIONS = [
   { value: 'text', label: __('Text only', 'sage') },
 ];
 
+const BUTTON_STYLE_OPTIONS = [
+  { label: __('Primary', 'sage'), value: 'primary' },
+  { label: __('Secondary', 'sage'), value: 'secondary' },
+  { label: __('Text', 'sage'), value: 'text' },
+];
+const BUTTON_CLASSES = { primary: 'pkde-btn', secondary: 'pkde-btn-alt', text: 'pkde-btn pkde-btn--text' };
+
 function Edit({ attributes, setAttributes }) {
   const {
     heading, content, buttonText, buttonUrl, imageUrl, imageId, imageAlt, theme,
-    layout, imageSide, imageFit, eyebrow, secondaryButtonText, secondaryButtonUrl, headingLevel,
+    layout, imageSide, imageFit, eyebrow, secondaryButtonText, secondaryButtonUrl, headingLevel, buttonStyle, secondaryButtonStyle,
   } = attributes;
   const overlay = layout !== 'split' && layout !== 'text';
 
@@ -107,10 +114,12 @@ function Edit({ attributes, setAttributes }) {
         <PanelBody title={__('Buttons', 'sage')}>
           <TextControl label={__('Button text', 'sage')} value={buttonText} onChange={(value) => setAttributes({ buttonText: value })} />
           <TextControl label={__('Button URL', 'sage')} value={buttonUrl} onChange={(value) => setAttributes({ buttonUrl: value })} />
+          <SelectControl label={__('Button style', 'sage')} value={buttonStyle || 'primary'} options={BUTTON_STYLE_OPTIONS} onChange={(value) => setAttributes({ buttonStyle: value })} />
           {!overlay && (
             <>
               <TextControl label={__('Second button text', 'sage')} value={secondaryButtonText} onChange={(value) => setAttributes({ secondaryButtonText: value })} />
               <TextControl label={__('Second button URL', 'sage')} value={secondaryButtonUrl} onChange={(value) => setAttributes({ secondaryButtonUrl: value })} />
+              <SelectControl label={__('Second button style', 'sage')} value={secondaryButtonStyle || 'secondary'} options={BUTTON_STYLE_OPTIONS} onChange={(value) => setAttributes({ secondaryButtonStyle: value })} />
             </>
           )}
         </PanelBody>
@@ -156,8 +165,8 @@ function Edit({ attributes, setAttributes }) {
               <RichText tagName="p" className="pkde-hero__text" value={content} onChange={(value) => setAttributes({ content: value })} placeholder={__('Supporting text…', 'sage')} />
               {(buttonText || secondaryButtonText) && (
                 <div className="pkde-actions">
-                  {buttonText && <span className="pkde-btn">{buttonText}</span>}
-                  {secondaryButtonText && <span className="pkde-btn-alt">{secondaryButtonText}</span>}
+                  {buttonText && <span className={BUTTON_CLASSES[buttonStyle || 'primary']}>{buttonText}</span>}
+                  {secondaryButtonText && <span className={BUTTON_CLASSES[secondaryButtonStyle || 'secondary']}>{secondaryButtonText}</span>}
                 </div>
               )}
             </div>

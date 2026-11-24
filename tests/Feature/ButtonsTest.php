@@ -40,3 +40,19 @@ it('is loaded from the package and reads the generated buttons file', function (
     expect(file_get_contents("$root/composer.json"))->toContain('app/buttons.php')
         ->and(file_get_contents("$root/app/buttons.php"))->toContain("add_filter('register_block_type_args'", 'resources/generated/buttons.php');
 });
+
+it('lets the hero and the CTA block choose a button style, defaulting to primary and secondary', function () {
+    $root = dirname(__DIR__, 2);
+
+    foreach (['hero', 'cta'] as $block) {
+        $json = json_decode(file_get_contents("$root/resources/blocks/$block/block.json"), true);
+        expect($json['attributes']['buttonStyle']['default'])->toBe('primary')
+            ->and($json['attributes']['secondaryButtonStyle']['default'])->toBe('secondary')
+            ->and($json['attributes']['buttonStyle']['enum'])->toBe(['primary', 'secondary', 'text']);
+    }
+
+    expect(\App\button_classes('text'))->toBe('pkde-btn pkde-btn--text')
+        ->and(\App\button_classes('secondary'))->toBe('pkde-btn-alt')
+        ->and(\App\button_classes())->toBe('pkde-btn')
+        ->and(file_get_contents("$root/resources/blocks/cta/render.php"))->toContain('button_classes');
+});

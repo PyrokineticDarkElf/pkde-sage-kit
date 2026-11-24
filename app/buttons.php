@@ -18,6 +18,19 @@ function buttons_declaration(): ?array
     return $file !== '' && is_file($file) ? (array) require $file : null;
 }
 
+/**
+ * The classes of a kit block's button for a "Button style" choice: primary (`pkde-btn`), secondary (`pkde-btn-alt`) or text (`pkde-btn pkde-btn--text`). Anything else is primary.
+ * Without `buttons` in the palette each is drawn from the section's button roles; with it, from the one declaration.
+ */
+function button_classes(string $variant = 'primary'): string
+{
+    return match ($variant) {
+        'secondary' => 'pkde-btn-alt',
+        'text' => 'pkde-btn pkde-btn--text',
+        default => 'pkde-btn',
+    };
+}
+
 /** The class of a button variant: primary, secondary or text. Anything else is primary. */
 function button_class(string $variant = 'primary'): string
 {

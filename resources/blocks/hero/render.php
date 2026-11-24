@@ -47,6 +47,8 @@ if ($layout !== 'overlay') {
         'body' => $body,
         'buttonText' => $button_text,
         'buttonUrl' => $button_url,
+        'buttonStyle' => (string) ($attributes['buttonStyle'] ?? 'primary'),
+        'secondaryButtonStyle' => (string) ($attributes['secondaryButtonStyle'] ?? 'secondary'),
         'secondaryText' => (string) ($attributes['secondaryButtonText'] ?? ''),
         'secondaryUrl' => (string) ($attributes['secondaryButtonUrl'] ?? ''),
         'image' => $hero_image,
@@ -101,7 +103,7 @@ echo \App\block_image($image_id, $image_url, $image_alt, 'full', $hero_attribute
             <?php endif; ?>
 
             <?php if ($button_text && $button_url) : ?>
-                <a href="<?php echo esc_url($button_url); ?>" class="pkde-btn mt-8">
+                <a href="<?php echo esc_url($button_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))); ?> mt-8">
                     <?php echo esc_html($button_text); ?>
                 </a>
             <?php endif; ?>

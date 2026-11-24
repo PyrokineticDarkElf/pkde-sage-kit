@@ -197,6 +197,22 @@
     outline-offset: 2px;
   }
 
+  /* A kit block's "Button style" (WP-109) for a site that declares no `buttons`: secondary is the outline button, text a label on an underline in the section's button
+     colour. A site that declares `buttons` draws all three from the generated variables instead (generated/section-themes.css). */
+  .pkde-btn.pkde-btn--secondary {
+    background-color: var(--pkde-theme-alt-btn-bg);
+    color: var(--pkde-theme-alt-btn-text);
+    border-color: var(--pkde-theme-alt-btn-border);
+  }
+  .pkde-btn.pkde-btn--text {
+    border-width: 0 0 var(--pkde-button-underline-width, 2px) 0;
+    border-radius: 0;
+    background-color: transparent;
+    padding: 0 0 0.25rem;
+    color: var(--pkde-theme-alt-btn-text);
+    border-color: var(--pkde-theme-btn-bg);
+  }
+
   /**
    * Post/product cards (partials/content.blade.php,
    * woocommerce/content-product.blade.php) are designed to float directly
