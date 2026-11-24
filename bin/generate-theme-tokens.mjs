@@ -39,7 +39,7 @@ import path from 'node:path';
 import { formatHex } from 'culori';
 import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
 import { resolveShape, buildShapeCss, buildShapePhp } from './lib/shape.mjs';
-import { resolveButtonsDeclaration } from './lib/buttons.mjs';
+import { resolveButtonsDeclaration, buildButtonsPhp } from './lib/buttons.mjs';
 import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildCardColourCss, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
 
 // The theme's directory: where `npm run theme:generate` runs (package.json scripts call this file from vendor/pkde/sage-kit/bin),
@@ -58,6 +58,7 @@ const editorPalettesPhpOutputPath = path.join(themeDirectory, 'resources/generat
 const sectionCompatJsOutputPath = path.join(themeDirectory, 'resources/js/generated/section-compat.js');
 const headerOptionsOutputPath = path.join(themeDirectory, 'resources/generated/header-options.php');
 const shapePhpOutputPath = path.join(themeDirectory, 'resources/generated/shape.php');
+const buttonsPhpOutputPath = path.join(themeDirectory, 'resources/generated/buttons.php');
 
 // Tailwind's own neutral greys, by lightness. The views and blocks use neutral-* for text, borders and quiet
 // surfaces; buildCss() redefines the scale at these same lightnesses with a faint tint of the brand hue, so a
@@ -875,6 +876,11 @@ palette.colors = backfillStyles(palette.colors);
 // never turned red by adopting them.
 let sectionThemeResult;
 try {
+  // A palette built from --color arguments keeps the existing file's buttons, like its shape and header.
+  if (palette.buttons === undefined && options.colors.length && fs.existsSync(configPath)) {
+    const existingButtons = JSON.parse(fs.readFileSync(configPath, 'utf8')).buttons;
+    if (existingButtons !== undefined) palette.buttons = existingButtons;
+  }
   const buttonsDeclaration = resolveButtonsDeclaration(palette.buttons, { resolver: createResolver(palette.colors), colors: palette.colors }, fail);
   const builder = createBuilder(palette.colors, { buttons: buttonsDeclaration });
   sectionThemeResult = { builder, themes: builder.themes(), buttons: buttonsDeclaration ? { declaration: buttonsDeclaration, page: builder.pageButtons() } : null };
@@ -966,6 +972,7 @@ if (shapeInput !== undefined) palette.shape = shapeInput;
 else delete palette.shape;
 const css = buildCss(palette.colors) + buildShapeCss(shape);
 const shapePhp = buildShapePhp(shape);
+const buttonsPhp = sectionThemeResult.buttons ? buildButtonsPhp(sectionThemeResult.buttons.declaration) : null; // only a site that declares `buttons` has the file
 const sectionThemesCss = `${buildSectionThemesCss(palette.colors)}\n${buildSectionRolesCss(palette.colors, sectionThemes, sectionThemeResult.buttons)}\n${buildCardColourCss(palette.colors, sectionThemes)}`;
 const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
@@ -1002,6 +1009,7 @@ if (options.check) {
     [rel(themeOptionsPhpOutputPath), upToDate(themeOptionsPhpOutputPath, themeOptions.php)],
     [rel(headerOptionsOutputPath), upToDate(headerOptionsOutputPath, headerOptions)],
     [rel(shapePhpOutputPath), upToDate(shapePhpOutputPath, shapePhp)],
+    [rel(buttonsPhpOutputPath), buttonsPhp === null ? !fs.existsSync(buttonsPhpOutputPath) : upToDate(buttonsPhpOutputPath, buttonsPhp)],
     [rel(sectionThemesPhpOutputPath), upToDate(sectionThemesPhpOutputPath, sectionThemesPhp)],
     [rel(editorPalettesPhpOutputPath), upToDate(editorPalettesPhpOutputPath, editorPalettesPhp)],
     [rel(sectionCompatJsOutputPath), upToDate(sectionCompatJsOutputPath, sectionCompatJs)],
@@ -1039,6 +1047,8 @@ fs.writeFileSync(themeOptionsOutputPath, themeOptions.js);
 fs.writeFileSync(themeOptionsPhpOutputPath, themeOptions.php);
 fs.writeFileSync(headerOptionsOutputPath, headerOptions);
 fs.writeFileSync(shapePhpOutputPath, shapePhp);
+if (buttonsPhp !== null) fs.writeFileSync(buttonsPhpOutputPath, buttonsPhp);
+else if (fs.existsSync(buttonsPhpOutputPath)) fs.rmSync(buttonsPhpOutputPath);
 fs.writeFileSync(sectionThemesPhpOutputPath, sectionThemesPhp);
 fs.writeFileSync(editorPalettesPhpOutputPath, editorPalettesPhp);
 fs.writeFileSync(sectionCompatJsOutputPath, sectionCompatJs);

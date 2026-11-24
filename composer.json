@@ -28,6 +28,7 @@
       "app/legal.php",
       "app/site-details.php",
       "app/shape.php",
+      "app/buttons.php",
       "app/form-preview.php",
       "app/block-assets.php",
       "app/woocommerce.php",
