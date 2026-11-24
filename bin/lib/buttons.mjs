@@ -18,9 +18,15 @@ import { steps } from './color-math.mjs';
 
 export const BUTTON_VARIANTS = ['primary', 'secondary', 'text'];
 export const BUTTON_STYLES = ['solid', 'outline', 'text'];
-export const HOVER_MODES = ['darken', 'lighten', 'invert'];
+export const HOVER_MODES = ['darken', 'lighten', 'invert', 'none'];
 export const TYPE_SIZES = { xs: '0.75rem', sm: '0.875rem', md: '1rem', lg: '1.125rem' };
 export const TYPE_CASES = { upper: 'uppercase', lower: 'lowercase', capitalise: 'capitalize', none: 'none' };
+export const TYPE_FONTS = { display: 'var(--font-display)', sans: 'var(--font-sans)', mono: 'var(--font-mono)' };
+/** The positions a button can be in. `use` maps each to a variant (a name, or { variant, ...overrides }); without a map every one is primary except Reset (text). */
+export const BUTTON_CONTEXTS = { card: 'primary', hero: 'primary', product: 'primary', filters: 'primary', reset: 'text', forms: 'primary', cart: 'primary', nav: 'primary', other: 'primary' };
+const LENGTH = /^-?\d*\.?\d+(px|rem|em|%)$|^0$|^normal$/;
+const SPACING = /^(-?\d*\.?\d+(px|rem|em|%)?|0)( (-?\d*\.?\d+(px|rem|em|%)?|0)){0,3}$/;
+const VARIANT_KEYS = ['style', 'colour', 'underline', 'label', 'contrast', 'font', 'size', 'weight', 'tracking', 'case', 'padding', 'height', 'radius', 'border', 'lineHeight', 'hover'];
 
 const THRESHOLD = { surface: 3, label: 4.5, underline: 1.5 };
 
@@ -33,7 +39,7 @@ export function resolveButtonsDeclaration(buttons, { resolver, colors }, fail) {
   if (buttons === undefined || buttons === null) return null;
   if (typeof buttons !== 'object' || Array.isArray(buttons)) fail('buttons must be an object: { "primary": {...}, "secondary": {...}, "text": {...}, "type": {...}, "hover": "darken" }.');
 
-  const known = new Set([...BUTTON_VARIANTS, 'type', 'hover', 'card']);
+  const known = new Set([...BUTTON_VARIANTS, 'type', 'hover', 'use']);
   for (const key of Object.keys(buttons)) if (!known.has(key)) fail(`buttons.${key} is not a setting; use ${[...known].join(', ')}.`);
 
   const accent = colors.find((c) => c.role === 'accent') ?? colors.find((c) => c.role === 'brand') ?? colors.find((c) => c.role !== 'white' && c.role !== 'black') ?? colors[0];
@@ -43,36 +49,77 @@ export function resolveButtonsDeclaration(buttons, { resolver, colors }, fail) {
     secondary: { style: 'outline', colour: ink.name },
     text: { style: 'text', colour: ink.name, underline: accent.name },
   };
-  const out = {};
 
+  const checkVariant = (where, spec) => {
+    for (const key of Object.keys(spec)) if (!VARIANT_KEYS.includes(key)) fail(`${where}.${key} is not a setting; use ${VARIANT_KEYS.join(', ')}.`);
+    if (spec.style !== undefined && !BUTTON_STYLES.includes(spec.style)) fail(`${where}.style must be one of ${BUTTON_STYLES.join(', ')}; got ${JSON.stringify(spec.style)}.`);
+    for (const key of ['colour', 'underline', 'label']) {
+      if (spec[key] !== undefined && !(key === 'underline' && spec[key] === 'none') && !resolver.parse(spec[key])) fail(`${where}.${key} is not a known colour reference (${JSON.stringify(spec[key])}); use a palette name, "<name>-<step>", "<name>-exact" or a hex${key === 'underline' ? ', or "none"' : ''}.`);
+    }
+    if (spec.label !== undefined && spec.style !== undefined && spec.style !== 'solid') fail(`${where}.label only applies to "style": "solid".`);
+    if (spec.contrast !== undefined && !['full', 'label'].includes(spec.contrast)) fail(`${where}.contrast must be "full" (the default: a fill needs 3:1 against the surface) or "label" (keep the colour, only the label must read); got ${JSON.stringify(spec.contrast)}.`);
+    if (spec.underline !== undefined && spec.style !== undefined && spec.style !== 'text') fail(`${where}.underline only applies to "style": "text".`);
+    if (spec.case !== undefined && !(spec.case in TYPE_CASES)) fail(`${where}.case must be one of ${Object.keys(TYPE_CASES).join(', ')}; got ${JSON.stringify(spec.case)}.`);
+    if (spec.weight !== undefined && !(Number.isInteger(spec.weight) && spec.weight >= 100 && spec.weight <= 900)) fail(`${where}.weight must be a whole number from 100 to 900; got ${JSON.stringify(spec.weight)}.`);
+    if (spec.tracking !== undefined && !LENGTH.test(String(spec.tracking))) fail(`${where}.tracking must be a length such as 0.12em; got ${JSON.stringify(spec.tracking)}.`);
+    if (spec.size !== undefined && !(spec.size in TYPE_SIZES) && !LENGTH.test(String(spec.size))) fail(`${where}.size must be one of ${Object.keys(TYPE_SIZES).join(', ')} or a length such as 0.75rem; got ${JSON.stringify(spec.size)}.`);
+    if (spec.font !== undefined && !(spec.font in TYPE_FONTS) && !/^[A-Za-z0-9 _'"-]{2,60}$/.test(String(spec.font))) fail(`${where}.font must be display, sans, mono or a font family name; got ${JSON.stringify(spec.font)}.`);
+    if (spec.padding !== undefined && spec.padding !== 'keep' && !SPACING.test(String(spec.padding))) fail(`${where}.padding must be "keep" (the element's own) or one to four lengths such as "0.5rem 1.25rem"; got ${JSON.stringify(spec.padding)}.`);
+    if (spec.border !== undefined && spec.border !== 'none' && !LENGTH.test(String(spec.border))) fail(`${where}.border must be none or a width such as 1px; got ${JSON.stringify(spec.border)}.`);
+    if (spec.lineHeight !== undefined && !(typeof spec.lineHeight === 'number' && spec.lineHeight > 0) && !LENGTH.test(String(spec.lineHeight))) fail(`${where}.lineHeight must be a number such as 1.25 or a length; got ${JSON.stringify(spec.lineHeight)}.`);
+    if (spec.height !== undefined && !LENGTH.test(String(spec.height))) fail(`${where}.height must be a length such as 3rem; got ${JSON.stringify(spec.height)}.`);
+    if (spec.radius !== undefined && !['none', 'sm', 'md', 'lg', 'full'].includes(spec.radius) && !LENGTH.test(String(spec.radius))) fail(`${where}.radius must be none, sm, md, lg, full or a length; got ${JSON.stringify(spec.radius)}.`);
+    if (spec.hover !== undefined) checkHover(`${where}.hover`, spec.hover);
+  };
+  const checkHover = (where, hover) => {
+    const colourHover = typeof hover === 'string' && hover.startsWith('colour:') ? hover.slice(7) : null;
+    if (!HOVER_MODES.includes(hover) && !(colourHover && resolver.parse(colourHover))) fail(`${where} must be darken, lighten, invert, none or colour:<palette name or hex>; got ${JSON.stringify(hover)}.`);
+  };
+
+  const type = buttons.type ?? {};
+  if (typeof type !== 'object' || Array.isArray(type)) fail('buttons.type must be an object: { "font": "display", "case": "upper", "weight": 600, "tracking": "0.12em", "size": "sm" }.');
+  for (const key of Object.keys(type)) if (!['font', 'case', 'weight', 'tracking', 'size'].includes(key)) fail(`buttons.type.${key} is not a setting; use font, case, weight, tracking, size.`);
+  checkVariant('buttons.type', type);
+
+  const hover = buttons.hover ?? 'darken';
+  checkHover('buttons.hover', hover);
+
+  const variants = {};
   for (const variant of BUTTON_VARIANTS) {
     const given = buttons[variant] ?? {};
     if (typeof given !== 'object' || Array.isArray(given)) fail(`buttons.${variant} must be an object: { "style": "solid", "colour": "accent" }.`);
-    for (const key of Object.keys(given)) if (!['style', 'colour', 'underline'].includes(key)) fail(`buttons.${variant}.${key} is not a setting; use style, colour, underline.`);
+    checkVariant(`buttons.${variant}`, given);
     const merged = { ...defaults[variant], ...given };
-    if (!BUTTON_STYLES.includes(merged.style)) fail(`buttons.${variant}.style must be one of ${BUTTON_STYLES.join(', ')}; got ${JSON.stringify(merged.style)}.`);
-    for (const key of ['colour', 'underline']) {
-      if (merged[key] !== undefined && !resolver.parse(merged[key])) fail(`buttons.${variant}.${key} is not a known colour reference (${JSON.stringify(merged[key])}); use a palette name, "<name>-<step>" or "<name>-exact".`);
-    }
     if (merged.underline !== undefined && merged.style !== 'text') fail(`buttons.${variant}.underline only applies to "style": "text".`);
-    out[variant] = merged;
+    if (merged.label !== undefined && merged.style !== 'solid') fail(`buttons.${variant}.label only applies to "style": "solid".`);
+    variants[variant] = merged;
   }
 
-  const type = buttons.type ?? {};
-  if (typeof type !== 'object' || Array.isArray(type)) fail('buttons.type must be an object: { "case": "upper", "weight": 600, "tracking": "0.12em", "size": "sm" }.');
-  for (const key of Object.keys(type)) if (!['case', 'weight', 'tracking', 'size'].includes(key)) fail(`buttons.type.${key} is not a setting; use case, weight, tracking, size.`);
-  if (type.case !== undefined && !(type.case in TYPE_CASES)) fail(`buttons.type.case must be one of ${Object.keys(TYPE_CASES).join(', ')}; got ${JSON.stringify(type.case)}.`);
-  if (type.weight !== undefined && !(Number.isInteger(type.weight) && type.weight >= 100 && type.weight <= 900)) fail(`buttons.type.weight must be a whole number from 100 to 900; got ${JSON.stringify(type.weight)}.`);
-  if (type.tracking !== undefined && !/^-?\d*\.?\d+(em|px|rem)$|^0$/.test(String(type.tracking))) fail(`buttons.type.tracking must be a length such as 0.12em; got ${JSON.stringify(type.tracking)}.`);
-  if (type.size !== undefined && !(type.size in TYPE_SIZES)) fail(`buttons.type.size must be one of ${Object.keys(TYPE_SIZES).join(', ')}; got ${JSON.stringify(type.size)}.`);
-  out.type = { ...type };
+  // the context map: a position to a variant, or to a variant with its own overrides (a derived variant, resolved for every surface like the three)
+  const use = {};
+  const given = buttons.use ?? {};
+  if (typeof given !== 'object' || Array.isArray(given)) fail('buttons.use must be an object: { "card": "text", "product": "secondary", "forms": { "variant": "secondary", "size": "0.74rem" } }.');
+  for (const [context, spec] of Object.entries(given)) {
+    if (!(context in BUTTON_CONTEXTS)) fail(`buttons.use.${context} is not a position; use ${Object.keys(BUTTON_CONTEXTS).join(', ')}.`);
+    if (typeof spec === 'string') {
+      if (spec === 'keep') { use[context] = 'keep'; continue; }
+      if (!BUTTON_VARIANTS.includes(spec)) fail(`buttons.use.${context} must be primary, secondary, text, "keep" (the button keeps its own styling) or an object with a "variant"; got ${JSON.stringify(spec)}.`);
+      use[context] = spec;
+      continue;
+    }
+    if (!spec || typeof spec !== 'object' || !BUTTON_VARIANTS.includes(spec.variant)) fail(`buttons.use.${context} must be primary, secondary, text or { "variant": "primary|secondary|text", ...overrides }.`);
+    const { variant, ...overrides } = spec;
+    checkVariant(`buttons.use.${context}`, overrides);
+    const derived = { ...variants[variant], ...overrides };
+    if (overrides.style && overrides.style !== 'text') delete derived.underline;
+    if (overrides.style && overrides.style !== 'solid') delete derived.label;
+    if (derived.style === 'solid' && overrides.style === 'solid') delete derived.underline;
+    const name = `use-${context}`;
+    variants[name] = derived;
+    use[context] = name;
+  }
 
-  const hover = buttons.hover ?? 'darken';
-  const colourHover = typeof hover === 'string' && hover.startsWith('colour:') ? hover.slice(7) : null;
-  if (!HOVER_MODES.includes(hover) && !(colourHover && resolver.parse(colourHover))) fail(`buttons.hover must be darken, lighten, invert or colour:<palette name>; got ${JSON.stringify(hover)}.`);
-  out.hover = hover;
-
-  return out;
+  return { variants, type: { ...type }, hover, use };
 }
 
 /**
@@ -106,8 +153,13 @@ export function resolveButtonsFor(surface, declaration, { resolver, ratio, bestN
   const labelOn = (fill) => bestNeutral(fill);
 
   function one(variant) {
-    const { style, colour, underline } = declaration[variant];
+    const { style, colour, underline, label: labelColour, contrast } = declaration.variants[variant];
     const label = `${variant} button`;
+    if (style === 'solid' && contrast === 'label') {
+      // the colour stays as declared on every surface (a pale grey button on white): only its label has to read
+      const text = labelColour !== undefined && r(labelColour, colour) >= THRESHOLD.label ? labelColour : labelOn(colour);
+      return { style, bg: colour, text, border: colour };
+    }
     if (style === 'solid') {
       const fill = pass(colour, (c) => r(c, surface) >= THRESHOLD.surface && r(labelOn(c), c) >= THRESHOLD.label, `the ${label} fill`);
       if (fill === null) {
@@ -116,21 +168,26 @@ export function resolveButtonsFor(surface, declaration, { resolver, ratio, bestN
         notes.push(`${where}: no ${colour} step reaches ${THRESHOLD.surface}:1 against the surface and a readable label; the ${label} keeps its fill and gets a ${lab} edge.`);
         return { style, bg: colour, text: lab, border: lab };
       }
-      return { style, bg: fill, text: labelOn(fill), border: fill };
+      // a declared label colour (tcs's grey Apply button) is kept where it reads on the fill, else the palette's white or black
+      const text = labelColour !== undefined && r(labelColour, fill) >= THRESHOLD.label ? labelColour : labelOn(fill);
+      return { style, bg: fill, text, border: fill };
     }
     const edgeAndLabel = pass(colour, (c) => r(c, surface) >= THRESHOLD.label, `the ${label} ${style === 'outline' ? 'label and edge' : 'label'}`) ?? bestNeutral(surface);
     if (style === 'outline') return { style, bg: 'transparent', text: edgeAndLabel, border: edgeAndLabel };
+    if (underline === 'none') return { style, bg: 'transparent', text: edgeAndLabel, border: 'transparent' };
     // the underline is decoration under a label that is itself 4.5:1, so it only has to show (1.5:1), not carry 3:1
     const line = pass(underline ?? colour, (c) => r(c, surface) >= THRESHOLD.underline, `the ${label} underline`) ?? edgeAndLabel;
     return { style, bg: 'transparent', text: edgeAndLabel, border: line };
   }
 
   const hoverOf = (variant, base) => {
-    const mode = declaration.hover;
-    const { style, colour } = declaration[variant];
+    const { style, colour, hover: ownHover } = declaration.variants[variant];
+    const mode = ownHover ?? declaration.hover;
     const lighter = (ref) => nearby(ref).find((c) => resolver.value(c) && r(c, ref) >= 1.12 && luminance(c) > luminance(ref));
     const darker = (ref) => nearby(ref).find((c) => resolver.value(c) && r(c, ref) >= 1.12 && luminance(c) < luminance(ref));
     const luminance = (ref) => { const v = resolver.value(ref); return v === null ? 1 : wcagLuminance(v); };
+
+    if (mode === 'none') return { hoverBg: base.bg, hoverText: base.text, hoverBorder: base.border };
 
     if (mode === 'invert') {
       if (style === 'solid') return { hoverBg: 'transparent', hoverText: base.bg, hoverBorder: base.bg };
@@ -151,7 +208,7 @@ export function resolveButtonsFor(surface, declaration, { resolver, ratio, bestN
   };
 
   const result = {};
-  for (const variant of BUTTON_VARIANTS) {
+  for (const variant of Object.keys(declaration.variants)) {
     const base = one(variant);
     result[variant] = { ...base, ...hoverOf(variant, base) };
   }
@@ -161,14 +218,13 @@ export function resolveButtonsFor(surface, declaration, { resolver, ratio, bestN
 
 /** resources/generated/buttons.php: the declaration for the PHP side (the core Button block's styles, the Editor's restricted controls, the drift row). Written only when the site declares `buttons`. */
 export function buildButtonsPhp(declaration) {
-  const row = (variant) => {
-    const v = declaration[variant];
-    return `    '${variant}' => ['style' => '${v.style}', 'colour' => '${v.colour}'${v.underline ? `, 'underline' => '${v.underline}'` : ''}],`;
-  };
-  const type = Object.entries(declaration.type).map(([key, value]) => `'${key}' => ${typeof value === 'number' ? value : `'${value}'`}`).join(', ');
+  const quote = (value) => (typeof value === 'number' ? String(value) : `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`);
+  const row = (variant) => `    '${variant}' => [${Object.entries(declaration.variants[variant]).map(([key, value]) => `'${key}' => ${quote(value)}`).join(', ')}],`;
+  const type = Object.entries(declaration.type).map(([key, value]) => `'${key}' => ${quote(value)}`).join(', ');
+  const use = Object.entries(declaration.use).map(([key, value]) => `'${key}' => ${quote(value)}`).join(', ');
 
   return [
     '<?php', '', '/**', ' * Generated by bin/generate-theme-tokens.mjs from config/brand-palette.json (buttons).', ' * Do not edit directly. Read by the kit (app/buttons.php) and the drift check. Present only when the site declares `buttons`.', ' */', '',
-    'return [', ...BUTTON_VARIANTS.map(row), `    'type' => [${type}],`, `    'hover' => '${declaration.hover}',`, '];', '',
+    'return [', ...Object.keys(declaration.variants).map(row), `    'type' => [${type}],`, `    'use' => [${use}],`, `    'hover' => '${declaration.hover}',`, '];', '',
   ].join('\n');
 }

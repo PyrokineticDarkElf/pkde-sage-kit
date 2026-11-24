@@ -14,7 +14,7 @@
  * `muted` an object { "color": <reference>, "opacity": 70 }. Bare `white` and `black` are the palette's own white and black exacts.
  */
 import { wcagContrast, toRgb, shade, steps } from './color-math.mjs';
-import { resolveButtonsFor, BUTTON_VARIANTS, TYPE_CASES, TYPE_SIZES } from './buttons.mjs';
+import { resolveButtonsFor, BUTTON_CONTEXTS, TYPE_CASES, TYPE_SIZES, TYPE_FONTS } from './buttons.mjs';
 
 // Optional roles (WP-108 A): written to the CSS only where a theme declares them, so a palette without them generates exactly what it did before.
 //   buttonRing       the filled button's inset ring (falls back to buttonBorder, as before); `transparent` for no ring
@@ -280,7 +280,6 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
       buttonAltBg: btn.secondary.bg, buttonAltText: btn.secondary.text, buttonAltBorder: btn.secondary.border,
       cardButtonBg: cardBtn.primary.bg, cardButtonText: cardBtn.primary.text, cardButtonBorder: cardBtn.primary.border, cardButtonHoverText: cardBtn.primary.hoverText,
     };
-    if (p.style === 'text') roles.buttonStyle = 'underline';
     return { roles, btn, cardBtn, notes: [...btn.notes, ...cardBtn.notes] };
   }
 
@@ -448,7 +447,7 @@ const HOVER_KEYS = [['hoverBg', 'hover-bg'], ['hoverText', 'hover-text'], ['hove
 /** `--btn-<variant>-bg|text|border|hover-bg|hover-text|hover-border` for the three variants on one surface (prefix `--btn-` or `--btn-card-`). */
 function buttonVariables(resolver, btn, prefix) {
   const lines = [];
-  for (const variant of BUTTON_VARIANTS) {
+  for (const variant of Object.keys(btn).filter((key) => key !== 'notes')) {
     const v = btn[variant];
     lines.push(`  ${prefix}${variant}-bg: ${resolver.css(v.bg)};`, `  ${prefix}${variant}-text: ${resolver.css(v.text)};`, `  ${prefix}${variant}-border: ${resolver.css(v.border)};`);
     for (const [key, name] of HOVER_KEYS) lines.push(`  ${prefix}${variant}-${name}: ${resolver.css(v[key])};`);
@@ -456,73 +455,102 @@ function buttonVariables(resolver, btn, prefix) {
   return lines;
 }
 
-// The classes every button of the site is drawn from, listed per variant. The kit's own buttons carry .pkde-btn (--primary, --secondary, --text), the core Button block its
-// block styles (Solid is the default, Outline, Text), WooCommerce and Contact Form 7 their own markup.
-const BUTTON_SELECTORS = {
-  primary: [
-    '.pkde-btn:not(.pkde-btn-alt):not(.pkde-btn--secondary):not(.pkde-btn--text)', '.pkde-btn--primary',
-    '.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link', '.wp-block-search__button',
-    '.woocommerce a.button:not(.pkde-btn--secondary):not(.pkde-btn--text)', '.woocommerce button.button:not(.pkde-btn--secondary):not(.pkde-btn--text)', '.woocommerce input.button', '.woocommerce .comment-form input[type="submit"]',
-    '.woocommerce a.button.alt', '.woocommerce button.button.alt', '.single_add_to_cart_button', '.add_to_cart_button', 'a.checkout-button', 'button[name="woocommerce_checkout_place_order"]', '.comment-form input[type="submit"]',
-    '.wpcf7-submit', '.wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button)', '.pkde-filter-apply', 'li.nav-cta > a',
-  ],
-  secondary: [
-    '.pkde-btn-alt', '.pkde-btn--secondary', '.wp-block-button.is-style-outline > .wp-block-button__link',
-    '.woocommerce table.cart td.actions button[name="update_cart"]', '.pkde-product-section__more-button', '.pkde-recent__button',
-  ],
-  text: ['.pkde-btn--text', '.wp-block-button.is-style-text > .wp-block-button__link', '.pkde-filter-reset'],
+// The classes every button of the site is drawn from. The kit's own buttons carry .pkde-btn (--primary, --secondary, --text), the core Button block its block styles (Solid is the
+// default, Outline, Text), WooCommerce and Contact Form 7 their own markup. A button with an explicit class or block style has that variant; the others are in a POSITION (a
+// context), and the site's `use` map says which variant each position draws (the default is primary, Reset is text). The lists are disjoint, so no rule depends on specificity.
+const NOT_VARIANT = ':not(.pkde-btn-alt):not(.pkde-btn--secondary):not(.pkde-btn--text)';
+const CARD_BOXES = 'article, li.product, .pkde-feature, .pkde-quote, .pkde-card, .pkde-product-card';
+const HERO_BOXES = '.wp-block-sage-hero, .wp-block-sage-hero-slider, .wp-block-sage-cta, .pkde-cta-band, .pkde-section';
+const FIXED_SELECTORS = {
+  primary: ['.pkde-btn--primary', '.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link'],
+  secondary: ['.pkde-btn-alt', '.pkde-btn--secondary', '.wp-block-button.is-style-outline > .wp-block-button__link', '.woocommerce table.cart td.actions button[name="update_cart"]', '.pkde-product-section__more-button', '.pkde-recent__button'],
+  text: ['.pkde-btn--text', '.wp-block-button.is-style-text > .wp-block-button__link'],
+};
+const CONTEXT_SELECTORS = {
+  card: [`:where(${CARD_BOXES}) .pkde-btn${NOT_VARIANT}`, ':where(li.product, .products .product) :is(a.button, button.button, input.button)', '.add_to_cart_button'],
+  hero: [`:where(${HERO_BOXES}) .pkde-btn${NOT_VARIANT}:not(:where(${CARD_BOXES}) *)`],
+  product: ['.single_add_to_cart_button'],
+  filters: ['.pkde-filter-apply'],
+  reset: ['.pkde-filter-reset'],
+  forms: ['.wpcf7-submit', '.comment-form input[type="submit"]', '.wp-block-search__button'],
+  cart: ['a.checkout-button', 'button[name="woocommerce_checkout_place_order"]', '.wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button)', '.woocommerce .wc-backward'],
+  nav: ['li.nav-cta > a'],
+  other: [`.pkde-btn${NOT_VARIANT}:not(:where(${CARD_BOXES}, ${HERO_BOXES}) *)`, '.woocommerce :is(a.button, button.button, input.button):not(.single_add_to_cart_button, .add_to_cart_button, .checkout-button, .wc-backward, [name="update_cart"], [name="woocommerce_checkout_place_order"], .wpcf7-submit, .pkde-btn-alt, .pkde-btn--secondary, .pkde-btn--text):not(:where(li.product, .products .product) *)'],
 };
 // where a card is: the variables of the card's own surface replace the section's inside it
 const CARD_CONTEXTS = ['article', '.woocommerce ul.products > .product', '.pkde-quotes--strip .pkde-quote', '.pkde-quotes--carousel .pkde-quote', '.pkde-features--cards .pkde-feature', '.pkde-card'];
 
+const variantNames = (btn) => Object.keys(btn).filter((key) => key !== 'notes');
+
+/** The static look of a variant: the border width, radius and padding its style implies, and the type it (or the site's `type`) sets. */
+function variantLook(decl, name) {
+  const v = decl.variants[name];
+  const text = v.style === 'text';
+  const radiusOf = { none: '0', sm: 'var(--pkde-radius-sm)', md: 'var(--pkde-radius-md)', lg: 'var(--pkde-radius-lg)', full: 'var(--pkde-radius-full)' };
+  const look = {
+    bw: text ? (v.underline === 'none' ? '0' : '0 0 var(--pkde-button-underline-width) 0') : (v.border === 'none' ? '0' : (v.border ?? 'var(--pkde-border-thick)')),
+    radius: v.radius !== undefined ? (radiusOf[v.radius] ?? v.radius) : (text ? '0' : 'var(--pkde-radius-full)'),
+    padding: v.padding === 'keep' ? null : (v.padding ?? (text ? '0 0 0.25rem' : '0.75rem 1.25rem')),
+    type: [],
+  };
+  const pick = (key) => v[key] ?? decl.type[key];
+  const font = pick('font');
+  if (font) look.type.push(`  font-family: ${TYPE_FONTS[font] ?? (/^[A-Za-z0-9 _-]+$/.test(font) ? `"${font}"` : font)};`);
+  if (pick('case')) look.type.push(`  text-transform: ${TYPE_CASES[pick('case')]};`);
+  if (pick('weight')) look.type.push(`  font-weight: ${pick('weight')};`);
+  if (pick('tracking')) look.type.push(`  letter-spacing: ${pick('tracking')};`);
+  if (pick('size')) look.type.push(`  font-size: ${TYPE_SIZES[pick('size')] ?? pick('size')};`);
+  if (v.height) look.type.push(`  min-height: ${v.height};`);
+  if (v.lineHeight !== undefined) look.type.push(`  line-height: ${v.lineHeight};`);
+  return look;
+}
+
 /**
- * The structure of each variant (surface independent) and the type of every button, on :root, then the rules that draw every button from the variables. The selectors are
- * repeated so they stand one level above the older per-component button rules without !important.
+ * The structure of each variant (surface independent) on :root, then the rules that draw every button from the variables. The selectors are repeated so they stand one level
+ * above the older per-component button rules without !important.
  */
 function globalButtonCss(decl, page, resolver) {
   const out = [];
-  const style = (variant) => decl[variant].style;
-  const structure = (variant) => (style(variant) === 'text'
-    ? { bw: '0 0 var(--pkde-button-underline-width) 0', radius: '0', pad: '0 0 0.25rem' }
-    : { bw: 'var(--pkde-border-thick)', radius: 'var(--pkde-radius-full)', pad: '0.75rem 1.25rem' });
+  const names = Object.keys(decl.variants);
+  const looks = Object.fromEntries(names.map((name) => [name, variantLook(decl, name)]));
 
   out.push('/**', ' * One global button system (WP-109): `buttons` in config/brand-palette.json, resolved for every surface below. Every button of the site is drawn from these variables.', ' */', ':root {');
-  for (const variant of BUTTON_VARIANTS) {
-    const st = structure(variant);
-    out.push(`  --btn-${variant}-border-width: ${st.bw};`, `  --btn-${variant}-radius: ${st.radius};`, `  --btn-${variant}-padding: ${st.pad};`);
+  for (const name of names) {
+    out.push(`  --btn-${name}-border-width: ${looks[name].bw};`, `  --btn-${name}-radius: ${looks[name].radius};`);
+    if (looks[name].padding !== null) out.push(`  --btn-${name}-padding: ${looks[name].padding};`);
   }
   out.push(...buttonVariables(resolver, page, '--btn-'), ...buttonVariables(resolver, page, '--btn-card-'), '}', '');
 
   // a card replaces the section's button variables with its own surface's
-  const cardVars = BUTTON_VARIANTS.flatMap((variant) => [`bg`, `text`, `border`, `hover-bg`, `hover-text`, `hover-border`].map((k) => `  --btn-${variant}-${k}: var(--btn-card-${variant}-${k});`));
+  const cardVars = variantNames(page).flatMap((variant) => ['bg', 'text', 'border', 'hover-bg', 'hover-text', 'hover-border'].map((k) => `  --btn-${variant}-${k}: var(--btn-card-${variant}-${k});`));
   out.push(`${CARD_CONTEXTS.map((c) => `:is(${c})`).join(',\n')} {`, ...cardVars, '}', '');
 
-  const type = [];
-  if (decl.type.case) type.push(`  text-transform: ${TYPE_CASES[decl.type.case]};`);
-  if (decl.type.weight) type.push(`  font-weight: ${decl.type.weight};`);
-  if (decl.type.tracking) type.push(`  letter-spacing: ${decl.type.tracking};`);
-  if (decl.type.size) type.push(`  font-size: ${TYPE_SIZES[decl.type.size]};`);
-
-  for (const variant of BUTTON_VARIANTS) {
-    const list = BUTTON_SELECTORS[variant];
+  for (const name of names) {
+    const own = name.startsWith('use-') ? [] : (FIXED_SELECTORS[name] ?? []);
+    const mapped = Object.keys(CONTEXT_SELECTORS).filter((context) => (decl.use[context] ?? (BUTTON_CONTEXTS[context])) === name).flatMap((context) => CONTEXT_SELECTORS[context]);
+    const list = [...own, ...mapped];
+    if (!list.length) continue;
+    const look = looks[name];
     // the whole list three times: the selector stands at three times its strongest member (one level above the older per-component and card button rules, no id, no !important)
     const group = `:is(${list.join(', ')})`;
     const bump = (suffix = '') => `${group}${group}${group}${suffix}`;
     out.push(
-      `/* ${variant} (${style(variant)}) */`,
+      `/* ${name} (${decl.variants[name].style}) */`,
+      // how the label sits in the box is a layout default (zero specificity), so a site's own row (align-items: flex-end under a text button) still wins
+      `:where(${list.join(', ')}) {`, '  display: inline-flex;', '  align-items: center;', '  justify-content: center;', '}',
       `${bump()} {`,
-      '  display: inline-flex;', '  align-items: center;', '  justify-content: center;', '  box-sizing: border-box;', '  font-family: inherit;', '  line-height: 1.25;',
-      `  background-color: var(--btn-${variant}-bg);`, `  color: var(--btn-${variant}-text);`,
-      '  border-style: solid;', `  border-width: var(--btn-${variant}-border-width);`, `  border-color: var(--btn-${variant}-border);`,
-      `  border-radius: var(--btn-${variant}-radius);`, `  padding: var(--btn-${variant}-padding);`,
+      ...(decl.variants[name].style === 'text' ? [] : ['  display: inline-flex;', '  align-items: center;', '  justify-content: center;']), '  box-sizing: border-box;', '  font-family: inherit;', '  line-height: 1.25;',
+      `  background-color: var(--btn-${name}-bg);`, `  color: var(--btn-${name}-text);`,
+      '  border-style: solid;', `  border-width: var(--btn-${name}-border-width);`, `  border-color: var(--btn-${name}-border);`,
+      `  border-radius: var(--btn-${name}-radius);`, ...(look.padding !== null ? [`  padding: var(--btn-${name}-padding);`] : []),
       '  box-shadow: none;', '  text-decoration: none;', '  cursor: pointer;', '  transition: background-color var(--pkde-motion-fast, 150ms) ease, color var(--pkde-motion-fast, 150ms) ease, border-color var(--pkde-motion-fast, 150ms) ease;',
-      ...type, '}',
+      ...look.type, '}',
       `${bump(':is(:hover, :focus-visible)')} {`,
-      `  background-color: var(--btn-${variant}-hover-bg);`, `  color: var(--btn-${variant}-hover-text);`, `  border-color: var(--btn-${variant}-hover-border);`, '  opacity: 1;', '}',
-      `${bump(':focus-visible')} {`, `  outline: 2px solid var(--btn-${variant}-border);`, '  outline-offset: 2px;', '}',
+      `  background-color: var(--btn-${name}-hover-bg);`, `  color: var(--btn-${name}-hover-text);`, `  border-color: var(--btn-${name}-hover-border);`, '  opacity: 1;', '}',
+      `${bump(':focus-visible')} {`, `  outline: 2px solid var(--btn-${name}-border);`, '  outline-offset: 2px;', '}',
       '',
     );
-    if (variant === 'primary') out.push('/* the filter form\'s Apply button is quieter while nothing is pending (it is never disabled) */', `${group}${group}${group}[data-pending="0"]:not(:hover):not(:focus-visible) {`, '  opacity: 0.6;', '}', '');
+    if (list.includes('.pkde-filter-apply')) out.push('/* the filter form\'s Apply button is quieter while nothing is pending (it is never disabled) */', `${group}${group}${group}[data-pending="0"]:not(:hover):not(:focus-visible) {`, '  opacity: 0.6;', '}', '');
   }
   return out.join('\n');
 }

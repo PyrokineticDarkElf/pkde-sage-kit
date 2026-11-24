@@ -17,6 +17,43 @@ A site declares its buttons **once**, next to its colours; the generator resolve
 - **`type`** applies to every button: `case` (`upper`, `lower`, `capitalise`, `none`), `weight` (100 to 900), `tracking` (a length), `size` (`xs`, `sm`, `md`, `lg`). Leave a key out to keep the button's own.
 - **`hover`:** `darken` or `lighten` (one step of the colour's ladder), `invert` (solid and outline swap), or `colour:<palette name or hex>` (the fill of a solid button, the label and edge of the others).
 
+## Type, size and padding per variant, and where each variant is used
+
+Everything under `type` can also be set on a single variant (and on a position, below), where it wins: `font` (`display`, `sans`, `mono` or a family name), `size` (`xs`, `sm`, `md`, `lg` or a length such as `0.74rem`), `weight`, `tracking` (a length or `normal`), `case`, `lineHeight` (a number or length), `height` (a minimum height), `padding` (one to four lengths, or **`"keep"`**: the button's own padding stays, for a site whose theme.json already sets it), `radius` (`none`, `sm`, `md`, `lg`, `full` or a length), `border` (`none` or a width) and `hover` (this variant's own hover). A solid variant can set the `label` colour; `"contrast": "label"` keeps its fill on every surface (a pale grey button on white) and only checks that the label reads; `"underline": "none"` makes a text button with no rule. `"hover": "none"` means no change on hover.
+
+**Positions (`use`).** Not every button of a site is the same variant. `use` says which variant each position draws; without it every position is primary, except Reset (text):
+
+| Position | Buttons |
+|---|---|
+| `card` | the loop's Add to basket and Read more, and `.pkde-btn` in a card, a feature or a quote |
+| `hero` | `.pkde-btn` in the Hero, CTA and CTA band blocks (a second button with its own Button style is not affected) |
+| `product` | the single product's Add to basket |
+| `filters`, `reset` | the filter form's Apply and Reset |
+| `forms` | Contact Form 7's submit, the comment form, the search button |
+| `cart` | the basket's and checkout's buttons, the cart and checkout blocks, Return to shop |
+| `nav` | the header's `nav-cta` link |
+| `other` | any other WooCommerce button and `.pkde-btn` |
+
+A position takes a variant name (`"product": "secondary"`), `"keep"` (the button is left with whatever styling it has, the system does not draw it), or an object `{ "variant": "primary", ...any of the keys above }`: a **derived** variant, resolved for every surface like the three, that starts from that variant and changes what is listed (`"card": { "variant": "primary", "size": "0.6875rem", "padding": "0 0 0.25rem" }`). A button with an explicit class (`.pkde-btn--secondary`, `.pkde-btn-alt`, `.pkde-btn--text`) or a block style (Outline, Text) keeps that variant whatever its position.
+
+```json
+"buttons": {
+  "type": { "font": "display", "case": "upper", "weight": 500 },
+  "hover": "colour:#84491a",
+  "primary":   { "style": "text", "colour": "#353b3d", "underline": "accent", "size": "0.76rem", "tracking": "0.22em", "padding": "keep", "lineHeight": 1.2 },
+  "secondary": { "style": "solid", "colour": "#353b3d", "label": "white", "font": "sans", "size": "0.74rem", "tracking": "0.2em", "radius": "full", "border": "none", "height": "3rem", "padding": "0 2rem" },
+  "text":      { "style": "text", "colour": "#353b3d", "underline": "accent", "size": "0.76rem", "tracking": "0.22em", "padding": "keep", "lineHeight": 1.2 },
+  "use": {
+    "card": { "variant": "primary", "size": "0.6875rem", "tracking": "0.18em", "padding": "0 0 0.25rem", "lineHeight": 1 },
+    "product": "secondary",
+    "forms": { "variant": "secondary", "padding": "0 2.25rem" },
+    "filters": "keep", "reset": "keep", "cart": "keep"
+  }
+}
+```
+
+That is tcs's: text buttons everywhere except the product page's Add to basket and the contact form's submit (a solid ink pill), the filters and the basket left as the kit has them. On tcs.test it reproduces every button, hover included.
+
 ## What the generator does for each surface
 
 For a surface (say a Brand Sage section) it works out, per variant, the fill, the label, the edge and the hover of each. If a colour fails against the surface the nearest step of the same hue that passes is used, and `npm run theme:check` lists what was substituted ("Buttons: the primary button fill accent fails contrast, accent-700 used, on 3 surfaces"):

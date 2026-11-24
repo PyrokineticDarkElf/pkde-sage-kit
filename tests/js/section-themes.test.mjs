@@ -424,9 +424,58 @@ test('buttons (WP-109): a bad declaration stops the generator naming the key; de
   bad({ primary: { colour: 'nope' } }, /buttons\.primary\.colour is not a known colour reference/);
   bad({ secondary: { style: 'outline', underline: 'blush' } }, /underline only applies/);
   bad({ type: { weight: 50 } }, /buttons\.type\.weight/);
-  bad({ hover: 'glow' }, /buttons\.hover must be darken, lighten, invert or colour:<palette name>/);
+  bad({ hover: 'glow' }, /buttons\.hover must be darken, lighten, invert, none or colour:<palette name or hex>/);
   bad({ colour: 'x' }, /buttons\.colour is not a setting/);
   const ok = run(bb, { buttons: {} });
   assert.equal(ok.status, 0, ok.stderr);
   assert.match(ok.css, /--btn-primary-bg: /); // an empty declaration is the defaults: a solid primary, an outline secondary, a text button
+});
+
+
+test('buttons (WP-109 follow-up): a font, a size and padding per variant, a context map with derived variants, "keep" and a fixed colour', () => {
+  const buttons = {
+    type: { font: 'display', case: 'upper', weight: 500 },
+    primary: { style: 'text', colour: '#353b3d', underline: 'blush', size: '0.76rem', padding: 'keep', lineHeight: 1.2 },
+    secondary: { style: 'solid', colour: '#353b3d', label: 'white', font: 'sans', radius: 'full', border: 'none', height: '3rem', padding: '0 2rem' },
+    use: {
+      card: { variant: 'primary', size: '0.6875rem', padding: '0 0 0.25rem' },
+      product: 'secondary',
+      filters: { variant: 'secondary', colour: '#e4e5e6', contrast: 'label' },
+      reset: 'keep',
+    },
+  };
+  const r = run(bb, { buttons });
+  assert.equal(r.status, 0, r.stderr);
+  // the font of the type, a variant's own font, a size as a length, "keep" leaves the padding to the element
+  assert.match(r.css, /font-family: var\(--font-display\);/);
+  assert.match(r.css, /font-family: var\(--font-sans\);/);
+  assert.match(r.css, /font-size: 0\.6875rem;/);
+  assert.match(r.css, /min-height: 3rem;/);
+  assert.match(r.css, /--btn-secondary-border-width: 0;/);
+  assert.doesNotMatch(r.css, /--btn-primary-padding:/);
+  assert.match(r.css, /--btn-use-card-padding: 0 0 0\.25rem;/);
+  // a context derived from a variant has its own variables on every surface, and the product position draws from the secondary
+  assert.match(block(r.css, '.is-style-brand-sage'), /--btn-use-card-bg: /);
+  assert.match(r.css, /\.single_add_to_cart_button[^{]*\{[^}]*background-color: var\(--btn-secondary-bg\);/s);
+  assert.match(r.css, /\.pkde-btn[^{]*:where\([^)]*article[^{]*\{[^}]*background-color: var\(--btn-use-card-bg\);/s);
+  // "keep": the position is not drawn by the system at all
+  assert.doesNotMatch(r.css, /pkde-filter-reset/);
+  // a fixed colour is kept on every surface (a pale grey button on white): only its label has to read
+  assert.doesNotMatch(r.stdout + r.stderr, /use-filters button keeps its fill/);
+  assert.match(r.read('resources/generated/buttons.php'), /'use' => \['card' => 'use-card', 'product' => 'secondary', 'filters' => 'use-filters', 'reset' => 'keep'\]/);
+  // without a map every position is primary
+  const plain = run(bb, { buttons: {} });
+  assert.match(plain.css, /\.single_add_to_cart_button[^{]*\{[^}]*background-color: var\(--btn-primary-bg\);/s);
+  for (const [bad, expected] of [
+    [{ use: { nowhere: 'text' } }, /buttons\.use\.nowhere is not a position/],
+    [{ use: { card: 'huge' } }, /buttons\.use\.card must be primary, secondary, text, "keep"/],
+    [{ primary: { padding: 'lots' } }, /buttons\.primary\.padding must be "keep"/],
+    [{ type: { font: 'x' } }, /buttons\.type\.font must be display, sans, mono or a font family name/],
+    [{ primary: { size: 'big' } }, /buttons\.primary\.size must be one of/],
+    [{ secondary: { contrast: 'half' } }, /buttons\.secondary\.contrast must be "full"/],
+  ]) {
+    const result = run(bb, { buttons: bad });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, expected);
+  }
 });
