@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.24.4
+
+The global buttons can reproduce a site that has more than one kind of button (TPL-274, tcs). **Adopt:** tcs now (staging pilot), then every site that wants `buttons`; a site that does not declare `buttons` is unchanged (and so is one that declares only what 2026.11.24.3 knew: the three variants and `type`). Not Train-ready.
+
+- **Per variant:** every variant and `type` take `font` (`display`, `sans`, `mono` or a family name), `size` (a name or a length), `weight`, `tracking`, `case`, `lineHeight`, `height`, `padding` (or `"keep"`: the element's own), `radius`, `border`, `hover` (also `"none"`), and a solid variant a `label` colour and `"contrast": "label"` (the colour stays on every surface; only the label has to read); a text button can have `"underline": "none"`.
+- **Positions (`use`):** a map from a position (`card`, `hero`, `product`, `filters`, `reset`, `forms`, `cart`, `nav`, `other`) to a variant, to `"keep"` (the kit's own styling stays) or to `{ "variant": ..., ...overrides }` (a derived variant, resolved for every surface). Without a map every position is primary and Reset is text. The lists of buttons per position do not overlap, so no rule relies on specificity; the label's alignment in its box is a zero-specificity default for text buttons, so a site's own row (`align-items: flex-end`) still applies.
+- **A declared `primary` of style `text` no longer also writes the older text-button rule** (which set a padding of its own).
+- **Proved on tcs.test** (read-only, tcs's own pages with the generated CSS injected in memory and its button rules for the card, single product and form submit removed in memory): home, contact, shop, product, category and basket at 1440 and 390: every button's font, size, weight, tracking, colour, edge, radius, padding and height, and the hover of each kind, equal to today (174 of 176 compared; the other two are the product page's random related products, which differ from one load to the next today too); the first 900 px of home, product, shop and contact are pixel-identical in screenshots at both widths. `docs/buttons.md` has tcs's declaration.
+
 ## 2026.11.24.3
 
 Concentric card radii (TPL-273) and the global buttons' font fix (TPL-272). **Adopt:** tcs and bb now (staging pilots), the others in February; take this tag instead of 2026.11.24.2 (the same buttons, without the submit-input alignment fix). Not Train-ready.
