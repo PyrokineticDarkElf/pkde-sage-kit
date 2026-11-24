@@ -7,7 +7,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createBuilder, labelOf, WEAK_BELOW } from '../../bin/lib/section-themes.mjs';
+import { createBuilder, labelOf, WEAK_BELOW, buildSectionRolesCss } from '../../bin/lib/section-themes.mjs';
 
 const generator = fileURLToPath(new URL('../../bin/generate-theme-tokens.mjs', import.meta.url));
 const neutrals = [{ name: 'black', hex: '#000000', role: 'black' }, { name: 'white', hex: '#ffffff', role: 'white' }];
@@ -343,7 +343,7 @@ test('shape: soft is the default and writes the tokens, the derived Tailwind sca
   const soft = run(bb);
   assert.equal(soft.status, 0, soft.stderr);
   const css = soft.read('resources/css/generated/brand-tokens.css');
-  assert.match(css, /:root \{\n  --pkde-radius-sm: 0\.5rem;\n  --pkde-radius-md: 1rem;\n  --pkde-radius-lg: 2rem;\n  --pkde-radius-full: 9999px;\n  --pkde-border-thin: 1px;\n  --pkde-border-thick: 2px;\n\}/);
+  assert.match(css, /:root \{\n  --pkde-radius-sm: 0\.5rem;\n  --pkde-radius-md: 1rem;\n  --pkde-radius-lg: 2rem;\n  --pkde-radius-full: 9999px;\n  --pkde-border-thin: 1px;\n  --pkde-border-thick: 2px;\n  --pkde-button-underline-width: var\(--pkde-border-thick\);[^\n]*\n\}/);
   assert.match(css, /@theme static \{\n  --radius-xs: calc\(var\(--pkde-radius-sm\) \* 0\.25\);/);
   assert.match(css, /--radius-4xl: calc\(var\(--pkde-radius-lg\) \* 1\);/);
   assert.match(soft.read('resources/generated/shape.php'), /'preset' => 'soft'/);
@@ -372,4 +372,20 @@ test('shape: --check notices a changed preset and an old shape.php', () => {
   const stale = spawnSync('node', [generator, '--check'], { cwd: r.theme, env: { ...process.env, PKDE_THEME_DIR: r.theme }, encoding: 'utf8' });
   assert.equal(stale.status, 1);
   assert.match(stale.stderr, /shape\.php/);
+});
+
+test('buttonRing, buttonHoverText and buttonStyle "underline" are optional: nothing is written for a palette that declares none, and a text button is one rule per declaring theme (WP-108 A)', () => {
+  const plain = buildSectionRolesCss(bb, createBuilder(bb).themes());
+  assert.doesNotMatch(plain, /button-ring|button-hover-text|button-underline-width/);
+  const text = bb.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonStyle: 'underline', buttonBg: 'transparent', buttonText: 'slate-950', buttonBorder: 'blush-500', buttonRing: 'transparent', buttonHoverText: 'sage-800', card: { buttonBorder: 'blush-500', buttonHoverText: 'sage-800' } } } : c));
+  const themes = createBuilder(text).themes();
+  const sage = themes.find((t) => t.id === 'brand-sage').matrix;
+  assert.equal(sage.buttonStyle, 'underline');
+  assert.equal(sage.buttonRing, 'transparent');
+  const css = buildSectionRolesCss(text, themes);
+  assert.match(css, /\.is-style-brand-sage \{[^}]*--section-button-ring: transparent;[^}]*--section-button-hover-text:/s);
+  assert.match(css, /:is\(\.is-style-brand-sage\)[^{]*\{\s*padding: 0 0 0\.25rem;\s*border-radius: 0;[^}]*border-width: 0 0 var\(--pkde-button-underline-width\) 0;[^}]*box-shadow: none;/s);
+  assert.match(css, /:is\(\.is-style-brand-sage\)[^{]*:is\(:hover, :focus-visible\)[^{]*\{\s*color: var\(--section-button-hover-text\);/s);
+  assert.throws(() => createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonStyle: 'pill' } } : c))).themes(), /buttonStyle must be one of/);
+  assert.throws(() => createBuilder(bb.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonRing: 'nope-1' } } : c))).themes(), /buttonRing is not a known colour reference/);
 });

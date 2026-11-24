@@ -56,6 +56,7 @@ export function buildShapeCss(shape) {
     ':root {',
     ...Object.entries(shape.radius).map(([key, value]) => `  --pkde-radius-${key}: ${value};`),
     ...Object.entries(shape.border).map(([key, value]) => `  --pkde-border-${key}: ${value};`),
+    '  --pkde-button-underline-width: var(--pkde-border-thick); /* the underline of a text button (buttonStyle "underline" in a colour\'s styles) */',
     '}',
     '',
     '@theme static {',

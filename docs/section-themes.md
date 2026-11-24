@@ -23,6 +23,8 @@ A theme sets these variables on its section; everything inside reads them (`--pk
 | `--section-link` | links in running text: a palette colour that reaches 4.5:1 on the background and 3:1 against the text colour where one exists; otherwise the text colour, and those links are underlined (see below) |
 | `--section-button-bg` / `-button-text` | the filled button and its label |
 | `--section-button-border` | the filled button's edge: its own colour (invisible) unless the button barely shows against the section (under 3:1), then its label colour |
+| `--section-button-ring` | optional role `buttonRing`: the filled button's inset ring. Without it the ring follows `--section-button-border`, as before; `"transparent"` draws none |
+| `--section-button-hover-text` | optional role `buttonHoverText`: the filled button's label on hover and keyboard focus. Without it the label keeps its colour. It needs 4.5:1 on the button |
 | `--section-button-alt-bg` / `-button-alt-text` | the secondary button, a **true outline**: no fill (`transparent`), the text colour for the label and the edge |
 | `--section-icon` | icons (`.pkde-icon`) |
 | `--section-border` | rules and separators |
@@ -88,3 +90,15 @@ offered like any other theme; its matrix uses the one readable text colour for e
 ## The aliases
 
 `.theme-{name}` and `.theme-{alias}` and the `--pkde-theme-*` variables keep their values and also set the `--section-*` roles, so nothing changes visually.
+
+
+## Text buttons: `buttonStyle: "underline"`
+
+Declare `"buttonStyle": "underline"` in a colour's `styles` (the colour's own, or its `light`, `dark` and `light.dark` objects) and the filled button of that theme, and the buttons of the cards in it, become **text buttons**: no fill, no ring, no radius, the label on a rule of `--pkde-button-underline-width` (the thick border, 2px, unless a site sets the variable) in the `buttonBorder` colour (`card.buttonBorder` for a card's button). Fill the label with `buttonText`, take the fill away with `"buttonBg": "transparent"`, and give the hover colour with `buttonHoverText`:
+
+```json
+"white": { "styles": { "buttonStyle": "underline", "buttonBg": "transparent", "buttonText": "ink-950", "buttonBorder": "accent-500", "buttonHoverText": "accent-800",
+                       "card": { "buttonBg": "transparent", "buttonText": "ink-950", "buttonBorder": "accent-500", "buttonHoverText": "accent-800" } } }
+```
+
+Lettering (letter spacing, weight, case) is the site's own CSS or the button's block settings; the generator only draws the underline. A palette that declares none of `buttonRing`, `buttonHoverText` or `buttonStyle` generates exactly what it did before.
