@@ -2,7 +2,7 @@
 
 /**
  * Shape tokens in theme.json (WP-108 A): the corner radius and border thickness the palette declares (`shape` in config/brand-palette.json, generated into
- * resources/generated/shape.php) become theme.json custom settings (`--wp--custom--pkde--radius--md` and so on) and the radius of core's buttons, so the block editor and the
+ * resources/generated/shape.php) become theme.json custom settings (`--wp--custom--pkde--radius--md` and so on) and, when the shape's full radius is not the default pill, the radius of core's buttons, so the block editor and the
  * frontend follow the same three radius steps as the kit's CSS. Nothing here restyles anything else: images, covers and groups keep whatever the site's own theme.json says.
  */
 
@@ -16,10 +16,15 @@ namespace App;
  */
 function shape_theme_json(array $shape): array
 {
-    return [
-        'settings' => ['custom' => ['pkde' => ['radius' => (array) ($shape['radius'] ?? []), 'border' => (array) ($shape['border'] ?? [])]]],
-        'styles' => ['elements' => ['button' => ['border' => ['radius' => 'var(--pkde-radius-full)']]]],
-    ];
+    $fragment = ['settings' => ['custom' => ['pkde' => ['radius' => (array) ($shape['radius'] ?? []), 'border' => (array) ($shape['border'] ?? [])]]]];
+
+    // Core's buttons follow the full radius only when the site chose another one than the default pill: with the default shape nothing of the site's own theme.json or of
+    // WooCommerce's block buttons changes (soft is today's look to the pixel).
+    if (($shape['radius']['full'] ?? '9999px') !== '9999px') {
+        $fragment['styles'] = ['elements' => ['button' => ['border' => ['radius' => 'var(--pkde-radius-full)']]]];
+    }
+
+    return $fragment;
 }
 
 if (! function_exists('add_filter')) {
