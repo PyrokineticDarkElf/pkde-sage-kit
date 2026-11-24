@@ -19,10 +19,10 @@
       @if (($buttonText && $buttonUrl) || ($secondaryText && $secondaryUrl))
         <div class="pkde-actions">
           @if ($buttonText && $buttonUrl)
-            <a href="{{ esc_url($buttonUrl) }}" class="pkde-btn">{{ $buttonText }}</a>
+            <a href="{{ esc_url($buttonUrl) }}" class="{{ \App\button_classes($buttonStyle ?? 'primary') }}">{{ $buttonText }}</a>
           @endif
           @if ($secondaryText && $secondaryUrl)
-            <a href="{{ esc_url($secondaryUrl) }}" class="pkde-btn-alt">{{ $secondaryText }}</a>
+            <a href="{{ esc_url($secondaryUrl) }}" class="{{ \App\button_classes($secondaryButtonStyle ?? 'secondary') }}">{{ $secondaryText }}</a>
           @endif
         </div>
       @endif

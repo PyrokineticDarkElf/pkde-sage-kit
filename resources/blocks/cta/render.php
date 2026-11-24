@@ -57,10 +57,10 @@ $wrapper_attributes = get_block_wrapper_attributes([
     <?php if ($primary_text || $secondary_text) : ?>
         <div class="<?php echo $is_banner ? 'flex flex-none flex-wrap gap-3' : 'mt-8 flex flex-wrap justify-center gap-3'; ?>">
             <?php if ($primary_text && $primary_url) : ?>
-                <a href="<?php echo esc_url($primary_url); ?>" class="pkde-btn"><?php echo esc_html($primary_text); ?></a>
+                <a href="<?php echo esc_url($primary_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))); ?>"><?php echo esc_html($primary_text); ?></a>
             <?php endif; ?>
             <?php if ($secondary_text && $secondary_url) : ?>
-                <a href="<?php echo esc_url($secondary_url); ?>" class="pkde-btn-alt"><?php echo esc_html($secondary_text); ?></a>
+                <a href="<?php echo esc_url($secondary_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['secondaryButtonStyle'] ?? 'secondary'))); ?>"><?php echo esc_html($secondary_text); ?></a>
             <?php endif; ?>
         </div>
     <?php endif; ?>

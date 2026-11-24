@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.24.2
+
+One global button system from the palette (WP-109, TPL-272). **Adopt:** tcs and bb now (staging pilots), the others in February; nothing changes for a site that does not declare `buttons`. Not Train-ready.
+
+- **`buttons` in `config/brand-palette.json`:** `primary`, `secondary` and `text` variants (`solid`, `outline` or `text` style, a palette colour, a text underline colour), the `type` of every button (case, weight, tracking, size) and the `hover` (`darken`, `lighten`, `invert`, `colour:<name>`). The generator resolves each variant for every surface (each Brand section theme in light and dark, each card, the page, the older `.theme-*` sections) with a contrast substitution (3:1 for a fill, 4.5:1 for a label or an outline edge; `theme:check` lists the substitutions, grouped) and writes `--btn-<variant>-bg|text|border|hover-*`. The section and card button roles are outputs of it; the existing roles (`buttonBg`, `buttonText`, `buttonBorder`, `buttonRing`, `buttonHoverText`, `buttonStyle`, `card.button*`) stay as per-surface overrides that win.
+- **Every button draws from it:** `.pkde-btn` (primary), `.pkde-btn-alt` / `.pkde-btn--secondary`, `.pkde-btn--text`; the core Button block (block styles Solid, Outline, Text; an Editor picks the style only, an Administrator keeps the controls); WooCommerce's loop, single, basket, checkout and cart or checkout block buttons; Contact Form 7 and the comment form; the filter Apply and Reset; the header `nav-cta` link. The Hero and CTA blocks gain a **Button style** for each button; `.pkde-btn--secondary` and `--text` also work (from the section's roles) without `buttons`.
+- **No change without `buttons`:** every colour, edge, radius and font of 146 buttons on the template stack (home, about, contact, block demo, shop, category, product, basket; 1440 and 390) is identical; bb's and tcs's generated `section-themes.css` differs by one equivalent line. A site that declares `buttons` gets `resources/generated/buttons.php`.
+- Docs: `docs/buttons.md`.
+
 ## 2026.11.24.1
 
 Shape tokens, the ring and hover roles and the underline text button (WP-108 A, TPL-266). **Adopt:** bb and tcs now (staging pilots), with the template's `theme.css` change below; every other site in February. Not Train-ready. **A site with no `shape` in its palette looks exactly as before** (soft is today's values).

@@ -18,6 +18,13 @@ const STYLE_OPTIONS = [
   { label: __('Banner (compact strip)', 'sage'), value: 'banner' },
 ];
 
+const BUTTON_STYLE_OPTIONS = [
+  { label: __('Primary', 'sage'), value: 'primary' },
+  { label: __('Secondary', 'sage'), value: 'secondary' },
+  { label: __('Text', 'sage'), value: 'text' },
+];
+const BUTTON_CLASSES = { primary: 'pkde-btn', secondary: 'pkde-btn-alt', text: 'pkde-btn pkde-btn--text' };
+
 function Edit({ attributes, setAttributes }) {
   const {
     style,
@@ -28,6 +35,8 @@ function Edit({ attributes, setAttributes }) {
     primaryButtonUrl,
     secondaryButtonText,
     secondaryButtonUrl,
+    buttonStyle,
+    secondaryButtonStyle,
     imageUrl,
     imageId,
     imageAlt,
@@ -85,6 +94,7 @@ function Edit({ attributes, setAttributes }) {
             value={primaryButtonUrl}
             onChange={(value) => setAttributes({ primaryButtonUrl: value })}
           />
+          <SelectControl label={__('Button style', 'sage')} value={buttonStyle || 'primary'} options={BUTTON_STYLE_OPTIONS} onChange={(value) => setAttributes({ buttonStyle: value })} />
         </PanelBody>
         <PanelBody title={__('Secondary button (optional)', 'sage')} initialOpen={false}>
           <TextControl
@@ -97,6 +107,7 @@ function Edit({ attributes, setAttributes }) {
             value={secondaryButtonUrl}
             onChange={(value) => setAttributes({ secondaryButtonUrl: value })}
           />
+          <SelectControl label={__('Button style', 'sage')} value={secondaryButtonStyle || 'secondary'} options={BUTTON_STYLE_OPTIONS} onChange={(value) => setAttributes({ secondaryButtonStyle: value })} />
         </PanelBody>
       </InspectorControls>
 
@@ -122,9 +133,9 @@ function Edit({ attributes, setAttributes }) {
 
         <div className={isBanner ? 'flex flex-none flex-wrap gap-3' : 'mt-8 flex flex-wrap justify-center gap-3'}>
           {(primaryButtonText || !secondaryButtonText) && (
-            <span className="pkde-btn">{primaryButtonText || __('Button text…', 'sage')}</span>
+            <span className={BUTTON_CLASSES[buttonStyle || 'primary']}>{primaryButtonText || __('Button text…', 'sage')}</span>
           )}
-          {secondaryButtonText && <span className="pkde-btn-alt">{secondaryButtonText}</span>}
+          {secondaryButtonText && <span className={BUTTON_CLASSES[secondaryButtonStyle || 'secondary']}>{secondaryButtonText}</span>}
         </div>
       </div>
     </>
