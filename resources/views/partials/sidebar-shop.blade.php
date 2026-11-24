@@ -25,12 +25,12 @@
 @php($filterAction = ($term = get_queried_object()) instanceof \WP_Term ? get_term_link($term) : wc_get_page_permalink('shop'))
 @php($chips = \App\ShopFilters::activeChips($filterAction))
 @if ($chips)
-  <div class="mb-4 rounded-2xl border border-neutral-200 p-4">
+  <div class="mb-4 rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-4">
     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ __('Active filters', 'sage') }}</p>
     <ul class="mt-3 flex flex-wrap gap-2">
       @foreach ($chips as $chip)
         <li class="list-none">
-          <a href="{{ $chip['url'] }}" aria-label="{{ sprintf(__('Remove filter %s', 'sage'), html_entity_decode(wp_strip_all_tags($chip['label']), ENT_QUOTES | ENT_HTML5, 'UTF-8')) }}" class="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-800 transition hover:bg-neutral-200">
+          <a href="{{ $chip['url'] }}" aria-label="{{ sprintf(__('Remove filter %s', 'sage'), html_entity_decode(wp_strip_all_tags($chip['label']), ENT_QUOTES | ENT_HTML5, 'UTF-8')) }}" class="inline-flex items-center gap-1.5 rounded-(--pkde-radius-full) bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-800 transition hover:bg-neutral-200">
             {!! $chip['label'] !!} <span aria-hidden="true">&times;</span>
           </a>
         </li>
@@ -44,7 +44,7 @@
   data-filter-toggle
   aria-expanded="false"
   aria-controls="shop-filters"
-  class="mb-4 flex w-full items-center justify-between rounded-2xl border border-neutral-200 px-4 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-900 lg:hidden"
+  class="mb-4 flex w-full items-center justify-between rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 px-4 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-900 lg:hidden"
 >
   {{ __('Filters', 'sage') }}
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-4 w-4">
@@ -64,26 +64,26 @@
     <div class="pkde-filter-groups space-y-4" data-shop-groups>
     @foreach ($filterGroups as $group)
       @if ($group['type'] === 'range')
-        <div class="rounded-2xl border border-neutral-200 p-5">
+        <div class="rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-5">
           <fieldset class="grid gap-3">
             <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ $group['label'] }}</p>
             <div class="grid grid-cols-2 gap-2">
-              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Min', 'sage') }}<input type="number" name="min_price" value="{{ esc_attr(is_scalar($_GET['min_price'] ?? null) ? (string) $_GET['min_price'] : '') }}" min="0" step="0.01" placeholder="0" data-price-input class="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
-              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Max', 'sage') }}<input type="number" name="max_price" value="{{ esc_attr(is_scalar($_GET['max_price'] ?? null) ? (string) $_GET['max_price'] : '') }}" min="0" step="0.01" placeholder="Any" data-price-input class="w-full rounded-xl border border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
+              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Min', 'sage') }}<input type="number" name="min_price" value="{{ esc_attr(is_scalar($_GET['min_price'] ?? null) ? (string) $_GET['min_price'] : '') }}" min="0" step="0.01" placeholder="0" data-price-input class="w-full rounded-xl border-(length:--pkde-border-thin) border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
+              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Max', 'sage') }}<input type="number" name="max_price" value="{{ esc_attr(is_scalar($_GET['max_price'] ?? null) ? (string) $_GET['max_price'] : '') }}" min="0" step="0.01" placeholder="Any" data-price-input class="w-full rounded-xl border-(length:--pkde-border-thin) border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
             </div>
           </fieldset>
         </div>
       @elseif ($group['type'] === 'toggle')
-        <div class="rounded-2xl border border-neutral-200 p-5">
+        <div class="rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-5">
           <label class="flex cursor-pointer items-center gap-2.5 text-sm text-neutral-700 transition hover:text-neutral-950">
-            <input type="checkbox" name="{{ \App\ShopFilters::queryKey('stock') }}" value="1" @checked(\App\ShopFilters::inStockOnly()) class="h-4 w-4 shrink-0 rounded border-neutral-300 text-neutral-950 focus:ring-neutral-950">
+            <input type="checkbox" name="{{ \App\ShopFilters::queryKey('stock') }}" value="1" @checked(\App\ShopFilters::inStockOnly()) class="h-4 w-4 shrink-0 rounded-sm border-neutral-300 text-neutral-950 focus:ring-neutral-950">
             <span>{{ $group['label'] }}</span>
           </label>
         </div>
       @else
         @php($rendered = trim(view('pkde-kit::partials.shop-term-filter', ['taxonomy' => $group['source'], 'heading' => $group['label'], 'group' => $group])->render()))
         @if ($rendered !== '')
-          <div class="rounded-2xl border border-neutral-200 p-5">
+          <div class="rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-5">
             {!! $rendered !!}
           </div>
         @endif

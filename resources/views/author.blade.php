@@ -14,11 +14,11 @@
     $website = get_the_author_meta('user_url', $authorId);
   @endphp
 
-  <section class="border-b border-neutral-200 bg-neutral-50">
+  <section class="border-b-(length:--pkde-border-thin) border-neutral-200 bg-neutral-50">
     <div class="mx-auto max-w-content px-[var(--page-gutter,1.5rem)] py-16"><div class="mx-auto max-w-3xl text-center">
       @include('pkde-kit::partials.breadcrumbs')
 
-      {!! get_avatar($authorId, 120, '', '', ['class' => 'mx-auto rounded-full']) !!}
+      {!! get_avatar($authorId, 120, '', '', ['class' => 'mx-auto rounded-(--pkde-radius-full)']) !!}
 
       <h1 class="mt-6 font-display text-3xl font-bold text-neutral-900 sm:text-4xl">
         {{ $authorName }}

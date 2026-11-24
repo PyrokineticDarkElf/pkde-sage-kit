@@ -93,7 +93,7 @@
 }
 /* The kit's look. The add-to-cart button: the pill. */
 .pkde-product-actions--default > a:not(.added_to_cart) {
-  border-radius: 9999px;
+  border-radius: var(--pkde-radius-full);
   background: var(--color-neutral-950);
   color: var(--color-white);
   transition: background-color var(--pkde-motion-fast) var(--pkde-ease-in-out), color var(--pkde-motion-fast) var(--pkde-ease-in-out);
@@ -126,8 +126,8 @@
   outline-offset: 2px;
 }
 .pkde-product-actions--default > a.added_to_cart {
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 9999px;
+  border: var(--pkde-border-thin) solid var(--color-neutral-300);
+  border-radius: var(--pkde-radius-full);
   background: transparent;
   color: var(--color-neutral-950);
 }
@@ -173,8 +173,8 @@
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid var(--pkde-view-toggle-border, var(--pkde-shop-line, var(--color-neutral-300)));
-  border-radius: var(--pkde-shop-radius, 999px);
+  border: var(--pkde-border-thin) solid var(--pkde-view-toggle-border, var(--pkde-shop-line, var(--color-neutral-300)));
+  border-radius: var(--pkde-shop-radius, var(--pkde-radius-full));
   background: var(--pkde-shop-surface, var(--color-white));
   color: var(--pkde-view-toggle-color, var(--color-neutral-700));
   cursor: pointer;
@@ -246,7 +246,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 .pkde-term-description {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   /* One rule, under the description (the owner, WP-77: no line above it; the header band above already ends the page header). */
-  border-bottom: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
+  border-bottom: var(--pkde-border-thin) solid var(--pkde-shop-line, var(--color-neutral-200));
 }
 .pkde-term-description summary {
   display: flex;
@@ -383,7 +383,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   color: var(--pkde-shop-accent, var(--color-brand-700));
 }
 .shop-archive__filters :where(.rounded-2xl) {
-  border-radius: var(--pkde-shop-panel-radius, 20px);
+  border-radius: var(--pkde-shop-panel-radius, calc(var(--pkde-radius-md) * 1.25));
   border-color: var(--pkde-shop-line, var(--color-neutral-200));
   background: var(--pkde-shop-surface, var(--color-white));
 }
@@ -397,8 +397,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 .shop-archive__results .woocommerce-ordering select {
   appearance: none;
   padding: 0.45rem 2.5rem 0.45rem 0.8rem;
-  border: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
-  border-radius: var(--pkde-shop-radius, 999px);
+  border: var(--pkde-border-thin) solid var(--pkde-shop-line, var(--color-neutral-200));
+  border-radius: var(--pkde-shop-radius, var(--pkde-radius-full));
   background-color: var(--pkde-shop-surface, var(--color-white));
   background-image: var(--pkde-shop-select-chevron, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23525252' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 1.75 6 6.25l4.5-4.5'/%3E%3C/svg%3E"));
   background-repeat: no-repeat;
@@ -481,8 +481,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   min-width: 2.5rem;
   height: 2.5rem;
   place-items: center;
-  border: 1px solid var(--pkde-shop-line, var(--color-neutral-200));
-  border-radius: var(--pkde-shop-radius, 999px);
+  border: var(--pkde-border-thin) solid var(--pkde-shop-line, var(--color-neutral-200));
+  border-radius: var(--pkde-shop-radius, var(--pkde-radius-full));
   background: var(--pkde-shop-surface, var(--color-white));
   color: var(--pkde-shop-ink, var(--color-neutral-950));
   text-decoration: none;
@@ -514,7 +514,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border-radius: 999px;
+  border-radius: var(--pkde-radius-full);
   background: var(--color-white);
   color: var(--color-neutral-900);
   font-size: 0;
@@ -595,7 +595,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   display: grid;
   gap: 0.5rem;
   padding: 1.5rem;
-  border-radius: 1.25rem;
+  border-radius: calc(var(--pkde-radius-md) * 1.25);
   background: var(--color-neutral-50);
 }
 .woocommerce-Reviews .comment_container img.avatar {
@@ -638,8 +638,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 
 .woocommerce-Reviews #review_form_wrapper {
   padding: 1.75rem;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: 1.25rem;
+  border: var(--pkde-border-thin) solid var(--color-neutral-200);
+  border-radius: calc(var(--pkde-radius-md) * 1.25);
   background: var(--color-white);
 }
 .woocommerce-Reviews #reply-title {
@@ -664,8 +664,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 .woocommerce-Reviews #respond :is(input[type="text"], input[type="email"], textarea) {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 0.75rem;
+  border: var(--pkde-border-thin) solid var(--color-neutral-300);
+  border-radius: var(--radius-xl);
   background: var(--color-white);
   font: inherit;
 }
@@ -737,7 +737,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     min-height: 2.75rem;
     padding: 0 1.75rem;
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--pkde-radius-full);
     background: var(--color-neutral-950);
     color: var(--color-white);
     font: inherit;
@@ -766,8 +766,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     width: 100%;
     min-height: 2.75rem;
     padding: 0.55rem 0.9rem;
-    border: 1px solid var(--pkde-line);
-    border-radius: 0.875rem;
+    border: var(--pkde-border-thin) solid var(--pkde-line);
+    border-radius: calc(var(--pkde-radius-sm) * 1.75);
     background: var(--color-white);
     color: var(--color-neutral-900);
     font: inherit;
@@ -791,7 +791,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   table.shop_table :where(th, td) {
     padding: 1.1rem 0.75rem;
     border: 0;
-    border-bottom: 1px solid var(--pkde-line);
+    border-bottom: var(--pkde-border-thin) solid var(--pkde-line);
     vertical-align: middle;
   }
   table.shop_table th {
@@ -806,7 +806,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     height: 5.5rem;
     max-width: none; /* the table sizes its columns automatically: long product names would otherwise squeeze the thumbnail (53x88) */
     object-fit: cover;
-    border-radius: 0.875rem;
+    border-radius: calc(var(--pkde-radius-sm) * 1.75);
     background: var(--color-white);
   }
   table.cart td.product-name a {
@@ -883,7 +883,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     float: none;
     width: 100%;
     padding: 1.75rem;
-    border-radius: 1.5rem;
+    border-radius: var(--radius-3xl);
     background: var(--color-neutral-50);
   }
   .cart_totals h2 {
@@ -912,8 +912,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     gap: 0.75rem;
     margin: 0;
     padding: 0.7rem 0.9rem;
-    border: 1px solid var(--pkde-line);
-    border-radius: 0.875rem;
+    border: var(--pkde-border-thin) solid var(--pkde-line);
+    border-radius: calc(var(--pkde-radius-sm) * 1.75);
     background: var(--color-white);
     line-height: 1.35;
   }
@@ -950,7 +950,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     margin: 0 0 1.5rem;
     padding: 1rem 1.25rem;
     border: 0;
-    border-radius: 0.875rem;
+    border-radius: calc(var(--pkde-radius-sm) * 1.75);
     background: var(--color-neutral-100);
     color: var(--color-neutral-950);
     list-style: none;
@@ -998,7 +998,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   #payment {
     margin-top: 1.5rem;
     padding: 1.5rem;
-    border-radius: 1.25rem;
+    border-radius: calc(var(--pkde-radius-md) * 1.25);
     background: var(--color-neutral-50);
   }
   #payment ul.payment_methods {
@@ -1008,7 +1008,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   }
   #payment div.payment_box {
     background: var(--color-white);
-    border-radius: 0.75rem;
+    border-radius: var(--radius-xl);
   }
   #payment div.payment_box::before {
     display: none;
@@ -1020,7 +1020,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     gap: 0.5rem 1.75rem;
     margin: 0 0 2rem;
     padding: 0 0 1rem;
-    border-bottom: 1px solid var(--pkde-line);
+    border-bottom: var(--pkde-border-thin) solid var(--pkde-line);
     list-style: none;
   }
   .woocommerce-MyAccount-navigation a {
@@ -1028,7 +1028,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     text-decoration: none;
   }
   .woocommerce-MyAccount-navigation .is-active a {
-    border-bottom: 2px solid var(--color-brand-600);
+    border-bottom: var(--pkde-border-thick) solid var(--color-brand-600);
   }
 }
 
@@ -1115,7 +1115,7 @@ body.woocommerce-cart .cart-collaterals .cart_totals {
     table.shop_table_responsive tr {
       display: block;
       padding: 0.75rem 0;
-      border-bottom: 1px solid var(--pkde-line);
+      border-bottom: var(--pkde-border-thin) solid var(--pkde-line);
     }
     table.shop_table_responsive :where(td, th) {
       display: flex;
@@ -1166,7 +1166,7 @@ body.woocommerce-cart .cart-collaterals .cart_totals {
   z-index: 2;
   top: var(--pkde-badge-top, 0.8rem);
   padding: var(--pkde-badge-padding, 0.3rem 0.65rem);
-  border-radius: var(--pkde-badge-radius, 999px);
+  border-radius: var(--pkde-badge-radius, var(--pkde-radius-full));
   font: var(--pkde-badge-weight, 600) var(--pkde-badge-size, 0.625rem) / 1 var(--font-display, inherit), system-ui, sans-serif;
   letter-spacing: var(--pkde-badge-tracking, 0.14em);
   text-transform: uppercase;

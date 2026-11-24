@@ -21,7 +21,7 @@ $open = ! empty($attributes['open']);
 // columns above its own columnThreshold — harmless no-op in the default
 // single-column layout, since there's no column boundary to avoid there.
 $wrapper_attributes = get_block_wrapper_attributes([
-    'class' => 'group break-inside-avoid border-b border-[color:var(--section-border,var(--color-neutral-200))] py-4',
+    'class' => 'group break-inside-avoid border-b-(length:--pkde-border-thin) border-[color:var(--section-border,var(--color-neutral-200))] py-4',
 ]);
 ?>
 <?php echo \App\faq_item_html((string) $heading, (string) $content, $open, $wrapper_attributes); ?>

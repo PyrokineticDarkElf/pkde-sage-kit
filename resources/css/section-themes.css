@@ -96,8 +96,8 @@
 :is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product):not(:where(.pkde-section) *) {
   background-color: var(--section-card-bg);
   color: var(--section-card-text);
-  border: 1px solid var(--section-card-border);
-  border-radius: var(--radius-2xl, 1rem);
+  border: var(--pkde-border-thin) solid var(--section-card-border);
+  border-radius: var(--radius-2xl, var(--radius-2xl));
   padding: 1rem;
 }
 :is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(a.button, button.button, input.button, .pkde-btn):not(.pkde-btn-alt) {

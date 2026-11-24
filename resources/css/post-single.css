@@ -70,7 +70,7 @@ html {
   display: block;
   width: 100%;
   max-height: var(--pkde-post-hero-max-height, 34rem);
-  border-radius: var(--pkde-post-hero-radius, 32px);
+  border-radius: var(--pkde-post-hero-radius, var(--pkde-radius-lg));
   object-fit: cover;
   background: var(--pkde-post-hero-bg, var(--color-neutral-100));
 }
@@ -118,7 +118,7 @@ html {
   text-underline-offset: 3px;
 }
 .post-body__text img {
-  border-radius: var(--pkde-post-image-radius, 20px);
+  border-radius: var(--pkde-post-image-radius, calc(var(--pkde-radius-md) * 1.25));
 }
 .post-toc {
   font-size: 0.875rem;
@@ -150,8 +150,8 @@ html {
 @media (max-width: 1023px) {
   .post-toc {
     padding: 0 1.25rem;
-    border: 1px solid var(--pkde-post-line, var(--color-neutral-200));
-    border-radius: 18px;
+    border: var(--pkde-border-thin) solid var(--pkde-post-line, var(--color-neutral-200));
+    border-radius: calc(var(--pkde-radius-md) * 1.125);
     background: var(--pkde-post-surface, var(--color-white));
   }
   .post-toc summary {
@@ -167,7 +167,7 @@ html {
   margin: 0;
   padding: 0;
   overflow-y: auto;
-  border-left: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+  border-left: var(--pkde-border-thin) solid var(--pkde-post-line, var(--color-neutral-200));
   list-style: none;
   scrollbar-width: thin;
 }
@@ -181,7 +181,7 @@ html {
   display: block;
   margin-left: -1px;
   padding: 0.35rem 0 0.35rem 1rem;
-  border-left: 2px solid transparent;
+  border-left: var(--pkde-border-thick) solid transparent;
   color: var(--pkde-post-muted, var(--color-neutral-600));
   line-height: 1.4;
   text-decoration: none;
@@ -202,7 +202,7 @@ html {
 }
 .post-after {
   padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 7vw, 6rem);
-  border-top: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+  border-top: var(--pkde-border-thin) solid var(--pkde-post-line, var(--color-neutral-200));
 }
 .post-after__grid {
   display: grid;
@@ -268,8 +268,8 @@ html {
   align-items: center;
   min-height: 2.25rem;
   padding: 0.25rem 0.9rem;
-  border: 1px solid var(--pkde-post-line, var(--color-neutral-200));
-  border-radius: 999px;
+  border: var(--pkde-border-thin) solid var(--pkde-post-line, var(--color-neutral-200));
+  border-radius: var(--pkde-radius-full);
   background: var(--pkde-post-surface, var(--color-white));
   color: var(--pkde-post-ink, var(--color-neutral-950));
   font-size: 0.8rem;

@@ -4,9 +4,9 @@
 @endphp
 {{-- "Written by": the name links to the author's archive while it exists (\App\byline_links_to_archive()). An author without a display name has no box: its link would have no accessible name. --}}
 @if (get_the_author() !== '')
-<div class="rounded-2xl border border-neutral-200 p-5">
+<div class="rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-5">
   <div class="flex items-center gap-3">
-    {!! get_avatar($authorId, 64, '', '', ['class' => 'rounded-full']) !!}
+    {!! get_avatar($authorId, 64, '', '', ['class' => 'rounded-(--pkde-radius-full)']) !!}
     <div>
       <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">{{ __('Written by', 'sage') }}</p>
       @if (\App\byline_links_to_archive())

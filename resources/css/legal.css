@@ -21,7 +21,7 @@
 }
 .pkde-legal__text :where(th, td) {
   padding: 0.5rem 0.75rem;
-  border: 1px solid var(--pkde-post-line, var(--color-neutral-200));
+  border: var(--pkde-border-thin) solid var(--pkde-post-line, var(--color-neutral-200));
   text-align: left;
   vertical-align: top;
 }

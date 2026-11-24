@@ -5,8 +5,8 @@
 .pkde-recent {
   margin-top: 1rem;
   padding: 1.25rem;
-  border: 1px solid var(--pkde-recent-line, var(--pkde-shop-line, var(--color-neutral-200)));
-  border-radius: var(--pkde-shop-panel-radius, 1rem);
+  border: var(--pkde-border-thin) solid var(--pkde-recent-line, var(--pkde-shop-line, var(--color-neutral-200)));
+  border-radius: var(--pkde-shop-panel-radius, var(--radius-2xl));
 }
 .pkde-recent[hidden],
 .pkde-recent__more[hidden] {
@@ -29,7 +29,7 @@
   display: grid;
   gap: 0.15rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--pkde-recent-line, var(--pkde-shop-line, var(--color-neutral-200)));
+  border-bottom: var(--pkde-border-thin) solid var(--pkde-recent-line, var(--pkde-shop-line, var(--color-neutral-200)));
 }
 .pkde-recent__item:last-child {
   padding-bottom: 0;
@@ -57,7 +57,7 @@
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-lg);
 }
 .pkde-recent__name {
   font-size: 0.875rem;
@@ -73,8 +73,8 @@
 }
 .pkde-recent__button {
   padding: 0.5rem 1rem;
-  border: 1px solid var(--pkde-recent-line, var(--pkde-shop-line, var(--color-neutral-300)));
-  border-radius: 999px;
+  border: var(--pkde-border-thin) solid var(--pkde-recent-line, var(--pkde-shop-line, var(--color-neutral-300)));
+  border-radius: var(--pkde-radius-full);
   background: #fff;
   color: var(--color-neutral-900);
   font-size: 0.8125rem;

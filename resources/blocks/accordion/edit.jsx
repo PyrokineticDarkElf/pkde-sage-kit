@@ -108,7 +108,7 @@ function Edit({ attributes, setAttributes, clientId }) {
                 onChange={(value) => setAttributes({ description: value })}
               />
             </div>
-            <div className="mt-8 columns-1 gap-x-8 border-t border-neutral-200 sm:columns-2">
+            <div className="mt-8 columns-1 gap-x-8 border-t-(length:--pkde-border-thin) border-neutral-200 sm:columns-2">
               <InnerBlocks allowedBlocks={ALLOWED_BLOCKS} template={TEMPLATE} templateLock={false} />
             </div>
           </div>
@@ -131,7 +131,7 @@ function Edit({ attributes, setAttributes, clientId }) {
                 onChange={(value) => setAttributes({ description: value })}
               />
             </div>
-            <div className="mt-6 border-t border-neutral-200 lg:col-span-1 lg:mt-0">
+            <div className="mt-6 border-t-(length:--pkde-border-thin) border-neutral-200 lg:col-span-1 lg:mt-0">
               <InnerBlocks allowedBlocks={ALLOWED_BLOCKS} template={TEMPLATE} templateLock={false} />
             </div>
           </div>

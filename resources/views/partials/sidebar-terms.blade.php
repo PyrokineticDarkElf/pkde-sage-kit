@@ -11,7 +11,7 @@
         <li class="m-0 list-none">
           <a
             href="{{ get_term_link($term) }}"
-            class="inline-flex rounded-full border border-neutral-200 px-3 py-1 text-neutral-600 transition hover:border-neutral-900 hover:text-neutral-900"
+            class="inline-flex rounded-(--pkde-radius-full) border-(length:--pkde-border-thin) border-neutral-200 px-3 py-1 text-neutral-600 transition hover:border-neutral-900 hover:text-neutral-900"
           >
             {{ $term->name }} <span class="text-neutral-400">({{ $term->count }})</span>
           </a>

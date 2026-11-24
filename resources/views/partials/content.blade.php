@@ -13,7 +13,7 @@
 
 <article @php(post_class(trim('group relative flex flex-col ' . ($cardStyle !== 'white' ? "pkde-card-{$cardStyle}" : ''))))>
   @if ($primaryCategory)
-    <a href="{{ get_term_link($primaryCategory) }}" class="absolute left-3 top-3 z-10 rounded-full bg-white/90 px-3 py-1 text-[11px] font-medium text-neutral-700 backdrop-blur transition hover:bg-white hover:text-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-600">
+    <a href="{{ get_term_link($primaryCategory) }}" class="absolute left-3 top-3 z-10 rounded-(--pkde-radius-full) bg-white/90 px-3 py-1 text-[11px] font-medium text-neutral-700 backdrop-blur transition hover:bg-white hover:text-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-600">
       {{ $primaryCategory->name }}
     </a>
   @endif
@@ -21,7 +21,7 @@
   <div class="absolute right-3 top-3 z-10 flex items-center gap-2">
     @if (is_sticky(get_the_ID()))
       <span
-        class="flex h-6 w-6 items-center justify-center rounded-full bg-amber-700 text-white"
+        class="flex h-6 w-6 items-center justify-center rounded-(--pkde-radius-full) bg-amber-700 text-white"
         role="img"
         title="{{ __('Featured post', 'sage') }}"
         aria-label="{{ __('Featured post', 'sage') }}"
@@ -33,7 +33,7 @@
     @endif
 
     @if (\App\RecentContent::isNew(get_the_ID()))
-      <span class="rounded-full bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">
+      <span class="rounded-(--pkde-radius-full) bg-brand-600 px-3 py-1 text-[11px] font-semibold text-brand-600-fg">
         {{ __('New', 'sage') }}
       </span>
     @endif
