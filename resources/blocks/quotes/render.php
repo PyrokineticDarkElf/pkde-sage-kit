@@ -28,7 +28,7 @@ if ($quotes === []) {
 }
 
 echo view('pkde-kit::partials.blocks.quotes', [
-    'wrapper' => get_block_wrapper_attributes(\App\card_wrapper_args($attributes, "pkde-block pkde-quotes pkde-quotes--{$layout}")),
+    'wrapper' => get_block_wrapper_attributes(\App\card_wrapper_args($attributes, "pkde-block pkde-quotes pkde-quotes--{$layout}" . ($source === 'reviews' ? ' pkde-quotes--reviews' : ''))),
     'layout' => $layout,
     'eyebrow' => (string) ($attributes['eyebrow'] ?? ''),
     'heading' => (string) ($attributes['heading'] ?? ''),

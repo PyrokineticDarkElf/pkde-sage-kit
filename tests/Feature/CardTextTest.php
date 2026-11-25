@@ -51,3 +51,14 @@ it('takes the cap from the pkde_kit/card_text_words filter, and 0 means no cap',
     expect(card_text('one two three four five six seven'))->toBe('one two three four five six seven');
     $GLOBALS['pkde_test_filters'] = [];
 });
+
+it('clamps only a WooCommerce review in the testimonials: the block wrapper carries pkde-quotes--reviews for the reviews source and the typed copy is not in the shared stylesheet (TPL-282)', function () {
+    $root = dirname(__DIR__, 2);
+    $render = file_get_contents($root . '/resources/blocks/quotes/render.php');
+    $css = file_get_contents($root . '/resources/css/clamp.css');
+
+    expect($render)->toContain("\$source === 'reviews' ? ' pkde-quotes--reviews' : ''")
+        ->and($css)->toContain('.pkde-quotes--reviews .pkde-quote blockquote')
+        ->and($css)->not->toContain('.pkde-feature__title')
+        ->and($css)->not->toContain('.pkde-feature__text');
+});

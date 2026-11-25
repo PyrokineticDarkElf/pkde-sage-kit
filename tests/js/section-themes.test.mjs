@@ -556,3 +556,18 @@ test('the icon role defaults to the accent (TPL-281), a declared icon still wins
   assert.match(kitCss, /:is\(\.wp-block-separator\):not\(\.has-background, \.has-text-color\)[^{]*\{\s*color: var\(--section-accent, var\(--section-border\)\);/); // a Separator with its own colour keeps it
   assert.match(kitCss, /:is\(hr\):not\(\.pkde-rule, \.wp-block-separator\)/); // a plain rule keeps the border role, .pkde-rule is the accent
 });
+
+test('typed text is never clamped by default (TPL-282): the opt-in tokens write their rule only when declared, `none` writes none', () => {
+  const kit = readFileSync(fileURLToPath(new URL('../../resources/css/clamp.css', import.meta.url)), 'utf8');
+  assert.doesNotMatch(kit, /\.pkde-feature__(title|text)\b/); // not in the stylesheet every site gets
+  assert.match(kit, /\.pkde-quotes--reviews \.pkde-quote blockquote \{ --pkde-lines: var\(--pkde-clamp-quote, 6\)/); // only a WooCommerce review
+  const plain = run(bb).read('resources/css/generated/brand-tokens.css');
+  assert.doesNotMatch(plain, /pkde-feature__/);
+  const optIn = run(bb, { text: { clamp: { 'feature-text': 4, 'feature-title': 'none', 'quote-typed': 5 } } });
+  assert.equal(optIn.status, 0, optIn.stderr);
+  const css = optIn.read('resources/css/generated/brand-tokens.css');
+  assert.match(css, /--pkde-clamp-feature-text: 4;/);
+  assert.match(css, /\.pkde-feature__text \{\s*display: -webkit-box;[^}]*-webkit-line-clamp: var\(--pkde-clamp-feature-text\);/s);
+  assert.doesNotMatch(css, /\.pkde-feature__title \{/); // none: no rule
+  assert.match(css, /\.pkde-quotes:not\(\.pkde-quotes--reviews\) \.pkde-quote blockquote \{/);
+});

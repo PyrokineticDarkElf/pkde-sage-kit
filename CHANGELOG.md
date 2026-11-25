@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25.6
+
+Fix to 2026.11.25.4: the line clamp no longer cuts text an editor typed (TPL-282, found by bb). **Adopt:** a site on 2026.11.25.4 or .5 takes this at once; bb first.
+- **Never clamped by default:** a Feature grid's titles and texts, a testimonial of the manual or posts source, and so text and image, hero, CTA and the pattern bank's copy (they were cut with an ellipsis in 2026.11.25.4 and .5). Those tokens no longer exist in the stylesheet every site gets: `feature-title`, `feature-text` and the new `quote-typed` are opt-in in `text.clamp`, and the generator then writes the rule (nothing is written for a palette that does not name them, or names `none`).
+- **Still clamped (text pulled in automatically):** post excerpts, a product's short description, related and recent posts, product, category and brand names in a loop, the author bio, and a WooCommerce review in the testimonials (`--pkde-clamp-quote`, 6 lines, only the "reviews" source: the block wrapper carries `pkde-quotes--reviews`).
+- Proved on the template stack (a Feature grid and typed testimonials whole again, blog cards, related posts and a review quote still clamped) and read-only on bb's Home and About. Kit Pest 233, node 63.
+
 ## 2026.11.25.5
 
 An "Eyebrow" style for core Paragraph and Heading, and the accent role wired to rules and icons (TPL-281, owner request, follow-up to TPL-279). **Adopt:** with the next bump, then `npm run theme:generate`. **Visible changes:** the kit's icons (feature items) and the core Separator block inside a Brand section change colour to the section's accent (a declared `icon` keeps its colour; a Separator with its own colour keeps it).
