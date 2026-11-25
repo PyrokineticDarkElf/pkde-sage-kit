@@ -37,12 +37,12 @@
 /* Running text: paragraphs, list items, table cells, quotes. The section sets its colour and these inherit it, but a site's generic `.page-content p` (and the editor,
  * which puts .page-content on the canvas) colours them directly, which beats inheriting: dark text on a dark theme. Core text only: the kit's own text elements carry a
  * pkde- class and colour themselves, and text inside a nested block with its own colour (.has-text-color, .has-background) keeps what that block sets. */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(p, li, dt, dd, td, th, blockquote, cite):not([class*="pkde-"]):not(:where(.has-text-color, .has-background, .pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(p, li, dt, dd, td, th, blockquote, cite):not([class*="pkde-"]):not(.is-style-eyebrow):not(:where(.has-text-color, .has-background, .pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-text);
 }
 
 /* Headings */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(h1, h2, h3, h4, h5, h6):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(h1, h2, h3, h4, h5, h6):not(.pkde-eyebrow, .is-style-eyebrow):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-heading);
 }
 
@@ -71,10 +71,14 @@
   box-shadow: none;
 }
 
-/* Separators take the border role */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(hr, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+/* A plain rule (hr) takes the border role; the Separator block is a decoration and takes the accent role (3:1, the brand highlight; a Separator with its own colour keeps it) */
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(hr):not(.pkde-rule, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-border);
   border-color: var(--section-border);
+}
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(.wp-block-separator):not(.has-background, .has-text-color):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+  color: var(--section-accent, var(--section-border));
+  border-color: var(--section-accent, var(--section-border));
 }
 
 /* Icons: the kit's icons (.pkde-icon, drawn in currentColor) and core's logos-only social links */

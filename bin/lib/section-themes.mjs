@@ -189,6 +189,9 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     // The button's edge: invisible (its own colour) unless the button barely shows against the section (under 3:1), then the label colour, so its shape is visible.
     const buttonBorder = (ratio(buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? buttonText : buttonBg;
 
+    // the decorative colour (small rules, dividers and the kit's icons; TPL-279, TPL-281): a brand highlight at 3:1; the icon role defaults to it, a declared `icon` still wins
+    const accent = highlightFor(bgRef, ownerName, { solid, min: THRESHOLD.accent, textRef: text }) ?? pick(3) ?? text;
+
     return {
       weak,
       matrix: {
@@ -203,10 +206,10 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
         // a true outline: no fill, the text colour for the label and the edge
         buttonAltBg: 'transparent',
         buttonAltText: text,
-        icon: pick(3) ?? text,
+        icon: accent,
         border,
         eyebrow: highlightFor(bgRef, ownerName, { solid, min: THRESHOLD.eyebrow, textRef: text }) ?? candidates.find((ref) => ratio(ref, bgRef) >= 4.5 && (ratio(ref, text) ?? 21) >= THRESHOLD.linkText) ?? text,
-        accent: highlightFor(bgRef, ownerName, { solid, min: THRESHOLD.accent, textRef: text }) ?? pick(3) ?? text,
+        accent,
       },
     };
   }

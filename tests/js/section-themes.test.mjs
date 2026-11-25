@@ -543,3 +543,16 @@ test('text.clamp (TPL-280): only what is declared is written to :root, validated
   assert.notEqual(badValue.status, 0);
   assert.match(badValue.stdout + badValue.stderr, /text\.clamp\.title must be a whole number of lines from 1 to 12, or "none"/);
 });
+
+test('the icon role defaults to the accent (TPL-281), a declared icon still wins, and the Separator block reads the accent role', () => {
+  const r = run(bb);
+  assert.equal(r.status, 0, r.stderr);
+  const role = (selector, name) => block(r.css, selector).match(new RegExp(`--section-${name}: ([^;]+);`))?.[1];
+  for (const selector of ['.is-style-brand-black', '.is-style-brand-blush', '.is-style-brand-slate-light', '.is-style-brand-white']) assert.equal(role(selector, 'icon'), role(selector, 'accent'), selector);
+  const declared = run(bb.map((c) => (c.name === 'slate' ? { ...c, styles: { icon: 'blush-200' } } : c)));
+  assert.match(block(declared.css, '.is-style-brand-slate'), /--section-icon: var\(--color-blush-200\);/);
+  assert.notEqual(role('.is-style-brand-black', 'accent'), undefined);
+  const kitCss = readFileSync(fileURLToPath(new URL('../../resources/css/section-themes.css', import.meta.url)), 'utf8');
+  assert.match(kitCss, /:is\(\.wp-block-separator\):not\(\.has-background, \.has-text-color\)[^{]*\{\s*color: var\(--section-accent, var\(--section-border\)\);/); // a Separator with its own colour keeps it
+  assert.match(kitCss, /:is\(hr\):not\(\.pkde-rule, \.wp-block-separator\)/); // a plain rule keeps the border role, .pkde-rule is the accent
+});

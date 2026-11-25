@@ -29,6 +29,10 @@ A theme sets these variables on its section; everything inside reads them (`--pk
 | `--section-icon` | icons (`.pkde-icon`) |
 | `--section-eyebrow` | the small kicker above a heading (`.pkde-eyebrow`: hero, feature grid, testimonials, text and image). The **brand highlight** (4.5:1): the first palette colour, accent then brand, whose exact value reads on the section (a solid theme leaves its own colour out), else the nearest step of that hue (200 to 800) that does; one that cannot be told from the text (under 1.5:1 against it) is skipped. A weak colour has nothing to offer, so it keeps the text colour. Declare `eyebrow` in `styles` to choose it |
 | `--section-accent` | small rules, dividers and icon accents (3:1, decorative), worked out the same way; read as `--pkde-rule` in the kit's CSS. Declare `accent` to choose it |
+
+**The accent role is read by** the core **Separator** block inside a Brand section (a Separator with its own colour keeps it; a plain `hr` keeps the border role), the `.pkde-rule` class (a short decorative rule, 3rem wide, `--pkde-rule-width` and `--pkde-rule-gap` to change it; `<hr class="pkde-rule">`), and, through the `icon` role, the kit's icons (feature items): **`icon` defaults to the accent value**, a declared `icon` still wins. The kit draws no rule on its cards today; a site's own card rule reads `--pkde-rule`, which is the card's accent inside a card layout.
+
+**Eyebrow block style:** core **Paragraph** and **Heading** have an "Eyebrow" style in the Styles panel. It applies `.pkde-eyebrow` (small, uppercase, tracked, in `--section-eyebrow`), the same look as the eyebrow of the kit's blocks and the pattern bank, so a kicker typed as a plain paragraph or heading ("F.A.Q.") is coloured by the section like the rest.
 | `--section-border` | rules and separators |
 
 Core headings, paragraphs, lists, links, buttons, separators and the kit's blocks (hero, CTA, FAQ, feature grid, text and image, testimonials, gallery,
