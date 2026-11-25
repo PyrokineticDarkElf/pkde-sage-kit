@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25.1
+
+A bump never removes a phone number (TPL-277, found by el). **Adopt:** bb and tcs now with their bump (take this instead of 2026.11.25 if they have not pushed yet); a site already on 2026.11.24 or later takes it at its next push. Not Train-ready.
+- **The old `client_*` options fill any group Site details does not hold:** `site_detail()`, `site_phones()`, `site_emails()`, `site_locations()`, the components, the blocks, the shortcodes, the footer and the product page's "or call" line read the platform's Site details and, for a group (phones, emails, address, social profiles) it holds nothing for, the old `client_phone`, `client_email`, `client_address` and `client_<network>` options. Before this a site that had bumped but not yet run `site-details-migrate.php apply` lost that line (el's product page lost "or call 07402 058707"). A group Site details holds is never touched, so once the site is migrated nothing changes; the trading name is not a fallback (it never was a stored value). `App\site_details_legacy_fallbacks()` names the groups read this way (the drift check warns, deploy 2026.11.25).
+- **In the Adopt lines, migrate in the same session as the bump:** `bin/deploy/site-details-migrate.php plan`, then `apply`, so the details become editable in Settings > Site details and reach Rank Math.
+- Proved on the template stack with `client_*` set and Site details empty: before this release the home page printed no phone, email, address or profile (the kit read 0 of each); with it all four show, identically to the page after `apply`.
+
 ## 2026.11.25
 
 Release A of the theme-to-plugin moves (WP-105, TPL-276, phase 1): the kit's copies of eight behaviours are guarded. **Adopt:** with `pkde/platform` 2026.11.25, **both together**: bb and tcs now (staging pilots), the others in February. **No change in behaviour:** with the platform release each of these runs from the platform module (which defines `PKDE_PLATFORM_<NAME>`) and the kit's copy is skipped; with an older platform, or `PKDE_PLATFORM_DISABLE=<module>`, the kit's copy runs as before. Nothing is deleted yet: the guarded code goes in release B, once every site pins both.

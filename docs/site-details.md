@@ -16,3 +16,7 @@ The business's phone numbers, emails, addresses, opening hours and social profil
 - **Opening hours** group consecutive days with the same hours ("Monday to Friday 09:00 to 17:30") and list the holidays still to come; a site with no hours prints nothing.
 - **The icons** are one inline SVG set (Instagram, Facebook, LinkedIn, YouTube, TikTok, X, Pinterest, Threads, Google Business Profile, and a generic one for "Other"), each link with an accessible name, no third-party scripts.
 - **Colours** follow the section (`--pkde-ink`, `--pkde-body`, `--pkde-link`), so the same block is right in "Brand Slate" and in "Brand Sage (light)"; `--pkde-site-gap` sets the spacing (`resources/css/site-details.css`).
+
+## Before a site is migrated
+
+A site that has bumped the kit but not yet run `bin/deploy/site-details-migrate.php apply` has nothing in Site details. The kit then shows the old `client_*` options for each group Site details holds nothing for (phones, emails, address, social profiles), so no phone number or link disappears on a bump; the drift check warns ("Site details not migrated; reading legacy client_* values") until `apply` has run. Run `plan` and `apply` in the same session as the bump.
