@@ -77,3 +77,10 @@ it('scrolls a WooCommerce review instead of cutting it (TPL-284): a max height i
         ->and(file_get_contents($root . '/resources/js/kit.js'))->toContain("import './quote-scroll.js'")
         ->and(file_get_contents($root . '/app/faq.php'))->toContain('text-[color:var(--section-icon,var(--color-neutral-400))]');
 });
+
+it('keeps the related and recent post excerpt to one line by default, whatever the site-wide excerpt token says (TPL-285)', function () {
+    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/clamp.css');
+
+    expect($css)->toContain('.pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, 1); }')
+        ->and($css)->not->toContain('--pkde-clamp-related-excerpt, var(--pkde-clamp-excerpt');
+});

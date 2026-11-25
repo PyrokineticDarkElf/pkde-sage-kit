@@ -38,7 +38,8 @@
 .pkde-recent__name { --pkde-lines: var(--pkde-clamp-recent-title, var(--pkde-clamp-title, 2)); }
 .pkde-card__excerpt { --pkde-lines: var(--pkde-clamp-post-excerpt, var(--pkde-clamp-excerpt, 3)); }
 .pkde-product-card__excerpt { --pkde-lines: var(--pkde-clamp-product-excerpt, var(--pkde-clamp-excerpt, 3)); }
-.pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, var(--pkde-clamp-excerpt, 3)); }
+/* the related and recent post card's excerpt is ONE line by design (a small list beside a picture): it does not follow the site-wide excerpt token; a site raises it with --pkde-clamp-related-excerpt */
+.pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, 1); }
 .pkde-author__bio { --pkde-lines: var(--pkde-clamp-author-bio, var(--pkde-clamp-excerpt, 3)); }
 
 /**

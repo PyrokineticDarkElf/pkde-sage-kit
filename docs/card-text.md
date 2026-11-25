@@ -15,7 +15,7 @@ The kit limits the text it pulls in **automatically** by **lines**, with CSS, so
 | `--pkde-clamp-excerpt` | 3 | every card's excerpt or description |
 | `--pkde-clamp-post-title`, `-post-excerpt` | the two above | blog cards, the latest and featured posts blocks |
 | `--pkde-clamp-product-title`, `-product-excerpt` | the two above | the product card (the description shows in the list view) |
-| `--pkde-clamp-related-title`, `-related-excerpt` | the two above | related and recent posts |
+| `--pkde-clamp-related-title` (2), `-related-excerpt` (**1**, the card's design: it does not follow `--pkde-clamp-excerpt`) | | related and recent posts |
 | `--pkde-clamp-author-bio` | `--pkde-clamp-excerpt` | the author box |
 | `--pkde-clamp-quote-review` (the older `--pkde-clamp-quote` still works) | 6 | a WooCommerce review in the testimonials (source "reviews"): **not cut, it scrolls**: the text box is at most this many lines high and scrolls inside the card; `none` for no limit |
 | `--pkde-clamp-tile-title`, `-category-title`, `-brand-title`, `-recent-title` | `--pkde-clamp-title` | category tiles, category cards, the brand card's name, recently viewed |
