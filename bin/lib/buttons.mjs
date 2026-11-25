@@ -23,7 +23,7 @@ export const TYPE_SIZES = { xs: '0.75rem', sm: '0.875rem', md: '1rem', lg: '1.12
 export const TYPE_CASES = { upper: 'uppercase', lower: 'lowercase', capitalise: 'capitalize', none: 'none' };
 export const TYPE_FONTS = { display: 'var(--font-display)', sans: 'var(--font-sans)', mono: 'var(--font-mono)' };
 /** The positions a button can be in. `use` maps each to a variant (a name, or { variant, ...overrides }); without a map every one is primary except Reset (text). */
-export const BUTTON_CONTEXTS = { card: 'primary', hero: 'primary', product: 'primary', filters: 'primary', reset: 'text', forms: 'primary', cart: 'primary', nav: 'primary', other: 'primary' };
+export const BUTTON_CONTEXTS = { card: 'primary', hero: 'primary', product: 'primary', filters: 'primary', reset: 'text', forms: 'primary', cart: 'primary', basket: 'secondary', content: 'primary', nav: 'primary', other: 'primary' };
 const LENGTH = /^-?\d*\.?\d+(px|rem|em|%)$|^0$|^normal$/;
 const SPACING = /^(-?\d*\.?\d+(px|rem|em|%)?|0)( (-?\d*\.?\d+(px|rem|em|%)?|0)){0,3}$/;
 const VARIANT_KEYS = ['style', 'colour', 'underline', 'label', 'contrast', 'font', 'size', 'weight', 'tracking', 'case', 'padding', 'height', 'radius', 'border', 'lineHeight', 'hover'];
