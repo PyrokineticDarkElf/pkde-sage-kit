@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026.11.25.8
+
+The related and recent post card's excerpt is ONE line again (TPL-285, from tcs). **Adopt:** with the next bump; a site on 2026.11.25.4 to .7 takes it to get the small related lists back.
+- `--pkde-clamp-related-excerpt` now defaults to **1** and no longer follows `--pkde-clamp-excerpt` (2026.11.25.4 to .7 showed three lines, which made every related and recent list taller: 212px on tcs's post). A site may raise it. The title keeps its 2 lines. Kit Pest 235, node 63.
+
 ## 2026.11.25.7
 
 A WooCommerce review in the Quotes block scrolls, it is no longer cut with an ellipsis (TPL-284, owner decision), and the FAQ toggle takes the highlight (TPL-283, tcs). **Adopt:** bb takes it with 2026.11.25.6's changes; run `npm run build` (a new script and a new Tailwind class).
