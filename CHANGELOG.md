@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.25.4
+
+Card text is limited by lines, not words (TPL-280, owner request). **Adopt:** with the next bump; every card's text shortens to its clamp (3 lines, a title 2), which is the request. A site that published a kit view or draws its own card adds the kit's classes (docs/card-text.md).
+- **CSS line clamp on every kit card** (`resources/css/clamp.css`): the title (default 2 lines) and the excerpt or description (default 3) of the post card (blog archive, latest and featured posts), the product card (the description of the list view), related and recent posts, the author box, feature items, testimonials (6 lines), category tiles and cards, the brand card's name and recently viewed. `display: -webkit-box` with the standard `line-clamp`, `overflow: hidden`; the full capped text stays in the page for a screen reader.
+- **Tokens:** `--pkde-clamp-title` and `--pkde-clamp-excerpt`, and one per kind of card (`--pkde-clamp-product-excerpt`, ...; a value is a whole number or `none`), set in `text.clamp` of `config/brand-palette.json` (`npm run theme:generate` writes them to `:root`, validated, nothing written when undeclared) or in the site's CSS.
+- **One server-side cap:** `App\card_text()` (plain text, entities decoded once, 40 words, the filter `pkde_kit/card_text_words`) and `App\card_excerpt()`. The per-card word counts are gone (the post card's 55-word excerpt with "… Continued", the product card's 30, related posts 12, the author box 20); no card ends in "… Continued". The `excerpt_more` filter itself is untouched.
+- Proved on the template stack at 1440 and 390 with short, medium and long titles and texts: titles at most 2 lines, texts 3 (the clamp, over a text capped at 254 characters, 40 words), a row of cards the same height, layout shift 0, the product list view clamped, tokens and `none` override per card; read-only on bb and tcs (the clamp applied in memory). Kit Pest 231, node 61.
+
 ## 2026.11.25.3
 
 Section eyebrows carry the brand highlight by default (TPL-279, owner request). **Adopt:** with the next bump, then `npm run theme:generate`; every site's eyebrows (the small uppercase kicker above a heading in the hero, feature grid, testimonials and text and image blocks, and the patterns) change from the text colour to the brand colour, which is the intended change.

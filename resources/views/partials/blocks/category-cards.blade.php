@@ -22,7 +22,7 @@
         @endif
         <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-neutral-950/10 to-transparent" aria-hidden="true"></div>
         <div class="absolute inset-x-0 bottom-0 p-4">
-          <p class="font-semibold text-white">{{ $label }}</p>
+          <p class="pkde-category-card__title font-semibold text-white">{{ $label }}</p>
           @if ($term->count)
             <p class="mt-0.5 text-sm text-white/80">
               {{ sprintf(_n('%d product', '%d products', $term->count, 'sage'), $term->count) }}

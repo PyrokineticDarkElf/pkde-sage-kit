@@ -71,6 +71,7 @@ it('turns View basket into an icon button the height of the add-to-cart button, 
         ->and($css)->toContain('.pkde-product-actions > a.added_to_cart::before')
         ->and($css)->toContain('.pkde-product-actions > a.added_to_cart:focus-visible')
         ->and($css)->toContain('flex: 0 0 2.5rem;')
-        ->and($card)->toContain("html_entity_decode(wp_strip_all_tags((string) \$product->get_short_description())")
-        ->and($card)->toContain("wp_trim_words(\$excerpt, 30, '…')");
+        // the short description goes through the one card helper (TPL-280): tags stripped, entities decoded once (CardTextTest), a server cap, then the CSS clamp
+        ->and($card)->toContain('\\App\\card_text((string) $product->get_short_description())')
+        ->and($card)->not->toContain('wp_trim_words');
 });

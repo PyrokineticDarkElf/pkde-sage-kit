@@ -39,6 +39,7 @@ import path from 'node:path';
 import { formatHex } from 'culori';
 import { toOklch, shadeLightness, steps, SIX_HUNDRED_MIN, SIX_HUNDRED_MAX, shade, wcagContrast } from './lib/color-math.mjs';
 import { resolveShape, buildShapeCss, buildShapePhp } from './lib/shape.mjs';
+import { resolveClamp, buildClampCss } from './lib/clamp.mjs';
 import { resolveButtonsDeclaration, buildButtonsPhp } from './lib/buttons.mjs';
 import { createBuilder, createResolver, buildSectionRolesCss, buildSectionThemesPhp, buildEditorData, buildCardColourCss, buildEditorPalettesPhp, buildSectionCompatJs, labelOf } from './lib/section-themes.mjs';
 
@@ -972,7 +973,13 @@ const shapeInput = palette.shape ?? existingShape;
 const shape = resolveShape(shapeInput, fail);
 if (shapeInput !== undefined) palette.shape = shapeInput;
 else delete palette.shape;
-const css = buildCss(palette.colors) + buildShapeCss(shape);
+// Line clamp tokens (TPL-280): only what `text.clamp` declares is written; a palette built from --color arguments keeps the existing file's `text`.
+const existingText = options.colors.length && fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')).text : undefined;
+const textInput = palette.text ?? existingText;
+const clamp = resolveClamp(textInput, fail);
+if (textInput !== undefined) palette.text = textInput;
+else delete palette.text;
+const css = buildCss(palette.colors) + buildShapeCss(shape) + buildClampCss(clamp);
 const shapePhp = buildShapePhp(shape);
 const buttonsPhp = sectionThemeResult.buttons ? buildButtonsPhp(sectionThemeResult.buttons.declaration) : null; // only a site that declares `buttons` has the file
 const legacyThemeButtonsCss = sectionThemeResult.builder.legacyThemeButtons(palette.colors, POSITIONAL_ALIASES);

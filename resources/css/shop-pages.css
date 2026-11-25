@@ -203,7 +203,7 @@ html[data-pkde-view="list"] .woocommerce ul.products {
   container-type: inline-size;
 }
 html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card .pkde-product-card__excerpt {
-  display: block;
+  display: -webkit-box; /* clamped to lines (clamp.css) */
 }
 @container (min-width: 28rem) {
   html[data-pkde-view="list"] .woocommerce ul.products > li.product.pkde-product-card {
