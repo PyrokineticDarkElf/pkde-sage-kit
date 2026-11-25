@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25.9
+
+The post's table of contents no longer moves the post body at load (TPL-286, found by bb; present since 2026.11.06). **Adopt:** with the next bump (bb first).
+- **The fault:** `partials/toc.blade.php` printed `<details class="post-toc__details" open>` and `kit.js` closed it on a narrow screen after load, so the body jumped about 25px: layout shift 0.036 to 0.075 at 390 on bb's posts (0 at 1440).
+- **The fix:** the markup is the narrow state (closed), and `post-single.css` shows the list from 1024px with `.post-toc__details:not([open])::details-content` (`content-visibility: visible`), so the first paint has its final state at every width. `kit.js` only sets `open` true on a wide screen (it keeps the attribute true to what is shown, and shows the list in a browser without `::details-content`) and follows a resize; it never closes the list at load. The toggle on a narrow screen is unchanged.
+- Proved on the template stack with a post of five headings and the script delayed 1.5 s so the first paint comes first: layout shift 0.0883 before and 0 after at 390, 0 at 1440; the list is visible at 1440 with the script blocked altogether; the toggle opens and closes at 390. bb's three posts (read-only; the new markup emulated at parse time): 0.0263, 0.0623 and 0.0355 become 0 at 390, 0 at 1440. Kit Pest 237, node 63.
+
 ## 2026.11.25.8
 
 The related and recent post card's excerpt is ONE line again (TPL-285, from tcs). **Adopt:** with the next bump; a site on 2026.11.25.4 to .7 takes it to get the small related lists back.
