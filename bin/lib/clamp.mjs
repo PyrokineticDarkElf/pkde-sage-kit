@@ -12,7 +12,7 @@
  */
 export const CLAMP_KEYS = [
   'title', 'excerpt', 'post-title', 'post-excerpt', 'product-title', 'product-excerpt', 'related-title', 'related-excerpt', 'author-bio',
-  'quote', 'tile-title', 'category-title', 'brand-title', 'recent-title',
+  'quote', 'quote-review', 'tile-title', 'category-title', 'brand-title', 'recent-title',
   'feature-title', 'feature-text', 'quote-typed',
 ];
 

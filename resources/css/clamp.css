@@ -9,8 +9,8 @@
  *   --pkde-clamp-title    (2)  the title of every card        --pkde-clamp-excerpt  (3)  the excerpt or description of every card
  * and a token per kind of card, which wins over the two above for that card only:
  *   post-title, post-excerpt (blog cards, latest and featured posts), product-title, product-excerpt (the list view's description),
- *   related-title, related-excerpt, author-bio, quote (6; a WooCommerce review), tile-title (category tiles), category-title (category cards),
- *   brand-title, recent-title (recently viewed). A value is a whole number of lines, or `none` for no clamp: `--pkde-clamp-quote: none`.
+ *   related-title, related-excerpt, author-bio, quote-review (6; the visible lines of a WooCommerce review, which scrolls, never cut), tile-title (category tiles), category-title (category cards),
+ *   brand-title, recent-title (recently viewed). A value is a whole number of lines, or `none` for no limit: `--pkde-clamp-quote-review: none`.
  */
 .pkde-card__title,
 .pkde-product-card__title,
@@ -22,8 +22,7 @@
 .pkde-card__excerpt,
 .pkde-product-card__excerpt,
 .pkde-related__excerpt,
-.pkde-author__bio,
-.pkde-quotes--reviews .pkde-quote blockquote {
+.pkde-author__bio {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
@@ -41,5 +40,29 @@
 .pkde-product-card__excerpt { --pkde-lines: var(--pkde-clamp-product-excerpt, var(--pkde-clamp-excerpt, 3)); }
 .pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, var(--pkde-clamp-excerpt, 3)); }
 .pkde-author__bio { --pkde-lines: var(--pkde-clamp-author-bio, var(--pkde-clamp-excerpt, 3)); }
-/* a WooCommerce review in the testimonials (the source "reviews"): generous by default (6 lines), so only a very long one is cut; a typed testimonial is never clamped */
-.pkde-quotes--reviews .pkde-quote blockquote { --pkde-lines: var(--pkde-clamp-quote, 6); }
+
+/**
+ * A WooCommerce review in the testimonials (the source "reviews") is never cut with an ellipsis (owner decision, TPL-284): its text box is at most
+ * --pkde-clamp-quote-review lines high (default 6; the older --pkde-clamp-quote still works; `none` for no limit) and scrolls inside the card, so the whole review is
+ * readable and the cards keep their height. A text that fits does not scroll. resources/js/quote-scroll.js makes a box that does scroll keyboard focusable
+ * (tabindex 0, a region named "Review by <name>") and sets [data-pkde-more] while there is more below, which draws the soft fade at the bottom edge.
+ * A typed testimonial (the manual and posts sources) is never limited.
+ */
+.pkde-quotes--reviews .pkde-quote blockquote {
+  --pkde-review-lines: var(--pkde-clamp-quote-review, var(--pkde-clamp-quote, 6));
+  max-height: calc(var(--pkde-review-lines) * 1.65em); /* the quote's own line-height (sections.css) where the lh unit is not known */
+  max-height: calc(var(--pkde-review-lines) * 1lh);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--section-muted, currentColor) transparent;
+}
+.pkde-quotes--reviews .pkde-quote blockquote[data-pkde-more] {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.75rem), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.75rem), transparent);
+}
+.pkde-quotes--reviews .pkde-quote blockquote:focus-visible {
+  outline: var(--pkde-border-thick, 2px) solid var(--section-accent, currentColor);
+  outline-offset: 2px;
+}

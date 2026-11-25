@@ -6,6 +6,7 @@ import './lightbox.js';
 import './motion.js';
 import './phone.js';
 import './product-carousel.js';
+import './quote-scroll.js';
 import './recently-viewed.js';
 import './shop-filters.js';
 import './shop-view.js';

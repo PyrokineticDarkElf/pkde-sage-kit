@@ -560,7 +560,7 @@ test('the icon role defaults to the accent (TPL-281), a declared icon still wins
 test('typed text is never clamped by default (TPL-282): the opt-in tokens write their rule only when declared, `none` writes none', () => {
   const kit = readFileSync(fileURLToPath(new URL('../../resources/css/clamp.css', import.meta.url)), 'utf8');
   assert.doesNotMatch(kit, /\.pkde-feature__(title|text)\b/); // not in the stylesheet every site gets
-  assert.match(kit, /\.pkde-quotes--reviews \.pkde-quote blockquote \{ --pkde-lines: var\(--pkde-clamp-quote, 6\)/); // only a WooCommerce review
+  assert.match(kit, /\.pkde-quotes--reviews \.pkde-quote blockquote \{\s*--pkde-review-lines: var\(--pkde-clamp-quote-review, var\(--pkde-clamp-quote, 6\)\)/); // only a WooCommerce review, and it scrolls (TPL-284)
   const plain = run(bb).read('resources/css/generated/brand-tokens.css');
   assert.doesNotMatch(plain, /pkde-feature__/);
   const optIn = run(bb, { text: { clamp: { 'feature-text': 4, 'feature-title': 'none', 'quote-typed': 5 } } });
