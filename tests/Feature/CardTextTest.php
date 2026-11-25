@@ -62,3 +62,18 @@ it('clamps only a WooCommerce review in the testimonials: the block wrapper carr
         ->and($css)->not->toContain('.pkde-feature__title')
         ->and($css)->not->toContain('.pkde-feature__text');
 });
+
+it('scrolls a WooCommerce review instead of cutting it (TPL-284): a max height in lines, overflow-y auto, no line clamp, and the box is made focusable by a script', function () {
+    $root = dirname(__DIR__, 2);
+    $css = file_get_contents($root . '/resources/css/clamp.css');
+    $js = file_get_contents($root . '/resources/js/quote-scroll.js');
+    $quote = file_get_contents($root . '/resources/views/partials/blocks/quote.blade.php');
+
+    expect($css)->toContain('--pkde-review-lines: var(--pkde-clamp-quote-review, var(--pkde-clamp-quote, 6))')
+        ->and($css)->toContain('overflow-y: auto')->toContain('overscroll-behavior: contain')->toContain('scrollbar-width: thin')
+        ->and($css)->not->toContain('.pkde-quotes--reviews .pkde-quote blockquote { --pkde-lines')
+        ->and($js)->toContain('box.tabIndex = 0')->toContain("'role', 'region'")->toContain('data-pkde-more')
+        ->and($quote)->toContain('data-pkde-label')
+        ->and(file_get_contents($root . '/resources/js/kit.js'))->toContain("import './quote-scroll.js'")
+        ->and(file_get_contents($root . '/app/faq.php'))->toContain('text-[color:var(--section-icon,var(--color-neutral-400))]');
+});

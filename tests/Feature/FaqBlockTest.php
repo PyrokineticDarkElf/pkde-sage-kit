@@ -15,7 +15,7 @@ it('draws one question as a details row that follows the section colours, with t
     $html = faq_item_html('Where is my order?', '<p>Check your email.</p>');
 
     expect($html)->toStartWith('<details class="wp-block-sage-accordion-item group break-inside-avoid')
-        ->and($html)->toContain('var(--section-border,var(--color-neutral-200))', 'var(--section-heading,var(--color-neutral-950))', 'var(--section-text,inherit)', 'var(--section-muted,var(--color-neutral-400))')
+        ->and($html)->toContain('var(--section-border,var(--color-neutral-200))', 'var(--section-heading,var(--color-neutral-950))', 'var(--section-text,inherit)', 'var(--section-icon,var(--color-neutral-400))')
         ->and($html)->toContain('<summary', 'Where is my order?', '<p>Check your email.</p>')
         ->and($html)->not->toContain(' open>')
         ->and(faq_item_html('Q', 'A', true))->toContain(' open>');

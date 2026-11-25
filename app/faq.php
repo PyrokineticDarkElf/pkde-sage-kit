@@ -18,7 +18,7 @@ function faq_item_html(string $question, string $answerHtml, bool $open = false,
     return '<details ' . $wrapperAttributes . ($open ? ' open' : '') . '>'
         . '<summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg font-semibold text-[color:var(--section-heading,var(--color-neutral-950))] [&::-webkit-details-marker]:hidden">'
         . $question
-        . '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5 flex-none text-[color:var(--section-muted,var(--color-neutral-400))] transition-transform duration-[var(--pkde-motion-base)] ease-[var(--pkde-ease-out)] motion-reduce:transition-none group-open:rotate-45">'
+        . '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5 flex-none text-[color:var(--section-icon,var(--color-neutral-400))] transition-transform duration-[var(--pkde-motion-base)] ease-[var(--pkde-ease-out)] motion-reduce:transition-none group-open:rotate-45">'
         . '<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" /></svg></summary>'
         . '<div class="prose-content mt-3 pr-8 text-[color:var(--section-text,inherit)]">' . $answerHtml . '</div></details>';
 }

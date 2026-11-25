@@ -17,7 +17,7 @@ The kit limits the text it pulls in **automatically** by **lines**, with CSS, so
 | `--pkde-clamp-product-title`, `-product-excerpt` | the two above | the product card (the description shows in the list view) |
 | `--pkde-clamp-related-title`, `-related-excerpt` | the two above | related and recent posts |
 | `--pkde-clamp-author-bio` | `--pkde-clamp-excerpt` | the author box |
-| `--pkde-clamp-quote` | 6 | a WooCommerce review in the testimonials (source "reviews"): generous, only a very long one is cut |
+| `--pkde-clamp-quote-review` (the older `--pkde-clamp-quote` still works) | 6 | a WooCommerce review in the testimonials (source "reviews"): **not cut, it scrolls**: the text box is at most this many lines high and scrolls inside the card; `none` for no limit |
 | `--pkde-clamp-tile-title`, `-category-title`, `-brand-title`, `-recent-title` | `--pkde-clamp-title` | category tiles, category cards, the brand card's name, recently viewed |
 
 A value is a whole number of lines, or `none` for no clamp.
@@ -25,10 +25,13 @@ A value is a whole number of lines, or `none` for no clamp.
 **Opt-in, typed text** (no default, nothing is clamped unless you name it in `text.clamp`; the generator then writes the rule): `feature-title`, `feature-text` (Feature grid items) and `quote-typed` (manual and posts testimonials), for example `"text": { "clamp": { "feature-text": 4 } }`. Set them in `config/brand-palette.json` and `npm run theme:generate` writes them to `:root`:
 
 ```json
-"text": { "clamp": { "title": 2, "excerpt": 4, "product-excerpt": 2, "quote": "none" } }
+"text": { "clamp": { "title": 2, "excerpt": 4, "product-excerpt": 2, "quote-review": 8 } }
 ```
 
 or in the site's CSS (`:root { --pkde-clamp-excerpt: 4; }`). A palette without `text.clamp` writes nothing and the defaults apply.
 
 ## A site's own card markup
 A site that published a kit view (`vendor/pkde-kit/...`) or draws its own card gets the clamp by adding the kit's class to its title or text: `pkde-card__title`, `pkde-card__excerpt`, `pkde-product-card__title`, `pkde-product-card__excerpt`, `pkde-related__title`, `pkde-related__excerpt`, `pkde-author__bio`, and by printing `App\card_excerpt()` or `App\card_text()` instead of its own `wp_trim_words()`.
+
+## A review scrolls, it is never cut (TPL-284)
+A WooCommerce review in the Quotes block (`pkde-quotes--reviews`) shows in full: its text box is at most `--pkde-clamp-quote-review` lines high (6) with `overflow-y: auto`, so a longer review scrolls inside its card and the cards keep their height. A review that fits does not scroll at all. A box that scrolls is keyboard focusable (`tabindex="0"`, a visible focus ring) and is a region named "Review by <name>" (`resources/js/quote-scroll.js`), has a thin scrollbar in the section's muted colour, `overscroll-behavior: contain`, and a soft fade at the bottom edge while there is more to read.

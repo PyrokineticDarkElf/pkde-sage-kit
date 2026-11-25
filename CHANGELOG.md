@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25.7
+
+A WooCommerce review in the Quotes block scrolls, it is no longer cut with an ellipsis (TPL-284, owner decision), and the FAQ toggle takes the highlight (TPL-283, tcs). **Adopt:** bb takes it with 2026.11.25.6's changes; run `npm run build` (a new script and a new Tailwind class).
+- **Reviews scroll:** the review text box (`.pkde-quotes--reviews .pkde-quote blockquote`) is at most `--pkde-clamp-quote-review` lines high (default 6; the older `--pkde-clamp-quote` still works; `none` for no limit) with `overflow-y: auto`; the whole review is readable, the cards keep their height, a review that fits does not scroll. `resources/js/quote-scroll.js` makes a box that does scroll focusable (`tabindex="0"`, a visible focus ring) and a region named "Review by <name>" (`data-pkde-label` on the blockquote); thin scrollbar in the section's muted colour, `overscroll-behavior: contain`, and a soft fade at the bottom edge only while there is more to scroll. Typed testimonials are untouched.
+- **FAQ and accordion toggle (the +):** reads the `icon` role (accent by default) instead of the muted role in Brand sections (`--section-icon`; a declared `icon` wins).
+- `text.clamp` accepts `quote-review`. Kit Pest 235, node 63.
+
 ## 2026.11.25.6
 
 Fix to 2026.11.25.4: the line clamp no longer cuts text an editor typed (TPL-282, found by bb). **Adopt:** a site on 2026.11.25.4 or .5 takes this at once; bb first.
