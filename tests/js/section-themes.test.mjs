@@ -502,3 +502,28 @@ test('buttons (TPL-275): the basket\'s Update basket and coupon Apply follow `ca
 
   assert.equal(decl({ content: 'keep' }).css.includes('.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link'), false);
 });
+
+test('eyebrows carry the brand highlight (4.5:1, a step of the same hue where the exact colour fails), accents 3:1; a weak colour falls back to the text; a declared eyebrow wins (TPL-279)', () => {
+  const r = run(bb);
+  assert.equal(r.status, 0, r.stderr);
+  const role = (selector, name) => block(r.css, selector).match(new RegExp(`--section-${name}: var\\(--color-([a-z0-9-]+)\\)`))?.[1];
+  assert.equal(role('.is-style-brand-black', 'eyebrow'), 'blush-exact'); // the accent colour itself reads on black
+  assert.match(role('.is-style-brand-white', 'eyebrow'), /^blush-(600|700|800)$/); // the accent hue, darkened until it reads on white
+  assert.match(role('.is-style-brand-slate-light', 'eyebrow'), /^blush-(600|700|800)$/); // a darker step of the accent hue on a light surface
+  assert.equal(role('.is-style-brand-sage', 'eyebrow'), role('.is-style-brand-sage', 'text')); // weak: nothing but the text reads on sage
+  assert.match(block(r.css, '.is-style-brand-black'), /--section-accent: var\(--color-blush-exact\)/);
+  assert.match(block(r.css, '.is-style-brand-black'), /--section-card-eyebrow: /);
+  assert.match(block(r.css, '.is-style-brand-black'), /--section-card-accent: /);
+  const declared = run(bb.map((c) => (c.name === 'slate' ? { ...c, styles: { eyebrow: 'blush-200' } } : c)));
+  assert.equal(declared.status, 0, declared.stderr);
+  assert.match(block(declared.css, '.is-style-brand-slate'), /--section-eyebrow: var\(--color-blush-200\);/);
+  assert.match(block(declared.css, '.has-card-theme-brand-slate') || declared.read('resources/css/generated/card-themes.css'), /--section-card-eyebrow/);
+});
+
+test('theme:check fails a declared eyebrow under 4.5:1 and a declared accent under 3:1, and every autofilled eyebrow and accent of a varied palette passes', () => {
+  const failing = run(bb.map((c) => (c.name === 'slate' ? { ...c, styles: { eyebrow: 'slate-600', accent: 'slate-700' } } : c)), {}, ['--check']);
+  assert.notEqual(failing.status, 0);
+  assert.match(failing.stdout + failing.stderr, /eyebrow slate-600 measures .*needs 4\.5:1/);
+  const varied = run(bb, {}, ['--check']);
+  assert.doesNotMatch(varied.stdout + varied.stderr, /eyebrow .* measures|accent .* measures/);
+});
