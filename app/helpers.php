@@ -368,11 +368,14 @@ function category_menu_image(int $termId): string
  * Stored page content (rendered once at import time, or typed in the editor) keeps root-relative upload URLs.
  * Make the <img> sources absolute on output so EWWW can serve WebP for them too.
  */
-add_filter('the_content', static fn(string $content): string => preg_replace(
-    '#(<img\b[^>]*\ssrc=")(/app/uploads/)#',
-    '$1' . home_url('/app/uploads/'),
-    $content,
-) ?? $content, 20);
+// WP-105 phase 1: pkde/platform's `media` module does this now (it defines PKDE_PLATFORM_MEDIA); while it is on, this copy is skipped, and PKDE_PLATFORM_DISABLE=media brings it back.
+if (! defined('PKDE_PLATFORM_MEDIA')) {
+    add_filter('the_content', static fn(string $content): string => preg_replace(
+        '#(<img\b[^>]*\ssrc=")(/app/uploads/)#',
+        '$1' . home_url('/app/uploads/'),
+        $content,
+    ) ?? $content, 20);
+}
 
 /**
  * Size the header's custom logo to its display width. The heights are the defaults of --header-logo-h and
@@ -395,8 +398,10 @@ add_filter('get_custom_logo_image_attributes', static function (array $attribute
  * this ships; regenerate existing ones with `wp media regenerate --only-missing`. Opt out with
  * add_filter('pkde_png_to_webp', '__return_false'); the server's image editor must support WebP (WordPress checks).
  */
-add_filter('image_editor_output_format', static fn(array $formats): array => apply_filters('pkde_png_to_webp', true) ? png_output_formats($formats) : $formats);
-add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
+if (! defined('PKDE_PLATFORM_MEDIA')) { // WP-105 phase 1: the platform's `media` module does this when it is on
+    add_filter('image_editor_output_format', static fn(array $formats): array => apply_filters('pkde_png_to_webp', true) ? png_output_formats($formats) : $formats);
+    add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
+}
 
 /**
  * The tax_query clause that leaves out products WooCommerce hides from the catalogue (catalogue visibility "hidden" or "search only"; they carry the
@@ -481,6 +486,11 @@ require_once __DIR__ . '/tile-image.php';
  */
 function form_id(string $key = 'contact'): int
 {
+    // WP-105 phase 1: pkde/platform's `cf7-form-key` module answers (same meta key, same result); this is the fallback when it is off.
+    if (defined('PKDE_PLATFORM_CF7_FORM_KEY') && function_exists('App\\MuPlugins\\cf7_form_id')) {
+        return \App\MuPlugins\cf7_form_id($key);
+    }
+
     static $found = [];
 
     if (! isset($found[$key])) {

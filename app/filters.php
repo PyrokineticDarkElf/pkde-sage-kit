@@ -87,12 +87,14 @@ add_filter('body_class', function ($classes) {
  * Drop WordPress's emoji detection script and styles (wp-emoji-release.js on every page). Browsers
  * render emoji natively; the script only swaps in images for very old ones.
  */
-add_action('init', function () {
-    remove_action('wp_head', 'print_emoji_detection_script', 7);
-    remove_action('wp_print_styles', 'print_emoji_styles');
-    remove_action('admin_print_scripts', 'print_emoji_detection_script');
-    remove_action('admin_print_styles', 'print_emoji_styles');
-});
+if (! defined('PKDE_PLATFORM_DISABLE_EMOJI')) { // WP-105 phase 1: pkde/platform's `disable-emoji` module does this when it is on
+    add_action('init', function () {
+        remove_action('wp_head', 'print_emoji_detection_script', 7);
+        remove_action('wp_print_styles', 'print_emoji_styles');
+        remove_action('admin_print_scripts', 'print_emoji_detection_script');
+        remove_action('admin_print_styles', 'print_emoji_styles');
+    });
+}
 
 /**
  * Opt-in: drop WordPress's block-library, global-styles and classic-theme stylesheets (about 165 KB of render-blocking

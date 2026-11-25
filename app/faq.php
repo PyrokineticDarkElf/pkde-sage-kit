@@ -54,6 +54,11 @@ function faq_entities(array $pairs): array
  */
 function faq_page_entities(array $add = [], bool $reset = false): array
 {
+    // WP-105 phase 1: pkde/platform's `faq` module owns the page's FAQ schema when it is on (PKDE_PLATFORM_FAQ_SCHEMA); this is the fallback.
+    if (defined('PKDE_PLATFORM_FAQ_SCHEMA')) {
+        return \App\MuPlugins\faq_page_entities($add, $reset);
+    }
+
     static $all = [];
 
     if ($reset) {
@@ -74,6 +79,10 @@ function faq_page_entities(array $add = [], bool $reset = false): array
 /** The one FAQPage JSON-LD of the page, or '' when there is nothing to print or the site turned it off (filter `pkde_kit/faq_schema`, or Rank Math's own FAQ block is on the page). */
 function faq_schema_json(): string
 {
+    if (defined('PKDE_PLATFORM_FAQ_SCHEMA')) {
+        return \App\MuPlugins\faq_schema_json();
+    }
+
     $entities = faq_page_entities();
 
     if (! $entities) {
@@ -94,6 +103,12 @@ function faq_schema_json(): string
 /** Add a block's entities to the page's single FAQPage (printed in the footer, once). */
 function faq_schema_add(array $entities): void
 {
+    if (defined('PKDE_PLATFORM_FAQ_SCHEMA')) {
+        \App\MuPlugins\faq_schema_add($entities);
+
+        return;
+    }
+
     static $hooked = false;
 
     faq_page_entities($entities);

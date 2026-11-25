@@ -18,20 +18,22 @@ if (! function_exists('add_filter')) {
 }
 
 // Relevanssi answers the query itself, so WooCommerce's SQL sorting never runs: hand the shop's sort choices over as the meta fields they sort by.
-add_filter('relevanssi_modify_wp_query', function (\WP_Query $query): \WP_Query {
-    $orderby = $query->get('orderby');
-    $first = is_string($orderby) ? strtok($orderby, ' ') : null;
-    $field = search_sort_field($first);
+if (! defined('PKDE_PLATFORM_RELEVANSSI_WOOCOMMERCE')) { // WP-105 phase 1: pkde/platform's `relevanssi-woocommerce` module does this when it is on
+    add_filter('relevanssi_modify_wp_query', function (\WP_Query $query): \WP_Query {
+        $orderby = $query->get('orderby');
+        $first = is_string($orderby) ? strtok($orderby, ' ') : null;
+        $field = search_sort_field($first);
 
-    if ($field) {
-        $query->set('meta_key', $field);
-        $query->set('orderby', 'meta_value_num');
-    } elseif ($first === 'date') {
-        $query->set('orderby', 'post_date'); // WooCommerce's "date ID", which Relevanssi does not read
-    }
+        if ($field) {
+            $query->set('meta_key', $field);
+            $query->set('orderby', 'meta_value_num');
+        } elseif ($first === 'date') {
+            $query->set('orderby', 'post_date'); // WooCommerce's "date ID", which Relevanssi does not read
+        }
 
-    return $query;
-});
+        return $query;
+    });
+}
 
 // The live results take the theme's styling (resources/css/live-search.css); the plugin keeps only its small inline base styles.
 add_action('wp_enqueue_scripts', fn() => wp_dequeue_style('relevanssi-live-search'), 20);

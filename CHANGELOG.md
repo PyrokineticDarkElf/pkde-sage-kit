@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25
+
+Release A of the theme-to-plugin moves (WP-105, TPL-276, phase 1): the kit's copies of eight behaviours are guarded. **Adopt:** with `pkde/platform` 2026.11.25, **both together**: bb and tcs now (staging pilots), the others in February. **No change in behaviour:** with the platform release each of these runs from the platform module (which defines `PKDE_PLATFORM_<NAME>`) and the kit's copy is skipped; with an older platform, or `PKDE_PLATFORM_DISABLE=<module>`, the kit's copy runs as before. Nothing is deleted yet: the guarded code goes in release B, once every site pins both.
+- **Guarded:** PNG sub-sizes as WebP and absolute upload URLs (`PKDE_PLATFORM_MEDIA`), emoji removal (`PKDE_PLATFORM_DISABLE_EMOJI`), the CSV importer's Slug column (`PKDE_PLATFORM_WOOCOMMERCE_IMPORT_SLUG`), the Product schema corrections (`PKDE_PLATFORM_PRODUCT_SCHEMA`), the Relevanssi sort mapping (`PKDE_PLATFORM_RELEVANSSI_WOOCOMMERCE`), the editor preview route of Contact Form 7 (`PKDE_PLATFORM_CF7_EDITOR_PREVIEW`).
+- **Delegating:** `App\form_id()` calls the platform's `cf7_form_id()` (`PKDE_PLATFORM_CF7_FORM_KEY`), the FAQ schema functions (`faq_page_entities()`, `faq_schema_json()`, `faq_schema_add()`) call the platform's (`PKDE_PLATFORM_FAQ_SCHEMA`), and `phone.js` leaves the `generate_lead` push to the platform when the page config says `lead` (so it is never sent twice).
+- Proved on the template stack with the platform modules on and off: identical Product and FAQPage JSON-LD, image URLs, emoji script, contact form, editor preview route and importer fields; each hook has one owner.
+
 ## 2026.11.24.6
 
 Gaps in the buttons' `use` map found by tcs (TPL-275). **Adopt:** with the pattern bank (2026.11.24.5), tcs now. Nothing changes for a site that declares no `buttons`; a site that declares them without `use` keeps its look: the classic basket's Update basket and the coupon's Apply stay secondary buttons.
