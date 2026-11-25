@@ -38,19 +38,21 @@ function pattern_header(string $file): array
  */
 function pattern_families(): array
 {
+    $t = fn(string $label): string => function_exists('__') ? __($label, 'sage') : $label;
+
     return [
-        'hero' => __('Hero', 'sage'),
-        'featured-products' => __('Featured products', 'sage'),
-        'categories' => __('Product categories', 'sage'),
-        'latest-posts' => __('Latest posts', 'sage'),
-        'features' => __('Feature grid', 'sage'),
-        'text-image' => __('Text and image', 'sage'),
-        'testimonials' => __('Testimonials', 'sage'),
-        'cta' => __('Call to action', 'sage'),
-        'faq' => __('FAQ', 'sage'),
-        'contact' => __('Contact', 'sage'),
-        'stats' => __('Stats', 'sage'),
-        'logos' => __('Logos', 'sage'),
+        'hero' => $t('Hero'),
+        'featured-products' => $t('Featured products'),
+        'categories' => $t('Product categories'),
+        'latest-posts' => $t('Latest posts'),
+        'features' => $t('Feature grid'),
+        'text-image' => $t('Text and image'),
+        'testimonials' => $t('Testimonials'),
+        'cta' => $t('Call to action'),
+        'faq' => $t('FAQ'),
+        'contact' => $t('Contact'),
+        'stats' => $t('Stats'),
+        'logos' => $t('Logos'),
     ];
 }
 

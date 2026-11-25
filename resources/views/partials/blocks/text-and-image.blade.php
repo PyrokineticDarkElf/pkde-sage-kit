@@ -19,6 +19,12 @@
         @else
           {!! $images[0] !!}
         @endif
+        @if (($badgeValue ?? '') !== '')
+          <div class="pkde-tai__badge">
+            <strong>{{ $badgeValue }}</strong>
+            @if (($badgeLabel ?? '') !== '')<span>{{ $badgeLabel }}</span>@endif
+          </div>
+        @endif
       </div>
     @endif
   </div>

@@ -72,6 +72,16 @@
     "cardButton": {
       "type": "string",
       "default": ""
+    },
+    "layout": {
+      "type": "string",
+      "enum": [
+        "grid",
+        "rail",
+        "feature",
+        "intro"
+      ],
+      "default": "grid"
     }
   },
   "supports": {

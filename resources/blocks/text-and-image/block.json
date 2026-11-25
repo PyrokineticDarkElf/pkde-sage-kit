@@ -70,6 +70,16 @@
         3
       ],
       "default": 0
+    },
+    "badgeValue": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
+    },
+    "badgeLabel": {
+      "type": "string",
+      "default": "",
+      "__experimentalRole": "content"
     }
   },
   "supports": {

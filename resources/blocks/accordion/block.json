@@ -6,7 +6,11 @@
   "category": "widgets",
   "icon": "list-view",
   "description": "A stack of collapsible items — add an Accordion Item block for each one.",
-  "keywords": ["accordion", "collapse", "toggle"],
+  "keywords": [
+    "accordion",
+    "collapse",
+    "toggle"
+  ],
   "textdomain": "sage",
   "attributes": {
     "heading": {
@@ -28,11 +32,18 @@
     "cardStyle": {
       "type": "string",
       "default": "white"
+    },
+    "singleColumn": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }

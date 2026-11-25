@@ -28,7 +28,7 @@ const CARD_STYLE_OPTIONS = [
 ];
 
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, postType, categoryId, theme, cardStyle } = attributes;
+  const { heading, description, count, postType, categoryId, theme, cardStyle, layout } = attributes;
   const blockProps = useBlockProps();
 
   const categories = useSelect(
@@ -69,6 +69,7 @@ function Edit({ attributes, setAttributes }) {
             value={count}
             onChange={(value) => setAttributes({ count: value })}
           />
+          <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
           <SelectControl
             label={__('Post type', 'sage')}
             value={postType}

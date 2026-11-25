@@ -16,7 +16,7 @@ if (! taxonomy_exists('product_cat')) {
 }
 
 $count = max(0, (int) ($attributes['count'] ?? 0));
-$layout = ($attributes['layout'] ?? 'cards') === 'tiles' ? 'tiles' : 'cards';
+$layout = in_array($attributes['layout'] ?? 'cards', ['tiles', 'chips'], true) ? $attributes['layout'] : 'cards';
 
 // Optional selection. With none of these set the block behaves exactly as it always did (every non-empty category, optionally
 // limited by "Number of categories"): existing pages are unchanged.
@@ -65,7 +65,9 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
         'viewAllLabel' => __('View all categories', 'sage'),
         'themed' => (bool) $theme,
     ])->render(); ?>
-    <?php echo view($layout === 'tiles' ? 'pkde-kit::partials.blocks.category-tiles' : 'pkde-kit::partials.blocks.category-cards', [
+    <?php echo view(match ($layout) {
+        'tiles' => 'pkde-kit::partials.blocks.category-tiles', 'chips' => 'pkde-kit::partials.blocks.category-chips', default => 'pkde-kit::partials.blocks.category-cards',
+    }, [
         'terms' => $terms,
         'labels' => $labels,
         'extra' => $extra,

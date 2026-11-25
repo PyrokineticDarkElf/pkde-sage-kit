@@ -39,4 +39,6 @@ echo view('pkde-kit::partials.blocks.text-and-image', [
     'content' => $content,
     'images' => $images,
     'mosaic' => count($images) === 3,
+    'badgeValue' => (string) ($attributes['badgeValue'] ?? ''),
+    'badgeLabel' => (string) ($attributes['badgeLabel'] ?? ''),
 ])->render();

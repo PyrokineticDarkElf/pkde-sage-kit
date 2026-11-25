@@ -23,7 +23,8 @@
          `.pkde-section .wp-block-sage-accordion-item` rule for how it picks
          up the theme anyway, purely through CSS scoping.
 --}}
-@php($useColumns = $itemCount > $columnThreshold)
+@php($singleColumn = $singleColumn ?? false)
+@php($useColumns = $singleColumn || $itemCount > $columnThreshold)
 @php($hasHeader = $heading || $description)
 @php($themed = $themed ?? false)
 
@@ -48,7 +49,7 @@
       </div>
     @endif
     <div @class([
-      'columns-1 gap-x-8 sm:columns-2',
+      $singleColumn ? 'columns-1' : 'columns-1 gap-x-8 sm:columns-2',
       $hasHeader ? 'mt-8' : '',
       'border-t border-[color:var(--pkde-theme-border)]' => $themed,
       'border-t border-[color:var(--section-border,var(--color-neutral-200))]' => ! $themed,

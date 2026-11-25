@@ -16,6 +16,8 @@ const THEME_OPTIONS = GENERATED_THEME_OPTIONS.map((option) => ({
 const STYLE_OPTIONS = [
   { label: __('Section (centered, full padding)', 'sage'), value: 'section' },
   { label: __('Banner (compact strip)', 'sage'), value: 'banner' },
+  { label: __('Split (text beside a picture)', 'sage'), value: 'split' },
+  { label: __('Boxed (a card in the section)', 'sage'), value: 'boxed' },
 ];
 
 const BUTTON_STYLE_OPTIONS = [

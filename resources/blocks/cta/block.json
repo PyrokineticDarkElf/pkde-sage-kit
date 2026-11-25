@@ -15,7 +15,13 @@
   "attributes": {
     "style": {
       "type": "string",
-      "default": "section"
+      "default": "section",
+      "enum": [
+        "section",
+        "banner",
+        "split",
+        "boxed"
+      ]
     },
     "theme": {
       "type": "string",

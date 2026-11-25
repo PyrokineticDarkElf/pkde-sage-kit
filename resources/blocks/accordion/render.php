@@ -57,6 +57,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
         'content' => $content,
         'itemCount' => $item_count,
         'columnThreshold' => $column_threshold,
+        'singleColumn' => ! empty($attributes['singleColumn']),
         'themed' => (bool) $theme,
     ])->render(); ?>
     <?php echo \App\pkde_card_style_wrapper_close($card_style); ?>

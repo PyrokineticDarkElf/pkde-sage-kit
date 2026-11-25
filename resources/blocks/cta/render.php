@@ -27,6 +27,30 @@ $slot_url = (string) ($attributes['imageUrl'] ?? '');
 // A logo or picture beside (banner) or above (section) the text: a plain image that keeps its shape, never cropped.
 $slot = ($slot_id || $slot_url || ! empty($attributes['placeholder'])) ? \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium', ['loading' => 'lazy', 'class' => 'pkde-cta-slot' . ($is_banner ? '' : ' mx-auto mb-6')], ! empty($attributes['placeholder'])) : '';
 
+// Two more layouts (WP-108 B): `split` (the text beside a picture that fills its half of the panel and takes the panel's corners) and `boxed` (a card in the section, in the
+// section's card colours). The picture of a split is a real photograph that is cropped, not the logo of the banner.
+if (in_array($style, ['split', 'boxed'], true)) {
+    $buttons = '';
+    foreach ([['primary', $primary_text, $primary_url, (string) ($attributes['buttonStyle'] ?? 'primary')], ['secondary', $secondary_text, $secondary_url, (string) ($attributes['secondaryButtonStyle'] ?? 'secondary')]] as [$which, $text, $url, $variant]) {
+        if ($text && $url) {
+            $buttons .= '<a href="' . esc_url($url) . '" class="' . esc_attr(\App\button_classes($variant)) . ' no-underline">' . esc_html($text) . '</a>';
+        }
+    }
+    $picture = '';
+    if ($style === 'split') {
+        $picture = \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'large', ['loading' => 'lazy', 'class' => 'pkde-cta__img'], true);
+    }
+    echo view('pkde-kit::partials.blocks.cta-panel', [
+        'wrapper' => get_block_wrapper_attributes(['class' => trim("pkde-block pkde-cta pkde-cta--{$style} pkde-card--flush" . ($theme ? " theme-{$theme}" : ''))]),
+        'heading' => (string) $heading,
+        'content' => (string) $content,
+        'buttons' => $buttons,
+        'picture' => $picture,
+    ])->render();
+
+    return;
+}
+
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => trim(implode(' ', array_filter([
         'pkde-section rounded-4xl px-6 py-10 sm:px-10 lg:px-16',
