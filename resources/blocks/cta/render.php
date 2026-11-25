@@ -25,7 +25,7 @@ $secondary_url = $attributes['secondaryButtonUrl'] ?? '';
 $slot_id = (int) ($attributes['imageId'] ?? 0);
 $slot_url = (string) ($attributes['imageUrl'] ?? '');
 // A logo or picture beside (banner) or above (section) the text: a plain image that keeps its shape, never cropped.
-$slot = ($slot_id || $slot_url) ? \App\block_image($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium', ['loading' => 'lazy', 'class' => 'pkde-cta-slot' . ($is_banner ? '' : ' mx-auto mb-6')]) : '';
+$slot = ($slot_id || $slot_url || ! empty($attributes['placeholder'])) ? \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium', ['loading' => 'lazy', 'class' => 'pkde-cta-slot' . ($is_banner ? '' : ' mx-auto mb-6')], ! empty($attributes['placeholder'])) : '';
 
 $wrapper_attributes = get_block_wrapper_attributes([
     'class' => trim(implode(' ', array_filter([
@@ -57,10 +57,10 @@ $wrapper_attributes = get_block_wrapper_attributes([
     <?php if ($primary_text || $secondary_text) : ?>
         <div class="<?php echo $is_banner ? 'flex flex-none flex-wrap gap-3' : 'mt-8 flex flex-wrap justify-center gap-3'; ?>">
             <?php if ($primary_text && $primary_url) : ?>
-                <a href="<?php echo esc_url($primary_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))); ?>"><?php echo esc_html($primary_text); ?></a>
+                <a href="<?php echo esc_url($primary_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))); ?> no-underline"><?php echo esc_html($primary_text); ?></a>
             <?php endif; ?>
             <?php if ($secondary_text && $secondary_url) : ?>
-                <a href="<?php echo esc_url($secondary_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['secondaryButtonStyle'] ?? 'secondary'))); ?>"><?php echo esc_html($secondary_text); ?></a>
+                <a href="<?php echo esc_url($secondary_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['secondaryButtonStyle'] ?? 'secondary'))); ?> no-underline"><?php echo esc_html($secondary_text); ?></a>
             <?php endif; ?>
         </div>
     <?php endif; ?>

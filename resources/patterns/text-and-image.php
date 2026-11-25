@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Title: Text and picture
+ * Title: Text and image: Picture left
  * Slug: pkde/text-and-image
- * Categories: pkde
+ * Categories: pkde-text-image
  * Keywords: about, story, text, image, media
  * Description: A heading, text and a button beside a picture, on white. Locked: change the words and the picture.
  */
 echo \App\pattern_section('white', 'solid', <<<'HTML'
-<!-- wp:sage/text-and-image {"eyebrow":"Our story","imageSide":"left","imageRatio":"4-3"} -->
+<!-- wp:sage/text-and-image {"eyebrow":"Our story","imageSide":"left","imageRatio":"4-3","placeholder":1} -->
 <!-- wp:heading {"level":2} -->
 <h2 class="wp-block-heading">Tell the story behind the business</h2>
 <!-- /wp:heading -->

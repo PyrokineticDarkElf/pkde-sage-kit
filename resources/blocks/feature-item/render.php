@@ -16,8 +16,8 @@ $image_id = (int) ($attributes['imageId'] ?? 0);
 $image_url = (string) ($attributes['imageUrl'] ?? '');
 
 echo view('pkde-kit::partials.blocks.feature-item', [
-    'icon' => $image_id || $image_url ? '' : \App\feature_icon((string) ($attributes['icon'] ?? '')),
-    'image' => $image_id || $image_url ? \App\block_image($image_id, $image_url, (string) ($attributes['imageAlt'] ?? ''), 'medium_large', ['loading' => 'lazy']) : '',
+    'icon' => $image_id || $image_url || ! empty($attributes['placeholder']) ? '' : \App\feature_icon((string) ($attributes['icon'] ?? '')),
+    'image' => $image_id || $image_url || ! empty($attributes['placeholder']) ? \App\block_media($image_id, $image_url, (string) ($attributes['imageAlt'] ?? ''), 'medium_large', ['loading' => 'lazy'], ! empty($attributes['placeholder'])) : '',
     'heading' => (string) ($attributes['heading'] ?? ''),
     'text' => (string) ($attributes['text'] ?? ''),
     'linkText' => $link_text,
