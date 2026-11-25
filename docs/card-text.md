@@ -1,6 +1,8 @@
-# Card text: lines, not words (TPL-280)
+# Card text: lines, not words (TPL-280, TPL-282)
 
-Every kit card limits its title and its text by **lines**, with CSS, so cards in a row keep their shape and a long text ends in an ellipsis. No card has a word count of its own and none ends in "… Continued".
+The kit limits the text it pulls in **automatically** by **lines**, with CSS, so cards in a row keep their shape and a long text ends in an ellipsis: a post excerpt, a product's short description, related and recent posts, product, category and brand names in a loop, a WooCommerce review in the testimonials, the author bio. No card has a word count of its own and none ends in "… Continued".
+
+**Text an editor typed into a block is never clamped by default** (TPL-282): a Feature grid's titles and texts, a testimonial of the manual or posts source, text and image, hero, CTA, the pattern bank's copy. A site may opt in (below).
 
 ## The two limits
 - **Server (one helper, a safety cap):** `App\card_text($text)` strips tags, decodes entities once and keeps at most **40 words** (the filter `pkde_kit/card_text_words`, `0` for no cap), so the HTML stays small and a reader without CSS is not flooded. `App\card_excerpt($post)` is the post's written excerpt, else the start of its content, through `card_text()`. A screen reader reads the whole capped text: the clamp only hides it visually.
@@ -15,11 +17,12 @@ Every kit card limits its title and its text by **lines**, with CSS, so cards in
 | `--pkde-clamp-product-title`, `-product-excerpt` | the two above | the product card (the description shows in the list view) |
 | `--pkde-clamp-related-title`, `-related-excerpt` | the two above | related and recent posts |
 | `--pkde-clamp-author-bio` | `--pkde-clamp-excerpt` | the author box |
-| `--pkde-clamp-feature-title`, `-feature-text` | the two above | feature items (and so the pattern bank's feature cards) |
-| `--pkde-clamp-quote` | 6 | a testimonial: generous, only a very long one is cut |
+| `--pkde-clamp-quote` | 6 | a WooCommerce review in the testimonials (source "reviews"): generous, only a very long one is cut |
 | `--pkde-clamp-tile-title`, `-category-title`, `-brand-title`, `-recent-title` | `--pkde-clamp-title` | category tiles, category cards, the brand card's name, recently viewed |
 
-A value is a whole number of lines, or `none` for no clamp. Set them in `config/brand-palette.json` and `npm run theme:generate` writes them to `:root`:
+A value is a whole number of lines, or `none` for no clamp.
+
+**Opt-in, typed text** (no default, nothing is clamped unless you name it in `text.clamp`; the generator then writes the rule): `feature-title`, `feature-text` (Feature grid items) and `quote-typed` (manual and posts testimonials), for example `"text": { "clamp": { "feature-text": 4 } }`. Set them in `config/brand-palette.json` and `npm run theme:generate` writes them to `:root`:
 
 ```json
 "text": { "clamp": { "title": 2, "excerpt": 4, "product-excerpt": 2, "quote": "none" } }
