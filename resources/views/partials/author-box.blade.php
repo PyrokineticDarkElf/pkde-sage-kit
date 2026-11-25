@@ -18,7 +18,7 @@
   </div>
 
   @if ($bio)
-    <p class="mt-3 text-sm text-neutral-600">{{ wp_trim_words($bio, 20) }}</p>
+    <p class="pkde-author__bio mt-3 text-sm text-neutral-600">{{ \App\card_text((string) $bio) }}</p>
   @endif
 </div>
 @endif

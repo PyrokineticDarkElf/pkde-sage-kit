@@ -47,7 +47,7 @@
       @include('pkde-kit::partials.card-rating', ['position' => $ratingPosition])
     @endif
 
-    <h2 class="font-display text-lg font-semibold leading-snug tracking-[-0.02em]">
+    <h2 class="pkde-product-card__title font-display text-lg font-semibold leading-snug tracking-[-0.02em]">
       <a href="{{ get_permalink($productId) }}" class="text-[color:var(--pkde-card-content)] transition hover:text-[color:var(--pkde-card-accent)]">
         {{ $product->get_name() }}
       </a>
@@ -64,10 +64,10 @@
     @php(do_action('woocommerce_after_shop_loop_item_title'))
 
     {{-- The short description: only the list view shows it (shop-pages.css); the grid card hides it. --}}
-    {{-- Decoded before trimming: wp_trim_words() appends an HTML entity and a short description can hold others (&amp;, &#039;), which Blade's {{ }} would escape a second time (tcs). --}}
-    @php($excerpt = post_password_required($product->get_id()) ? '' : trim(html_entity_decode(wp_strip_all_tags((string) $product->get_short_description()), ENT_QUOTES | ENT_HTML5, 'UTF-8')))
+    {{-- Capped once on the server (App\card_text decodes entities first, so Blade's {{ }} does not escape them twice) and clamped to lines by resources/css/clamp.css. --}}
+    @php($excerpt = post_password_required($product->get_id()) ? '' : \App\card_text((string) $product->get_short_description()))
     @if ($excerpt !== '')
-      <p class="pkde-product-card__excerpt text-sm text-neutral-600">{{ wp_trim_words($excerpt, 30, '…') }}</p>
+      <p class="pkde-product-card__excerpt text-sm text-neutral-600">{{ $excerpt }}</p>
     @endif
 
     @if ($ratingPosition === 'above_button')

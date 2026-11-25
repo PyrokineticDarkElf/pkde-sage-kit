@@ -19,7 +19,7 @@
           {!! wp_get_attachment_image($imageId, 'medium_large', false, ['alt' => $term->name, 'loading' => 'lazy', 'class' => 'h-full w-full object-cover pkde-zoom']) !!}
         @else
           <div class="flex h-full w-full items-center justify-center p-4">
-            <h3 class="text-center font-display text-lg font-semibold text-neutral-700">{{ $term->name }}</h3>
+            <h3 class="pkde-brand-card__title text-center font-display text-lg font-semibold text-neutral-700">{{ $term->name }}</h3>
           </div>
         @endif
       </a>

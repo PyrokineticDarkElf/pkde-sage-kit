@@ -527,3 +527,19 @@ test('theme:check fails a declared eyebrow under 4.5:1 and a declared accent und
   const varied = run(bb, {}, ['--check']);
   assert.doesNotMatch(varied.stdout + varied.stderr, /eyebrow .* measures|accent .* measures/);
 });
+
+test('text.clamp (TPL-280): only what is declared is written to :root, validated by key and value; a palette without it writes nothing', () => {
+  const plain = run(bb);
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.doesNotMatch(plain.read('resources/css/generated/brand-tokens.css'), /--pkde-clamp-/);
+  const declared = run(bb, { text: { clamp: { title: 1, excerpt: 4, 'product-excerpt': 5, quote: 'none' } } });
+  assert.equal(declared.status, 0, declared.stderr);
+  const css = declared.read('resources/css/generated/brand-tokens.css');
+  for (const line of ['--pkde-clamp-title: 1;', '--pkde-clamp-excerpt: 4;', '--pkde-clamp-product-excerpt: 5;', '--pkde-clamp-quote: none;']) assert.ok(css.includes(line), line);
+  const badKey = run(bb, { text: { clamp: { body: 2 } } });
+  assert.notEqual(badKey.status, 0);
+  assert.match(badKey.stdout + badKey.stderr, /text\.clamp\.body is not a token/);
+  const badValue = run(bb, { text: { clamp: { title: 0 } } });
+  assert.notEqual(badValue.status, 0);
+  assert.match(badValue.stdout + badValue.stderr, /text\.clamp\.title must be a whole number of lines from 1 to 12, or "none"/);
+});

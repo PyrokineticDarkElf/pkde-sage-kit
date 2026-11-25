@@ -9,6 +9,7 @@
  * classes — see resources/blocks/hero/render.php.
  */
 @import "./motion.css";
+@import "./clamp.css";
 @import "./page-measure.css";
 @import "./page-header.css";
 @import "./post-single.css";

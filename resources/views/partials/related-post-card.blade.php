@@ -1,4 +1,4 @@
-{{-- List-style card: small square image left, title + one-line excerpt right. --}}
+{{-- List-style card: small square image left, title + a clamped excerpt right (resources/css/clamp.css). --}}
 <a href="{{ get_permalink() }}" class="group flex gap-4">
   @if (has_post_thumbnail())
     <div class="aspect-square w-20 flex-none overflow-hidden rounded-xl bg-neutral-100">
@@ -9,11 +9,9 @@
   @endif
 
   <div class="min-w-0 self-center">
-    <p class="font-display text-sm font-semibold leading-snug text-neutral-900 transition group-hover:text-brand-700">
+    <p class="pkde-related__title font-display text-sm font-semibold leading-snug text-neutral-900 transition group-hover:text-brand-700">
       {{ get_the_title() }}
     </p>
-    <p class="mt-1 truncate text-xs text-neutral-500">
-      {{ wp_trim_words(get_the_excerpt(), 12) }}
-    </p>
+    <p class="pkde-related__excerpt mt-1 text-xs text-neutral-500">{{ \App\card_excerpt() }}</p>
   </div>
 </a>

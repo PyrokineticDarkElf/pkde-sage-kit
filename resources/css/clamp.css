@@ -1,0 +1,46 @@
+/**
+ * Card text is limited by LINES, not words (TPL-280). Every kit card clamps its title and its excerpt with the standard line clamp, so a long text ends in an
+ * ellipsis and cards in a row keep their shape; the text itself is capped once on the server (App\card_text, 40 words) and stays whole for a screen reader.
+ *
+ * The tokens, set site-wide in `text.clamp` of config/brand-palette.json (the generator writes them to :root) or in the site's CSS:
+ *   --pkde-clamp-title    (2)  the title of every card        --pkde-clamp-excerpt  (3)  the excerpt or description of every card
+ * and a token per kind of card, which wins over the two above for that card only:
+ *   post-title, post-excerpt (blog cards, latest and featured posts), product-title, product-excerpt (the list view's description),
+ *   related-title, related-excerpt, author-bio, feature-title, feature-text, quote (6), tile-title (category tiles), category-title (category cards),
+ *   brand-title, recent-title (recently viewed). A value is a whole number of lines, or `none` for no clamp: `--pkde-clamp-quote: none`.
+ */
+.pkde-card__title,
+.pkde-product-card__title,
+.pkde-related__title,
+.pkde-feature__title,
+.pkde-tile__title,
+.pkde-category-card__title,
+.pkde-brand-card__title,
+.pkde-recent__name,
+.pkde-card__excerpt,
+.pkde-product-card__excerpt,
+.pkde-related__excerpt,
+.pkde-author__bio,
+.pkde-feature__text,
+.pkde-quote blockquote {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--pkde-lines, none);
+  line-clamp: var(--pkde-lines, none);
+}
+.pkde-card__title { --pkde-lines: var(--pkde-clamp-post-title, var(--pkde-clamp-title, 2)); }
+.pkde-product-card__title { --pkde-lines: var(--pkde-clamp-product-title, var(--pkde-clamp-title, 2)); }
+.pkde-related__title { --pkde-lines: var(--pkde-clamp-related-title, var(--pkde-clamp-title, 2)); }
+.pkde-feature__title { --pkde-lines: var(--pkde-clamp-feature-title, var(--pkde-clamp-title, 2)); }
+.pkde-tile__title { --pkde-lines: var(--pkde-clamp-tile-title, var(--pkde-clamp-title, 2)); }
+.pkde-category-card__title { --pkde-lines: var(--pkde-clamp-category-title, var(--pkde-clamp-title, 2)); }
+.pkde-brand-card__title { --pkde-lines: var(--pkde-clamp-brand-title, var(--pkde-clamp-title, 2)); }
+.pkde-recent__name { --pkde-lines: var(--pkde-clamp-recent-title, var(--pkde-clamp-title, 2)); }
+.pkde-card__excerpt { --pkde-lines: var(--pkde-clamp-post-excerpt, var(--pkde-clamp-excerpt, 3)); }
+.pkde-product-card__excerpt { --pkde-lines: var(--pkde-clamp-product-excerpt, var(--pkde-clamp-excerpt, 3)); }
+.pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, var(--pkde-clamp-excerpt, 3)); }
+.pkde-author__bio { --pkde-lines: var(--pkde-clamp-author-bio, var(--pkde-clamp-excerpt, 3)); }
+.pkde-feature__text { --pkde-lines: var(--pkde-clamp-feature-text, var(--pkde-clamp-excerpt, 3)); }
+/* a testimonial is the whole point of its card: generous by default (6 lines), so only a very long one is cut */
+.pkde-quote blockquote { --pkde-lines: var(--pkde-clamp-quote, 6); }

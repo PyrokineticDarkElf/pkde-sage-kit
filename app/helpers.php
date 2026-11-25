@@ -533,3 +533,37 @@ function page_content_padding(array $blocks): string
 
     return ($full($blocks[0] ?? null) ? 'pt-0' : 'pt-16') . ' ' . ($full($blocks[count($blocks) - 1] ?? null) ? 'pb-0' : 'pb-16');
 }
+
+/**
+ * The one server-side cap on the text of a card (TPL-280): plain text (tags stripped, entities decoded, so Blade's {{ }} does not escape them twice), at most
+ * `pkde_kit/card_text_words` words (default 40, a safety cap so the HTML stays small and a reader without CSS is not flooded). It is not the visible limit: the
+ * CSS clamps the text to a number of lines (resources/css/clamp.css), and the clamp draws the ellipsis. A card never carries a word count of its own.
+ */
+function card_text(string $text, ?int $words = null): string
+{
+    $text = trim(html_entity_decode(wp_strip_all_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    $words ??= (int) apply_filters('pkde_kit/card_text_words', 40);
+
+    return $words > 0 ? wp_trim_words($text, $words, '…') : $text;
+}
+
+/**
+ * The excerpt of a post for a card: the written excerpt, else the start of the content (blocks that are not text and shortcodes left out), through card_text().
+ * Empty for a password protected post. Not the_excerpt(): that is 55 words and ends in "… Continued".
+ */
+function card_excerpt(\WP_Post|int|null $post = null): string
+{
+    $post = get_post($post);
+
+    if (! $post || post_password_required($post)) {
+        return '';
+    }
+
+    if (trim($post->post_excerpt) !== '') {
+        return card_text($post->post_excerpt);
+    }
+
+    $content = function_exists('excerpt_remove_blocks') ? excerpt_remove_blocks($post->post_content) : $post->post_content;
+
+    return card_text(strip_shortcodes($content));
+}
