@@ -2,7 +2,7 @@
 
 /**
  * Site details in the theme (WP-106): the helper `site_detail()`, the formatting the components, blocks and shortcodes share, and the shortcodes. The values come from the platform's
- * `site-details` module (Settings > Site details); a site without that module keeps working: the data is built from its `client_*` options, the way the footer always read them.
+ * `site-details` module (Settings > Site details); a site without that module keeps working: the data is built from its `client_*` options, the way the footer always read them; and so does a site whose Site details are not filled in yet (a bump never removes a phone number: TPL-277).
  * Pure functions where they can be (the unit tests load this file without WordPress); the Blade components in resources/views/components and the blocks sage/site-contact,
  * sage/site-socials and sage/site-hours print them.
  */
@@ -156,14 +156,60 @@ function site_social_list(array $socials): array
     return $out;
 }
 
-/** All the details the site shows: the platform module's merged values, or the old `client_*` options when the module is not loaded. */
+/** The details a site had before Site details existed (the old `client_*` options): the groups a bump must never empty. */
+const SITE_LEGACY_GROUPS = ['phones', 'emails', 'locations', 'socials'];
+
+/**
+ * The details with the old `client_*` values filled in wherever Site details has nothing for a group (TPL-277): a bump to a kit that reads Site details must never remove a phone
+ * number, an email, an address or a profile that the site's old options still hold, even before `site-details-migrate.php apply` has run. A group Site details does hold is
+ * never touched.
+ *
+ * @param  array<string, mixed>  $details  Site details (the platform module's merged values)
+ * @param  array<string, mixed>  $legacy  site_details_from_options()
+ * @return array<string, mixed>
+ */
+function site_details_with_legacy(array $details, array $legacy): array
+{
+    foreach (SITE_LEGACY_GROUPS as $group) {
+        if (empty($details[$group]) && ! empty($legacy[$group])) {
+            $details[$group] = $legacy[$group];
+        }
+    }
+
+    return $details;
+}
+
+/**
+ * The groups that are being read from the old `client_*` options because Site details has nothing for them: [] when the site is migrated (or has no old values). The drift check
+ * warns with this ("Site details not migrated").
+ *
+ * @return list<string>
+ */
+function site_details_legacy_fallbacks(?array $details = null, ?array $legacy = null): array
+{
+    $details ??= function_exists('App\\MuPlugins\\site_details') ? \App\MuPlugins\site_details() : [];
+    $legacy ??= site_details_legacy();
+
+    return array_values(array_filter(SITE_LEGACY_GROUPS, fn(string $group) => empty($details[$group]) && ! empty($legacy[$group])));
+}
+
+/** The details the old `client_*` options hold. */
+function site_details_legacy(): array
+{
+    return site_details_from_options(fn(string $name) => function_exists('get_option') ? (string) get_option($name, '') : '', function_exists('get_bloginfo') ? (string) get_bloginfo('name') : '');
+}
+
+/**
+ * All the details the site shows: the platform module's merged values, with the old `client_*` options filling any group Site details does not hold yet (TPL-277); or the old
+ * options alone when the module is not loaded.
+ */
 function site_details_data(): array
 {
     if (function_exists('App\\MuPlugins\\site_details')) {
-        return \App\MuPlugins\site_details();
+        return site_details_with_legacy(\App\MuPlugins\site_details(), site_details_legacy());
     }
 
-    return site_details_from_options(fn(string $name) => function_exists('get_option') ? (string) get_option($name, '') : '', function_exists('get_bloginfo') ? (string) get_bloginfo('name') : '');
+    return site_details_legacy();
 }
 
 /** One detail by path (`business.trading_name`, `phones.0.display`); the default when it is not there or empty. */
