@@ -36,6 +36,27 @@
   text-transform: uppercase;
   color: var(--pkde-eyebrow);
 }
+/* The eyebrow of a core Paragraph or Heading ("Eyebrow" block style, TPL-281): the same look and colour as the eyebrow of the kit's blocks, in and out of a section. The
+   doubled class keeps the type above a site's own heading rules; the editor shows the style class, the page also carries .pkde-eyebrow. */
+:is(p, h1, h2, h3, h4, h5, h6):is(.pkde-eyebrow, .is-style-eyebrow):is(.pkde-eyebrow, .is-style-eyebrow) {
+  margin-block-end: 0;
+  font: 600 0.8rem / 1.2 var(--font-sans, inherit);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pkde-eyebrow, var(--section-eyebrow, var(--color-brand-700)));
+}
+:is(.pkde-eyebrow, .is-style-eyebrow) + :is(h1, h2, h3, h4, h5, h6) {
+  margin-block-start: 0.5rem;
+}
+/* A short decorative rule in the section's accent colour: <hr class="pkde-rule"> or any empty block (a width of 3rem and the thick border, both overridable) */
+.pkde-rule {
+  display: block;
+  width: var(--pkde-rule-width, 3rem);
+  height: 0;
+  margin: var(--pkde-rule-gap, 1rem) 0;
+  border: 0;
+  border-top: var(--pkde-border-thick, 2px) solid var(--pkde-rule, var(--section-accent, var(--color-brand-600)));
+}
 .pkde-block .pkde-muted-text {
   color: var(--pkde-quiet);
 }

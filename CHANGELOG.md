@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25.5
+
+An "Eyebrow" style for core Paragraph and Heading, and the accent role wired to rules and icons (TPL-281, owner request, follow-up to TPL-279). **Adopt:** with the next bump, then `npm run theme:generate`. **Visible changes:** the kit's icons (feature items) and the core Separator block inside a Brand section change colour to the section's accent (a declared `icon` keeps its colour; a Separator with its own colour keeps it).
+- **"Eyebrow" block style** for core Paragraph and Heading: adds `.pkde-eyebrow` on the page (and `is-style-eyebrow` in the editor): small, uppercase, tracked, `--section-eyebrow`. A section's text and heading colours no longer override it. An editor applies it to a kicker typed as plain text.
+- **Accent role wired:** the core Separator block in a Brand section reads `--section-accent` (a plain `hr` keeps the border role); the new `.pkde-rule` class (`<hr class="pkde-rule">`, 3rem, `--pkde-rule-width`, `--pkde-rule-gap`) draws a short accent rule; the `icon` role now defaults to the accent value (a declared `icon` wins), so the kit's icons are in the highlight colour. The kit has no card top rule today; `--pkde-rule` is the variable for one (the card's accent inside a card layout).
+- Proved on the template stack (four section themes, 1440 and 390) and read-only on tcs /contact-us/ and bb. Kit Pest 233, node 62.
+
 ## 2026.11.25.4
 
 Card text is limited by lines, not words (TPL-280, owner request). **Adopt:** with the next bump; every card's text shortens to its clamp (3 lines, a title 2), which is the request. A site that published a kit view or draws its own card adds the kit's classes (docs/card-text.md).

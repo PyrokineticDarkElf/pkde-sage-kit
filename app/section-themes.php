@@ -37,10 +37,37 @@ if (! function_exists('add_action')) {
     return;
 }
 
+/** The blocks that can be an eyebrow (TPL-281): the small kicker above a heading, in the brand highlight of the section it sits in. */
+function eyebrow_blocks(): array
+{
+    return ['core/paragraph', 'core/heading'];
+}
+
+/**
+ * Adds `pkde-eyebrow` to a core Paragraph or Heading set to the "Eyebrow" style, so it takes the same look and colour (`--section-eyebrow`) as the eyebrow of the kit's
+ * own blocks and the pattern bank. The editor shows `is-style-eyebrow`, which the CSS (resources/css/sections.css) treats the same way.
+ */
+function eyebrow_class(string $html, array $block): string
+{
+    if (! in_array($block['blockName'] ?? '', eyebrow_blocks(), true) || ! str_contains((string) ($block['attrs']['className'] ?? ''), 'is-style-eyebrow')) {
+        return $html;
+    }
+
+    $tags = new \WP_HTML_Tag_Processor($html);
+
+    return $tags->next_tag() && $tags->add_class('pkde-eyebrow') ? $tags->get_updated_html() : $html;
+}
+
 add_action('init', function () {
+    foreach (eyebrow_blocks() as $block) {
+        register_block_style($block, ['name' => 'eyebrow', 'label' => __('Eyebrow', 'sage')]);
+    }
+
     foreach (section_themes() as $theme) {
         foreach (section_theme_blocks() as $block) {
             register_block_style($block, ['name' => $theme['name'], 'label' => $theme['label']]);
         }
     }
 });
+
+add_filter('render_block', __NAMESPACE__ . '\\eyebrow_class', 10, 2);
