@@ -479,3 +479,26 @@ test('buttons (WP-109 follow-up): a font, a size and padding per variant, a cont
     assert.match(result.stderr, expected);
   }
 });
+
+test('buttons (TPL-275): the basket\'s Update basket and coupon Apply follow `cart` (secondary by default), `content` maps the core Button blocks, `other: keep` leaves the rest', () => {
+  const decl = (use) => run(bb, { buttons: { primary: { style: 'solid', colour: 'blush' }, secondary: { style: 'outline', colour: 'slate' }, use } });
+  const rule = (css, selector) => css.match(new RegExp(`:is\\([^{]*${selector}[^{]*\\{[^}]*background-color: var\\(--btn-([a-z-]+)-bg\\);`, 's'))?.[1];
+
+  const plain = decl({});
+  assert.equal(rule(plain.css, 'td\\.actions'), 'secondary'); // the basket's own buttons are the second action by default
+  assert.equal(rule(plain.css, 'wp-block-button:not\\(\\.is-style-outline\\)'), 'primary'); // core Solid buttons in the content: the default variant
+
+  const kept = decl({ cart: 'keep' });
+  assert.doesNotMatch(kept.css, /td\.actions|woocommerce-cart-form/); // `cart: keep` keeps the basket's buttons too
+  assert.doesNotMatch(kept.css, /a\.checkout-button/);
+
+  const moved = decl({ cart: 'primary', basket: 'secondary' });
+  assert.equal(rule(moved.css, 'td\\.actions'), 'secondary');
+  assert.equal(rule(moved.css, 'a\\.checkout-button'), 'primary');
+
+  const content = decl({ content: 'secondary', other: 'keep' });
+  assert.equal(rule(content.css, 'wp-block-button:not\\(\\.is-style-outline\\)'), 'secondary'); // a site picks the variant of its content buttons
+  assert.doesNotMatch(content.css, /:not\(\.single_add_to_cart_button, \.add_to_cart_button/); // other: keep: no generic WooCommerce button rule
+
+  assert.equal(decl({ content: 'keep' }).css.includes('.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link'), false);
+});

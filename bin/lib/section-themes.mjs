@@ -462,8 +462,8 @@ const NOT_VARIANT = ':not(.pkde-btn-alt):not(.pkde-btn--secondary):not(.pkde-btn
 const CARD_BOXES = 'article, li.product, .pkde-feature, .pkde-quote, .pkde-card, .pkde-product-card';
 const HERO_BOXES = '.wp-block-sage-hero, .wp-block-sage-hero-slider, .wp-block-sage-cta, .pkde-cta-band, .pkde-section';
 const FIXED_SELECTORS = {
-  primary: ['.pkde-btn--primary', '.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link'],
-  secondary: ['.pkde-btn-alt', '.pkde-btn--secondary', '.wp-block-button.is-style-outline > .wp-block-button__link', '.woocommerce table.cart td.actions button[name="update_cart"]', '.pkde-product-section__more-button', '.pkde-recent__button'],
+  primary: ['.pkde-btn--primary'],
+  secondary: ['.pkde-btn-alt', '.pkde-btn--secondary', '.wp-block-button.is-style-outline > .wp-block-button__link', '.pkde-product-section__more-button', '.pkde-recent__button'],
   text: ['.pkde-btn--text', '.wp-block-button.is-style-text > .wp-block-button__link'],
 };
 const CONTEXT_SELECTORS = {
@@ -473,9 +473,13 @@ const CONTEXT_SELECTORS = {
   filters: ['.pkde-filter-apply'],
   reset: ['.pkde-filter-reset'],
   forms: ['.wpcf7-submit', '.comment-form input[type="submit"]', '.wp-block-search__button'],
+  // core Button blocks in the content that have the default (Solid) style; an Outline or Text block keeps its own variant
+  content: ['.wp-block-button:not(.is-style-outline):not(.is-style-text) > .wp-block-button__link'],
+  // the classic basket's own buttons: Update basket and the coupon's Apply (they follow `cart` unless `basket` is set)
+  basket: ['.woocommerce table.cart td.actions :is(button[name="update_cart"], button[name="apply_coupon"])', '.woocommerce-cart-form button[name="update_cart"]', '.woocommerce-cart-form button[name="apply_coupon"]', '.woocommerce form.checkout_coupon button[name="apply_coupon"]'],
   cart: ['a.checkout-button', 'button[name="woocommerce_checkout_place_order"]', '.wc-block-components-button:not(.is-link):not(.wc-block-components-panel__button)', '.woocommerce .wc-backward'],
   nav: ['li.nav-cta > a'],
-  other: [`.pkde-btn${NOT_VARIANT}:not(:where(${CARD_BOXES}, ${HERO_BOXES}) *)`, '.woocommerce :is(a.button, button.button, input.button):not(.single_add_to_cart_button, .add_to_cart_button, .checkout-button, .wc-backward, [name="update_cart"], [name="woocommerce_checkout_place_order"], .wpcf7-submit, .pkde-btn-alt, .pkde-btn--secondary, .pkde-btn--text):not(:where(li.product, .products .product) *)'],
+  other: [`.pkde-btn${NOT_VARIANT}:not(:where(${CARD_BOXES}, ${HERO_BOXES}) *)`, '.woocommerce :is(a.button, button.button, input.button):not(.single_add_to_cart_button, .add_to_cart_button, .checkout-button, .wc-backward, [name="update_cart"], [name="apply_coupon"], [name="woocommerce_checkout_place_order"], .wpcf7-submit, .pkde-btn-alt, .pkde-btn--secondary, .pkde-btn--text):not(:where(li.product, .products .product) *)'],
 };
 // where a card is: the variables of the card's own surface replace the section's inside it
 const CARD_CONTEXTS = ['article', '.woocommerce ul.products > .product', '.pkde-quotes--strip .pkde-quote', '.pkde-quotes--carousel .pkde-quote', '.pkde-features--cards .pkde-feature', '.pkde-card'];
@@ -527,7 +531,9 @@ function globalButtonCss(decl, page, resolver) {
 
   for (const name of names) {
     const own = name.startsWith('use-') ? [] : (FIXED_SELECTORS[name] ?? []);
-    const mapped = Object.keys(CONTEXT_SELECTORS).filter((context) => (decl.use[context] ?? (BUTTON_CONTEXTS[context])) === name).flatMap((context) => CONTEXT_SELECTORS[context]);
+    // the basket's own buttons (Update basket, the coupon's Apply) follow the `cart` position unless `basket` says otherwise: a site that keeps its basket keeps them too
+    const drawnBy = (context) => decl.use[context] ?? (context === 'basket' ? (decl.use.cart ?? BUTTON_CONTEXTS.basket) : BUTTON_CONTEXTS[context]);
+    const mapped = Object.keys(CONTEXT_SELECTORS).filter((context) => drawnBy(context) === name).flatMap((context) => CONTEXT_SELECTORS[context]);
     const list = [...own, ...mapped];
     if (!list.length) continue;
     const look = looks[name];
