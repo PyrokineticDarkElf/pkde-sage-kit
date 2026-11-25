@@ -22,13 +22,16 @@ import { resolveButtonsFor, BUTTON_CONTEXTS, TYPE_CASES, TYPE_SIZES, TYPE_FONTS 
 //   buttonStyle      "filled" (default) or "underline": a text button, no fill or ring or radius, an underline of --pkde-button-underline-width in the buttonBorder colour
 export const OPTIONAL_ROLES = ['buttonRing', 'buttonHoverText', 'buttonAltBorder'];
 export const BUTTON_STYLES = ['filled', 'underline'];
-export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonBorder', 'buttonAltBg', 'buttonAltText', 'icon', 'border'];
+export const ROLE_KEYS = ['heading', 'text', 'muted', 'link', 'buttonBg', 'buttonText', 'buttonBorder', 'buttonAltBg', 'buttonAltText', 'icon', 'border', 'eyebrow', 'accent'];
 // The roles of a card sitting in the section (a testimonial, a product, a post, a feature item). Declared under `styles.card` (an object; the older string `card`
 // is a pointer for the older .pkde-card-* classes and is not read here) as { background, heading, text, muted, border, buttonBg, buttonText, buttonBorder, icon }.
-export const CARD_KEYS = ['cardBg', 'cardHeading', 'cardText', 'cardMuted', 'cardBorder', 'cardButtonBg', 'cardButtonText', 'cardButtonBorder', 'cardIcon'];
-const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', buttonHoverText: 'cardButtonHoverText', icon: 'cardIcon' };
-const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonRing: 'button-ring', buttonHoverText: 'button-hover-text', buttonAltBorder: 'button-alt-border', cardButtonHoverText: 'card-button-hover-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon' };
-export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, buttonSurface: 3, linkText: 3 };
+export const CARD_KEYS = ['cardBg', 'cardHeading', 'cardText', 'cardMuted', 'cardBorder', 'cardButtonBg', 'cardButtonText', 'cardButtonBorder', 'cardIcon', 'cardEyebrow', 'cardAccent'];
+const CARD_DECLARED = { background: 'cardBg', heading: 'cardHeading', text: 'cardText', muted: 'cardMuted', border: 'cardBorder', buttonBg: 'cardButtonBg', buttonText: 'cardButtonText', buttonBorder: 'cardButtonBorder', buttonHoverText: 'cardButtonHoverText', icon: 'cardIcon', eyebrow: 'cardEyebrow', accent: 'cardAccent' };
+const CSS_NAME = { bg: 'bg', heading: 'heading', text: 'text', muted: 'muted', link: 'link', buttonBg: 'button-bg', buttonText: 'button-text', buttonBorder: 'button-border', buttonRing: 'button-ring', buttonHoverText: 'button-hover-text', buttonAltBorder: 'button-alt-border', cardButtonHoverText: 'card-button-hover-text', buttonAltBg: 'button-alt-bg', buttonAltText: 'button-alt-text', icon: 'icon', border: 'border', cardBg: 'card-bg', cardHeading: 'card-heading', cardText: 'card-text', cardMuted: 'card-muted', cardBorder: 'card-border', cardButtonBg: 'card-button-bg', cardButtonText: 'card-button-text', cardButtonBorder: 'card-button-border', cardIcon: 'card-icon', eyebrow: 'eyebrow', accent: 'accent', cardEyebrow: 'card-eyebrow', cardAccent: 'card-accent' };
+export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonText: 4.5, buttonAltText: 4.5, icon: 3, eyebrow: 4.5, accent: 3, buttonSurface: 3, linkText: 3 };
+// An eyebrow or accent is drawn in the brand's highlight, so it has to stand apart from the section's own text colour (not the same dark or light).
+const HIGHLIGHT_APART = 1.5;
+// ...and it keeps the hue: the near-white (50, 100) and near-black (900, 950) ends of a ramp are not tried, only the exact colour and the steps 200 to 800 around it.
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
 // the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
 export const WEAK_BELOW = 5.2;
@@ -135,6 +138,25 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
   }
 
   /**
+   * The brand highlight for a small decoration on a background (an eyebrow at 4.5:1, a rule or icon accent at 3:1): the first palette colour (accent, then brand, then the
+   * rest; a SOLID theme leaves its own colour out) whose exact value passes, else the nearest step of that same hue that does (darker on a light background, lighter on a
+   * dark one); a colour that cannot be told from the section's text is skipped. null when no hue can do it.
+   */
+  function highlightFor(bgRef, ownerName, { solid, min, textRef }) {
+    for (const color of brandish) {
+      if (solid && color.name === ownerName) continue;
+      const exact = resolver.value(color.name);
+      const nearest = steps.filter((step) => step > 100 && step < 900)
+        .map((step) => ({ ref: `${color.name}-${step}`, gap: Math.abs(Math.log(wcagContrast(resolver.value(`${color.name}-${step}`), exact))) }))
+        .sort((a, b) => a.gap - b.gap);
+      for (const ref of [color.name, ...nearest.map((n) => n.ref)]) {
+        if ((ratio(ref, bgRef) ?? 0) >= min && (ratio(ref, textRef) ?? 21) >= HIGHLIGHT_APART) return ref;
+      }
+    }
+    return null;
+  }
+
+  /**
    * The matrix for a background, filled in by contrast alone. `ownerName` is the colour the background belongs to; a SOLID theme leaves
    * that colour out of the heading/link candidates (it would vanish on itself), a light theme keeps it (and its deep shades).
    */
@@ -151,7 +173,7 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
 
     if (weak) {
       // Only one text colour is readable on this colour, so every text role uses it (no brand-coloured heading or link, no muted tone).
-      return { weak, matrix: { heading: text, text, muted: text, link: text, buttonBg: text, buttonText: bgRef, buttonBorder: text, buttonAltBg: 'transparent', buttonAltText: text, icon: text, border } };
+      return { weak, matrix: { heading: text, text, muted: text, link: text, buttonBg: text, buttonText: bgRef, buttonBorder: text, buttonAltBg: 'transparent', buttonAltText: text, icon: text, border, eyebrow: text, accent: text } };
     }
 
     let muted = text;
@@ -183,6 +205,8 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
         buttonAltText: text,
         icon: pick(3) ?? text,
         border,
+        eyebrow: highlightFor(bgRef, ownerName, { solid, min: THRESHOLD.eyebrow, textRef: text }) ?? candidates.find((ref) => ratio(ref, bgRef) >= 4.5 && (ratio(ref, text) ?? 21) >= THRESHOLD.linkText) ?? text,
+        accent: highlightFor(bgRef, ownerName, { solid, min: THRESHOLD.accent, textRef: text }) ?? pick(3) ?? text,
       },
     };
   }
@@ -219,7 +243,7 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     const auto = autofill(cardBg, cardOwner, { solid: false, buttonMin: 4.5 });
     const m = auto.matrix;
 
-    return { cardBg, cardHeading: m.heading, cardText: m.text, cardMuted: m.muted, cardBorder: m.border, cardButtonBg: m.buttonBg, cardButtonText: m.buttonText, cardButtonBorder: m.buttonBorder, cardIcon: m.icon };
+    return { cardBg, cardHeading: m.heading, cardText: m.text, cardMuted: m.muted, cardBorder: m.border, cardButtonBg: m.buttonBg, cardButtonText: m.buttonText, cardButtonBorder: m.buttonBorder, cardIcon: m.icon, cardEyebrow: m.eyebrow, cardAccent: m.accent };
   }
 
   /** The declared card roles of a theme ({ cardBg?, cardHeading?, ... }), references checked. */
@@ -298,7 +322,10 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     const declaredCard = declaredCards(color, kind);
     const cards = { ...cardFor(bgRef, color.name, kind === 'dark' || kind === 'lightDark' ? 'dark' : 'light', declaredCard.cardBg ?? null), ...declaredCard };
     // a declared text colour moves the link's own colour (it has to stand apart from THAT text)
-    if (roles.text !== undefined && roles.link === undefined) auto.matrix.link = autofill(bgRef, color.name, { solid, textRef: roles.text }).matrix.link;
+    if (roles.text !== undefined) {
+      const moved = autofill(bgRef, color.name, { solid, textRef: roles.text }).matrix;
+      for (const role of ['link', 'eyebrow', 'accent']) if (roles[role] === undefined) auto.matrix[role] = moved[role];
+    }
     const out = buttonsDecl ? buttonOutputs(bgRef, cards.cardBg, `${labelOf(color)} (${kind})`) : { roles: {} };
     const merged = { weak: auto.weak, bg: bgRef, ...auto.matrix, ...cards, ...out.roles, ...declaredCard, ...roles, declared: Object.keys(roles), ...(buttonsDecl ? { btn: out.btn, cardBtn: out.cardBtn, btnNotes: out.notes } : {}) };
     // links that colour cannot tell from the text are underlined (the generated rule at the end of the section CSS)
@@ -359,6 +386,8 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     const linkText = ratio(matrix.link, matrix.text);
     if (linkText !== null && linkText > 1.05 && linkText < THRESHOLD.linkText) warns.push(`${where}: the link ${show(matrix.link)} measures ${linkText.toFixed(2)}:1 against the text ${show(matrix.text)}, too close to tell apart by colour; links are underlined there (give the link another colour, or accept the underline).`);
     need('icon', THRESHOLD.icon);
+    need('eyebrow', THRESHOLD.eyebrow);
+    need('accent', THRESHOLD.accent);
     // the button label on the button, the outline button's label on the section (or on its own fill)
     const buttonLabel = ratio(matrix.buttonText, matrix.buttonBg);
     if (buttonLabel !== null && buttonLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the button label ${show(matrix.buttonText)} measures ${buttonLabel.toFixed(2)}:1 on the button ${show(matrix.buttonBg)}; it needs 4.5:1.`);
@@ -380,6 +409,8 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     needCard('cardHeading', THRESHOLD.heading, 'heading');
     needCard('cardMuted', THRESHOLD.muted, 'muted text');
     needCard('cardIcon', THRESHOLD.icon, 'icon');
+    needCard('cardEyebrow', THRESHOLD.eyebrow, 'eyebrow');
+    needCard('cardAccent', THRESHOLD.accent, 'accent');
     const cardLabel = ratio(matrix.cardButtonText, matrix.cardButtonBg);
     if (cardLabel !== null && cardLabel + 1e-9 < THRESHOLD.buttonText) fails.push(`${where}: the card button label ${show(matrix.cardButtonText)} measures ${cardLabel.toFixed(2)}:1 on the card button ${show(matrix.cardButtonBg)}; it needs 4.5:1.`);
     const cardSurface = ratio(matrix.cardButtonBg, matrix.cardBg);
@@ -684,6 +715,8 @@ export function buildCardColourCss(colors, themeList) {
     `  --section-card-button-text: ${cssValue(resolver, m.buttonText)};`,
     `  --section-card-button-border: ${cssValue(resolver, m.buttonBorder)};`,
     `  --section-card-icon: ${cssValue(resolver, m.icon)};`,
+    `  --section-card-eyebrow: ${cssValue(resolver, m.eyebrow)};`,
+    `  --section-card-accent: ${cssValue(resolver, m.accent)};`,
   ];
   const out = ['/**', ' * The per-block "Card colour" choice (has-card-theme-*), generated from config/brand-palette.json; do not edit.', ' */'];
   out.push('[class*="has-card-theme-"] {', ...CARD_ALIASES, '}', '');

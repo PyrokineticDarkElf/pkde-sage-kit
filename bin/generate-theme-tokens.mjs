@@ -490,6 +490,8 @@ function buildSectionThemesCss(colors) {
     '  --section-text: var(--pkde-theme-content);',
     '  --section-muted: color-mix(in srgb, var(--pkde-theme-content) 75%, transparent);',
     '  --section-link: var(--pkde-theme-highlight);',
+    '  --section-eyebrow: var(--pkde-theme-highlight);',
+    '  --section-accent: var(--pkde-theme-highlight);',
     '  --section-button-bg: var(--pkde-theme-btn-bg);',
     '  --section-button-text: var(--pkde-theme-btn-text);',
     '  --section-button-alt-bg: var(--pkde-theme-alt-btn-bg);',

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026.11.25.3
+
+Section eyebrows carry the brand highlight by default (TPL-279, owner request). **Adopt:** with the next bump, then `npm run theme:generate`; every site's eyebrows (the small uppercase kicker above a heading in the hero, feature grid, testimonials and text and image blocks, and the patterns) change from the text colour to the brand colour, which is the intended change.
+- **`eyebrow` role (`--section-eyebrow`) on every section and card theme (`--section-card-eyebrow`):** filled in by contrast: the first palette colour (accent, then brand; a solid theme leaves out its own colour) whose exact value passes 4.5:1 on that surface, else the nearest step (200 to 800) of the same hue that does; a colour that cannot be told from the section's text (under 1.5:1 against it) is skipped. A weak colour (nothing but the text reads on it) keeps the text colour, as its links do. A declared `styles.eyebrow` (and `light`, `dark`, `card.eyebrow`) wins. `theme:check` fails an eyebrow under 4.5:1.
+- **`accent` role (`--section-accent`, card `--section-card-accent`; `--pkde-rule` in the kit's CSS):** the same, at 3:1, for small rules, dividers and icon accents a site draws; the kit's own elements do not use it yet.
+- **Every kit eyebrow reads it:** `.pkde-eyebrow` is `var(--pkde-eyebrow)`, which is `--section-eyebrow` (the plain-page fallback is the old link colour). The older `.theme-*` classes carry both roles too.
+- Proved on the template stack in eight section themes (every eyebrow 4.5:1 or better; the weak accent and stone sections keep the text colour), and read-only on tcs `/contact-us/` (eyebrows on its white sections come out `accent-700`, 7.34:1; on black the accent, 10.04:1) and bb (sage on white 4.66:1, a deep sage on its light sage and blush sections 4.93:1 and 6.15:1, blush on black 13.06:1). Kit Pest 228, node 60.
+
 ## 2026.11.25.2
 
 The page wrapper no longer adds a blank band above or below a page built from full-width sections (TPL-278, owner: "this shouldn't have py"). **Adopt:** take it with the next bump; a site that already drops the wrapper's padding itself (bb: `.page-content:has(> .wp-block-sage-section) { padding-block: 0 }`) can delete that rule afterwards, and nothing changes if it keeps it.

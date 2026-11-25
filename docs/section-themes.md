@@ -27,6 +27,8 @@ A theme sets these variables on its section; everything inside reads them (`--pk
 | `--section-button-hover-text` | optional role `buttonHoverText`: the filled button's label on hover and keyboard focus. Without it the label keeps its colour. It needs 4.5:1 on the button |
 | `--section-button-alt-bg` / `-button-alt-text` | the secondary button, a **true outline**: no fill (`transparent`), the text colour for the label and the edge |
 | `--section-icon` | icons (`.pkde-icon`) |
+| `--section-eyebrow` | the small kicker above a heading (`.pkde-eyebrow`: hero, feature grid, testimonials, text and image). The **brand highlight** (4.5:1): the first palette colour, accent then brand, whose exact value reads on the section (a solid theme leaves its own colour out), else the nearest step of that hue (200 to 800) that does; one that cannot be told from the text (under 1.5:1 against it) is skipped. A weak colour has nothing to offer, so it keeps the text colour. Declare `eyebrow` in `styles` to choose it |
+| `--section-accent` | small rules, dividers and icon accents (3:1, decorative), worked out the same way; read as `--pkde-rule` in the kit's CSS. Declare `accent` to choose it |
 | `--section-border` | rules and separators |
 
 Core headings, paragraphs, lists, links, buttons, separators and the kit's blocks (hero, CTA, FAQ, feature grid, text and image, testimonials, gallery,
@@ -38,7 +40,7 @@ descendant rules. A site's own CSS that colours a heading, paragraph or button a
 ## Cards
 
 Each theme also sets card roles for the cards inside it: `--section-card-bg`, `-card-heading`, `-card-text`, `-card-muted`, `-card-border`, `-card-button-bg`, `-card-button-text`,
-`-card-button-border`, `-card-icon`. Worked out from the palette unless declared: the card is **white** on a solid or tinted section (a sage section and a blush section both get
+`-card-button-border`, `-card-icon`, `-card-eyebrow`, `-card-accent`. Worked out from the palette unless declared: the card is **white** on a solid or tinted section (a sage section and a blush section both get
 white cards), the **brand colour's lightest tint** on a white section, a deep shade in dark mode; its text, icon and border follow from that background, and its button is the first
 brand colour that reaches 4.5:1 on it that is not the card's own hue (so a white card gets a sage or pink button). Declare any of them under `styles.card` (an object; the older string
 `card` is the older classes' pointer): `"card": { "background": "blush-50", "buttonBg": "slate" }`; `styles.light.card`, `styles.dark.card` and `styles.light.dark.card` do the same for the other
@@ -76,7 +78,7 @@ solid theme keeps its colour and re-picks its text roles by contrast.
 
 **Links.** The auto-fill gives `link` its own colour where a palette colour reaches 4.5:1 on the background and 3:1 against the text colour (so it is told apart by colour); a declared `link` always wins. Where none works (a dark solid section with white text, a theme whose text is already the palette's only readable colour) the link is the text colour, and links in running text (paragraphs, lists, table cells, quotes) are underlined, in the editor and on the page, so they are never told apart by nothing. Where the link has its own colour nothing is forced and the site's own link style applies. Buttons, cards, products and nav links are left alone. A declared link within 3:1 of the text is allowed, with a `theme:check` note, and is underlined too. The generated CSS lists only the themes that need the underline.
 
-`npm run theme:check` fails a pair under its threshold (4.5:1 text, muted and links; 3:1 headings and icons; the button label 4.5:1, in both modes). A colour in
+`npm run theme:check` fails a pair under its threshold (4.5:1 text, muted, links and eyebrows; 3:1 headings, icons and accents; the button label 4.5:1, in both modes). A colour in
 `acceptLowContrast` is reported as accepted instead. Two things only warn: a button whose shape is under 3:1 against the section, and a **weak** colour: one whose best
 text colour barely clears AA (under 5.2:1) while no palette colour can be a heading or link on it (bb sage, the template's accent and stone, js and cs stone). It is
 offered like any other theme; its matrix uses the one readable text colour for every text role, and the check names it.
