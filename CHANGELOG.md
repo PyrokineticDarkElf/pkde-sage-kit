@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026.11.25.2
+
+The page wrapper no longer adds a blank band above or below a page built from full-width sections (TPL-278, owner: "this shouldn't have py"). **Adopt:** take it with the next bump; a site that already drops the wrapper's padding itself (bb: `.page-content:has(> .wp-block-sage-section) { padding-block: 0 }`) can delete that rule afterwards, and nothing changes if it keeps it.
+- **`content-page` and `content-page-wide`:** the wrapper's `py-16` is now `pt-*` and `pb-*` chosen by `App\page_content_padding()` from the parsed blocks: no padding at the top when the first block is full width (`align: full`, a Section, the CTA band), none at the bottom when the last is; a prose page (paragraphs, headings, a shortcode, a WooCommerce page) keeps 4rem both sides. Sections own their own spacing.
+- Proved on the template stack at 1440 and 390: a page of sections 0 and 0, a page of prose 64 and 64, a paragraph then a section 64 and 0, a full-width group 0 and 0; no horizontal overflow. Read-only on bb and tcs (the fix applied in memory): tcs about, best-sellers and contact-us lose the 64px bands (128px of page height) at both widths, checkout, basket and my-account keep their padding; bb already has none on those pages. Kit Pest 228.
+
 ## 2026.11.25.1
 
 A bump never removes a phone number (TPL-277, found by el). **Adopt:** bb and tcs now with their bump (take this instead of 2026.11.25 if they have not pushed yet); a site already on 2026.11.24 or later takes it at its next push. Not Train-ready.

@@ -4,7 +4,7 @@
   --content-grid-width is already min(48rem, the page measure), the prose reading width
   this page wants, so no override is needed here.
 --}}
-<div class="page-content prose-content content-grid py-16">
+<div class="page-content prose-content content-grid {{ \App\page_content_padding(parse_blocks((string) get_post_field('post_content'))) }}">
   @php(the_content())
 
   @if ($pagination())

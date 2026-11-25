@@ -518,3 +518,18 @@ function form_shortcode(string $key = 'contact'): string
 
     return $id > 0 && function_exists('shortcode_exists') && shortcode_exists('contact-form-7') ? '[contact-form-7 id="' . $id . '"]' : '';
 }
+
+/**
+ * The padding classes of a page's content wrapper (TPL-278). A page of prose breathes (4rem above and below); a page that starts or ends with a full-width
+ * Section, Group or band owns its own spacing, so the wrapper adds none there (it showed a band of the page background between the header and the first
+ * section). A block is full-width when it carries `align: full`, is a Section (always full), or is a block that is always printed full (the CTA band).
+ * `$blocks` is `parse_blocks()` output; empty blocks (whitespace between blocks) are skipped.
+ */
+function page_content_padding(array $blocks): string
+{
+    $blocks = array_values(array_filter($blocks, static fn ($block) => ! empty($block['blockName'])));
+    $full = static fn (?array $block) => $block !== null
+        && (($block['attrs']['align'] ?? '') === 'full' || in_array($block['blockName'], ['sage/section', 'sage/cta-band'], true));
+
+    return ($full($blocks[0] ?? null) ? 'pt-0' : 'pt-16') . ' ' . ($full($blocks[count($blocks) - 1] ?? null) ? 'pb-0' : 'pb-16');
+}
