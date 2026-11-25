@@ -5,7 +5,7 @@
  */
 use function App\page_content_padding;
 
-$b = static fn (string $name, array $attrs = []) => ['blockName' => $name, 'attrs' => $attrs];
+$b = static fn(string $name, array $attrs = []) => ['blockName' => $name, 'attrs' => $attrs];
 $blank = ['blockName' => null, 'attrs' => []];
 
 it('pads a page of prose on both sides', function () use ($b) {

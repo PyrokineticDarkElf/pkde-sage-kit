@@ -527,8 +527,8 @@ function form_shortcode(string $key = 'contact'): string
  */
 function page_content_padding(array $blocks): string
 {
-    $blocks = array_values(array_filter($blocks, static fn ($block) => ! empty($block['blockName'])));
-    $full = static fn (?array $block) => $block !== null
+    $blocks = array_values(array_filter($blocks, static fn($block) => ! empty($block['blockName'])));
+    $full = static fn(?array $block) => $block !== null
         && (($block['attrs']['align'] ?? '') === 'full' || in_array($block['blockName'], ['sage/section', 'sage/cta-band'], true));
 
     return ($full($blocks[0] ?? null) ? 'pt-0' : 'pt-16') . ' ' . ($full($blocks[count($blocks) - 1] ?? null) ? 'pb-0' : 'pb-16');
