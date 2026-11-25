@@ -33,9 +33,9 @@ if ($layout !== 'overlay') {
     $image_fit = ($attributes['imageFit'] ?? 'cover') === 'contain' ? ' pkde-hero--fit-contain' : '';
     $hero_image = '';
 
-    if ($layout === 'split' && ($image_id || $image_url)) {
+    if ($layout === 'split' && ($image_id || $image_url || ! empty($attributes['placeholder']))) {
         $first = \App\next_hero_slide_number() === 1;
-        $hero_image = \App\block_image($image_id, $image_url, $image_alt, 'large', ['sizes' => '(min-width: 1024px) 50vw, 100vw'] + ($first ? ['loading' => 'eager', 'fetchpriority' => 'high'] : ['loading' => 'lazy']));
+        $hero_image = \App\block_media($image_id, $image_url, $image_alt, 'large', ['sizes' => '(min-width: 1024px) 50vw, 100vw'] + ($first ? ['loading' => 'eager', 'fetchpriority' => 'high'] : ['loading' => 'lazy']), ! empty($attributes['placeholder']));
     }
 
     echo view('pkde-kit::partials.blocks.hero-layout', [
@@ -80,6 +80,10 @@ $wrapper_attributes = get_block_wrapper_attributes([
     $hero_attributes = ['class' => 'absolute inset-0 -z-20 h-full w-full object-cover', 'sizes' => '100vw'];
 $hero_attributes += \App\next_hero_slide_number() === 1 ? ['loading' => 'eager', 'fetchpriority' => 'high'] : ['loading' => 'lazy'];
 echo \App\block_image($image_id, $image_url, $image_alt, 'full', $hero_attributes);
+
+if (! $image_id && ! $image_url && ! empty($attributes['placeholder'])) {
+    echo '<span class="pkde-placeholder pkde-placeholder--cover" role="img" aria-label="' . esc_attr__('Picture placeholder: choose a picture', 'sage') . '"></span>';
+}
 ?>
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-neutral-950 via-neutral-950/55 to-neutral-950/10"></div>
 
@@ -94,18 +98,29 @@ echo \App\block_image($image_id, $image_url, $image_alt, 'full', $hero_attribute
      */ ?>
     <div class="<?php echo esc_attr(\App\container_class('mx-auto w-full max-w-content px-[var(--page-gutter,1.5rem)]', 'sage/hero')); ?>">
         <div class="max-w-2xl">
+            <?php $overlay_level = max(1, min(4, (int) ($attributes['headingLevel'] ?? 2))); ?>
             <?php if ($heading) : ?>
-                <h2 class="font-display text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl"><?php echo wp_kses_post($heading); ?></h2>
+                <h<?php echo $overlay_level; ?> class="font-display text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl lg:text-6xl"><?php echo wp_kses_post($heading); ?></h<?php echo $overlay_level; ?>>
             <?php endif; ?>
 
             <?php if ($body) : ?>
                 <p class="mt-5 max-w-xl text-base leading-7 opacity-75 sm:text-lg"><?php echo wp_kses_post($body); ?></p>
             <?php endif; ?>
 
-            <?php if ($button_text && $button_url) : ?>
-                <a href="<?php echo esc_url($button_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))); ?> mt-8">
-                    <?php echo esc_html($button_text); ?>
-                </a>
+            <?php $overlay_second = ((string) ($attributes['secondaryButtonText'] ?? '')) !== '' && ((string) ($attributes['secondaryButtonUrl'] ?? '')) !== ''; ?>
+            <?php if (($button_text && $button_url) || $overlay_second) : ?>
+                <div class="pkde-actions">
+                    <?php if ($button_text && $button_url) : ?>
+                        <a href="<?php echo esc_url($button_url); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))); ?> no-underline">
+                            <?php echo esc_html($button_text); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($overlay_second) : ?>
+                        <a href="<?php echo esc_url((string) $attributes['secondaryButtonUrl']); ?>" class="<?php echo esc_attr(\App\button_classes((string) ($attributes['secondaryButtonStyle'] ?? 'secondary'))); ?> no-underline">
+                            <?php echo esc_html((string) $attributes['secondaryButtonText']); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
         </div>
     </div>

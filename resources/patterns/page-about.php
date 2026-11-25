@@ -13,7 +13,7 @@ echo \App\pattern_section('brand', 'light', <<<'HTML'
 <!-- wp:sage/hero {"layout":"text","headingLevel":1,"eyebrow":"About us","heading":"Who we are and what we care about","content":"A short introduction: who you are, where you are and who you work for."} /-->
 HTML);
 echo \App\pattern_section('white', 'solid', <<<'HTML'
-<!-- wp:sage/text-and-image {"eyebrow":"Our story","imageSide":"right","imageRatio":"4-3"} -->
+<!-- wp:sage/text-and-image {"eyebrow":"Our story","imageSide":"right","imageRatio":"4-3","placeholder":1} -->
 <!-- wp:heading {"level":2} -->
 <h2 class="wp-block-heading">How it started</h2>
 <!-- /wp:heading -->

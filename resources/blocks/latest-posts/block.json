@@ -49,6 +49,15 @@
     "cardButton": {
       "type": "string",
       "default": ""
+    },
+    "layout": {
+      "type": "string",
+      "enum": [
+        "cards",
+        "feature",
+        "list"
+      ],
+      "default": "cards"
     }
   },
   "supports": {

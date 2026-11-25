@@ -162,6 +162,21 @@ function block_image(int $id, ?string $url, string $alt, string $size, array $at
 }
 
 /**
+ * block_image(), or a neutral placeholder picture when there is none and the block asks for one (`placeholder` on a block of a pattern, WP-108 B): a pattern cannot carry a
+ * site's own pictures, so it draws a frame in the section's colours until the editor chooses one. Without `placeholder` nothing changes: empty stays empty.
+ */
+function block_media(int $id, ?string $url, string $alt, string $size, array $attributes = [], bool $placeholder = false): string
+{
+    $html = block_image($id, $url, $alt, $size, $attributes);
+
+    if ($html !== '' || ! $placeholder) {
+        return $html;
+    }
+
+    return '<span class="pkde-placeholder" role="img" aria-label="' . esc_attr__('Picture placeholder: choose a picture', 'sage') . '"></span>';
+}
+
+/**
  * 1 for the first hero slide printed in this request, 2 for the second, and so on. A named function, because a
  * `static` variable inside a block's render.php does not survive between slides: each include gets a fresh scope
  * (found the hard way on rp: the first attempt left every slide eager). Per request, so a page with two sliders

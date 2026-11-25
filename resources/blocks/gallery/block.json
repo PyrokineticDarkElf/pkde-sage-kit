@@ -6,7 +6,12 @@
   "category": "widgets",
   "icon": "grid-view",
   "description": "A static grid of images with a consistent aspect ratio, configurable columns, and an optional click-to-enlarge lightbox.",
-  "keywords": ["gallery", "images", "grid", "photos"],
+  "keywords": [
+    "gallery",
+    "images",
+    "grid",
+    "photos"
+  ],
   "textdomain": "sage",
   "attributes": {
     "heading": {
@@ -32,11 +37,28 @@
     "enableLightbox": {
       "type": "boolean",
       "default": true
+    },
+    "placeholders": {
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 12
+    },
+    "fit": {
+      "type": "string",
+      "enum": [
+        "cover",
+        "contain"
+      ],
+      "default": "cover"
     }
   },
   "supports": {
     "html": false,
-    "align": ["wide", "full"]
+    "align": [
+      "wide",
+      "full"
+    ]
   },
   "render": "file:./render.php"
 }

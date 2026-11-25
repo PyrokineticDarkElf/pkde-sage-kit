@@ -37,7 +37,13 @@
     },
     "variant": {
       "type": "string",
-      "default": "plain"
+      "default": "plain",
+      "enum": [
+        "plain",
+        "cards",
+        "steps",
+        "stats"
+      ]
     },
     "centered": {
       "type": "boolean",

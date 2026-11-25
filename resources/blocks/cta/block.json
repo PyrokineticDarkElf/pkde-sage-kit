@@ -15,7 +15,13 @@
   "attributes": {
     "style": {
       "type": "string",
-      "default": "section"
+      "default": "section",
+      "enum": [
+        "section",
+        "banner",
+        "split",
+        "boxed"
+      ]
     },
     "theme": {
       "type": "string",
@@ -43,12 +49,20 @@
     },
     "buttonStyle": {
       "type": "string",
-      "enum": ["primary", "secondary", "text"],
+      "enum": [
+        "primary",
+        "secondary",
+        "text"
+      ],
       "default": "primary"
     },
     "secondaryButtonStyle": {
       "type": "string",
-      "enum": ["primary", "secondary", "text"],
+      "enum": [
+        "primary",
+        "secondary",
+        "text"
+      ],
       "default": "secondary"
     },
     "secondaryButtonText": {
@@ -74,6 +88,10 @@
       "type": "string",
       "default": "",
       "__experimentalRole": "content"
+    },
+    "placeholder": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

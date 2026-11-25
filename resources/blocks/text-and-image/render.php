@@ -27,10 +27,18 @@ if ($image_id || $image_url) {
     }
 }
 
+// A pattern's empty picture slot: one frame, or the three of the mosaic, until the editor chooses pictures (WP-108 B).
+if ($images === [] && ! empty($attributes['placeholder'])) {
+    $frame = '<span class="pkde-placeholder" role="img" aria-label="' . esc_attr__('Picture placeholder: choose a picture', 'sage') . '"></span>';
+    $images = array_fill(0, (int) $attributes['placeholder'] === 3 ? 3 : 1, $frame);
+}
+
 echo view('pkde-kit::partials.blocks.text-and-image', [
     'wrapper' => get_block_wrapper_attributes(['class' => trim("pkde-block pkde-tai pkde-tai--ratio-{$ratio}" . ($side === 'left' ? ' pkde-split--media-left' : ''))]),
     'eyebrow' => (string) ($attributes['eyebrow'] ?? ''),
     'content' => $content,
     'images' => $images,
     'mosaic' => count($images) === 3,
+    'badgeValue' => (string) ($attributes['badgeValue'] ?? ''),
+    'badgeLabel' => (string) ($attributes['badgeLabel'] ?? ''),
 ])->render();

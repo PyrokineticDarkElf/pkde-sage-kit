@@ -14,7 +14,7 @@ const TEMPLATE = [
 const ALLOWED = ['core/heading', 'core/paragraph', 'core/list', 'core/buttons', 'core/quote', 'core/separator', 'core/spacer', 'core/group', 'sage/feature-grid'];
 
 function Edit({ attributes, setAttributes }) {
-  const { imageUrl, imageId, imageAlt, extraImages, imageSide, imageRatio, eyebrow, templateLock } = attributes;
+  const { imageUrl, imageId, imageAlt, extraImages, imageSide, imageRatio, eyebrow, templateLock, badgeValue, badgeLabel } = attributes;
   const blockProps = useBlockProps({ className: `pkde-block pkde-tai pkde-tai--ratio-${imageRatio}${imageSide === 'left' ? ' pkde-split--media-left' : ''}` });
   const innerProps = useInnerBlocksProps({ className: 'pkde-tai__blocks' }, { template: TEMPLATE, allowedBlocks: ALLOWED, templateLock });
   const pictures = imageUrl ? [{ url: imageUrl, alt: imageAlt }, ...(extraImages || [])] : [];
@@ -43,6 +43,8 @@ function Edit({ attributes, setAttributes }) {
             options={[{ value: 'right', label: __('Picture on the right', 'sage') }, { value: 'left', label: __('Picture on the left', 'sage') }]}
             onChange={(value) => setAttributes({ imageSide: value })}
           />
+          <TextControl label={__('Figure over the picture', 'sage')} help={__('A number such as 15+, shown on a card over the picture. Leave empty for none.', 'sage')} value={badgeValue || ''} onChange={(value) => setAttributes({ badgeValue: value })} />
+          <TextControl label={__('Figure label', 'sage')} value={badgeLabel || ''} onChange={(value) => setAttributes({ badgeLabel: value })} />
           <SelectControl
             label={__('Shape', 'sage')}
             value={imageRatio}

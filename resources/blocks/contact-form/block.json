@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "sage/contact-form",
+  "title": "Contact form",
+  "category": "widgets",
+  "icon": "email",
+  "description": "The site's Contact Form 7 form, found by its key (contact by default), with the section colours. Nothing to type here.",
+  "keywords": ["contact", "form", "enquiry"],
+  "textdomain": "sage",
+  "attributes": {
+    "formKey": {
+      "type": "string",
+      "default": "contact"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "render": "file:./render.php"
+}

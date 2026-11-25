@@ -24,6 +24,7 @@
 @import "./cart-checkout-blocks.css";
 @import "./section-themes.css";
 @import "./sections.css";
+@import "./pattern-layouts.css";
 
 /* Concentric cards (WP-108): a card's corner radius and padding. An image or other media INSET in a padded card takes the radius minus the padding, so its corners sit
    concentric with the card's (0 when the padding is as large as the radius, and 0 everywhere in the sharp preset); a FLUSH (edge to edge) picture takes the card's radius on the

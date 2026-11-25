@@ -31,6 +31,31 @@ function pattern_header(string $file): array
     ];
 }
 
+/**
+ * The families of the pattern bank (WP-108 B): the pattern category slug (after `pkde-`) and its label. A pattern is "Family: Variant" and has the one category of its family.
+ *
+ * @return array<string, string>
+ */
+function pattern_families(): array
+{
+    $t = fn(string $label): string => function_exists('__') ? __($label, 'sage') : $label;
+
+    return [
+        'hero' => $t('Hero'),
+        'featured-products' => $t('Featured products'),
+        'categories' => $t('Product categories'),
+        'latest-posts' => $t('Latest posts'),
+        'features' => $t('Feature grid'),
+        'text-image' => $t('Text and image'),
+        'testimonials' => $t('Testimonials'),
+        'cta' => $t('Call to action'),
+        'faq' => $t('FAQ'),
+        'contact' => $t('Contact'),
+        'stats' => $t('Stats'),
+        'logos' => $t('Logos'),
+    ];
+}
+
 if (! function_exists('add_action')) {
     return;
 }
@@ -41,6 +66,10 @@ add_action('init', function () {
     }
 
     register_block_pattern_category('pkde', ['label' => __('Sections', 'sage')]);
+    // One category per family (WP-108 B), all under the kit's `pkde-` prefix, so the inserter groups the bank by what a section is for.
+    foreach (pattern_families() as $slug => $label) {
+        register_block_pattern_category("pkde-{$slug}", ['label' => $label]);
+    }
     register_block_pattern_category('pkde-pages', ['label' => __('Page starters', 'sage')]);
 
     foreach (glob(dirname(__DIR__) . '/resources/patterns/*.php') ?: [] as $file) {

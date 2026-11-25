@@ -32,7 +32,12 @@
     },
     "layout": {
       "type": "string",
-      "default": "cards"
+      "default": "cards",
+      "enum": [
+        "cards",
+        "tiles",
+        "chips"
+      ]
     },
     "include": {
       "type": "array",

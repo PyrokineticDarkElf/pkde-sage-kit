@@ -57,7 +57,8 @@ if (! empty($attributes['viewAll']) && function_exists('wc_get_page_permalink'))
     $view_all_url = in_array($orderby, ['popularity', 'rating', 'date', 'price', 'price-desc'], true) ? add_query_arg('orderby', $orderby, wc_get_page_permalink('shop')) : wc_get_page_permalink('shop');
 }
 
-echo '<div ' . get_block_wrapper_attributes(\App\card_wrapper_args($attributes, \App\pkde_loop_theme_classes($theme))) . '>';
+$loop_layout = in_array($attributes['layout'] ?? 'grid', ['grid', 'rail', 'feature', 'intro'], true) ? $attributes['layout'] : 'grid';
+echo '<div ' . get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($loop_layout === 'grid' ? '' : " pkde-products pkde-products--{$loop_layout}")))) . '>';
 echo \App\pkde_loop_theme_content_open($theme);
 echo view('pkde-kit::partials.blocks.section-header', [
     'heading' => $heading,

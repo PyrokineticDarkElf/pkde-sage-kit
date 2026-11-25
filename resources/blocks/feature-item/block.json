@@ -54,6 +54,10 @@
       "type": "string",
       "default": "",
       "__experimentalRole": "content"
+    },
+    "placeholder": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

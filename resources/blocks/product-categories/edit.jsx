@@ -55,6 +55,7 @@ function Edit({ attributes, setAttributes }) {
             options={[
               { value: 'cards', label: __('Cards (name and count over the photo)', 'sage') },
               { value: 'tiles', label: __('Tiles (large photo, name beneath)', 'sage') },
+              { value: 'chips', label: __('Chips (the names in a row)', 'sage') },
             ]}
             onChange={(value) => setAttributes({ layout: value })}
           />

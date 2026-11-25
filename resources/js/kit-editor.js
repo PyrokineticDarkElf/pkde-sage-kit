@@ -17,6 +17,7 @@ import '../blocks/feature-item/edit.jsx';
 import '../blocks/feature-grid/edit.jsx';
 import '../blocks/quotes/edit.jsx';
 import '../blocks/site-contact/edit.jsx';
+import '../blocks/contact-form/edit.jsx';
 import '../blocks/site-socials/edit.jsx';
 import '../blocks/site-hours/edit.jsx';
 import '../blocks/cta-band/edit.jsx';

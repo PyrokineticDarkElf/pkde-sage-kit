@@ -39,7 +39,9 @@ $aspect_class = match ($aspect_ratio) {
     default => 'aspect-video',
 };
 
-$wrapper_attributes = get_block_wrapper_attributes();
+$placeholders = ! $images ? max(0, min(12, (int) ($attributes['placeholders'] ?? 0))) : 0;
+$contain = ($attributes['fit'] ?? 'cover') === 'contain';
+$wrapper_attributes = get_block_wrapper_attributes($contain ? ['class' => 'pkde-gallery--contain'] : []);
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php if ($heading) : ?>
@@ -49,7 +51,13 @@ $wrapper_attributes = get_block_wrapper_attributes();
         <p class="mt-2 max-w-2xl text-[color:var(--section-muted,var(--color-neutral-600))]"><?php echo wp_kses_post($description); ?></p>
     <?php endif; ?>
 
-    <?php if ($images) : ?>
+    <?php if ($placeholders) : ?>
+        <div class="<?php echo ($heading || $description) ? 'mt-6 ' : ''; ?>grid grid-cols-2 gap-4 sm:grid-cols-3 <?php echo $column_class; ?>">
+            <?php for ($i = 0; $i < $placeholders; $i++) : ?>
+                <div class="<?php echo $aspect_class; ?> overflow-hidden rounded-2xl"><span class="pkde-placeholder" role="img" aria-label="<?php esc_attr_e('Picture placeholder: choose a picture', 'sage'); ?>"></span></div>
+            <?php endfor; ?>
+        </div>
+    <?php elseif ($images) : ?>
         <div class="<?php echo ($heading || $description) ? 'mt-6 ' : ''; ?>grid grid-cols-2 gap-4 sm:grid-cols-3 <?php echo $column_class; ?>">
             <?php foreach ($images as $image) : ?>
                 <?php
