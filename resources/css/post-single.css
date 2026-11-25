@@ -146,6 +146,12 @@ html {
     pointer-events: none;
     cursor: default;
   }
+  /* The list is always shown beside the text, whatever the `open` attribute says: the markup is the closed (narrow) state, so there is no script-driven change at load. */
+  .post-toc__details:not([open])::details-content {
+    content-visibility: visible;
+    display: block;
+    block-size: auto;
+  }
 }
 @media (max-width: 1023px) {
   .post-toc {
