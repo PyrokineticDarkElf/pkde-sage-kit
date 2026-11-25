@@ -16,32 +16,35 @@
 
 namespace App;
 
-add_filter('rank_math/snippet/rich_snippet_product_entity', function ($entity) {
-    if (! is_array($entity) || ! function_exists('wc_get_product') || ! is_singular('product')) {
-        return $entity;
-    }
-
-    $product = wc_get_product(get_the_ID());
-
-    if (! $product) {
-        return $entity;
-    }
-
-    if (! empty($entity['offers']) && is_array($entity['offers'])) {
-        $entity['offers'] = product_schema_offers($entity['offers'], $product);
-    }
-
-    if (empty($entity['brand'])) {
-        $terms = taxonomy_exists('product_brand') ? get_the_terms($product->get_id(), 'product_brand') : [];
-        $brand = (string) apply_filters('pkde_kit/product_brand', is_array($terms) && ! empty($terms[0]) ? $terms[0]->name : '', $product);
-
-        if ($brand !== '') {
-            $entity['brand'] = ['@type' => 'Brand', 'name' => $brand];
+// WP-105 phase 1: pkde/platform's `product-schema` module corrects the Product schema when it is on (PKDE_PLATFORM_PRODUCT_SCHEMA); this copy then stays off, so the markup is never corrected twice.
+if (! defined('PKDE_PLATFORM_PRODUCT_SCHEMA')) {
+    add_filter('rank_math/snippet/rich_snippet_product_entity', function ($entity) {
+        if (! is_array($entity) || ! function_exists('wc_get_product') || ! is_singular('product')) {
+            return $entity;
         }
-    }
 
-    return $entity;
-}, 20);
+        $product = wc_get_product(get_the_ID());
+
+        if (! $product) {
+            return $entity;
+        }
+
+        if (! empty($entity['offers']) && is_array($entity['offers'])) {
+            $entity['offers'] = product_schema_offers($entity['offers'], $product);
+        }
+
+        if (empty($entity['brand'])) {
+            $terms = taxonomy_exists('product_brand') ? get_the_terms($product->get_id(), 'product_brand') : [];
+            $brand = (string) apply_filters('pkde_kit/product_brand', is_array($terms) && ! empty($terms[0]) ? $terms[0]->name : '', $product);
+
+            if ($brand !== '') {
+                $entity['brand'] = ['@type' => 'Brand', 'name' => $brand];
+            }
+        }
+
+        return $entity;
+    }, 20);
+}
 
 /** The offers with the displayed price, the shipping details and the return policy, where the store has them. */
 function product_schema_offers(array $offers, \WC_Product $product): array

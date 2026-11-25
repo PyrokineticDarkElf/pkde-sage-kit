@@ -37,11 +37,14 @@ if (! function_exists('add_action')) {
     return; // outside WordPress (the unit tests)
 }
 
-add_action('rest_api_init', function () {
-    register_rest_route('pkde/v1', '/form-preview', [
-        'methods' => 'GET',
-        'permission_callback' => fn() => current_user_can('edit_posts'),
-        'args' => ['shortcode' => ['type' => 'string', 'required' => true]],
-        'callback' => fn(\WP_REST_Request $request) => rest_ensure_response(form_preview((string) $request->get_param('shortcode'))),
-    ]);
-});
+// WP-105 phase 1: pkde/platform's `cf7-editor-preview` module registers this route when it is on (PKDE_PLATFORM_CF7_EDITOR_PREVIEW); this copy is the fallback.
+if (! defined('PKDE_PLATFORM_CF7_EDITOR_PREVIEW')) {
+    add_action('rest_api_init', function () {
+        register_rest_route('pkde/v1', '/form-preview', [
+            'methods' => 'GET',
+            'permission_callback' => fn() => current_user_can('edit_posts'),
+            'args' => ['shortcode' => ['type' => 'string', 'required' => true]],
+            'callback' => fn(\WP_REST_Request $request) => rest_ensure_response(form_preview((string) $request->get_param('shortcode'))),
+        ]);
+    });
+}
