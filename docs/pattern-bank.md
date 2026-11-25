@@ -19,6 +19,8 @@
 
 (The catalogue the manager's brief listed adds up to 36 patterns, not 37.)
 
+Each pattern has a preview picture in `docs/pattern-previews/<slug>.jpg` (the soft preset, 1440 px, the pattern's own Brand theme). The template's `/block-demo/` page shows every pattern by family: it is the catalogue.
+
 ## How they are built
 
 - Only from the kit's blocks and a short list of core blocks (paragraph, heading, columns, buttons, list). The outer block of every pattern is a **Section locked to content** (`templateLock: contentOnly`) with a Brand theme: an Editor changes the words, pictures and links and cannot move, add or delete blocks; an Administrator can unlock it.

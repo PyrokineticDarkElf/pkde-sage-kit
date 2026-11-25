@@ -121,3 +121,24 @@
 .pkde-cta--boxed .pkde-cta__title { color: var(--section-card-heading, var(--section-heading)); }
 .pkde-cta--boxed .pkde-cta__line { color: var(--section-card-text, var(--section-text)); }
 .pkde-posts--list.pkde-posts--list.pkde-posts--list.pkde-posts--list.pkde-posts--list .grid > article :is(p, span, time, a:not(.pkde-card__media)) { color: inherit; opacity: 0.9; }
+
+/* The full-width hero is a dark panel of its own (a picture under a dark gradient): inside a light Brand section its text and buttons keep the panel's own light-on-dark colours
+   instead of taking the section's dark ones. A hero with a `theme` of its own is left to that theme. */
+.pkde-section.wp-block-sage-hero:not([class*="theme-"]) {
+  --pkde-theme-background: var(--color-neutral-950);
+  --pkde-theme-content: var(--color-white);
+  --pkde-theme-highlight: var(--color-white);
+  --pkde-theme-btn-bg: var(--color-white);
+  --pkde-theme-btn-text: var(--color-neutral-950);
+  --pkde-theme-btn-border: var(--color-white);
+  --pkde-theme-alt-btn-bg: transparent;
+  --pkde-theme-alt-btn-text: var(--color-white);
+  --pkde-theme-alt-btn-border: var(--color-white);
+  --section-button-bg: var(--color-white);
+  --section-button-text: var(--color-neutral-950);
+  --section-button-border: var(--color-white);
+  --section-button-alt-text: var(--color-white);
+  --section-button-alt-border: var(--color-white);
+  --section-heading: var(--color-white);
+  --section-text: var(--color-white);
+}

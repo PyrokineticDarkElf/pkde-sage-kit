@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026.11.24.5
+
+The pattern bank (WP-108 B, TPL-267): 36 block patterns in 12 families, "Family: Variant", one pattern category per family. **Adopt:** tcs and bb now (staging pilots), the others in February. **Nothing changes on a page that does not use a new pattern or option**: every new block attribute defaults to what the block did before. Not Train-ready.
+
+- **The patterns:** Hero (4), Featured products (4), Product categories (3), Latest posts (3), Feature grid (3), Text and image (3), Testimonials (3), Call to action (4), FAQ (2), Contact (3), Stats (2), Logos (2). The Section of each is locked to content with a Brand theme (solid and light alternate inside a family), the placeholder content is neutral (no lorem ipsum, no claim, no link off the site), a picture slot is a placeholder frame until a picture is chosen, and the colours, corners and buttons follow the palette, `shape` and `buttons`. The six earlier patterns keep their slugs (`pkde/hero-split`, `pkde/cta`, `pkde/feature-grid`, `pkde/testimonials`, `pkde/text-and-image`, `pkde/page-about`) and join their family; the About page's picture is now a frame. A preview of each is in `docs/pattern-previews/`. `docs/pattern-bank.md`.
+- **Block options the variants needed (all additive):** hero `placeholder`, a second button and a heading level in the full-width layout; text-and-image `placeholder` (0, 1, 3) and a figure over the picture (`badgeValue`, `badgeLabel`); cta styles `split` and `boxed`; feature-grid variants `steps` and `stats`, feature-item `placeholder`; product-loop `layout` (rail, feature, intro); product-categories layout `chips`; latest-posts `layout` (feature, list); accordion `singleColumn`; gallery `placeholders` and `fit` for logos. **A full-width hero inside a Brand section keeps its own light-on-dark text and buttons** (they used to take the section's colours, dark text on the dark panel inside a light section).
+- **New block `sage/contact-form`:** the Contact Form 7 form with the key `contact` (a form key attribute), in the section's colours; an editor sees a note where there is no such form, a visitor nothing.
+- Proved on the template stack with WooCommerce: every pattern parses with 0 invalid blocks as Editor and as Administrator (36 sections, 147 blocks); each renders; the whole catalogue at 1440 and 390 under a solid, a light and a white theme and the sharp, soft and round presets (24 full-page captures), layout shift 0.0000 at both widths; the template's pages at soft are unchanged (326 radii and borders on 8 pages at both widths, 70 buttons).
+
 ## 2026.11.24.4
 
 The global buttons can reproduce a site that has more than one kind of button (TPL-274, tcs). **Adopt:** tcs now (staging pilot), then every site that wants `buttons`; a site that does not declare `buttons` is unchanged (and so is one that declares only what 2026.11.24.3 knew: the three variants and `type`). Not Train-ready.
