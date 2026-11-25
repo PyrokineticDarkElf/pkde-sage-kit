@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.24.6
+
+Gaps in the buttons' `use` map found by tcs (TPL-275). **Adopt:** with the pattern bank (2026.11.24.5), tcs now. Nothing changes for a site that declares no `buttons`; a site that declares them without `use` keeps its look: the classic basket's Update basket and the coupon's Apply stay secondary buttons.
+- **`basket`** (new position): the classic basket's Update basket and coupon Apply. They follow `cart` unless `basket` is set, so `"cart": "keep"` keeps them; second action (secondary) by default.
+- **`content`** (new position): the core Button blocks with the Solid style in content; primary by default (as before), `"keep"` or another variant on request; Outline and Text blocks keep their own variant.
+- **docs/buttons.md:** a section for a site that already has its own buttons: `"other": "keep"`, `"keep"` on the positions that are not redrawn, and the layout properties (margin, justify-self, align-self, flex, width, min-width) to keep when its own button rules are deleted.
+
 ## 2026.11.24.5
 
 The pattern bank (WP-108 B, TPL-267): 36 block patterns in 12 families, "Family: Variant", one pattern category per family. **Adopt:** tcs and bb now (staging pilots), the others in February. **Nothing changes on a page that does not use a new pattern or option**: every new block attribute defaults to what the block did before. Not Train-ready.

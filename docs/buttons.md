@@ -30,9 +30,11 @@ Everything under `type` can also be set on a single variant (and on a position, 
 | `product` | the single product's Add to basket |
 | `filters`, `reset` | the filter form's Apply and Reset |
 | `forms` | Contact Form 7's submit, the comment form, the search button |
-| `cart` | the basket's and checkout's buttons, the cart and checkout blocks, Return to shop |
+| `cart` | the basket's and checkout's buttons (Proceed to checkout, Place order), the cart and checkout blocks, Return to shop |
+| `basket` | the classic basket's own Update basket and the coupon's Apply: they follow `cart` (so `"cart": "keep"` keeps them too) unless `basket` says otherwise; second action (secondary) by default |
+| `content` | the core Button blocks with the default Solid style in post and page content; they follow the declaration (primary) by design, and a site can pick another variant, or `"keep"`; a block with the Outline or Text style keeps that variant |
 | `nav` | the header's `nav-cta` link |
-| `other` | any other WooCommerce button and `.pkde-btn` |
+| `other` | any other WooCommerce button (the notices' View basket, My Account's Log in and Register, ...) and `.pkde-btn` |
 
 A position takes a variant name (`"product": "secondary"`), `"keep"` (the button is left with whatever styling it has, the system does not draw it), or an object `{ "variant": "primary", ...any of the keys above }`: a **derived** variant, resolved for every surface like the three, that starts from that variant and changes what is listed (`"card": { "variant": "primary", "size": "0.6875rem", "padding": "0 0 0.25rem" }`). A button with an explicit class (`.pkde-btn--secondary`, `.pkde-btn-alt`, `.pkde-btn--text`) or a block style (Outline, Text) keeps that variant whatever its position.
 
@@ -47,10 +49,19 @@ A position takes a variant name (`"product": "secondary"`), `"keep"` (the button
     "card": { "variant": "primary", "size": "0.6875rem", "tracking": "0.18em", "padding": "0 0 0.25rem", "lineHeight": 1 },
     "product": "secondary",
     "forms": { "variant": "secondary", "padding": "0 2.25rem" },
-    "filters": "keep", "reset": "keep", "cart": "keep"
+    "filters": "keep", "reset": "keep", "cart": "keep", "other": "keep"
   }
 }
 ```
+
+## Moving a site that already has its own buttons
+
+A site that moves to `buttons` and wants its pages to stay as they are:
+
+1. Declare the variants that reproduce its main buttons, and map the positions that use them (`card`, `product`, `forms`, `hero`, `content`).
+2. Put **`"other": "keep"`** in `use`, and `"keep"` on every position whose buttons it does not want redrawn (`filters`, `reset`, `cart` (and with it `basket`), `nav`). `other` is every WooCommerce button not named above: without `keep` the notices' View basket and My Account's Log in and Register change to the declaration.
+3. Delete the site's own button rules that the declaration now draws, but **keep the layout properties they carried**: `margin`, `justify-self`, `align-self`, `flex`, `width` and `min-width` of the button (for example `margin: 0` on the single product's Add to basket and `justify-self: start` on the contact form's submit): move those declarations into a rule of their own.
+4. Regenerate, then compare every button on the home page, a product, a category, the basket, the checkout and the contact page at 1440 and 390 before and after.
 
 That is tcs's: text buttons everywhere except the product page's Add to basket and the contact form's submit (a solid ink pill), the filters and the basket left as the kit has them. On tcs.test it reproduces every button, hover included.
 
