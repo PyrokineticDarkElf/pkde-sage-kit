@@ -31,7 +31,7 @@
     @if (count($quotes) > 1)
       <div class="pkde-quotes__dots">
         @foreach ($quotes as $index => $quote)
-          <button type="button" data-carousel-dot aria-label="{{ esc_attr(sprintf(__('Go to testimonial %d', 'sage'), $index + 1)) }}"><span></span></button>
+          <button type="button" data-carousel-dot aria-label="{{ esc_attr(sprintf(__('Go to testimonial %d', 'sage'), $index + 1)) }}"><span class="pkde-dot"></span></button>
         @endforeach
       </div>
     @endif
