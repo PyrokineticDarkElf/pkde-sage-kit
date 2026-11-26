@@ -108,3 +108,25 @@
     block-size: auto;
   }
 }
+
+/**
+ * The pagination dot of every carousel (the quotes block, the carousel block, the hero slider; TPL-287). The dot is ALWAYS a 1.25rem by 0.5rem pill in a fixed 1.5rem slot, and
+ * clip-path draws what is shown: a circle (the pill clipped to its middle 0.5rem) or the whole pill for the active dot. Nothing is scaled, so the ends stay round; nothing changes
+ * size, so no layout work and no neighbour moves; the change is a clip-path transition on the motion tokens, instant under reduced motion. The colour is the block's own (a utility
+ * class or the quotes' own CSS).
+ */
+.pkde-dot {
+  display: block;
+  width: 1.25rem;
+  height: 0.5rem;
+  clip-path: inset(0 0.375rem round var(--pkde-radius-full, 9999px));
+  transition: clip-path var(--pkde-motion-base) var(--pkde-ease-out), background-color var(--pkde-motion-base) var(--pkde-ease-out);
+}
+[data-active] > .pkde-dot {
+  clip-path: inset(0 0 round var(--pkde-radius-full, 9999px));
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkde-dot {
+    transition: none;
+  }
+}

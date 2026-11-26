@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026.11.25.10
+
+The active carousel dot is a proper pill again (TPL-287, owner bug from bb's testimonial slider). **Adopt:** with the next bump (bb first), then `npm run build`.
+- **The fault:** the active dot was the 8px circle scaled 2.5 times sideways (`scaleX`, WP-103), which squashed its ends into an ellipse.
+- **The fix:** one shared `.pkde-dot` (motion.css), used by the quotes block, the carousel block and the hero slider. Every dot is a 1.25rem by 0.5rem pill in a fixed 1.5rem slot; `clip-path` shows a circle (the middle 0.5rem) for an inactive dot and the whole pill for the active one. Nothing is scaled, so the ends stay round at the dot's own height; nothing changes size, so no slot moves and there is no layout work; the change is a `clip-path` transition on `--pkde-motion-base` and `--pkde-ease-out`, instant under `prefers-reduced-motion`. The colours are unchanged (the active dot in the text or ink colour, the others muted; white on the hero slider). A site that restyled the old `span` by `scaleX` or by size should use `.pkde-dot`.
+- Proved on the template stack (a quotes carousel in two themes and a hero slider, 1440 and 390, 3x close-ups): the active dot is a pill, 20x8 with round ends, the slots stay 24x24 and none moves while the active dot changes (sampled every frame for 700 ms); mid-transition the clip eases 4.4px, 1.9px, 0; under reduced motion the transition duration is 0. bb's testimonial slider (read-only, the new CSS in memory): ten slots 24x24, none moves, active pill. Kit Pest 237, node 63.
+
 ## 2026.11.25.9
 
 The post's table of contents no longer moves the post body at load (TPL-286, found by bb; present since 2026.11.06). **Adopt:** with the next bump (bb first).

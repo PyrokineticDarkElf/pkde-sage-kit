@@ -71,7 +71,7 @@ $wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative']);
             <div class="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center sm:bottom-4">
                 <?php for ($index = 0; $index < $slide_count; $index++) : ?>
                     <?php // The button is the 24px touch target (WCAG 2.2 target size); the span inside is the visible dot.?>
-                    <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group pointer-events-auto flex h-6 min-w-6 items-center justify-center rounded-(--pkde-radius-full) focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white"><span class="block h-2 w-2 rounded-(--pkde-radius-full) bg-white/40 transition-[transform,background-color] duration-[var(--pkde-motion-base)] ease-[var(--pkde-ease-out)] motion-reduce:transition-none group-data-[active]:scale-x-[2.5] group-data-[active]:bg-white"></span></button>
+                    <button type="button" data-carousel-dot aria-label="<?php echo esc_attr(sprintf(__('Go to slide %d', 'sage'), $index + 1)); ?>" class="group pointer-events-auto flex h-6 w-6 flex-none items-center justify-center rounded-(--pkde-radius-full) focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white"><span class="pkde-dot bg-white/40 group-data-[active]:bg-white"></span></button>
                 <?php endfor; ?>
             </div>
         <?php endif; ?>

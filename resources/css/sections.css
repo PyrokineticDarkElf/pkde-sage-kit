@@ -379,8 +379,9 @@
 }
 .pkde-quotes__dots button {
   display: flex;
+  flex: none; /* a fixed slot: the row never changes width, whichever dot is active */
   height: 1.5rem;
-  min-width: 1.5rem;
+  width: 1.5rem;
   align-items: center;
   justify-content: center;
   border-radius: var(--pkde-radius-full);
@@ -388,22 +389,11 @@
   border: 0;
   cursor: pointer;
 }
-.pkde-quotes__dots button span {
-  display: block;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: var(--pkde-radius-full);
+.pkde-quotes__dots button .pkde-dot {
   background: var(--pkde-line);
-  transition: transform var(--pkde-motion-base) var(--pkde-ease-out), background-color var(--pkde-motion-base) var(--pkde-ease-out);
 }
-.pkde-quotes__dots button[data-active] span {
-  transform: scaleX(2.5); /* the active dot stretches by transform, not by width: no layout work per frame */
+.pkde-quotes__dots button[data-active] .pkde-dot {
   background: var(--pkde-ink);
-}
-@media (prefers-reduced-motion: reduce) {
-  .pkde-quotes__dots button span {
-    transition: none;
-  }
 }
 .pkde-quotes__dots button:focus-visible {
   outline: 2px solid var(--pkde-ink);

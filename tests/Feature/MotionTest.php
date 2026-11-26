@@ -90,10 +90,13 @@ it('has one shared card zoom, no per-view utilities, no transition-all, and dots
     expect($sources)->not->toContain('transition-all');
 
     foreach (['resources/blocks/carousel/render.php', 'resources/blocks/hero-slider/render.php'] as $file) {
-        expect($read($file))->not->toContain('transition-all')->not->toContain('group-data-[active]:w-5')->toContain('group-data-[active]:scale-x-[2.5]')->toContain('motion-reduce:transition-none');
+        // the active dot is a pill drawn by clip-path (motion.css .pkde-dot), never a scaled circle and never a width transition (TPL-287)
+        expect($read($file))->not->toContain('transition-all')->not->toContain('scale-x')->not->toContain('group-data-[active]:w-5')->toContain('pkde-dot');
     }
 
-    expect($read('resources/css/sections.css'))->toContain('transform: scaleX(2.5)')->not->toContain('transition: width');
+    expect($read('resources/css/sections.css'))->not->toContain('scaleX')->not->toContain('transition: width')
+        ->and($read('resources/css/motion.css'))->toContain('.pkde-dot {')->toContain('clip-path: inset(0 0.375rem round')->toContain('[data-active] > .pkde-dot')->not->toContain('scaleX')
+        ->and($read('resources/views/partials/blocks/quotes.blade.php'))->toContain('<span class="pkde-dot"></span>');
 });
 
 it('has no literal duration left in the kit transitions: they read the tokens (a tile may still override its own)', function () use ($root, $strip) {
