@@ -42,8 +42,10 @@ it('puts a section\'s descendant rules one level above a site\'s generic .page-c
     $css = preg_replace('~/\*.*?\*/~s', '', file_get_contents("$root/resources/css/section-themes.css"));
 
     // every descendant rule repeats the style attribute (0,3,x beats .page-content h2.wp-block-heading at 0,2,1); only the paint rule on the section itself is single
-    expect(substr_count($css, '[class*="is-style-brand-"][class*="is-style-brand-"] '))->toBeGreaterThanOrEqual(7)
-        ->and($css)->toContain('[class*="is-style-brand-"] {') // the paint rule
+    // (a section is marked by a Brand class or a role class: the attribute hook lists both)
+    $themed = ':is([class*="is-style-brand-"], [class*="is-style-role-"])';
+    expect(substr_count($css, $themed . $themed . ' '))->toBeGreaterThanOrEqual(7)
+        ->and($css)->toContain($themed . ' {') // the paint rule
         ->and($css)->toContain(':is(p, li, dt, dd, td, th, blockquote, cite):not([class*="pkde-"])') // running text: a site's .page-content p must not beat inheriting the theme's text colour
         ->and($css)->toMatch('/\.is-style-outline > \.wp-block-button__link[^{]*\{[^}]*background-color: transparent;[^}]*box-shadow: none;/s')
         ->and($css)->toMatch('/box-shadow: inset 0 0 0 var\(--pkde-border-thick\) var\(--section-button-ring, var\(--section-button-border\)\)/');

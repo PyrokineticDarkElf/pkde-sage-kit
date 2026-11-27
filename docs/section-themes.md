@@ -110,3 +110,6 @@ Declare `"buttonStyle": "underline"` in a colour's `styles` (the colour's own, o
 ```
 
 Lettering (letter spacing, weight, case) is the site's own CSS or the button's block settings; the generator only draws the underline. A palette that declares none of `buttonRing`, `buttonHoverText` or `buttonStyle` generates exactly what it did before.
+
+## Role classes
+A section also matches a **role class** that is the same on every site: `is-style-role-brand`, `-accent`, `-black`, `-white`, and `-light` for the light theme of the first three (white has none). The generated rule of each theme lists both classes (`.is-style-brand-sage, .is-style-role-brand`), so markup copied from one site takes the brand of the site it lands on; the kit's descendant rules key on either class. A colour with no role (a palette's extra colours) has no role class. The role classes are not block styles: the Styles panel is unchanged.

@@ -23,6 +23,7 @@
       "app/section-themes.php",
       "app/sections.php",
       "app/patterns.php",
+      "app/pattern-preview.php",
       "app/faq.php",
       "app/motion.php",
       "app/legal.php",
