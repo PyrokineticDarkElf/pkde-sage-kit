@@ -53,4 +53,3 @@ it('ships exactly the starter set, one family each, named "Family: Variant", slu
     expect($slugs)->toEqualCanonicalizing(['pkde/hero-split', 'pkde/page-about', 'pkde/contact-beside-form', 'pkde/faq-one-column', 'pkde/cta-split', 'pkde/features-cards', 'pkde/testimonials-cards', 'pkde/text-and-image'])
         ->and(array_unique($slugs))->toHaveCount(count($slugs));
 });
-

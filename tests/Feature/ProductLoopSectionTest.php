@@ -25,4 +25,3 @@ it('gives the Product Loop block a section heading, description, "View all" link
         ->and(strpos($render, 'do_shortcode($shortcode'))->toBeLessThan(strpos($render, "= null;"))
         ->and($edit)->toContain('heading', 'viewAll');
 });
-

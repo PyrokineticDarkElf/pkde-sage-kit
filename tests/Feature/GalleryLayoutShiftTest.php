@@ -16,4 +16,3 @@ it('gives the first hero the LCP attributes, and the category and brand cards a 
         expect($source)->toContain("wp_get_attachment_image(\$imageId, 'medium_large', false, [")->toContain("'loading' => 'lazy'")->not->toContain('<img');
     }
 });
-

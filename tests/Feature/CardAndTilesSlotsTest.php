@@ -21,4 +21,3 @@ it('prints the category tile images through the media library and leaves out Unc
         ->and($view)->toContain("\\App\\media_library_image(\$tile['image']")
         ->and($view)->not->toContain('<img');
 });
-

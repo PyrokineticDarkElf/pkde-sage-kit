@@ -55,4 +55,3 @@ it('links the byline to the author archive only while it exists, in the meta, th
 
     expect(file_get_contents("$root/app/single-post.php"))->toContain("'disable_author_archives'")->toContain("'pkde_kit/author_archives'");
 });
-

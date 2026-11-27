@@ -51,4 +51,3 @@ it('takes the cap from the pkde_kit/card_text_words filter, and 0 means no cap',
     expect(card_text('one two three four five six seven'))->toBe('one two three four five six seven');
     $GLOBALS['pkde_test_filters'] = [];
 });
-

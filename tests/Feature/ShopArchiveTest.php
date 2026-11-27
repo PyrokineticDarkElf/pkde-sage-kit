@@ -47,4 +47,3 @@ it('puts the card\'s star rating where the site wants it in DOM order (default a
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/card-rating.php')
         ->and(file_get_contents("$root/docs/woocommerce-templates.md"))->toContain('pkde_kit/card_rating_position', 'above_button', 'below_title', 'above_title');
 });
-

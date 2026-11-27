@@ -68,4 +68,3 @@ it('shows each group\'s FAQs as rows, with the group name above them only when m
 
     expect($one['html'])->not->toContain('pkde-faq-group__name'); // a single group: no group heading
 });
-

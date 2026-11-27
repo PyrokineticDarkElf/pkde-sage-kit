@@ -20,4 +20,3 @@ it('shows Sale and New from the product\'s facts, linked on archives and plain o
     expect(array_column($plain, 'key'))->toBe(['new'])->and($plain[0]['url'])->toBe('')
         ->and(badge_items(false, false, 'x', 's', 'n', true))->toBe([]);
 });
-

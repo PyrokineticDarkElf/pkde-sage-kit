@@ -46,4 +46,3 @@ it('keeps the page the same for every visitor: an empty marker and an empty hidd
         ->and(kit_source("$root", 'css'))->toContain('recently-viewed.css')
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/recently-viewed.php');
 });
-

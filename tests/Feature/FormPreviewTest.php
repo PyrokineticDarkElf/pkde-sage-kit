@@ -16,4 +16,3 @@ it('answers only a lone contact-form-7 shortcode, however the block wraps it', f
         ->and(form_preview_shortcode('[contact-form-7 id="12"][gallery]'))->toBe('')
         ->and(form_preview_shortcode(''))->toBe('');
 });
-

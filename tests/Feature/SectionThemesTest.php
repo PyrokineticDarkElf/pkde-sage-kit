@@ -23,4 +23,3 @@ it('registers the themes as styles of the Group and Section blocks on init', fun
     expect($php)->toContain("['core/group', 'sage/section']", 'register_block_style($block', "add_action('init'", "apply_filters('pkde_kit/section_theme_blocks'")
         ->and(file_get_contents("$root/composer.json"))->toContain('app/section-themes.php');
 });
-

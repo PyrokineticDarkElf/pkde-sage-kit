@@ -50,4 +50,3 @@ it('never lets a page in the search results resolve to the kit\'s page view', fu
         // The kit's view files the old lookup could hit by post-type name are all excluded.
         ->and(file_get_contents("$root/resources/views/partials/post-grid.blade.php"))->toContain('\\App\\post_card_views(get_post_type())')->not->toContain("'partials.content-' .");
 });
-

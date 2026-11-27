@@ -57,4 +57,3 @@ it('replaces WooCommerce\'s upsells and related output and keeps the basket\'s o
         ->and($php)->not->toContain('get_current_user_id', 'WC()->cart', 'WC()->session');
     expect(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/product-sections.php', 'woocommerce/add-to-basket.php');
 });
-

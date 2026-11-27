@@ -135,4 +135,3 @@ it('turns a block\'s Card colour and Card button colour into a class and a style
             ->and(file_get_contents("$root/resources/blocks/$block/edit.jsx"))->toContain('CardColourPanel');
     }
 });
-
