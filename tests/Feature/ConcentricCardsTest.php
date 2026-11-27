@@ -1,6 +1,6 @@
 <?php
 
-// Concentric card radii (WP-108): the media of a padded card is the card's radius minus its padding, a flush picture takes the card's radius on the corners it shares.
+// Concentric card radii: the media of a padded card is the card's radius minus its padding, a flush picture takes the card's radius on the corners it shares.
 $root = dirname(__DIR__, 2);
 
 it('defines the card radius and padding tokens and the inset and flush helpers', function () use ($root) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The global button system in WordPress (WP-109, `buttons` in config/brand-palette.json). The CSS and the variables are generated; this file is the PHP side, and exists only
+ * The global button system in WordPress (`buttons` in config/brand-palette.json). The CSS and the variables are generated; this file is the PHP side, and exists only
  * for a site that declares `buttons` (resources/generated/buttons.php):
  *  - the core Button block's styles are Solid (the default), Outline and Text, and an Editor picks the style only: no colours, size or radius (an Administrator keeps the
  *    full controls);

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Section themes as block styles (WP-100): "Brand <Label>" and "Brand <Label> (light)" for every palette colour, offered in the Styles panel of
+ * Section themes as block styles: "Brand <Label>" and "Brand <Label> (light)" for every palette colour, offered in the Styles panel of
  * the Group block and of the kit's Section block. The list is generated with the colours (resources/generated/section-themes.php in the theme,
  * written by bin/generate-theme-tokens.mjs); the CSS that paints a section and lets the core blocks inside it follow is resources/css/section-themes.css.
  *
@@ -37,7 +37,7 @@ if (! function_exists('add_action')) {
     return;
 }
 
-/** The blocks that can be an eyebrow (TPL-281): the small kicker above a heading, in the brand highlight of the section it sits in. */
+/** The blocks that can be an eyebrow: the small kicker above a heading, in the brand highlight of the section it sits in. */
 function eyebrow_blocks(): array
 {
     return ['core/paragraph', 'core/heading'];

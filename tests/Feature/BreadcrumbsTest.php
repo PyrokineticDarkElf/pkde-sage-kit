@@ -1,6 +1,6 @@
 <?php
 
-// app/breadcrumbs.php: the kit owns the breadcrumb standard (MGR-77 parity). The standard needs no WordPress.
+// app/breadcrumbs.php: the kit owns the breadcrumb standard. The standard needs no WordPress.
 require_once dirname(__DIR__, 2) . '/app/breadcrumbs.php';
 
 use function App\breadcrumb_standard;
@@ -33,7 +33,7 @@ it('picks a product\'s deepest category, the first among equals', function () {
         ->and(deepest_term([], fn($t) => 0))->toBeNull();
 });
 
-it('puts the category path in front of the product in its trail, once (tcs TCS-112)', function () {
+it('puts the category path in front of the product in its trail, once', function () {
     $trail = [['Home', 'https://example.test/'], ['Wall Clock', '']];
     $path = [['Wall Clocks', 'https://example.test/wall-clocks/'], ['Modern Wall Clocks', 'https://example.test/wall-clocks/modern/']];
 

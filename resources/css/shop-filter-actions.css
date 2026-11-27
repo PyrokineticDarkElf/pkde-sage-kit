@@ -1,5 +1,5 @@
 /**
- * The shop filter form's "Apply filters" and "Reset" buttons (WP-89). Apply is the primary button in the brand colours (the cart button's tokens); while nothing
+ * The shop filter form's "Apply filters" and "Reset" buttons. Apply is the primary button in the brand colours (the cart button's tokens); while nothing
  * differs from what is applied (data-pending="0") it is quieter, never disabled, so a submit is never blocked. Reset is a link-style secondary action. The bar is
  * sticky at every width, so Apply is reachable without scrolling to the end of a long list: below lg it sticks to the bottom of the viewport, from lg up to the
  * bottom of the floating filter column, which scrolls inside itself when it is taller than the screen (shop-pages.css), or to the bottom of the viewport when

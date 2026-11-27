@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The kit's motion system (WP-103): the guard rails of the reveal, the site switch, the tokens, the hover and reduced-motion gates, and no layout-animated or transition-all
+ * The kit's motion system: the guard rails of the reveal, the site switch, the tokens, the hover and reduced-motion gates, and no layout-animated or transition-all
  * left in the kit. The behaviour in a browser (LCP, CLS, the reveal, touch, the editor roles) is measured on the template stack; the report says so.
  */
 use function App\motion_add_html_class;
@@ -90,7 +90,7 @@ it('has one shared card zoom, no per-view utilities, no transition-all, and dots
     expect($sources)->not->toContain('transition-all');
 
     foreach (['resources/blocks/carousel/render.php', 'resources/blocks/hero-slider/render.php'] as $file) {
-        // the active dot is a pill drawn by clip-path (motion.css .pkde-dot), never a scaled circle and never a width transition (TPL-287)
+        // the active dot is a pill drawn by clip-path (motion.css .pkde-dot), never a scaled circle and never a width transition
         expect($read($file))->not->toContain('transition-all')->not->toContain('scale-x')->not->toContain('group-data-[active]:w-5')->toContain('pkde-dot');
     }
 

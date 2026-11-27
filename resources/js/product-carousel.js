@@ -1,4 +1,4 @@
-// The product page's "more products" sections (partials/product-section, MGR-79): previous / next buttons for a CSS scroll-snap list, and the
+// The product page's "more products" sections (partials/product-section): previous / next buttons for a CSS scroll-snap list, and the
 // optional "Show more" on the related section. No library: the list scrolls by itself (touch, wheel, keyboard, the browser's own snap), this file
 // only adds the buttons and keeps them honest (hidden when everything fits, aria-disabled at either end). Reduced motion jumps instead of gliding.
 

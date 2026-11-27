@@ -215,7 +215,7 @@ useful in CI or before a commit, since nothing else catches a hand-edited genera
 config change nobody regenerated for.
 
 **Text on `brand-600` must be readable.** The 600 step keeps a brand colour's own lightness (clamped to a band), so a light brand colour
-can have too little contrast with white (bb's `#7C988F` gives 3.7:1 white-on-600). The kit sets its own text on brand and accent
+can have too little contrast with white (a site's `#7C988F` gives 3.7:1 white-on-600). The kit sets its own text on brand and accent
 backgrounds with the foreground tokens below (white or near-black, whichever reads), so that alone is fine. `brand` and `accent` are
 checked on the 600 step: `npm run theme:check` FAILS (and with it the deploy workflow's token step) only when NEITHER white nor
 near-black reaches 4.5:1, a narrow mid-tone band; the message names both ratios and a darker hex of the same hue that passes. When only

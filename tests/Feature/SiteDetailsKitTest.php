@@ -1,6 +1,6 @@
 <?php
 
-// app/site-details.php (WP-106): the formatting and the legacy fallback are plain functions; the components, blocks and the screen are proved in a browser on the template stack.
+// app/site-details.php: the formatting and the legacy fallback are plain functions; the components, blocks and the screen are proved in a browser on the template stack.
 use function App\contact_lines;
 use function App\site_address_lines;
 use function App\site_details_from_options;
@@ -89,7 +89,7 @@ it('has an optional header slot, off unless a site turns it on', function () use
         ->and(file_get_contents("$root/resources/views/partials/header-site-details.blade.php"))->toContain('tel:', 'social-links');
 });
 
-it('fills a group Site details does not hold from the old client_* options, and never touches one it holds (TPL-277)', function () {
+it('fills a group Site details does not hold from the old client_* options, and never touches one it holds', function () {
     $legacy = \App\site_details_from_options(fn(string $name) => ['client_phone' => '07402 058707', 'client_email' => 'hello@el.test', 'client_address' => '1 High St', 'client_instagram' => 'https://instagram.test/el'][$name] ?? '', 'Electrical Labs');
 
     // nothing in Site details yet: the phone, email, address and profile of the old options show

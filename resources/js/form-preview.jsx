@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from '@wordpress/element';
 import { addQueryArgs } from '@wordpress/url';
 import { __ } from '@wordpress/i18n';
 
-// The canvas shows the real Contact Form 7 form where a Shortcode block, or a Paragraph, holds only [contact-form-7 ...] (WP-100). The markup comes from the kit's
+// The canvas shows the real Contact Form 7 form where a Shortcode block, or a Paragraph, holds only [contact-form-7 ...]. The markup comes from the kit's
 // /pkde/v1/form-preview route (app/form-preview.php): no scripts, no Turnstile, and the preview is inert, so nothing is submitted from the editor. Other shortcodes are
 // untouched, and the block's own editing (the shortcode text) stays where it was, above the preview.
 const CF7 = /^\s*\[contact-form-7(?:\s[^[\]]*)?\]\s*$/;

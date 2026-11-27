@@ -23,7 +23,7 @@ $image_alt = $attributes['imageAlt'] ?? '';
 $image_id = (int) ($attributes['imageId'] ?? 0);
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 
-// Split and text-only layouts (WP-100): colours come from the Brand section theme the hero sits in (no panel of its own), the markup from a view.
+// Split and text-only layouts: colours come from the Brand section theme the hero sits in (no panel of its own), the markup from a view.
 // The default layout, the full-width image with its overlay, is the markup below, unchanged.
 $layout = in_array($attributes['layout'] ?? 'overlay', ['split', 'text'], true) ? $attributes['layout'] : 'overlay';
 
@@ -76,7 +76,7 @@ $wrapper_attributes = get_block_wrapper_attributes([
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php
-    // The first hero (or slider slide) on the page is its LCP image: eager and high priority (WP-91). The counter is shared with the Hero Slider.
+    // The first hero (or slider slide) on the page is its LCP image: eager and high priority. The counter is shared with the Hero Slider.
     $hero_attributes = ['class' => 'absolute inset-0 -z-20 h-full w-full object-cover', 'sizes' => '100vw'];
 $hero_attributes += \App\next_hero_slide_number() === 1 ? ['loading' => 'eager', 'fetchpriority' => 'high'] : ['loading' => 'lazy'];
 echo \App\block_image($image_id, $image_url, $image_alt, 'full', $hero_attributes);

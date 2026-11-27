@@ -1,7 +1,7 @@
 /**
  * Product search with live results (Relevanssi Live Ajax Search): the form (partials/product-search.blade.php), the results list
- * (partials/live-search-results.blade.php) and the panel the header's search icon opens (partials/header-search.blade.php). Ported from tcs and
- * bb; kit tokens only. Inert while the search partials are not printed.
+ * (partials/live-search-results.blade.php) and the panel the header's search icon opens (partials/header-search.blade.php). Ported from a site and
+ * a site; kit tokens only. Inert while the search partials are not printed.
  */
 .site-search {
   position: relative;
@@ -148,7 +148,7 @@
 }
 
 /* The plugin's helper sentence for screen readers ("When autocomplete results are available use up and down arrows ...") sits next to the
-   field as a span; its own stylesheet is not loaded, so it showed as text beside a narrow field (the 404's search form, TCS-114). Hidden
+   field as a span; its own stylesheet is not loaded, so it showed as text beside a narrow field (the 404's search form). Hidden
    visually, still read aloud. */
 .relevanssi-live-search-instructions {
   position: absolute;

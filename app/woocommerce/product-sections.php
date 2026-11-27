@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The product page's "more products" sections (MGR-79): upsells, cross-sells and related products, in that order, each a scroll-snap carousel of
+ * The product page's "more products" sections: upsells, cross-sells and related products, in that order, each a scroll-snap carousel of
  * the site's own product card.
  *
  *   - Upsells ("You may also like"): alternatives while the visitor is still deciding. Cross-sells ("Goes well with"): the add-ons set on this

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Product structured data that matches the shop (WP-91, TPL-179). Rank Math writes the Product schema; this corrects what it gets wrong for a
+ * Product structured data that matches the shop. Rank Math writes the Product schema; this corrects what it gets wrong for a
  * shop and adds what it leaves out, from the store's own settings, never invented:
  *
  *  - Price: the price a shopper sees. Rank Math prints the stored price; the shop's "Display prices in the shop" setting (including or excluding tax)
- *    decides what the page shows, so the markup now follows it (bb: markup 45.00 against 54.00 displayed).
+ *    decides what the page shows, so the markup now follows it (a site: markup 45.00 against 54.00 displayed).
  *  - Brand: Rank Math's brand needs a taxonomy chosen in its settings, which is empty on a new site. When it has none, the product's own `product_brand`
  *    term (WooCommerce brands) is used; a store that sells under one name for all products returns it from the filter `pkde_kit/product_brand`.
  *  - shippingDetails: only when the store's shipping zone for its base country has a free-shipping or numeric flat-rate method, and the product is
@@ -16,7 +16,7 @@
 
 namespace App;
 
-// WP-105 phase 1: pkde/platform's `product-schema` module corrects the Product schema when it is on (PKDE_PLATFORM_PRODUCT_SCHEMA); this copy then stays off, so the markup is never corrected twice.
+// pkde/platform's `product-schema` module corrects the Product schema when it is on (PKDE_PLATFORM_PRODUCT_SCHEMA); this copy then stays off, so the markup is never corrected twice.
 if (! defined('PKDE_PLATFORM_PRODUCT_SCHEMA')) {
     add_filter('rank_math/snippet/rich_snippet_product_entity', function ($entity) {
         if (! is_array($entity) || ! function_exists('wc_get_product') || ! is_singular('product')) {

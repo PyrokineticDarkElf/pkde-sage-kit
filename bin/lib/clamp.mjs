@@ -1,5 +1,5 @@
 /**
- * Line clamp tokens (TPL-280, TPL-282): how many lines the title and the text of a kit card may take, declared in config/brand-palette.json under `text.clamp`:
+ * Line clamp tokens: how many lines the title and the text of a kit card may take, declared in config/brand-palette.json under `text.clamp`:
  *
  *   "text": { "clamp": { "title": 2, "excerpt": 3, "product-excerpt": 4, "quote": "none", "feature-text": 4 } }
  *

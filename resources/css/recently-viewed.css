@@ -1,5 +1,5 @@
 /**
- * Recently viewed products (partials/recently-viewed, resources/js/recently-viewed.js, TPL-134): a small list in the shop sidebar.
+ * Recently viewed products (partials/recently-viewed, resources/js/recently-viewed.js): a small list in the shop sidebar.
  *   --pkde-recent-line (the divider, --pkde-shop-line), --pkde-recent-muted (the price, --pkde-shop-muted), --pkde-recent-image (the thumbnail, 3.5rem)
  */
 .pkde-recent {

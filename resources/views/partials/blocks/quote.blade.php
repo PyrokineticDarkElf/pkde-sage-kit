@@ -1,4 +1,4 @@
-{{-- One testimonial (WP-100). Props: $quote (quote, name, role, rating), $stars (bool), $star (the star SVG). --}}
+{{-- One testimonial. Props: $quote (quote, name, role, rating), $stars (bool), $star (the star SVG). --}}
 <figure class="pkde-quote">
   @if ($stars && $quote['rating'] > 0)
     <div class="pkde-stars" role="img" aria-label="{{ esc_attr(sprintf(__('Rated %d out of 5', 'sage'), $quote['rating'])) }}">@for ($i = 0; $i < $quote['rating']; $i++){!! $star !!}@endfor</div>

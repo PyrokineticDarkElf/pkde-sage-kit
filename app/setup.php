@@ -101,7 +101,7 @@ add_filter('theme_file_path', function ($path, $file) {
 /**
  * Block assets stay on demand (WordPress's default for classic themes since 6.9). Sage used to force
  * `should_load_separate_core_block_assets` to false, which loads every block's CSS and prints the block-supports CSS after the
- * footer: a layout shift of 0.36 to 0.42 on tcs, 0 once removed (TCS-87), and about 20 KB less wp-block-library.
+ * footer: a layout shift of 0.36 to 0.42 on a site, 0 once removed, and about 20 KB less wp-block-library.
  */
 
 /**

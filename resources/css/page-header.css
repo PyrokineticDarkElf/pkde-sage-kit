@@ -1,6 +1,6 @@
 /**
  * The page header band (partials/page-header.blade.php): the title band under the site header on pages, posts' archives, the shop, the cart
- * and checkout. A brand-coloured band out of the box, themed by variables (MGR page-header, from bb's site.css): a site changes the look by setting
+ * and checkout. A brand-coloured band out of the box, themed by variables (ported from a site's own CSS): a site changes the look by setting
  * these in its own CSS, never by rewriting the rules.
  *
  *   --pkde-page-header-bg            band background        default: the palette's lightest brand tint (brand-100)
@@ -17,7 +17,7 @@
  *   --pkde-page-header-intro-size    its font size          default: 1.125rem
  *   --pkde-page-header-intro-max-width  its measure          default: 42rem
  *
- * The H1 (WP-99 A, owner 2026-11-19): when the theme defines an H1 style (theme.json styles.elements.h1) the H1 takes its family, size, weight, line height, spacing and
+ * The H1 (owner 2026-11-19): when the theme defines an H1 style (theme.json styles.elements.h1) the H1 takes its family, size, weight, line height, spacing and
  * colour from it, like an H1 in the content, and the --pkde-page-header-title-* variables above do nothing. When the theme defines none, App\page_title_follows_theme()
  * is false, the H1 gets the class pkde-page-title--kit and the variables apply (a one-size reset would make it body text). A size set in the block editor on a heading
  * still wins, as core has it. A site that wants the band's title smaller sets a size on `.page-header h1` in its own CSS (one class and one element beat WordPress's
@@ -54,7 +54,7 @@
   font-family: var(--pkde-page-header-title-font);
   font-weight: var(--pkde-page-header-title-weight);
   letter-spacing: var(--pkde-page-header-title-tracking);
-  /* Explicit, so a site's own H1 style in theme.json (a larger size, a tighter line) cannot change the title band (tcs needed a revert-layer rule for it, TCS-98). */
+  /* Explicit, so a site's own H1 style in theme.json (a larger size, a tighter line) cannot change the title band (a site needed a revert-layer rule for it). */
   font-size: var(--pkde-page-header-title-size);
   line-height: var(--pkde-page-header-title-leading);
 }
@@ -95,14 +95,14 @@
   }
 }
 /* The trail is a <p> inside the breadcrumb element (Rank Math's markup): it takes the trail's own size and line height, not a site's global style for
-   paragraphs (tcs's theme.json made it 17px with a 1.85 line height, 15px taller than bb's, MGR-77 parity). */
+   paragraphs (a site's theme.json made it 17px with a 1.85 line height, 15px taller than the kit's). */
 .breadcrumbs p {
   margin: 0;
   font: inherit;
   letter-spacing: inherit;
 }
 /* The 404 page's big numeral (views/404.blade.php): decoration, drawn here rather than printed as text. Its size is set here, not with a Tailwind
-   utility: WordPress's unlayered global style for `p` (theme.json typography) beats a layered `text-8xl` and made it 17px on tcs (TCS-114).
+   utility: WordPress's unlayered global style for `p` (theme.json typography) beats a layered `text-8xl` and made it 17px on a site.
    `--pkde-404-numeral-size` changes it (default 6rem). */
 p.pkde-404-numeral {
   font-size: var(--pkde-404-numeral-size, 6rem);

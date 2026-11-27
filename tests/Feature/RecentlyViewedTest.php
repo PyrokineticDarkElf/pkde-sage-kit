@@ -1,6 +1,6 @@
 <?php
 
-// Recently viewed products (app/woocommerce/recently-viewed.php, TPL-134): the pure parts need no WordPress; the markup and the cache-safety are
+// Recently viewed products (app/woocommerce/recently-viewed.php): the pure parts need no WordPress; the markup and the cache-safety are
 // checked as files.
 require_once dirname(__DIR__, 2) . '/app/woocommerce/recently-viewed.php';
 
@@ -55,7 +55,7 @@ it('is off until a site opts in, and the list lives in the browser (no cookie, n
         ->and($js)->toContain('localStorage')->not->toContain('document.cookie');
 });
 
-it('gives the Cart and Checkout blocks the shortcode pages\' look from the same tokens (TPL-131)', function () use ($root) {
+it('gives the Cart and Checkout blocks the shortcode pages\' look from the same tokens', function () use ($root) {
     $css = file_get_contents("$root/resources/css/cart-checkout-blocks.css");
 
     expect($css)->toContain('.wc-block-cart__submit-button', '.wc-block-components-checkout-place-order-button', 'var(--color-brand-600)', 'var(--color-brand-600-fg)', 'border-radius: var(--pkde-radius-full)', 'outline: 2px solid var(--color-brand-600)')

@@ -45,7 +45,7 @@ remove_action('woocommerce_archive_description', 'woocommerce_product_archive_de
 
 // A product category's description goes into a closed <details> toggle (resources/css/shop-pages.css) instead of a long block above the
 // products. The text is the term's own description, unchanged; only the wrapper is new. In the list it shows on the first page only; the standard
-// archive prints it on every page, as tcs did.
+// archive prints it on every page, as a site did.
 // The standard archive (partials/shop-archive) prints the toggle itself, above the filters and the products, and removes this in-list copy;
 // a site's own taxonomy view that calls woocommerce_content() directly still gets it here.
 

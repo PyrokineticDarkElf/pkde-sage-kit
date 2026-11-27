@@ -1,9 +1,9 @@
 /**
- * Card text is limited by LINES, not words (TPL-280). The kit clamps the text it pulls in AUTOMATICALLY with the standard line clamp (a post excerpt, a product's short
+ * Card text is limited by LINES, not words. The kit clamps the text it pulls in AUTOMATICALLY with the standard line clamp (a post excerpt, a product's short
  * description, related and recent posts, product, category and brand names in a loop, WooCommerce reviews in the testimonials, the author bio), so a long text ends in an
  * ellipsis and cards in a row keep their shape; the text itself is capped once on the server (App\card_text, 40 words) and stays whole for a screen reader.
  * Text an editor TYPED into a block (a Feature grid's titles and texts, a testimonial of the manual or posts source, text and image, hero, CTA, the pattern bank) is
- * NEVER clamped by default (TPL-282); a site opts in with `feature-title`, `feature-text` or `quote-typed` in `text.clamp`, and the generator then writes the rule.
+ * NEVER clamped by default; a site opts in with `feature-title`, `feature-text` or `quote-typed` in `text.clamp`, and the generator then writes the rule.
  *
  * The tokens, set site-wide in `text.clamp` of config/brand-palette.json (the generator writes them to :root) or in the site's CSS:
  *   --pkde-clamp-title    (2)  the title of every card        --pkde-clamp-excerpt  (3)  the excerpt or description of every card
@@ -43,7 +43,7 @@
 .pkde-author__bio { --pkde-lines: var(--pkde-clamp-author-bio, var(--pkde-clamp-excerpt, 3)); }
 
 /**
- * A WooCommerce review in the testimonials (the source "reviews") is never cut with an ellipsis (owner decision, TPL-284): its text box is at most
+ * A WooCommerce review in the testimonials (the source "reviews") is never cut with an ellipsis (owner decision): its text box is at most
  * --pkde-clamp-quote-review lines high (default 6; the older --pkde-clamp-quote still works; `none` for no limit) and scrolls inside the card, so the whole review is
  * readable and the cards keep their height. A text that fits does not scroll. resources/js/quote-scroll.js makes a box that does scroll keyboard focusable
  * (tabindex 0, a region named "Review by <name>") and sets [data-pkde-more] while there is more below, which draws the soft fade at the bottom edge.

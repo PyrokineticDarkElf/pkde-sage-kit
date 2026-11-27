@@ -1,6 +1,6 @@
 <?php
 
-// The Sale/New badges (app/woocommerce/badges.php, MGR-77) and the category tile image helper (app/tile-image.php, TCS-84): the pure parts need no WordPress.
+// The Sale/New badges (app/woocommerce/badges.php) and the category tile image helper (app/tile-image.php): the pure parts need no WordPress.
 require_once dirname(__DIR__, 2) . '/app/woocommerce/badges.php';
 require_once dirname(__DIR__, 2) . '/app/tile-image.php';
 

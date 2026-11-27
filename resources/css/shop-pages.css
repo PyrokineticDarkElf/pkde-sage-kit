@@ -2,8 +2,8 @@
  * WooCommerce shop polish, all CSS (no template overrides): rating stars, equal-height product cards, the category description accordion, and
  * the basket, checkout and account pages. Kit tokens only (neutral, brand and their -fg text colours), so a site's palette carries through.
  * The cart, checkout and account rules are scoped to those pages' body classes, so the shop archive and product pages are never touched, and
- * use :where() so a site overrides any of them with one plain selector. Ported from tcs's approach (classic shortcode markup, CSS only)
- * through bb's site CSS.
+ * use :where() so a site overrides any of them with one plain selector. Ported from a site's approach (classic shortcode markup, CSS only)
+ * through a site's site CSS.
  */
 
 /* Ratings as stars, not words. WooCommerce prints "Rated 5.00 out of 5" and relies on its own star font, which the kit does not load. The
@@ -47,7 +47,7 @@
   background: var(--pkde-star-fill, var(--color-amber-700));
 }
 
-/* Product cards (MGR product-card actions, tcs): equal height in a row, and ONE aligned action row at the bottom of the card, whatever is in the card above
+/* Product cards: equal height in a row, and ONE aligned action row at the bottom of the card, whatever is in the card above
    it (a title of one or three lines, the stars). The row holds the add-to-cart button and, once an AJAX add to cart succeeds, "View basket"
    (WooCommerce inserts a.added_to_cart.wc-forward after the button). Both are as tall as a touch target (2.5rem) and centred, side by side when
    the card is wide enough, stacked at full width when it is not (a two-column phone grid); the card never changes height beside its neighbours
@@ -102,7 +102,7 @@
   background: var(--color-brand-700);
   color: var(--color-brand-700-fg);
 }
-/* "View basket" (TCS-103, from tcs): a basket icon in a 2.5rem square, the same height as the button, beside it. The words stay in the link at zero
+/* "View basket": a basket icon in a 2.5rem square, the same height as the button, beside it. The words stay in the link at zero
    size, so the accessible name (and WooCommerce's tooltip) is still "View basket"; the icon takes the link's colour. At the ROW level, so a site's own
    card look gets it too; the default look adds the round outline below. Keyboard focus shows a 2px ring. */
 .pkde-product-actions > a.added_to_cart {
@@ -142,7 +142,7 @@
   margin-left: 0.4em;
 }
 
-/* Grid / list view toggle (app/woocommerce/view-toggle.php, MGR-70). The toolbar holds WooCommerce's result count and sort, and the two buttons. The
+/* Grid / list view toggle (app/woocommerce/view-toggle.php). The toolbar holds WooCommerce's result count and sort, and the two buttons. The
    view is html[data-pkde-view="list"] (set by the head script and shop-view.js from the visitor's saved choice); grid is the default. */
 .pkde-shop-toolbar {
   display: flex;
@@ -163,7 +163,7 @@
   display: inline-flex;
   gap: 0.25rem;
 }
-/* The grid / list buttons follow the site's brand (owner, MGR-77): variables, each with a brand-token fallback, so a site sets none and the toggle is in its
+/* The grid / list buttons follow the site's brand (owner): variables, each with a brand-token fallback, so a site sets none and the toggle is in its
    palette, not neutral grey. --pkde-view-toggle-border (default --pkde-shop-line), -color (the idle icon: neutral-700), -hover (the hovered border:
    brand-600), -active-bg (the pressed button: brand-900) and -active-fg (its icon: the matching -fg token, white without it). The icons draw with
    currentColor, so they take -color and -active-fg. */
@@ -195,7 +195,7 @@
 .pkde-product-card__excerpt {
   display: none;
 }
-/* List view on the grid's OWN columns (TCS-102, from tcs): the list keeps the grid's tracks and gap, so the product picture is the same box in both
+/* List view on the grid's OWN columns: the list keeps the grid's tracks and gap, so the product picture is the same box in both
    views at every width. Each product spans the row as a subgrid: the image in the first column, the details (title, rating, description, price, the
    action row at the bottom) across the rest. Whether the row has room is decided by the list's own width (a container query: a sidebar changes
    it), not the viewport; below 28rem the card stacks as in grid view and shows the description. */
@@ -238,14 +238,14 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 }
 
 /* A term's description in a closed toggle (app/woocommerce/display.php term_toggle(); partials/shop-archive prints it above the filters and
-   the products, from tcs). The look follows these variables, each with a kit-token fallback, so a site sets a few on :root instead of
+   the products). The look follows these variables, each with a kit-token fallback, so a site sets a few on :root instead of
    restyling: --pkde-shop-line (rules and borders), --pkde-shop-muted (body text), --pkde-shop-ink (headings, the current page),
    --pkde-shop-accent (the + / - mark and the filters heading), --pkde-shop-surface (panels and pills), --pkde-shop-radius (pills),
    --pkde-shop-panel-radius (the filter panels), --pkde-shop-gap (between products and columns), --pkde-shop-filters-width (the filter column), --pkde-shop-sticky-top (where the filter column sticks), --pkde-shop-heading-weight (headings inside a term description: 600, a light brand sets 300), --pkde-shop-columns / -columns-tablet / -columns-phone
    (the product grid: 4, 3, 2), --pkde-shop-pad-top (space above the filters and results: 1rem). */
 .pkde-term-description {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
-  /* One rule, under the description (the owner, WP-77: no line above it; the header band above already ends the page header). */
+  /* One rule, under the description (the owner: no line above it; the header band above already ends the page header). */
   border-bottom: var(--pkde-border-thin) solid var(--pkde-shop-line, var(--color-neutral-200));
 }
 .pkde-term-description summary {
@@ -297,7 +297,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   color: inherit !important;
 }
 
-/* The standard product archive (partials/shop-archive and shop-archive-body, from tcs): the filters in a column beside the results from 1024px,
+/* The standard product archive (partials/shop-archive and shop-archive-body): the filters in a column beside the results from 1024px,
    stacked below it. The results column holds the toolbar (count, sort, grid / list), the product grid and the pagination. */
 .shop-archive {
   display: grid;
@@ -311,7 +311,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
     align-items: start;
   }
 }
-/* Chosen filter options read as chosen (tcs's rule, now the kit's): the label of a ticked option is heavier and in the ink colour. */
+/* Chosen filter options read as chosen (a site's rule, now the kit's): the label of a ticked option is heavier and in the ink colour. */
 #shop-filters label:has(input:checked) span:first-of-type {
   font-weight: 500;
   color: var(--pkde-shop-ink, var(--color-neutral-950));
@@ -319,17 +319,17 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
 /* The filters never outgrow the screen: long lists scroll inside their card, and the column floats only where it fits (--pkde-shop-sticky-top is the
    height of the site's sticky header plus a gap). */
 /* The 2px of vertical padding is not decoration: a line of text can reach past its line box (the font's ascent and descent are taller than the 20px
-   line height: bb's serif text sits 0.5px below the last row), and in a scroll container that half pixel is rounded up to a scrollable pixel, so a short
-   list showed a scrollbar it did not need (owner, bb: 3 rows, scrollHeight 93 against clientHeight 92). The padding is inside the scrollable area, so the
+   line height: a site's serif text sits 0.5px below the last row), and in a scroll container that half pixel is rounded up to a scrollable pixel, so a short
+   list showed a scrollbar it did not need (owner, a site: 3 rows, scrollHeight 93 against clientHeight 92). The padding is inside the scrollable area, so the
    spill no longer overflows, a long list still scrolls, and the margin is reduced by the same 2px so nothing moves. */
-/* #shop-recent: the recently viewed list sat inside the panel and keeps its look now that it is outside the search landmark (WP-99 E). */
+/* #shop-recent: the recently viewed list sat inside the panel and keeps its look now that it is outside the search landmark. */
 #shop-filters ul,
 #shop-recent ul {
   max-height: 14rem;
   margin-top: calc(0.75rem - 2px);
   padding-block: 2px;
   padding-right: 0.5rem;
-  /* overflow-y: auto makes overflow-x auto too: a row a pixel too wide would add a horizontal bar. None is (scrollWidth equals clientWidth on tcs and bb), so
+  /* overflow-y: auto makes overflow-x auto too: a row a pixel too wide would add a horizontal bar. None is (scrollWidth equals clientWidth on two sites), so
      this only keeps it that way; the vertical scroll for long lists is untouched. */
   overflow-x: hidden;
   overflow-y: auto;
@@ -343,9 +343,9 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   .shop-archive__filters {
     position: sticky;
     top: var(--pkde-shop-sticky-top, 5.5rem);
-    /* A floating column taller than the screen never shows its bottom, which holds "Apply filters" and "Reset" (WP-89). So the column is capped at the height that is
+    /* A floating column taller than the screen never shows its bottom, which holds "Apply filters" and "Reset". So the column is capped at the height that is
        left under the sticky header and the filter GROUPS scroll inside it, while the title, the active chips, the Apply bar and the recently viewed box keep their
-       place. overflow-y: auto, so a scrollbar appears only when the groups really overflow; it is thin and faint like the lists' (the MGR-77 rule). Only the groups
+       place. overflow-y: auto, so a scrollbar appears only when the groups really overflow; it is thin and faint like the lists' (the rule). Only the groups
        wrapper scrolls, not the column, so the Apply bar can stick to the bottom of the VIEWPORT even before the column has reached the top of the screen. */
     display: flex;
     flex-direction: column;
@@ -407,7 +407,7 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   font-size: 0.8rem;
   color: var(--pkde-shop-ink, var(--color-neutral-950));
 }
-/* The product grid has a FIXED number of columns, the same on every site (owner, MGR-77 parity): --pkde-shop-columns from 1280px (the filter column
+/* The product grid has a FIXED number of columns, the same on every site: --pkde-shop-columns from 1280px (the filter column
    beside the results; default 4), --pkde-shop-columns-tablet from 640px (3), --pkde-shop-columns-phone below (2). The count no longer drifts with the
    results width, the gap, the root font size or the filter column, and WooCommerce's own "products per row" class (columns-4) and a site's rules for
    it do not change it: the selector is more specific than any `.woocommerce ul.products.columns-N` rule. */
@@ -437,8 +437,8 @@ html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-car
   width: auto;
   margin: 0;
 }
-/* A Shop page whose content is the Shop products block inside a Section (tcs's was: a Section, a group hidden on every device, then the block) would
-   stack the Section's own top padding (theme.json, 72px) and the block gap (48px) above the filters: 120px that bb's page (the archive straight
+/* A Shop page whose content is the Shop products block inside a Section (a site's was: a Section, a group hidden on every device, then the block) would
+   stack the Section's own top padding (theme.json, 72px) and the block gap (48px) above the filters: 120px that a site's page (the archive straight
    under the header) does not have. When the Section holds nothing visible but the archive, the space above the filters is the kit's alone
    (--pkde-shop-pad-top). A Section with real content before the archive keeps its spacing. */
 .wp-block-sage-section:has(> .wp-block-sage-shop-products):not(:has(> :not(.wp-block-sage-shop-products, .wp-block-hidden-desktop.wp-block-hidden-tablet.wp-block-hidden-mobile))) {
@@ -1159,7 +1159,7 @@ body.woocommerce-cart .cart-collaterals .cart_totals {
   }
 }
 
-/* Sale and New badges (partials/product-badges, from tcs): on the card's picture and over the product page's gallery. Variables, each with a kit-token
+/* Sale and New badges (partials/product-badges): on the card's picture and over the product page's gallery. Variables, each with a kit-token
    fallback: --pkde-badge-sale-bg, -sale-fg, -new-bg, -new-fg (colours), -radius, -size, -weight, -tracking, -padding, -top, -inset. */
 .pkde-badge {
   position: absolute;

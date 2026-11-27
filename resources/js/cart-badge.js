@@ -1,4 +1,4 @@
-// The header's basket count, filled in by the browser (MGR-76). The page always arrives with an EMPTY count (app/woocommerce/cart-count.php), the same
+// The header's basket count, filled in by the browser. The page always arrives with an EMPTY count (app/woocommerce/cart-count.php), the same
 // for every visitor, so the page cache can serve a visitor who has a basket. WooCommerce sets the cookie `woocommerce_items_in_cart` while the basket has
 // items; when it is there we ask WooCommerce for the fresh cart fragments (`?wc-ajax=get_refreshed_fragments`, a POST that is never cached) and swap the
 // count in; when it is not, the count is cleared (a basket emptied in another tab, a page restored from the back button).

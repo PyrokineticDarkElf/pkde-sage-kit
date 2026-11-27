@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Grid / list view toggle on the shop and the product archives (MGR-70, owner). Two buttons next to the sort (aria-pressed, plain buttons, so the
+ * Grid / list view toggle on the shop and the product archives (owner). Two buttons next to the sort (aria-pressed, plain buttons, so the
  * keyboard works), the choice kept in the visitor's browser (localStorage, so a cached page is never personalised: the markup is the same for
  * everyone and resources/js/shop-view.js applies the choice), and a list variant of the product card drawn by CSS from the same markup
  * (resources/css/shop-pages.css: image left, title, rating, short description, price and the action row on the right; stacked on a phone). Grid is the

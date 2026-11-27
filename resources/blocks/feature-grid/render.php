@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Feature grid (WP-100): the heading and intro are attributes, the items are InnerBlocks (sage/feature-item, rendered into $content).
+ * Feature grid: the heading and intro are attributes, the items are InnerBlocks (sage/feature-item, rendered into $content).
  *
  * @var array $attributes
  * @var string $content

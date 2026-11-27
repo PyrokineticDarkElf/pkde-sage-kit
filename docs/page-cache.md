@@ -1,4 +1,4 @@
-# Page cache and visitors with a basket (MGR-76)
+# Page cache and visitors with a basket
 
 The W3 Total Cache standard (pkde-deploy) used to skip the page cache for anyone with a basket: the cookies `woocommerce_items_in_cart` and
 `wp_woocommerce_session_` made every page, blog included, build in PHP for them. The kit now keeps every page free of personal content, so a site
@@ -18,16 +18,16 @@ uncached request, or marks its own page uncacheable.
 | WooCommerce notices | `partials/woocommerce-notices` | Printed by `\App\print_notices_uncached()`: a page with a pending notice is marked uncacheable (`\App\no_page_cache()`: `DONOTCACHEPAGE` and no-cache headers). A notice shows on the response of the request that made it (an add to basket by POST or `?add-to-cart=`, which no page cache stores), never on a cached copy. |
 | Add to basket | product cards | AJAX (WooCommerce's `ajax_add_to_cart`, setting WooCommerce > Settings > Products > "Enable AJAX add to cart buttons on archives" must be on); no reload, no notice. On a product page the form posts and the answer is the POST response, which is not cached. |
 | Cart, checkout, my account | WooCommerce | Uncached by WooCommerce itself (`DONOTCACHEPAGE`). Their nonces are printed only there. |
-| Recently viewed (MGR-65) | not built yet | Must be built in the browser (localStorage plus an uncached request); never from a cookie on the server. |
+| Recently viewed | not built yet | Must be built in the browser (localStorage plus an uncached request); never from a cookie on the server. |
 
 A site that prints anything else per visitor calls `\App\no_page_cache()` in the same request, or moves it to the browser.
 
 ## What a site must check before it opts in
 
-1. **Its header prints the kit's count** (`{!! \App\cart_count_html() !!}` inside `data-pkde-cart-badge`), not `WC()->cart->get_cart_contents_count()`. (rp, bp, mds and jsd are not shops: the `WC()->cart` block in their headers is dead code to delete, and the opt-in is meaningless without WooCommerce, so the drift check ignores them.)
+1. **Its header prints the kit's count** (`{!! \App\cart_count_html() !!}` inside `data-pkde-cart-badge`), not `WC()->cart->get_cart_contents_count()`. (rp, bp, two sites are not shops: the `WC()->cart` block in their headers is dead code to delete, and the opt-in is meaningless without WooCommerce, so the drift check ignores them.)
 2. No view reads the basket, a notice, a cookie or the user on the server. The drift check scans the theme's views for it (`pkde_drift_personal_views`) and FAILs while the opt-in is on.
 3. WooCommerce settings: tax by the shop's base address (a customer-specific tax address changes prices per visitor), geolocation off or "Geolocate (with page caching support)", AJAX add to cart on, "Redirect to the cart page after successful addition" either way (the cart page is uncached).
-4. No plugin prints per-visitor content (checked 2026-11-06 on tcs: Contact Form 7, Turnstile, Wordfence, Rank Math, Relevanssi, Post SMTP, W3TC, WPS Hide Login: no basket, user or session data in the page; Relevanssi live search is an AJAX request).
+4. No plugin prints per-visitor content (checked 2026-11-06 on a site: Contact Form 7, Turnstile, Wordfence, Rank Math, Relevanssi, Post SMTP, W3TC, WPS Hide Login: no basket, user or session data in the page; Relevanssi live search is an AJAX request).
 
 ## Opting in
 

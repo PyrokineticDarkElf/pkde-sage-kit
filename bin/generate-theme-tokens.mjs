@@ -873,7 +873,7 @@ if (options.colors.length) {
 palette.colors = ensureNeutralRoles(palette.colors);
 palette.colors = backfillStyles(palette.colors);
 
-// Section themes (WP-100): Brand <Label> and Brand <Label> (light) for every colour. They read only the new role keys of `styles`
+// Section themes: Brand <Label> and Brand <Label> (light) for every colour. They read only the new role keys of `styles`
 // (heading, text, muted, link, buttonBg, buttonText, buttonAltBg, buttonAltText, icon, border, and the light and dark objects) and work
 // out the rest by contrast; the older keys keep serving the older .theme-{name} classes and are not read, so an existing palette is
 // never turned red by adopting them.
@@ -973,7 +973,7 @@ const shapeInput = palette.shape ?? existingShape;
 const shape = resolveShape(shapeInput, fail);
 if (shapeInput !== undefined) palette.shape = shapeInput;
 else delete palette.shape;
-// Line clamp tokens (TPL-280): only what `text.clamp` declares is written; a palette built from --color arguments keeps the existing file's `text`.
+// Line clamp tokens: only what `text.clamp` declares is written; a palette built from --color arguments keeps the existing file's `text`.
 const existingText = options.colors.length && fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')).text : undefined;
 const textInput = palette.text ?? existingText;
 const clamp = resolveClamp(textInput, fail);
@@ -1065,7 +1065,7 @@ fs.writeFileSync(sectionCompatJsOutputPath, sectionCompatJs);
 if (themeJson !== null) fs.writeFileSync(themeJsonPath, themeJson);
 
 // WordPress reads the theme.json that Vite BUILDS (public/build/assets/theme.json), and the dev server never rebuilds it (the plugin only writes it in a build), so after a
-// palette change a site would keep serving the old editor palette and colour classes until the next `vite build` (WP-100, bb). Carry the new palette over to that file now.
+// palette change a site would keep serving the old editor palette and colour classes until the next `vite build`. Carry the new palette over to that file now.
 // Fonts, font sizes and radii in it come from the CSS, so a change to those still needs a build (or a restart of Vite).
 const builtThemeJsonPath = path.join(themeDirectory, 'public/build/assets/theme.json');
 if (themeJson !== null && fs.existsSync(builtThemeJsonPath)) {

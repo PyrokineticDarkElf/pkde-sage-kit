@@ -1,4 +1,4 @@
-// The pure parts of resources/js/add-to-basket.js and resources/js/product-carousel.js (MGR-79): the module exports them and wires the page only when
+// The pure parts of resources/js/add-to-basket.js and resources/js/product-carousel.js: the module exports them and wires the page only when
 // a document exists, so Node can import it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

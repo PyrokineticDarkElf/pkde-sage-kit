@@ -1,5 +1,5 @@
 {{--
-  The optional header slot of Site details (WP-106): the first phone number (a tel: link, its number hidden on a narrow screen) and the social icons. Only printed when the site turns it
+  The optional header slot of Site details: the first phone number (a tel: link, its number hidden on a narrow screen) and the social icons. Only printed when the site turns it
   on with the filter pkde_kit/header_site_details; the header view includes it with `iconClass` (the header's own icon colour). Prints nothing when the site has neither.
 --}}
 @php($headerPhone = \App\site_phones()[0] ?? null)

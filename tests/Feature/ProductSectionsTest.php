@@ -1,6 +1,6 @@
 <?php
 
-// The product page's sections (app/woocommerce/product-sections.php) and add-to-basket feedback (app/woocommerce/add-to-basket.php), MGR-79. The pure
+// The product page's sections (app/woocommerce/product-sections.php) and add-to-basket feedback (app/woocommerce/add-to-basket.php). The pure
 // parts need no WordPress; the markup and CSS are checked as files.
 require_once dirname(__DIR__, 2) . '/app/woocommerce/product-sections.php';
 require_once dirname(__DIR__, 2) . '/app/woocommerce/add-to-basket.php';

@@ -33,7 +33,7 @@ class ProductArchive extends Composer
     {
         $page = is_shop() && ! is_search() && ! isset($_GET['sage_view']) ? get_post(wc_get_page_id('shop')) : null;
 
-        // Only what a visitor may read: published (or readable by this user, for a preview) and not behind a password (MGR-67, tcs).
+        // Only what a visitor may read: published (or readable by this user, for a preview) and not behind a password.
         if (! $page || ($page->post_status !== 'publish' && ! current_user_can('read_post', $page->ID)) || post_password_required($page)) {
             return null;
         }

@@ -1,7 +1,7 @@
 /**
- * Category photograph tiles (partials/blocks/category-tiles, the "tiles" layout of the Product Categories block; TPL-195). The look is a set of variables with the
- * kit's own look as the default, so a site sets a few in its CSS instead of keeping a copy of the view (bb: three tall tiles with a centred serif title). Unlayered,
- * like the other kit CSS files, so a site's own rules (same specificity, later) win. Stable hooks for a site that wants a different design altogether (tcs: bordered
+ * Category photograph tiles (partials/blocks/category-tiles, the "tiles" layout of the Product Categories block). The look is a set of variables with the
+ * kit's own look as the default, so a site sets a few in its CSS instead of keeping a copy of the view (a site: three tall tiles with a centred serif title). Unlayered,
+ * like the other kit CSS files, so a site's own rules (same specificity, later) win. Stable hooks for a site that wants a different design altogether (a site: bordered
  * tiles, numbering, small capitals): .pkde-tiles, .pkde-tile, .pkde-tile__media, .pkde-tile__title.
  *
  *   --pkde-tile-cols-sm, --pkde-tile-cols-lg   columns from 40rem and from 64rem (2 and 4; one column below)

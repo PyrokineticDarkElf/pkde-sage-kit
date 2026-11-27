@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Keeping a page out of the page cache when it carries something personal (MGR-76). The page cache may now serve visitors who have a basket, so a
+ * Keeping a page out of the page cache when it carries something personal. The page cache may now serve visitors who have a basket, so a
  * page generated for ONE visitor must never be stored for the next: every personal bit is filled in by the browser, and the one thing the server
  * still prints for a visitor, a pending WooCommerce notice, marks its page uncacheable. A site that prints anything else per visitor calls
  * \App\no_page_cache() in the same request. See docs/page-cache.md.

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Helpers for the section blocks (WP-100 phase 2): the global blocks' declaration file, the small icon set of the feature grid, and the
+ * Helpers for the section blocks: the global blocks' declaration file, the small icon set of the feature grid, and the
  * `.pkde-themed` marker a kit block adds when it carries a Brand section theme itself.
  */
 

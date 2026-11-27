@@ -211,7 +211,7 @@ if (searchPanel) {
 
 // The post's contents rail (partials/toc): always open beside the text on a wide screen, collapsed above it on a narrow one. The markup is closed and the CSS shows the list
 // from 1024px (post-single.css), so the first paint is already right; this only keeps the `open` attribute true to what is shown on a wide screen (and shows the list
-// where the browser has no ::details-content), and follows a resize. It never closes the list at load: that moved the post body (TPL-286).
+// where the browser has no ::details-content), and follows a resize. It never closes the list at load: that moved the post body.
 const tocDetails = document.querySelector('[data-toc] details');
 
 if (tocDetails) {

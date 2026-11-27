@@ -1,4 +1,4 @@
-// Add-to-basket feedback (MGR-79). Every add-to-basket button (the product cards' AJAX buttons and the product page's form button) gets a busy state
+// Add-to-basket feedback. Every add-to-basket button (the product cards' AJAX buttons and the product page's form button) gets a busy state
 // while it works: aria-busy, a spinner (resources/css/add-to-basket.css), no second click; then an "Added" state, WooCommerce's "View basket" link
 // and a polite live message. The words come from the region app/woocommerce/add-to-basket.php prints (same for every visitor, so the page cache is
 // unaffected).

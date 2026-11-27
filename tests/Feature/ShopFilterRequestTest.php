@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Shop filter requests are validated before any product query runs (WP-96, C): caps, unknown groups and values, one canonical URL. Pure; WordPress is
+ * Shop filter requests are validated before any product query runs (C): caps, unknown groups and values, one canonical URL. Pure; WordPress is
  * replaced by a slug list.
  */
 use App\ShopFilterRequest;

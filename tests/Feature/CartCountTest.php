@@ -44,7 +44,7 @@ it('registers the count as a cart fragment, hides an empty badge in CSS and refr
         ->and(file_get_contents("$root/resources/js/kit.js"))->toContain("import './cart-count.js';");
 });
 
-// MGR-76: the page always prints the EMPTY count; only the fragment (an AJAX answer) carries the visitor's number.
+// the page always prints the EMPTY count; only the fragment (an AJAX answer) carries the visitor's number.
 it('prints an empty count on a page for every visitor, and the real number only in the live fragment', function () {
     if (! function_exists('WC')) {
         function WC()

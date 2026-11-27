@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The "Eyebrow" block style of core Paragraph and Heading (TPL-281): it also carries .pkde-eyebrow on the page, so the same look and colour as the kit's own eyebrows apply.
+ * The "Eyebrow" block style of core Paragraph and Heading: it also carries .pkde-eyebrow on the page, so the same look and colour as the kit's own eyebrows apply.
  */
 use function App\eyebrow_blocks;
 use function App\eyebrow_class;

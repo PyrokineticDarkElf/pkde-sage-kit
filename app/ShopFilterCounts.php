@@ -5,7 +5,7 @@ namespace App;
 use WP_Query;
 
 /**
- * The count beside each filter option (WP-96, B and C).
+ * The count beside each filter option (B and C).
  *
  * The invariant: the count beside an option equals the number of products the grid shows after choosing that option ON ITS OWN in its group (replacing the
  * group's own choice, as a visitor does by unticking the others), on top of every other applied choice. Within a group the choices are OR, between groups AND.
@@ -66,7 +66,7 @@ class ShopFilterCounts
 
     /**
      * Part of the cache key: the counts' logic version and the installed kit version, so a kit upgrade (or a change of the counting itself) never serves counts cached by the
-     * old code. Without it a site kept serving the old all-zero counts for up to the cache lifetime after the bump (tcs, TPL-262).
+     * old code. Without it a site kept serving the old all-zero counts for up to the cache lifetime after the bump.
      */
     public static function codeVersion(): string
     {
@@ -192,7 +192,7 @@ class ShopFilterCounts
         ]);
 
         // A search plugin that takes over the MAIN search (Relevanssi) leaves this second query to WordPress's own search, which finds nothing the grid lists: every count
-        // is 0 beside a grid full of products (tcs staging). Relevanssi takes over any query flagged `relevanssi`; the filter lets a site do the same for another plugin.
+        // is 0 beside a grid full of products. Relevanssi takes over any query flagged `relevanssi`; the filter lets a site do the same for another plugin.
         $vars = self::searchBaseArgs($vars, function_exists('relevanssi_do_query'));
         $vars = apply_filters('pkde_kit/filter_counts_base_args', $vars, $wp_query);
 
@@ -200,7 +200,7 @@ class ShopFilterCounts
         add_filter('woocommerce_enable_post_clause_filtering', '__return_true');
         // Relevanssi keeps only its top hits (relevanssi_throttle, 500 by default). The grid runs the search WITH the visitor's choices inside it, so it keeps the top hits among the
         // matching products; this base set has no choices, so with more hits than the limit it would be cut BEFORE the choices narrow it and every count would come out low
-        // (tcs: "abs" 3 against a grid of 7). The base set must be every hit.
+        // (a site: "abs" 3 against a grid of 7). The base set must be every hit.
         $unthrottle = ! empty($vars['relevanssi']);
         if ($unthrottle) {
             add_filter('pre_option_relevanssi_throttle', [self::class, 'offFilter']);

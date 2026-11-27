@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Theme views grouped into folders by use (MGR owner request via tcs, TPL-140): resources/views/blog/, shop/ and pages/ hold the default views for
+ * Theme views grouped into folders by use (a site's request): resources/views/blog/, shop/ and pages/ hold the default views for
  * the blog (home, archive, category, tag, author, single), the shop (archive-product, the product category, tag and brand archives,
  * single-product) and pages (page, front-page, 404, search). WordPress still names the templates it wants by the hierarchy
  * (`category.php`, `taxonomy-product_cat.php` ...); Acorn turns each name into a view file. This adds the folder file right after the flat one:
@@ -51,7 +51,7 @@ function template_with_folders(array $templates): array
 }
 
 /**
- * A site's own `archive-product` view beats the kit's `taxonomy-product_*` views (TPL-251). The kit supplies `taxonomy-product_cat|tag|brand` itself, at the
+ * A site's own `archive-product` view beats the kit's `taxonomy-product_*` views. The kit supplies `taxonomy-product_cat|tag|brand` itself, at the
  * END of the view finder, but the hierarchy names them BEFORE `archive-product`, so a site that overrides only archive-product (the shop and, as in
  * WooCommerce itself, its category pages) got the kit's plain category page instead of its own. When the site has an archive-product and has no view of
  * that taxonomy name, the taxonomy candidates are dropped, so the hierarchy reaches the site's archive-product. A taxonomy view the site does have (flat,

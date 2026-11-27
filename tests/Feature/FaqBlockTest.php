@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The FAQ block's shared pieces (WP-102): the row markup, the group-mode content, and ONE merged, de-duplicated FAQPage per page.
+ * The FAQ block's shared pieces: the row markup, the group-mode content, and ONE merged, de-duplicated FAQPage per page.
  */
 use function App\faq_entities;
 use function App\faq_group_content;

@@ -1,8 +1,8 @@
-# Card text: lines, not words (TPL-280, TPL-282)
+# Card text: lines, not words
 
 The kit limits the text it pulls in **automatically** by **lines**, with CSS, so cards in a row keep their shape and a long text ends in an ellipsis: a post excerpt, a product's short description, related and recent posts, product, category and brand names in a loop, a WooCommerce review in the testimonials, the author bio. No card has a word count of its own and none ends in "… Continued".
 
-**Text an editor typed into a block is never clamped by default** (TPL-282): a Feature grid's titles and texts, a testimonial of the manual or posts source, text and image, hero, CTA, the pattern bank's copy. A site may opt in (below).
+**Text an editor typed into a block is never clamped by default**: a Feature grid's titles and texts, a testimonial of the manual or posts source, text and image, hero, CTA, the pattern bank's copy. A site may opt in (below).
 
 ## The two limits
 - **Server (one helper, a safety cap):** `App\card_text($text)` strips tags, decodes entities once and keeps at most **40 words** (the filter `pkde_kit/card_text_words`, `0` for no cap), so the HTML stays small and a reader without CSS is not flooded. `App\card_excerpt($post)` is the post's written excerpt, else the start of its content, through `card_text()`. A screen reader reads the whole capped text: the clamp only hides it visually.
@@ -33,5 +33,5 @@ or in the site's CSS (`:root { --pkde-clamp-excerpt: 4; }`). A palette without `
 ## A site's own card markup
 A site that published a kit view (`vendor/pkde-kit/...`) or draws its own card gets the clamp by adding the kit's class to its title or text: `pkde-card__title`, `pkde-card__excerpt`, `pkde-product-card__title`, `pkde-product-card__excerpt`, `pkde-related__title`, `pkde-related__excerpt`, `pkde-author__bio`, and by printing `App\card_excerpt()` or `App\card_text()` instead of its own `wp_trim_words()`.
 
-## A review scrolls, it is never cut (TPL-284)
+## A review scrolls, it is never cut
 A WooCommerce review in the Quotes block (`pkde-quotes--reviews`) shows in full: its text box is at most `--pkde-clamp-quote-review` lines high (6) with `overflow-y: auto`, so a longer review scrolls inside its card and the cards keep their height. A review that fits does not scroll at all. A box that scrolls is keyboard focusable (`tabindex="0"`, a visible focus ring) and is a region named "Review by <name>" (`resources/js/quote-scroll.js`), has a thin scrollbar in the section's muted colour, `overscroll-behavior: contain`, and a soft fade at the bottom edge while there is more to read.

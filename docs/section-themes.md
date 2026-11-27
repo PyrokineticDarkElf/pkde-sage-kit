@@ -1,4 +1,4 @@
-# Section themes (WP-100)
+# Section themes
 
 A **section theme** colours a whole section from one choice in the Styles panel: pick "Brand Sage" or "Brand Sage (light)" on a Group or a Section and the
 background, headings, text, links, buttons, icons and rules inside it follow, in the editor and on the page. There is one solid and one light theme for every
@@ -74,7 +74,7 @@ so adopting them never turns an existing palette red.
 
 ## Dark mode
 
-Every theme also has a dark matrix, applied under `.dark` (the class the site's own `dark:` variants use; jsd's `@custom-variant dark (&:where(.dark, .dark *))`). It is
+Every theme also has a dark matrix, applied under `.dark` (the class the site's own `dark:` variants use; a site's `@custom-variant dark (&:where(.dark, .dark *))`). It is
 never tied to `prefers-color-scheme`: a site without a dark switch is never flipped. A light theme's dark version uses the colour's 900 shade with light text; a
 solid theme keeps its colour and re-picks its text roles by contrast.
 
@@ -84,7 +84,7 @@ solid theme keeps its colour and re-picks its text roles by contrast.
 
 `npm run theme:check` fails a pair under its threshold (4.5:1 text, muted, links and eyebrows; 3:1 headings, icons and accents; the button label 4.5:1, in both modes). A colour in
 `acceptLowContrast` is reported as accepted instead. Two things only warn: a button whose shape is under 3:1 against the section, and a **weak** colour: one whose best
-text colour barely clears AA (under 5.2:1) while no palette colour can be a heading or link on it (bb sage, the template's accent and stone, js and cs stone). It is
+text colour barely clears AA (under 5.2:1) while no palette colour can be a heading or link on it (a site sage, the template's accent and stone, js and cs stone). It is
 offered like any other theme; its matrix uses the one readable text colour for every text role, and the check names it.
 
 ## In the editor

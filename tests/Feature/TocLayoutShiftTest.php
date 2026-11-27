@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The post's contents list has its final state at first paint, at every width (TPL-286): the markup is closed, CSS shows the list from 1024px, the script never closes it at load.
+ * The post's contents list has its final state at first paint, at every width: the markup is closed, CSS shows the list from 1024px, the script never closes it at load.
  */
 it('prints the contents closed and shows the list on a wide screen by CSS, and the script never closes it at load', function () {
     $root = dirname(__DIR__, 2);

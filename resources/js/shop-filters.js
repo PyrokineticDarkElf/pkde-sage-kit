@@ -1,4 +1,4 @@
-// Shop filters (partials/sidebar-shop.blade.php, WP-89): ticking a box or typing a price changes only the form; the visitor sends the choices once with "Apply
+// Shop filters (partials/sidebar-shop.blade.php): ticking a box or typing a price changes only the form; the visitor sends the choices once with "Apply
 // filters", so a filter click no longer costs an uncached page request. This file keeps the button honest: it counts the choices that differ from what is
 // applied now ("Apply filters (3)") and tells a screen reader. Nothing here can block a submit, and without JavaScript the form is a plain GET form with a
 // submit button. The applied state is what the server rendered (the inputs' default values), not what a browser restored after Back.

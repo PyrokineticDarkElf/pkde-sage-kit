@@ -1,4 +1,4 @@
-// Reveal on scroll (WP-103): a block the server marked `pkde-reveal` fades and rises a few pixels once, when it first comes into view. The hidden state is CSS and applies only
+// Reveal on scroll: a block the server marked `pkde-reveal` fades and rises a few pixels once, when it first comes into view. The hidden state is CSS and applies only
 // while this script has put `js-motion` on <html> (motion.css), so without JavaScript, without IntersectionObserver, with the site switch off or for a visitor who prefers reduced
 // motion nothing is ever hidden. Anything already on screen when the page loads is shown at once (it is above the fold: it never waits, never animates), anything above the
 // viewport (a jump to an anchor, a restored scroll position) is shown too, and at the bottom of the page everything left is shown, so a short last block is never stuck.

@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Contact details block (WP-106): the phone numbers, email addresses and addresses of Site details, in the section's colours. Nothing to type.
+ * Contact details block: the phone numbers, email addresses and addresses of Site details, in the section's colours. Nothing to type.
  *
  * @var array $attributes
  */

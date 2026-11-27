@@ -1,5 +1,5 @@
 /**
- * Global shape tokens (WP-108 A): the corner radius and the border thickness of the whole kit, declared in config/brand-palette.json under `shape`:
+ * Global shape tokens: the corner radius and the border thickness of the whole kit, declared in config/brand-palette.json under `shape`:
  *
  *   "shape": { "preset": "soft", "radius": { "sm": "0.5rem", "md": "1rem", "lg": "2rem", "full": "9999px" }, "border": { "thin": "1px", "thick": "2px" } }
  *

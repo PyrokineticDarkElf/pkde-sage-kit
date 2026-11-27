@@ -1,5 +1,5 @@
 /**
- * The kit's motion system (WP-103). One place for the timings, the reveal, the hover and press states and the smooth accordion; nothing here moves anything that a
+ * The kit's motion system. One place for the timings, the reveal, the hover and press states and the smooth accordion; nothing here moves anything that a
  * visitor who asked their system for less motion would not want moved.
  *
  * TOKENS (a site overrides any of them in its own CSS; the template's theme.css also points Tailwind's default transition at them):
@@ -92,7 +92,7 @@
 }
 
 /**
- * SMOOTH TOGGLES (from tcs): the kit's accordion items, the FAQ rows and the Details block open and close smoothly where the browser can animate to the content's own
+ * SMOOTH TOGGLES: the kit's accordion items, the FAQ rows and the Details block open and close smoothly where the browser can animate to the content's own
  * height (interpolate-size, ::details-content); elsewhere they stay instant, as they do for visitors who ask their system for less motion. Only on a click, never on load.
  */
 @media (prefers-reduced-motion: no-preference) {
@@ -110,7 +110,7 @@
 }
 
 /**
- * The pagination dot of every carousel (the quotes block, the carousel block, the hero slider; TPL-287). The dot is ALWAYS a 1.25rem by 0.5rem pill in a fixed 1.5rem slot, and
+ * The pagination dot of every carousel (the quotes block, the carousel block, the hero slider). The dot is ALWAYS a 1.25rem by 0.5rem pill in a fixed 1.5rem slot, and
  * clip-path draws what is shown: a circle (the pill clipped to its middle 0.5rem) or the whole pill for the active dot. Nothing is scaled, so the ends stay round; nothing changes
  * size, so no layout work and no neighbour moves; the change is a clip-path transition on the motion tokens, instant under reduced motion. The colour is the block's own (a utility
  * class or the quotes' own CSS).

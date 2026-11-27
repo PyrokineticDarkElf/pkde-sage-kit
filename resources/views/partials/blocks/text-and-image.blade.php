@@ -1,5 +1,5 @@
 {{--
-  Text and image (WP-100). Props: $wrapper (block wrapper attributes, escaped), $eyebrow, $content (the rendered inner blocks), $images (list of <img>
+  Text and image. Props: $wrapper (block wrapper attributes, escaped), $eyebrow, $content (the rendered inner blocks), $images (list of <img>
   HTML from \App\block_image(), 0 to 3), $mosaic (three images: the first tall, two stacked beside it).
 --}}
 <div {!! $wrapper !!}>

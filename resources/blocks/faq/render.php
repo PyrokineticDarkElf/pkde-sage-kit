@@ -39,7 +39,7 @@ $pairs = []; // [question, answer html] of every row shown, for the page's one F
 $item_count = 0;
 
 if ($group_ids) {
-    // GROUP MODE (WP-102): the FAQs of the chosen groups, from the platform's faq module, in each group's own order. Nothing to show (module off, no published FAQ yet): nothing printed.
+    // GROUP MODE: the FAQs of the chosen groups, from the platform's faq module, in each group's own order. Nothing to show (module off, no published FAQ yet): nothing printed.
     $rows = function_exists('App\MuPlugins\faqs_for_groups') ? \App\MuPlugins\faqs_for_groups($group_ids, $order, $limit) : [];
     $made = \App\faq_group_content($rows, fn($faq) => do_blocks($faq->post_content));
 

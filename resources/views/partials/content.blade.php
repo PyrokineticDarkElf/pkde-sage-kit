@@ -41,7 +41,7 @@
 
   {{-- The picture link repeats the title link below it: hide it from assistive tech and the tab order so there is one named link per card (axe link-name). --}}
   <a href="{{ get_permalink() }}" class="pkde-card__media relative block overflow-hidden rounded-2xl bg-neutral-100" aria-hidden="true" tabindex="-1">
-    {{-- Slot: the filter pkde_kit/card_media (string|null $html, WP_Post $post) returns markup that replaces the picture (a themed icon tile for one post type, TPL-196). --}}
+    {{-- Slot: the filter pkde_kit/card_media (string|null $html, WP_Post $post) returns markup that replaces the picture (a themed icon tile for one post type). --}}
     @php($cardMedia = apply_filters('pkde_kit/card_media', null, get_post()))
     @if (is_string($cardMedia) && $cardMedia !== '')
       {!! $cardMedia !!}

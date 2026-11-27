@@ -7,7 +7,7 @@ namespace App;
 | Product search with live results (optional: Relevanssi and Relevanssi Live Ajax Search)
 |--------------------------------------------------------------------------
 |
-| tcs and bb carry the same code, so it lives here. Everything below does nothing while the two plugins are inactive (their filters never
+| two sites carry the same code, so it lives here. Everything below does nothing while the two plugins are inactive (their filters never
 | fire); a site that wants it requires the plugins (`wpackagist-plugin/relevanssi` and `relevanssi-live-ajax-search`, the free editions),
 | runs `bash bin/deploy/wp.sh eval-file bin/deploy/relevanssi-settings.php` (pkde-deploy) once per environment, and prints the form with
 | `@include('pkde-kit::partials.product-search')` (docs/woocommerce-templates.md, "Search").
@@ -18,7 +18,7 @@ if (! function_exists('add_filter')) {
 }
 
 // Relevanssi answers the query itself, so WooCommerce's SQL sorting never runs: hand the shop's sort choices over as the meta fields they sort by.
-if (! defined('PKDE_PLATFORM_RELEVANSSI_WOOCOMMERCE')) { // WP-105 phase 1: pkde/platform's `relevanssi-woocommerce` module does this when it is on
+if (! defined('PKDE_PLATFORM_RELEVANSSI_WOOCOMMERCE')) { // pkde/platform's `relevanssi-woocommerce` module does this when it is on
     add_filter('relevanssi_modify_wp_query', function (\WP_Query $query): \WP_Query {
         $orderby = $query->get('orderby');
         $first = is_string($orderby) ? strtok($orderby, ' ') : null;

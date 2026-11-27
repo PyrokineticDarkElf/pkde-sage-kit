@@ -1,6 +1,6 @@
-# The blog single (kit default, MGR-66)
+# The blog single (kit default)
 
-One layout for every site, tcs's: a header (breadcrumbs, category pills, the title, the meta), a prominent featured image, the reading column with the
+One layout for every site, a site's: a header (breadcrumbs, category pills, the title, the meta), a prominent featured image, the reading column with the
 contents list beside it, then the share row, previous and next post, the author box, related posts, recent posts and the tags, and the Article schema.
 `resources/views/single.blade.php` and `partials/content-single.blade.php` are the kit's; **a site does not copy them**. It changes the look with
 variables, switches a section off with one filter and adds to the layout with actions.

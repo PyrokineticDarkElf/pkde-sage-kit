@@ -1,7 +1,7 @@
 <?php
 
 /**
- * WP-100 phase 1: the Brand <Label> section themes as block styles, and the CSS that lets core blocks and the kit's blocks follow a section.
+ * the Brand <Label> section themes as block styles, and the CSS that lets core blocks and the kit's blocks follow a section.
  */
 $root = dirname(__DIR__, 2);
 

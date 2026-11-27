@@ -1,6 +1,6 @@
 <?php
 
-// app/buttons.php (WP-109): the core Button block's styles and the Editor's restricted controls; the CSS side is tested with the generator (tests/js) and proved on the template stack.
+// app/buttons.php: the core Button block's styles and the Editor's restricted controls; the CSS side is tested with the generator (tests/js) and proved on the template stack.
 require_once dirname(__DIR__, 2) . '/app/buttons.php';
 
 use function App\button_block_styles;

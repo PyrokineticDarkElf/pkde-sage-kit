@@ -1,4 +1,4 @@
-# The pattern bank (WP-108 B)
+# The pattern bank
 
 36 block patterns in 12 families, 2 to 4 variants each, named **"Family: Variant"** (for example "Featured products: One large card and a list") with one pattern category per family in the inserter (Hero, Featured products, Product categories, Latest posts, Feature grid, Text and image, Testimonials, Call to action, FAQ, Contact, Stats, Logos). A page built from them has rhythm: each variant ships with a Brand theme chosen so that solid and light alternate inside a family. A site changes the theme of any section with one click (Section > Style).
 

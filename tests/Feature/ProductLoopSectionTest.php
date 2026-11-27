@@ -1,7 +1,7 @@
 <?php
 
 /**
- * WP-99 D, U-1 (TPL-202): the Product Loop block takes over from Recent Products and Best Selling Products: it gains the section header, "View all" link, section theme
+ *U-1: the Product Loop block takes over from Recent Products and Best Selling Products: it gains the section header, "View all" link, section theme
  * and card style those two had, and the two are hidden from the inserter (still registered, still rendering what pages already hold) for one release before they go.
  * The "View all" link of the Brands and Categories blocks no longer points at the page it is on (U-2/U-3: those pages are ordinary pages holding the blocks).
  */

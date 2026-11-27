@@ -1,4 +1,4 @@
-// The header's basket count is filled in by the browser (resources/js/cart-badge.js, MGR-76). The module runs without a DOM here: every function takes
+// The header's basket count is filled in by the browser (resources/js/cart-badge.js). The module runs without a DOM here: every function takes
 // the document, fetch and cookie it needs.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

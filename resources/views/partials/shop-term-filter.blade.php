@@ -1,6 +1,6 @@
 {{-- GET-based multi-select taxonomy filter. Each applied selection is retained
      in the URL, so combinations are shareable and work without JavaScript.
-     $group is the declared group (App\ShopFilters::groups()): its order, limit and hierarchy (WP-96). --}}
+     $group is the declared group (App\ShopFilters::groups()): its order, limit and hierarchy. --}}
 @php
   $group = $group ?? \App\ShopFilters::group($taxonomy) ?? ['order' => 'name', 'limit' => null, 'hierarchical' => false];
   $termArgs = ['taxonomy' => $taxonomy, 'hide_empty' => true];

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The kit's block patterns (WP-100): resources/patterns/*.php, registered under the `pkde` category (sections) and `pkde-pages` (page starters).
+ * The kit's block patterns: resources/patterns/*.php, registered under the `pkde` category (sections) and `pkde-pages` (page starters).
  * A pattern file is a PHP file with a header like a theme pattern's (Title, Slug, Categories, Block Types, Post Types, Description, Keywords, Inserter)
  * followed by block markup; its outermost block is a Section locked to content only (templateLock contentOnly), so a client edits the words,
  * pictures and links and cannot move, add or delete blocks inside it. Only an Administrator can unlock it (platform: editor-settings).
@@ -32,7 +32,7 @@ function pattern_header(string $file): array
 }
 
 /**
- * The families of the pattern bank (WP-108 B): the pattern category slug (after `pkde-`) and its label. A pattern is "Family: Variant" and has the one category of its family.
+ * The families of the pattern bank: the pattern category slug (after `pkde-`) and its label. A pattern is "Family: Variant" and has the one category of its family.
  *
  * @return array<string, string>
  */
@@ -66,7 +66,7 @@ add_action('init', function () {
     }
 
     register_block_pattern_category('pkde', ['label' => __('Sections', 'sage')]);
-    // One category per family (WP-108 B), all under the kit's `pkde-` prefix, so the inserter groups the bank by what a section is for.
+    // One category per family, all under the kit's `pkde-` prefix, so the inserter groups the bank by what a section is for.
     foreach (pattern_families() as $slug => $label) {
         register_block_pattern_category("pkde-{$slug}", ['label' => $label]);
     }

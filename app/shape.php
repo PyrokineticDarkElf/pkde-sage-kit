@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Shape tokens in theme.json (WP-108 A): the corner radius and border thickness the palette declares (`shape` in config/brand-palette.json, generated into
+ * Shape tokens in theme.json: the corner radius and border thickness the palette declares (`shape` in config/brand-palette.json, generated into
  * resources/generated/shape.php) become theme.json custom settings (`--wp--custom--pkde--radius--md` and so on) and, when the shape's full radius is not the default pill, the radius of core's buttons, so the block editor and the
  * frontend follow the same three radius steps as the kit's CSS. Nothing here restyles anything else: images, covers and groups keep whatever the site's own theme.json says.
  */

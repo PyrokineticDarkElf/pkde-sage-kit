@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Opening hours block (WP-106): the weekly hours of Site details (consecutive days with the same hours are one row) and the holidays still to come. Nothing to type.
+ * Opening hours block: the weekly hours of Site details (consecutive days with the same hours are one row) and the holidays still to come. Nothing to type.
  *
  * @var array $attributes
  */
