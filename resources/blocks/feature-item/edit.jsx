@@ -8,7 +8,7 @@ import metadata from './block.json';
 import { editorSetting } from '../../js/editor-settings.js';
 
 function Edit({ attributes, setAttributes }) {
-  const { icon, imageUrl, imageId, imageAlt, heading, text, linkText, linkUrl } = attributes;
+  const { icon, imageUrl, imageId, imageAlt, badge, heading, text, linkText, linkUrl } = attributes;
   const icons = useSelect((select) => editorSetting(select, 'pkdeIcons', {}), []);
   const blockProps = useBlockProps({ className: 'pkde-feature' });
 
@@ -40,6 +40,7 @@ function Edit({ attributes, setAttributes }) {
 
       <div {...blockProps}>
         {imageUrl ? <div className="pkde-feature__media"><img src={imageUrl} alt={imageAlt} /></div> : icon && icons[icon] ? <span dangerouslySetInnerHTML={{ __html: icons[icon] }} /> : null}
+        <TextControl className="pkde-feature__badge-field" label={__('Badge (People style)', 'sage')} hideLabelFromVision value={badge} onChange={(value) => setAttributes({ badge: value })} placeholder={__('Badge (optional)…', 'sage')} />
         <RichText tagName="h3" className="pkde-feature__title" value={heading} onChange={(value) => setAttributes({ heading: value })} placeholder={__('Heading…', 'sage')} allowedFormats={['core/bold', 'core/italic']} />
         <RichText tagName="p" className="pkde-feature__text" value={text} onChange={(value) => setAttributes({ text: value })} placeholder={__('A short text…', 'sage')} />
         {linkUrl && linkText ? <span className="pkde-feature__link">{linkText}</span> : null}

@@ -27,6 +27,18 @@ $slot_url = (string) ($attributes['imageUrl'] ?? '');
 // A logo or picture beside (banner) or above (section) the text: a plain image that keeps its shape, never cropped.
 $slot = ($slot_id || $slot_url || ! empty($attributes['placeholder'])) ? \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium', ['loading' => 'lazy', 'class' => 'pkde-cta-slot' . ($is_banner ? '' : ' mx-auto mb-6')], ! empty($attributes['placeholder'])) : '';
 
+// The `link` layout: no heading, no text and no button, one bold uppercase link with a circled chevron, centred. A slim band when it sits alone in a Section (sections.css).
+if ($style === 'link') {
+    if ($primary_text !== '' && $primary_url !== '') {
+        echo '<div ' . get_block_wrapper_attributes(['class' => 'pkde-block pkde-cta pkde-cta--link']) . '><a class="pkde-cta__link" href="' . esc_url($primary_url) . '">'
+            . '<span>' . esc_html($primary_text) . '</span>'
+            . '<svg class="pkde-cta__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M10.5 8l4 4-4 4" /></svg>'
+            . '</a></div>';
+    }
+
+    return;
+}
+
 // Two more layouts: `split` (the text beside a picture that fills its half of the panel and takes the panel's corners) and `boxed` (a card in the section, in the
 // section's card colours). The picture of a split is a real photograph that is cropped, not the logo of the banner.
 if (in_array($style, ['split', 'boxed'], true)) {

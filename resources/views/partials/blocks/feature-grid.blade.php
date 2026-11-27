@@ -1,5 +1,5 @@
 {{--
-  Feature grid. Props: $wrapper (block wrapper attributes, escaped), $eyebrow, $heading, $intro, $content (the rendered feature items).
+  Feature grid. Props: $wrapper (block wrapper attributes, escaped), $eyebrow, $heading, $intro, $content (the rendered feature items), $linkText and $linkUrl (an optional link under the grid), $scrolls (the People style: the row scrolls sideways, so it is a labelled, focusable region).
 --}}
 <div {!! $wrapper !!}>
   @if ($heading !== '' || $intro !== '' || $eyebrow !== '')
@@ -15,5 +15,8 @@
       @endif
     </div>
   @endif
-  <div class="pkde-features__grid">{!! $content !!}</div>
+  <div class="pkde-features__grid"@if ($scrolls) role="region" tabindex="0" aria-label="{{ wp_strip_all_tags($heading) !== '' ? wp_strip_all_tags($heading) : __('Team', 'sage') }}"@endif>{!! $content !!}</div>
+  @if ($linkUrl !== '' && $linkText !== '')
+    <p class="pkde-features__more"><a href="{{ esc_url($linkUrl) }}">{{ $linkText }}</a></p>
+  @endif
 </div>

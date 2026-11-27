@@ -20,7 +20,8 @@
         "section",
         "banner",
         "split",
-        "boxed"
+        "boxed",
+        "link"
       ]
     },
     "theme": {

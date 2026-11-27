@@ -5,7 +5,7 @@
   "title": "Feature grid",
   "category": "design",
   "icon": "grid-view",
-  "description": "A heading and a grid of items: an icon or picture, a heading, a short text and an optional link. For benefits, services, steps, values or links to other pages. Takes its colours from the section it sits in.",
+  "description": "A heading and a grid of items: an icon or picture, a heading, a short text and an optional link. The People style is a row of picture cards (a badge, a name, a job title) that scrolls sideways, with an optional link under it, for a team. For benefits, services, steps, values or links to other pages. Takes its colours from the section it sits in.",
   "keywords": [
     "features",
     "benefits",
@@ -42,7 +42,8 @@
         "plain",
         "cards",
         "steps",
-        "stats"
+        "stats",
+        "people"
       ]
     },
     "centered": {
@@ -66,6 +67,14 @@
       "default": ""
     },
     "cardButton": {
+      "type": "string",
+      "default": ""
+    },
+    "linkText": {
+      "type": "string",
+      "default": ""
+    },
+    "linkUrl": {
       "type": "string",
       "default": ""
     }

@@ -1,5 +1,5 @@
 {{--
-  One feature. Props: $icon (inline SVG or ''), $image (an <img> or ''), $heading, $text, $linkText, $linkUrl. With a link and no link text the
+  One feature. Props: $icon (inline SVG or ''), $image (an <img> or ''), $badge (a small label above the heading, People style), $heading, $text, $linkText, $linkUrl. With a link and no link text the
   whole heading is the link; with link text a "Learn more" style link follows the text.
 --}}
 <div class="pkde-feature">
@@ -7,6 +7,9 @@
     <div class="pkde-feature__media">{!! $image !!}</div>
   @elseif ($icon !== '')
     {!! $icon !!}
+  @endif
+  @if ($badge !== '')
+    <p class="pkde-feature__badge">{{ $badge }}</p>
   @endif
   @if ($heading !== '')
     <h3 class="pkde-feature__title">

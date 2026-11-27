@@ -447,6 +447,7 @@
    redefined on the card, so everything inside follows the card's background */
 .pkde-quotes--strip .pkde-quote,
 .pkde-quotes--carousel .pkde-quote,
+.pkde-features--people .pkde-feature,
 .pkde-features--cards .pkde-feature {
   background-color: var(--section-card-bg, transparent);
   border-color: var(--section-card-border, var(--pkde-line));
@@ -534,3 +535,109 @@
   border-radius: max(0px, calc(var(--pkde-feature-radius, var(--pkde-card-radius)) - var(--pkde-card-padding)));
 }
 .pkde-features--stats .pkde-feature__title { font-size: clamp(2rem, 4vw, 3.5rem); }
+
+/* Feature grid, People style: picture cards (badge, name, job title) in a row that scrolls sideways, an optional link under it. The card takes the section's card colours
+   like the boxed style does. Variables: --pkde-people-card-width (14rem), --pkde-features-gap, --pkde-feature-radius. */
+.pkde-features--people .pkde-features__grid {
+  display: flex;
+  gap: var(--pkde-features-gap, 1.25rem);
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+}
+.pkde-features--people .pkde-features__grid:focus-visible {
+  outline: 2px solid var(--pkde-accent, currentColor);
+  outline-offset: 2px;
+}
+.pkde-features--people .pkde-feature {
+  flex: 0 0 var(--pkde-people-card-width, 14rem);
+  scroll-snap-align: start;
+  overflow: hidden;
+  border: var(--pkde-border-thin) solid var(--pkde-line);
+  border-radius: var(--pkde-feature-radius, var(--pkde-card-radius));
+  text-align: left;
+}
+.pkde-features--people .pkde-feature__media {
+  margin-bottom: 0;
+}
+.pkde-features--people .pkde-feature__media img,
+.pkde-features--people .pkde-feature__media .pkde-placeholder {
+  aspect-ratio: 4 / 5;
+  border-radius: 0;
+}
+.pkde-features--people .pkde-feature__badge,
+.pkde-features--people .pkde-feature__title,
+.pkde-block.pkde-features--people .pkde-feature__text {
+  margin-inline: 1rem;
+}
+.pkde-block.pkde-features--people .pkde-feature__text {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--pkde-quiet);
+}
+.pkde-features--people .pkde-feature__badge {
+  margin-top: 0.875rem;
+}
+.pkde-features--people .pkde-feature > :last-child {
+  margin-bottom: 1.125rem;
+}
+.pkde-feature__badge {
+  width: fit-content;
+  margin-block: 0 0.5rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--pkde-ink) 14%, transparent);
+  color: var(--pkde-quiet);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pkde-features--people .pkde-feature__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--pkde-accent);
+}
+.pkde-features__more {
+  margin: 1.5rem 0 0;
+  text-align: center;
+  font-size: 0.875rem;
+}
+.pkde-features__more a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+/* CTA, Link style: one bold uppercase link with a circled arrow, centred; alone in a Section it makes a slim band. The text takes the section's link colour, the circle its accent. */
+.wp-block-sage-section:has(> .pkde-cta--link:only-child) {
+  padding-block: var(--pkde-cta-link-padding, 1.75rem);
+}
+.pkde-cta--link {
+  text-align: center;
+}
+.pkde-cta__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display, inherit);
+  font-size: clamp(1rem, 2vw, 1.375rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--section-link, var(--section-heading, currentColor));
+}
+.pkde-cta__link:hover span {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.pkde-cta__icon {
+  flex: none;
+  width: 1.75em;
+  height: 1.75em;
+  color: var(--section-accent, currentColor);
+}

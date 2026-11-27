@@ -58,6 +58,10 @@
     "placeholder": {
       "type": "boolean",
       "default": false
+    },
+    "badge": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {

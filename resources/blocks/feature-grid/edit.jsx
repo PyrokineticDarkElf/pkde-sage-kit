@@ -9,7 +9,7 @@ import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 const TEMPLATE = [['sage/feature-item'], ['sage/feature-item'], ['sage/feature-item']];
 
 function Edit({ attributes, setAttributes }) {
-  const { eyebrow, heading, intro, columns, variant, centered, templateLock, cardTheme, cardButton } = attributes;
+  const { eyebrow, heading, intro, columns, variant, centered, templateLock, cardTheme, cardButton, linkText, linkUrl } = attributes;
   const blockProps = useBlockProps({
     className: `pkde-block pkde-features pkde-features--${variant} pkde-features--cols-${columns}${centered ? ' pkde-features--centered' : ''}${cardTheme ? ` has-card-theme-${cardTheme}` : ''}`,
     style: {
@@ -27,11 +27,13 @@ function Edit({ attributes, setAttributes }) {
           <SelectControl
             label={__('Style', 'sage')}
             value={variant}
-            options={[{ value: 'plain', label: __('Plain', 'sage') }, { value: 'cards', label: __('Each item in a box', 'sage') }]}
+            options={[{ value: 'plain', label: __('Plain', 'sage') }, { value: 'cards', label: __('Each item in a box', 'sage') }, { value: 'people', label: __('People: picture cards in a row that scrolls', 'sage') }]}
             onChange={(value) => setAttributes({ variant: value })}
           />
           <ToggleControl label={__('Centre the items', 'sage')} checked={!!centered} onChange={(value) => setAttributes({ centered: value })} />
           <TextControl label={__('Small heading above the title', 'sage')} value={eyebrow} onChange={(value) => setAttributes({ eyebrow: value })} />
+          <TextControl label={__('Link under the items: text', 'sage')} value={linkText} onChange={(value) => setAttributes({ linkText: value })} />
+          <TextControl label={__('Link under the items: address', 'sage')} value={linkUrl} onChange={(value) => setAttributes({ linkUrl: value })} />
         </PanelBody>
         <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>
@@ -43,6 +45,7 @@ function Edit({ attributes, setAttributes }) {
           <RichText tagName="p" className="pkde-features__intro" value={intro} onChange={(value) => setAttributes({ intro: value })} placeholder={__('A line of introduction (optional)…', 'sage')} />
         </div>
         <div {...innerProps} />
+        {linkUrl && linkText ? <p className="pkde-features__more"><span>{linkText}</span></p> : null}
       </div>
     </>
   );

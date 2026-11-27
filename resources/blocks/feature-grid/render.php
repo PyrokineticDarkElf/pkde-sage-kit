@@ -12,7 +12,7 @@ if (! defined('ABSPATH')) {
  */
 
 $columns = max(1, min(5, (int) ($attributes['columns'] ?? 3)));
-$variant = in_array($attributes['variant'] ?? 'plain', ['plain', 'cards', 'steps', 'stats'], true) ? $attributes['variant'] : 'plain';
+$variant = in_array($attributes['variant'] ?? 'plain', ['plain', 'cards', 'steps', 'stats', 'people'], true) ? $attributes['variant'] : 'plain';
 $centered = ! empty($attributes['centered']);
 
 echo view('pkde-kit::partials.blocks.feature-grid', [
@@ -25,4 +25,7 @@ echo view('pkde-kit::partials.blocks.feature-grid', [
     'heading' => (string) ($attributes['heading'] ?? ''),
     'intro' => (string) ($attributes['intro'] ?? ''),
     'content' => $content,
+    'linkText' => (string) ($attributes['linkText'] ?? ''),
+    'linkUrl' => (string) ($attributes['linkUrl'] ?? ''),
+    'scrolls' => $variant === 'people',
 ])->render();

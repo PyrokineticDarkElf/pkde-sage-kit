@@ -10,6 +10,7 @@ const STYLE_OPTIONS = [
   { label: __('Banner (compact strip)', 'sage'), value: 'banner' },
   { label: __('Split (text beside a picture)', 'sage'), value: 'split' },
   { label: __('Boxed (a card in the section)', 'sage'), value: 'boxed' },
+  { label: __('Link (one bold link with a circled arrow)', 'sage'), value: 'link' },
 ];
 
 const BUTTON_STYLE_OPTIONS = [
@@ -37,9 +38,10 @@ function Edit({ attributes, setAttributes }) {
   } = attributes;
 
   const isBanner = style === 'banner';
+  const isLink = style === 'link';
 
   const blockProps = useBlockProps({
-    className: [
+    className: isLink ? 'pkde-block pkde-cta pkde-cta--link' : [
       'pkde-section rounded-4xl px-6 py-10 sm:px-10 lg:px-16',
       isBanner ? 'flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between lg:py-8' : 'py-16 text-center lg:py-20',
       theme ? `theme-${theme}` : '',
@@ -96,6 +98,14 @@ function Edit({ attributes, setAttributes }) {
         </PanelBody>
       </InspectorControls>
 
+      {isLink ? (
+        <div {...blockProps}>
+          <span className="pkde-cta__link">
+            <span>{primaryButtonText || __('Link text (Primary button, in the sidebar)…', 'sage')}</span>
+            <svg className="pkde-cta__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M10.5 8l4 4-4 4" /></svg>
+          </span>
+        </div>
+      ) : (
       <div {...blockProps}>
         {imageUrl && isBanner ? <img src={imageUrl} alt={imageAlt} className="pkde-cta-slot" /> : null}
         <div className={isBanner ? 'min-w-0' : 'mx-auto max-w-2xl'}>
@@ -123,6 +133,7 @@ function Edit({ attributes, setAttributes }) {
           {secondaryButtonText && <span className={BUTTON_CLASSES[secondaryButtonStyle || 'secondary']}>{secondaryButtonText}</span>}
         </div>
       </div>
+      )}
     </>
   );
 }
