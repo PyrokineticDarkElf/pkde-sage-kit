@@ -16,7 +16,7 @@
  * A site's own CSS that colours a heading, paragraph or button inside a section at a higher specificity than this still wins; it moves
  * onto the --section-* variables (docs/section-themes.md).
  */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"] {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]) {
   background-color: var(--section-bg);
   color: var(--section-text);
   border-color: var(--section-border);
@@ -26,45 +26,45 @@
  * WordPress's colour classes and inline styles are !important, so without this the block keeps its own background while the theme sets the
  * text for the theme's background (white text on a pale tint). The theme wins on the block itself; the editor panel says so
  * (resources/js/section-colour-notice.jsx). Blocks inside the section keep their own colours. */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"].has-background {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]).has-background {
   background: var(--section-bg) !important;
 }
 
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"].has-text-color {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]).has-text-color {
   color: var(--section-text) !important;
 }
 
 /* Running text: paragraphs, list items, table cells, quotes. The section sets its colour and these inherit it, but a site's generic `.page-content p` (and the editor,
  * which puts .page-content on the canvas) colours them directly, which beats inheriting: dark text on a dark theme. Core text only: the kit's own text elements carry a
  * pkde- class and colour themselves, and text inside a nested block with its own colour (.has-text-color, .has-background) keeps what that block sets. */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(p, li, dt, dd, td, th, blockquote, cite):not([class*="pkde-"]):not(.is-style-eyebrow):not(:where(.has-text-color, .has-background, .pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) :is(p, li, dt, dd, td, th, blockquote, cite):not([class*="pkde-"]):not(.is-style-eyebrow):not(:where(.has-text-color, .has-background, .pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-text);
 }
 
 /* Headings */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(h1, h2, h3, h4, h5, h6):not(.pkde-eyebrow, .is-style-eyebrow):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) :is(h1, h2, h3, h4, h5, h6):not(.pkde-eyebrow, .is-style-eyebrow):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-heading);
 }
 
 /* Muted text: captions, and anything marked .pkde-muted */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(figcaption, .pkde-muted):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) :is(figcaption, .pkde-muted):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-muted);
 }
 
 /* Links in running content (not buttons, not a block with its own link colour) */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] a:where(:not(.wp-block-button__link, .pkde-btn, .pkde-btn-alt, .wp-element-button)):not(:where(.pkde-section, .pkde-card, article, .product, .has-link-color, [class*="wp-elements-"], .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) a:where(:not(.wp-block-button__link, .pkde-btn, .pkde-btn-alt, .wp-element-button)):not(:where(.pkde-section, .pkde-card, article, .product, .has-link-color, [class*="wp-elements-"], .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-link);
 }
 
 /* Core buttons: the filled button is the primary pair with its edge role (the edge shows only where the button barely shows against the section); the Outline
    style is a true outline: no fill, the secondary label colour for the text and the edge */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] .wp-block-button:not(.is-style-outline) > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) .wp-block-button:not(.is-style-outline) > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   background-color: var(--section-button-bg);
   color: var(--section-button-text);
   border-color: var(--section-button-border);
   box-shadow: inset 0 0 0 var(--pkde-border-thick) var(--section-button-ring, var(--section-button-border));
 }
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] .wp-block-button.is-style-outline > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) .wp-block-button.is-style-outline > .wp-block-button__link:not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   background-color: transparent;
   color: var(--section-button-alt-text);
   border-color: var(--section-button-alt-text);
@@ -72,17 +72,17 @@
 }
 
 /* A plain rule (hr) takes the border role; the Separator block is a decoration and takes the accent role (3:1, the brand highlight; a Separator with its own colour keeps it) */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(hr):not(.pkde-rule, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) :is(hr):not(.pkde-rule, .wp-block-separator):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-border);
   border-color: var(--section-border);
 }
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(.wp-block-separator):not(.has-background, .has-text-color):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) :is(.wp-block-separator):not(.has-background, .has-text-color):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-accent, var(--section-border));
   border-color: var(--section-accent, var(--section-border));
 }
 
 /* Icons: the kit's icons (.pkde-icon, drawn in currentColor) and core's logos-only social links */
-:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"] :is(.pkde-icon, .wp-block-social-links.is-style-logos-only .wp-social-link a):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
+:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]) :is(.pkde-icon, .wp-block-social-links.is-style-logos-only .wp-social-link a):not(:where(.pkde-section, .pkde-card, article, .product, .pkde-features--cards .pkde-feature, .pkde-quotes--strip .pkde-quote, .pkde-quotes--carousel .pkde-quote) *) {
   color: var(--section-icon);
 }
 
@@ -97,7 +97,7 @@
  * own matrix. Headings, text, the price and the card button follow; a card on its own themed loop panel (.pkde-section, the older `theme` attribute) is left to the
  * older card rule in kit.css. The card button reads the card button roles.
  */
-:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product):not(:where(.pkde-section) *) {
+:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]), [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product):not(:where(.pkde-section) *) {
   background-color: var(--section-card-bg);
   color: var(--section-card-text);
   border: var(--pkde-border-thin) solid var(--section-card-border);
@@ -105,14 +105,14 @@
   padding: var(--pkde-card-padding);
 }
 /* the picture of a padded card is concentric with it */
-:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(.pkde-card__media, .pkde-product-card__media):not(.pkde-card__media--flush, .pkde-card__media--flush-bottom, .pkde-card__media--flush-left, .pkde-card__media--flush-right) {
+:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]), [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(.pkde-card__media, .pkde-product-card__media):not(.pkde-card__media--flush, .pkde-card__media--flush-bottom, .pkde-card__media--flush-left, .pkde-card__media--flush-right) {
   border-radius: max(0px, calc(var(--pkde-card-radius) - var(--pkde-card-padding)));
 }
-:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(a.button, button.button, input.button, .pkde-btn):not(.pkde-btn-alt) {
+:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]), [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(a.button, button.button, input.button, .pkde-btn):not(.pkde-btn-alt) {
   background-color: var(--section-card-button-bg);
   color: var(--section-card-button-text);
   border-color: var(--section-card-button-border);
 }
-:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed)[class*="is-style-brand-"][class*="is-style-brand-"], [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(.price, .star-rating, .pkde-stars) {
+:is(:is(.wp-block-group, .wp-block-sage-section, .pkde-themed):is([class*="is-style-brand-"], [class*="is-style-role-"]):is([class*="is-style-brand-"], [class*="is-style-role-"]), [class*="has-card-theme-"]) :is(article, .woocommerce ul.products > .product) :is(.price, .star-rating, .pkde-stars) {
   color: var(--section-card-heading);
 }

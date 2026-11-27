@@ -26,7 +26,8 @@ function run(colors, extra = {}, args = [], files = {}) {
   return { ...result, theme, read, css: read('resources/css/generated/section-themes.css'), php: read('resources/generated/section-themes.php'), themeJson: read('theme.json'), options: read('resources/js/generated/theme-options.js'), root };
 }
 
-const block = (css, selector) => css.match(new RegExp(`^${selector.replace(/[.]/g, '\\.')} \\{[^}]*\\}`, 'm'))?.[0] ?? '';
+// a theme's rule may list its role class beside it (`.is-style-brand-sage, .is-style-role-brand {`): match the rule that starts with the selector or has it in its list
+const block = (css, selector) => css.match(new RegExp(`^(?:[^{}\\n]*, )?${selector.replace(/[.]/g, '\\.')}(?:, [^{}\\n]*)? \\{[^}]*\\}`, 'm'))?.[0] ?? '';
 
 test('a colour label is optional, never changes the slug, and names the swatches, the theme picker and the section themes', () => {
   assert.equal(labelOf({ name: 'dusty-rose' }), 'Dusty Rose');
@@ -41,7 +42,7 @@ test('a colour label is optional, never changes the slug, and names the swatches
   assert.match(r.php, /'name' => 'brand-sage-light', 'label' => 'Brand Sage \(light\)'/);
   const labelled = run([{ ...sagePalette[0], label: 'Moss' }, ...sagePalette.slice(1)]);
   assert.match(labelled.php, /'name' => 'brand-sage', 'label' => 'Brand Moss'/); // the label changed, the name (the class) did not
-  assert.match(labelled.css, /\.is-style-brand-sage \{/);
+  assert.match(labelled.css, /\.is-style-brand-sage(?:, [^{]*)? \{/);
 });
 
 test('every colour gets a solid and a light theme (white has no light one), and the older theme-* classes keep their variables and gain the roles', () => {
@@ -65,7 +66,7 @@ test('every colour gets a solid and a light theme (white has no light one), and 
   assert.match(block(r.css, '.is-style-brand-sage-light'), /--section-bg: var\(--color-sage-100\);/); // its tint
   // the kit's blocks follow it through the older tokens: declared once for every Brand style, not in every theme
   assert.doesNotMatch(solid, /--pkde-theme-/);
-  assert.match(r.css.match(/\[class\*="is-style-brand-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-theme-background: var\(--section-bg\);/);
+  assert.match(r.css.match(/:is\(\[class\*="is-style-brand-"\], \[class\*="is-style-role-"\]\) \{[^}]*\}/)?.[0] ?? '', /--pkde-theme-background: var\(--section-bg\);/);
   assert.equal(r.css.split('--pkde-theme-background: var(--section-bg);').length - 1, 1);
 });
 
@@ -233,8 +234,8 @@ test('the generated CSS carries the card roles, the button edge, and points the 
   const sage = block(css, '.is-style-brand-sage');
   for (const role of ['card-bg', 'card-heading', 'card-text', 'card-muted', 'card-border', 'card-button-bg', 'card-button-text', 'card-button-border', 'card-icon', 'button-border']) assert.match(sage, new RegExp(`--section-${role}:`), role);
   assert.doesNotMatch(sage, /--pkde-/);
-  assert.match(css.match(/\[class\*="is-style-brand-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-card-background: var\(--section-card-bg\);[^}]*--pkde-card-accent: var\(--section-card-heading\);/s);
-  assert.match(css.match(/\[class\*="is-style-brand-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-theme-btn-border: var\(--section-button-border\);/);
+  assert.match(css.match(/:is\(\[class\*="is-style-brand-"\], \[class\*="is-style-role-"\]\) \{[^}]*\}/)?.[0] ?? '', /--pkde-card-background: var\(--section-card-bg\);[^}]*--pkde-card-accent: var\(--section-card-heading\);/s);
+  assert.match(css.match(/:is\(\[class\*="is-style-brand-"\], \[class\*="is-style-role-"\]\) \{[^}]*\}/)?.[0] ?? '', /--pkde-theme-btn-border: var\(--section-button-border\);/);
   assert.match(css.match(/\[class\*="has-card-theme-"\] \{[^}]*\}/)?.[0] ?? '', /--pkde-card-background: var\(--section-card-bg\);/); // a per-block card colour re-points them on its own element
   assert.match(block(css, '.dark .is-style-brand-sage-light'), /--section-card-bg: var\(--color-sage-(700|800|950)\);/);
 });
@@ -245,7 +246,7 @@ test('links get their own colour where one works (4.5:1 on the background, 3:1 a
   const text = (selector) => block(css, selector).match(/--section-text: var\(--color-([a-z0-9-]+)\)/)?.[1];
   assert.equal(link('.is-style-brand-black'), 'sage-exact'); // white text, a sage link: both readable and 3:1 apart
   assert.equal(link('.is-style-brand-sage'), text('.is-style-brand-sage')); // nothing works on sage: the text colour
-  const rule = css.match(/:is\(([^)]*)\)\[class\*="is-style-brand-"\]\[class\*="is-style-brand-"\] :is\(p, li, dt, dd, td, th, blockquote, cite\) a:where\([^{]*\{\s*text-decoration: underline;/)?.[1] ?? '';
+  const rule = css.match(/:is\(([^)]*)\):is\(\[class\*="is-style-brand-"\], \[class\*="is-style-role-"\]\):is\(\[class\*="is-style-brand-"\], \[class\*="is-style-role-"\]\) :is\(p, li, dt, dd, td, th, blockquote, cite\) a:where\([^{]*\{\s*text-decoration: underline;/)?.[1] ?? '';
   assert.match(rule, /\.is-style-brand-sage\b(?!-)/); // underlined
   assert.doesNotMatch(rule, /\.is-style-brand-black\b(?!-)/); // its own colour: no forced underline
   assert.match(css, /:not\(\.wp-block-button__link, \.pkde-btn, \.pkde-btn-alt, \.wp-element-button\)\)/); // buttons are left alone
@@ -383,9 +384,9 @@ test('buttonRing, buttonHoverText and buttonStyle "underline" are optional: noth
   assert.equal(sage.buttonStyle, 'underline');
   assert.equal(sage.buttonRing, 'transparent');
   const css = buildSectionRolesCss(text, themes);
-  assert.match(css, /\.is-style-brand-sage \{[^}]*--section-button-ring: transparent;[^}]*--section-button-hover-text:/s);
-  assert.match(css, /:is\(\.is-style-brand-sage\)[^{]*\{\s*padding: 0 0 0\.25rem;\s*border-radius: 0;[^}]*border-width: 0 0 var\(--pkde-button-underline-width\) 0;[^}]*box-shadow: none;/s);
-  assert.match(css, /:is\(\.is-style-brand-sage\)[^{]*:is\(:hover, :focus-visible\)[^{]*\{\s*color: var\(--section-button-hover-text\);/s);
+  assert.match(css, /\.is-style-brand-sage(?:, [^{]*)? \{[^}]*--section-button-ring: transparent;[^}]*--section-button-hover-text:/s);
+  assert.match(css, /:is\(\.is-style-brand-sage, \.is-style-role-brand\)[^{]*\{\s*padding: 0 0 0\.25rem;\s*border-radius: 0;[^}]*border-width: 0 0 var\(--pkde-button-underline-width\) 0;[^}]*box-shadow: none;/s);
+  assert.match(css, /:is\(\.is-style-brand-sage, \.is-style-role-brand\)[^{]*:is\(:hover, :focus-visible\)[^{]*\{\s*color: var\(--section-button-hover-text\);/s);
   assert.throws(() => createBuilder(sagePalette.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonStyle: 'pill' } } : c))).themes(), /buttonStyle must be one of/);
   assert.throws(() => createBuilder(sagePalette.map((c) => (c.name === 'sage' ? { ...c, styles: { buttonRing: 'nope-1' } } : c))).themes(), /buttonRing is not a known colour reference/);
 });
@@ -570,4 +571,40 @@ test('typed text is never clamped by default: the opt-in tokens write their rule
   assert.match(css, /\.pkde-feature__text \{\s*display: -webkit-box;[^}]*-webkit-line-clamp: var\(--pkde-clamp-feature-text\);/s);
   assert.doesNotMatch(css, /\.pkde-feature__title \{/); // none: no rule
   assert.match(css, /\.pkde-quotes:not\(\.pkde-quotes--reviews\) \.pkde-quote blockquote \{/);
+});
+
+test('role classes: every theme of a role also matches .is-style-role-<role>[-light], in the same rule, in the dark matrix too; nothing else changes', () => {
+  const template = [{ name: 'brand', hex: '#334155', role: 'brand' }, { name: 'accent', hex: '#64748b', role: 'accent' }, { name: 'stone', hex: '#78716c' }, ...neutrals];
+  for (const [label, colors, solid] of [['a palette whose brand colour is named sage', sagePalette, 'sage'], ['the template-like palette', template, 'brand']]) {
+    const r = run(colors);
+    assert.equal(r.status, 0, r.stderr);
+    for (const colour of colors) {
+      const role = colour.role;
+      const lightId = `.is-style-brand-${colour.name}-light`;
+      const solidId = `.is-style-brand-${colour.name}`;
+      if (!role) {
+        const heads = r.css.split('\n').filter((line) => line.endsWith(' {') && line.includes(solidId) && /^(\.dark )?\.is-style-/.test(line));
+        assert.ok(heads.length >= 2 && heads.every((line) => !line.includes('role-')), `${label}: ${colour.name} has no role, so its rules carry no role class`);
+        continue;
+      }
+      assert.match(block(r.css, solidId), new RegExp(`--section-bg:`), `${label}: ${solidId}`);
+      assert.ok(r.css.includes(`${solidId}, .is-style-role-${role} {`), `${label}: solid ${role}`);
+      assert.ok(r.css.includes(`.dark ${solidId}, .dark .is-style-role-${role} {`), `${label}: solid ${role}, dark`);
+      if (role !== 'white') {
+        assert.ok(r.css.includes(`${lightId}, .is-style-role-${role}-light {`), `${label}: light ${role}`);
+        assert.ok(r.css.includes(`.dark ${lightId}, .dark .is-style-role-${role}-light {`), `${label}: light ${role}, dark`);
+      } else {
+        assert.ok(!r.css.includes('role-white-light'), `${label}: white has no light theme`);
+      }
+    }
+    // the role classes are not block styles: the style picker (the PHP list) is unchanged
+    assert.doesNotMatch(r.php, /role-/);
+    assert.match(r.php, new RegExp(`'name' => 'brand-${solid}'`));
+    // the declarations are in one rule per theme, never repeated for the role class
+    assert.equal(r.css.split('--section-bg: var(--color-black-exact);').length - 1, 2, `${label}: black's declarations appear once for the solid and once for the dark matrix`);
+  }
+  // a site's own CSS rules and the kit's descendant rules key on either class
+  const kitCss = readFileSync(fileURLToPath(new URL('../../resources/css/section-themes.css', import.meta.url)), 'utf8');
+  assert.ok(kitCss.includes(':is([class*="is-style-brand-"], [class*="is-style-role-"])'));
+  assert.ok(!/(^|[^(,] )\[class\*="is-style-brand-"\]/m.test(kitCss), 'no rule keys on the brand class alone');
 });

@@ -24,7 +24,7 @@ export function compatibleFirst(palette, compatible) {
 export function hasOwnColourOverTheme(attributes) {
   const color = attributes?.style?.color;
 
-  return /(?:^|\s)is-style-brand-/.test(attributes?.className ?? '')
+  return /(?:^|\s)is-style-(?:brand|role)-/.test(attributes?.className ?? '')
     && Boolean(attributes.backgroundColor || attributes.textColor || color?.background || color?.text || color?.gradient || attributes.gradient);
 }
 
