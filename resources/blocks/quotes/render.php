@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Testimonials block, registered as sage/quotes: a new name on purpose, because a site (el) already has its own sage/testimonials.
+ * Testimonials block, registered as sage/quotes: a new name on purpose, because a site may already have its own sage/testimonials.
  *
  * @var array $attributes
  */

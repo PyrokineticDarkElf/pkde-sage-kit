@@ -90,12 +90,12 @@ it('has an optional header slot, off unless a site turns it on', function () use
 });
 
 it('fills a group Site details does not hold from the old client_* options, and never touches one it holds', function () {
-    $legacy = \App\site_details_from_options(fn(string $name) => ['client_phone' => '07402 058707', 'client_email' => 'hello@el.test', 'client_address' => '1 High St', 'client_instagram' => 'https://instagram.test/el'][$name] ?? '', 'Electrical Labs');
+    $legacy = \App\site_details_from_options(fn(string $name) => ['client_phone' => '07700 900123', 'client_email' => 'hello@example.test', 'client_address' => '1 High St', 'client_instagram' => 'https://instagram.test/example'][$name] ?? '', 'Electrical Labs');
 
     // nothing in Site details yet: the phone, email, address and profile of the old options show
     $merged = \App\site_details_with_legacy(['phones' => [], 'emails' => [], 'locations' => [], 'socials' => [], 'business' => ['trading_name' => '']], $legacy);
-    expect($merged['phones'][0]['display'])->toBe('07402 058707')
-        ->and($merged['emails'][0]['address'])->toBe('hello@el.test')
+    expect($merged['phones'][0]['display'])->toBe('07700 900123')
+        ->and($merged['emails'][0]['address'])->toBe('hello@example.test')
         ->and($merged['locations'][0]['street'])->toBe('1 High St')
         ->and($merged['socials'][0]['network'])->toBe('instagram')
         ->and($merged['business']['trading_name'])->toBe('') // the name is not a fallback: it never was a stored value
@@ -104,7 +104,7 @@ it('fills a group Site details does not hold from the old client_* options, and 
     // a group Site details holds stays as it is, the others fall back
     $held = ['phones' => [['label' => '', 'number' => '+441132000000', 'display' => '0113 200 0000']], 'emails' => [], 'locations' => [], 'socials' => []];
     $merged = \App\site_details_with_legacy($held, $legacy);
-    expect($merged['phones'])->toBe($held['phones'])->and($merged['emails'][0]['address'])->toBe('hello@el.test')
+    expect($merged['phones'])->toBe($held['phones'])->and($merged['emails'][0]['address'])->toBe('hello@example.test')
         ->and(\App\site_details_legacy_fallbacks($held, $legacy))->toBe(['emails', 'locations', 'socials']);
 
     // nothing old and nothing new: nothing appears, and nothing is reported

@@ -33,7 +33,7 @@ export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonT
 const HIGHLIGHT_APART = 1.5;
 // ...and it keeps the hue: the near-white (50, 100) and near-black (900, 950) ends of a ramp are not tried, only the exact colour and the steps 200 to 800 around it.
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
-// the matrix then has one readable text colour and nothing else to draw with. a site sage (4.66), the template's accent and stone, js and cs stone.
+// the matrix then has one readable text colour and nothing else to draw with. a mid-green brand colour (4.66), the template's accent and stone, a warm stone.
 export const WEAK_BELOW = 5.2;
 const OPACITY_STEPS = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
 

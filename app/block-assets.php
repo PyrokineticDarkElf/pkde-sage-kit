@@ -3,7 +3,7 @@
 /**
  * Block style variations (an outline button, any `is-style-*`) with block assets loaded on demand (the WordPress 6.9+ default for classic themes).
  *
- * The bug (el): WordPress renders the content before `wp_enqueue_scripts` when it loads block assets on demand, so a block with a style
+ * The bug: WordPress renders the content before `wp_enqueue_scripts` when it loads block assets on demand, so a block with a style
  * variation has already registered the `block-style-variation-styles` handle, which depends on `global-styles`. Core enqueues that handle at
  * `wp_enqueue_scripts` priority 1. For a classic theme the real `global-styles` is registered later, in `wp_footer` (priority 1), and hoisted
  * into the head afterwards; in the head only a placeholder exists. So the enqueue names a dependency that is not registered yet and WordPress
