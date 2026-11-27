@@ -46,7 +46,7 @@ function Preview({ attributes }) {
 }
 
 function Edit({ attributes, setAttributes }) {
-  const { limit, columns, orderby, order, categories, excludeCategories, heading, description, viewAll, theme, cardStyle, layout } = attributes;
+  const { limit, columns, source, orderby, order, categories, excludeCategories, heading, description, viewAll, theme, cardStyle, layout } = attributes;
   const available = useProductCategories();
   const blockProps = useBlockProps();
 
@@ -54,6 +54,7 @@ function Edit({ attributes, setAttributes }) {
     <>
       <InspectorControls>
         <PanelBody title={__('Products', 'sage')}>
+          <SelectControl label={__('Show', 'sage')} value={source || 'all'} options={[{ value: 'all', label: __('Products, by category and order', 'sage') }, { value: 'featured', label: __('Only featured products', 'sage') }]} onChange={(value) => setAttributes({ source: value })} help={__('Featured products are the ones marked "This is a featured product" in the product editor.', 'sage')} />
           <RangeControl label={__('Number of products', 'sage')} min={1} max={48} value={limit} onChange={(value) => setAttributes({ limit: value })} />
           <RangeControl label={__('Columns', 'sage')} min={1} max={6} value={columns} onChange={(value) => setAttributes({ columns: value })} />
           <SelectControl label={__('Layout', 'sage')} value={layout || 'grid'} options={[{ value: 'grid', label: __('Grid', 'sage') }, { value: 'rail', label: __('Row that scrolls', 'sage') }, { value: 'feature', label: __('One large card beside a list', 'sage') }, { value: 'intro', label: __('Heading beside the products', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />

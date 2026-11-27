@@ -10,7 +10,11 @@ if (! defined('ABSPATH')) {
  * @var array $attributes
  */
 
-$count = max(1, (int) ($attributes['count'] ?? 3));
+// Where the items come from: the most recent (default), the sticky posts (blog posts only), or a listing of every entry in the
+// order of its Order field then title (a count of 0 means all, and there is no "View all" link: the grid is the whole list).
+$source = in_array($attributes['source'] ?? 'latest', ['latest', 'sticky', 'manual'], true) ? $attributes['source'] : 'latest';
+$count = (int) ($attributes['count'] ?? 3);
+$count = $source === 'manual' && $count <= 0 ? -1 : max(1, $count);
 $post_type = sanitize_key($attributes['postType'] ?? 'post');
 if (! post_type_exists($post_type)) {
     $post_type = 'post';
@@ -30,6 +34,13 @@ $query_args = [
 
 if ($category_id) {
     $query_args['cat'] = $category_id;
+}
+
+if ($source === 'manual') {
+    $query_args['orderby'] = ['menu_order' => 'ASC', 'title' => 'ASC'];
+} elseif ($source === 'sticky' && $post_type === 'post') {
+    // no sticky posts means nothing to show, not "everything"
+    $query_args['post__in'] = array_map('intval', (array) get_option('sticky_posts')) ?: [0];
 }
 
 $query = new WP_Query($query_args);
@@ -56,6 +67,16 @@ if ($category_id) {
     $view_all_label = sprintf(__('View all %s', 'sage'), $post_type_object ? $post_type_object->label : $post_type);
 }
 
+// a listing says what it lists when empty (the same words the Entry Grid block had); the recent and sticky grids keep the partial's default
+$empty_message = null;
+
+if ($source === 'manual') {
+    $view_all_url = null;
+    $post_type_object = get_post_type_object($post_type);
+    /* translators: %s: post type plural label, e.g. "Projects" */
+    $empty_message = sprintf(__('No %s published yet.', 'sage'), $post_type_object ? strtolower($post_type_object->labels->name) : $post_type);
+}
+
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
 $posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list'], true) ? $attributes['layout'] : 'cards';
@@ -70,6 +91,6 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
         'viewAllLabel' => $view_all_label,
         'themed' => (bool) $theme,
     ])->render(); ?>
-    <?php echo view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style])->render(); ?>
+    <?php echo view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style, 'emptyMessage' => $empty_message])->render(); ?>
     <?php echo \App\pkde_loop_theme_content_close($theme); ?>
 </div>

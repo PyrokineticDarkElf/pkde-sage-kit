@@ -24,7 +24,13 @@ $order = ($attributes['order'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
 $include = array_values(array_filter(array_map('sanitize_title', (array) ($attributes['categories'] ?? []))));
 $exclude = array_values(array_filter(array_map('sanitize_title', (array) ($attributes['excludeCategories'] ?? []))));
 
+$featured = ($attributes['source'] ?? 'all') === 'featured';
 $shortcode = sprintf('[products limit="%d" columns="%d" orderby="%s" order="%s"', $limit, $columns, $orderby, $order);
+
+// the products marked "This is a featured product" (WooCommerce's own visibility setting of [products])
+if ($featured) {
+    $shortcode .= ' visibility="featured"';
+}
 
 if ($include) {
     $shortcode .= ' category="' . implode(',', $include) . '"';
@@ -55,6 +61,11 @@ $view_all_url = '';
 if (! empty($attributes['viewAll']) && function_exists('wc_get_page_permalink')) {
     // WooCommerce's own catalogue ordering understands these, so the link shows the shop in the order the block uses
     $view_all_url = in_array($orderby, ['popularity', 'rating', 'date', 'price', 'price-desc'], true) ? add_query_arg('orderby', $orderby, wc_get_page_permalink('shop')) : wc_get_page_permalink('shop');
+
+    // app/woocommerce/filter-query.php lets the shop page list only the featured products (?featured=1)
+    if ($featured) {
+        $view_all_url = add_query_arg('featured', '1', $view_all_url);
+    }
 }
 
 $loop_layout = in_array($attributes['layout'] ?? 'grid', ['grid', 'rail', 'feature', 'intro'], true) ? $attributes['layout'] : 'grid';

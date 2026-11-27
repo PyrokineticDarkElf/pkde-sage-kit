@@ -21,6 +21,7 @@
     }
   },
   "supports": {
+    "inserter": false,
     "html": false,
     "align": [
       "full"

@@ -5,7 +5,7 @@
   "title": "Recent Posts (Grid)",
   "category": "widgets",
   "icon": "grid-view",
-  "description": "A grid of the most recent items from any post type (blog posts by default), optionally filtered to one category.",
+  "description": "A grid of items from any post type (blog posts by default): the most recent, the sticky posts, or a listing of every entry in the order of their Order field. Optionally filtered to one category.",
   "keywords": [
     "posts",
     "blog",
@@ -49,6 +49,15 @@
     "cardButton": {
       "type": "string",
       "default": ""
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "latest",
+        "sticky",
+        "manual"
+      ],
+      "default": "latest"
     },
     "layout": {
       "type": "string",

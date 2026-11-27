@@ -52,6 +52,7 @@
     }
   },
   "supports": {
+    "inserter": false,
     "html": false,
     "align": [
       "wide",

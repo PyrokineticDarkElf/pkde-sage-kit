@@ -1,8 +1,8 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InnerBlocks, RichText, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl, FormTokenField, Notice, Placeholder, Button, TextControl, TextareaControl } from '@wordpress/components';
+import { PanelBody, RangeControl, SelectControl, FormTokenField, Notice, Placeholder, TextControl, TextareaControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { Fragment, useState } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
@@ -75,7 +75,6 @@ function EditFaqsLink({ groupIds }) {
 
 function Edit({ attributes, setAttributes, clientId }) {
   const { heading, description, columnThreshold, theme, cardStyle, groups = [], order = 'manual', limit = 0 } = attributes;
-  const [manual, setManual] = useState(false);
   // Unlike Hero (always a panel), the rounded/padded look is conditional —
   // see accordion/render.php's own comment on the same choice.
   const blockProps = useBlockProps({
@@ -96,7 +95,8 @@ function Edit({ attributes, setAttributes, clientId }) {
   );
   const useColumns = itemCount > columnThreshold;
   const groupMode = groups.length > 0;
-  const handTyped = !groupMode && (itemCount > 0 || manual);
+  // blocks that already hold typed questions keep working and stay editable; the option to start one is gone
+  const handTyped = !groupMode && itemCount > 0;
 
   // FAQs: the groups, and how they are ordered (the Section theme and the colours follow the Section the block sits in)
   const faqPanel = (
@@ -176,7 +176,6 @@ function Edit({ attributes, setAttributes, clientId }) {
           <Placeholder icon="editor-help" label={__('FAQs', 'sage')} instructions={__('Choose the FAQ groups to show here. The questions and answers are written once, in the FAQs screen, and show wherever their group is shown.', 'sage')}>
             <GroupField value={groups} onChange={(value) => setAttributes({ groups: value })} />
             <EditFaqsLink groupIds={groups} />
-            <Button variant="link" onClick={() => setManual(true)}>{__('Type the questions here instead (deprecated)', 'sage')}</Button>
           </Placeholder>
         </div>
       )}

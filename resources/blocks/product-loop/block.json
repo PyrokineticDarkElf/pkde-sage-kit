@@ -5,7 +5,7 @@
   "title": "Product Loop",
   "category": "widgets",
   "icon": "products",
-  "description": "A grid of WooCommerce products: choose how many, in what order (newest, best selling, top rated and so on), and which categories to include or leave out. Optionally with a section heading, description, \"View all\" link and a section theme. Uses the shop's own product cards. Replaces the Recent Products and Best Selling Products blocks.",
+  "description": "A grid of WooCommerce products: choose how many, in what order (newest, best selling, top rated and so on), and which categories to include or leave out. Optionally with a section heading, description, \"View all\" link and a section theme. Uses the shop's own product cards. Replaces the Recent Products, Best Selling Products and Featured Products blocks (set Show to the featured products).",
   "keywords": [
     "woocommerce",
     "shop",
@@ -52,6 +52,14 @@
     "description": {
       "type": "string",
       "default": ""
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "all",
+        "featured"
+      ],
+      "default": "all"
     },
     "viewAll": {
       "type": "boolean",

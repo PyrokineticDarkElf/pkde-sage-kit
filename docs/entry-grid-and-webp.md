@@ -2,6 +2,8 @@
 
 ## `sage/entry-grid`: a listing of every entry of a post type
 
+**Superseded:** the Recent Posts block (`sage/latest-posts`) now has a **Show** setting (`source`): the most recent, the sticky posts, or *every entry in the order of their Order field* (count 0 = all, no "View all" link), which is exactly what this block does. Entry Grid is hidden from the inserter; blocks already on pages keep rendering until a later release removes it.
+
 Recent Posts shows "the latest N" with a "view all" link. **Entry Grid** is the listing itself: a card grid of every published entry of one post type, for pages such as Portfolio or Services.
 
 * **Post type:** any registered, viewable post type (a select in the editor), blog posts by default. An unknown or non-public type falls back to posts.

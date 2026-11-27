@@ -28,7 +28,7 @@ const CARD_STYLE_OPTIONS = [
 ];
 
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, postType, categoryId, theme, cardStyle, layout } = attributes;
+  const { heading, description, count, postType, categoryId, theme, cardStyle, layout, source = 'latest' } = attributes;
   const blockProps = useBlockProps();
 
   const categories = useSelect(
@@ -62,10 +62,21 @@ function Edit({ attributes, setAttributes }) {
           />
         </PanelBody>
         <PanelBody title={__('Settings', 'sage')}>
+          <SelectControl
+            label={__('Show', 'sage')}
+            value={source}
+            options={[
+              { value: 'latest', label: __('The most recent', 'sage') },
+              { value: 'sticky', label: __('The sticky posts (blog posts)', 'sage') },
+              { value: 'manual', label: __('Every entry, in the order of their Order field', 'sage') },
+            ]}
+            onChange={(value) => setAttributes({ source: value, count: value === 'manual' ? 0 : Math.max(1, count) })}
+            help={source === 'manual' ? __('A listing page: no "View all" link. Set the order in each entry\'s Page Attributes.', 'sage') : undefined}
+          />
           <RangeControl
-            label={__('Number of posts', 'sage')}
-            min={1}
-            max={12}
+            label={source === 'manual' ? __('Number of entries (0 = all)', 'sage') : __('Number of posts', 'sage')}
+            min={source === 'manual' ? 0 : 1}
+            max={source === 'manual' ? 48 : 12}
             value={count}
             onChange={(value) => setAttributes({ count: value })}
           />

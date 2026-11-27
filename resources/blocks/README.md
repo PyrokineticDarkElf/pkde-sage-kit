@@ -9,7 +9,7 @@ PHP — no ACF or third-party block plugin needed:
 | Hero | Full-width hero: heading, supporting text, optional background image, button. | No |
 | Recent Posts (Grid) | Grid of the most recent blog posts, optionally filtered to one category. | No |
 | Hero Slider / Image Carousel autoplay | Optional auto-advance (off by default; never under reduced motion; Pause button) - see docs/autoplay-and-modal.md. | No |
-| Entry Grid | Card grid of EVERY published entry of any post type (a listing page such as Portfolio or Services, not a latest-N teaser): count 0 = all, ordered by the Order field then title, no "view all" link. | No |
+| Entry Grid (hidden: use Recent Posts, Show: every entry) | Card grid of EVERY published entry of any post type (a listing page such as Portfolio or Services, not a latest-N teaser): count 0 = all, ordered by the Order field then title, no "view all" link. | No |
 | Featured Posts | Grid of posts marked "Stick to the front page", or a manually chosen set. | No |
 | Product Categories | Grid of WooCommerce product categories: cards (default) or photograph tiles; optional include/exclude lists (in your order), label overrides and extra tiles that link anywhere. | Yes |
 | Product Loop | A configurable product grid on the shop's own cards (the `[products]` shortcode): count, columns, order by (shop order, best selling, top rated, newest, price, name, random), direction, include and exclude categories, live editor preview. | Yes |
