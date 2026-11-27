@@ -328,7 +328,7 @@ validates `config/brand-palette.json`'s `fonts` object (`validateFonts()`) and w
 unchanged. The actual work — self-hosting, real `<link rel=preload>` tags, variable-font detection,
 and CLS-safe metric-matched fallback fonts — is done by **`web/app/themes/sage/vite.config.js`'s
 own `fonts:` option**, using `laravel-vite-plugin`'s official Fonts feature
-(`laravel-vite-plugin/fonts`), rendered into `<head>` by the `@fonts` Blade directive in
+(`laravel-vite-plugin/fonts`), with the definitions built by the kit's `bin/vite-fonts.mjs` (the theme's `vite.config.js` imports `buildFontDefinitions` and `fontDevServerBasePathFix` from it, so a site carries no copy), rendered into `<head>` by the `@fonts` Blade directive in
 `layouts/app.blade.php`. There is no third-party request to `fonts.googleapis.com`/
 `fonts.gstatic.com` at all — every font file is fetched once at build/dev-server time and served
 from this theme's own build output from then on.
@@ -371,7 +371,7 @@ and a `weights` list:
 }
 ```
 
-`weights` replaces the default list for that slot (`vite.config.js`'s `DEFAULT_GOOGLE_WEIGHTS`);
+`weights` replaces the default list for that slot (`bin/vite-fonts.mjs`'s `DEFAULT_GOOGLE_WEIGHTS`: 400, 500, 600, 700);
 `styles`, `subsets` and the other options listed below work the same way. Only request weights the
 design actually uses: a Tailwind class for a weight you did not load (`font-bold` with no 700) is
 synthesised by the browser or falls to the nearest loaded weight.
