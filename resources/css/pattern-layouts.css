@@ -463,3 +463,21 @@
 .pkde-cta--picture .pkde-placeholder::after,
 .pkde-posts--overlay .pkde-card__media > div > svg,
 .pkde-posts--overlay .pkde-card__media > div > span { display: none; }
+
+/* Recent Posts, row that scrolls: a carousel like the product and People rows (dots under it, drag or swipe). The first card starts at the content edge, three fill the content width,
+   the last one stops at the content edge. Without script it scrolls sideways. Any card look (panel, overlay, label) sits in it. */
+.pkde-posts--rail { container-type: inline-size; }
+.wp-block-sage-section:has(.pkde-posts--rail) { overflow-x: clip; }
+.pkde-posts--rail .pkde-posts__viewport { overflow-x: auto; margin-right: calc((100cqw - 100vw) / 2); }
+.pkde-posts--rail [data-carousel-ready] .pkde-posts__viewport {
+  overflow: visible;
+  clip-path: inset(-2rem 0 -2rem calc((100cqw - 100vw) / 2));
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+}
+.pkde-posts--rail .pkde-posts__viewport > .grid { display: flex; gap: 2rem; }
+.pkde-posts--rail .pkde-posts__viewport > .grid > article { flex: 0 0 min(20rem, 80%); }
+.pkde-posts--rail .pkde-posts__viewport > .grid > article:last-child { margin-inline-end: calc((100vw - 100cqw) / 2); }
+@container (min-width: 60rem) {
+  .pkde-posts--rail .pkde-posts__viewport > .grid > article { flex-basis: calc((100cqw - 2 * 2rem) / 3); }
+}

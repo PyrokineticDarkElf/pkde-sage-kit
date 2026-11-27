@@ -67,7 +67,8 @@
         "list",
         "panel",
         "overlay",
-        "label"
+        "label",
+        "rail"
       ],
       "default": "cards"
     },
@@ -78,6 +79,16 @@
     "headingTab": {
       "type": "boolean",
       "default": false
+    },
+    "cardLook": {
+      "type": "string",
+      "enum": [
+        "",
+        "panel",
+        "overlay",
+        "label"
+      ],
+      "default": ""
     }
   },
   "supports": {

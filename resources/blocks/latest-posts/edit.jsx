@@ -9,7 +9,10 @@ import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 import { ServerPreview } from '../../js/server-preview.jsx';
 
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, postType, categoryId, layout, pinViewAll, headingTab, source = 'latest' } = attributes;
+  const { heading, description, count, postType, categoryId, layout, cardLook, pinViewAll, headingTab, source = 'latest' } = attributes;
+  // The older layout values panel, overlay and label mean the grid with that card look
+  const arrangement = ['feature', 'list', 'rail'].includes(layout) ? layout : 'cards';
+  const look = arrangement === 'feature' || arrangement === 'list' ? '' : (cardLook || (['panel', 'overlay', 'label'].includes(layout) ? layout : ''));
   const blockProps = useBlockProps();
 
   const categories = useSelect(
@@ -61,9 +64,32 @@ function Edit({ attributes, setAttributes }) {
             value={count}
             onChange={(value) => setAttributes({ count: value })}
           />
-          <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }, { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') }, { value: 'overlay', label: __('Picture behind the text, under a dark tint', 'sage') }, { value: 'label', label: __('Tall picture with a coloured label: title and category', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
+          <SelectControl
+            label={__('Layout', 'sage')}
+            value={arrangement}
+            options={[
+              { value: 'cards', label: __('Cards in a grid', 'sage') },
+              { value: 'rail', label: __('Row that scrolls', 'sage') },
+              { value: 'feature', label: __('One large post beside a list', 'sage') },
+              { value: 'list', label: __('Compact dated list', 'sage') },
+            ]}
+            onChange={(value) => setAttributes({ layout: value, cardLook: value === 'feature' || value === 'list' ? '' : look })}
+          />
+          {(arrangement === 'cards' || arrangement === 'rail') && (
+            <SelectControl
+              label={__('Card look', 'sage')}
+              value={look}
+              options={[
+                { value: '', label: __('Picture, title and text', 'sage') },
+                { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') },
+                { value: 'overlay', label: __('Picture behind the text, under a dark tint', 'sage') },
+                { value: 'label', label: __('Tall picture with a coloured label: title and category', 'sage') },
+              ]}
+              onChange={(value) => setAttributes({ cardLook: value, layout: arrangement })}
+            />
+          )}
           <ToggleControl label={__('Heading as a tab hanging from the top of the section', 'sage')} checked={!!headingTab} onChange={(value) => setAttributes({ headingTab: value })} />
-          {layout === 'panel' && (
+          {look === 'panel' && (
             <ToggleControl label={__('Pin "View all" to the bottom of the section', 'sage')} checked={!!pinViewAll} onChange={(value) => setAttributes({ pinViewAll: value })} />
           )}
           <SelectControl

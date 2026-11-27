@@ -79,13 +79,20 @@ if ($source === 'manual') {
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
-$posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list', 'panel', 'overlay', 'label'], true) ? $attributes['layout'] : 'cards';
-// the Panel layout puts "View all" under the grid, centred, instead of beside the heading
-$view_all_under = in_array($posts_layout, ['panel', 'overlay', 'label'], true) && ! empty($view_all_url) && $source !== 'manual';
+$posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list', 'panel', 'overlay', 'label', 'rail'], true) ? $attributes['layout'] : 'cards';
+// How the posts are arranged (cards in a grid, a row that scrolls, one large post beside a list, a dated list) and, for the grid and the row, which card look they take (panel, overlay,
+// label). The older layout values panel, overlay and label still work: they mean the grid with that look.
+$arrangement = in_array($posts_layout, ['feature', 'list', 'rail'], true) ? $posts_layout : 'cards';
+$look = in_array($arrangement, ['cards', 'rail'], true)
+    ? (in_array($attributes['cardLook'] ?? '', ['panel', 'overlay', 'label'], true) ? $attributes['cardLook'] : (in_array($posts_layout, ['panel', 'overlay', 'label'], true) ? $posts_layout : ''))
+    : '';
+// A look puts "View all" under the grid, centred, instead of beside the heading
+$view_all_under = $look !== '' && ! empty($view_all_url) && $source !== 'manual';
 $header_view_all = $view_all_under ? null : $view_all_url;
-// Panel layout option: the "View all" tab hangs from the section's bottom edge
+// Panel look option: the "View all" tab hangs from the section's bottom edge
 $pinned = $view_all_under && ! empty($attributes['pinViewAll']);
-$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}" . ($pinned ? ' has-pinned-tab' : '') . (! empty($attributes['headingTab']) ? ' has-heading-tab' : '')))));
+$loop_classes = trim(($arrangement !== 'cards' ? " pkde-posts--{$arrangement}" : '') . ($look !== '' ? " pkde-posts--{$look}" : '') . ($pinned ? ' has-pinned-tab' : '') . (! empty($attributes['headingTab']) ? ' has-heading-tab' : ''));
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($loop_classes !== '' ? ' pkde-posts ' . $loop_classes : ''))));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>
@@ -97,9 +104,20 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
         'tab' => ! empty($attributes['headingTab']),
         'themed' => (bool) $theme,
     ])->render(); ?>
-    <?php echo view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style, 'emptyMessage' => $empty_message])->render(); ?>
+    <?php
+    $grid_html = view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style, 'emptyMessage' => $empty_message])->render();
+
+if ($arrangement === 'rail' && str_contains($grid_html, '<div class="grid')) {
+    // The row that scrolls is the same carousel as the People row (resources/js/carousel.js): a viewport around the grid, the grid its track, dots made by the script
+    $grid_html = '<div class="pkde-posts__carousel" data-carousel data-carousel-loop="false"><div class="pkde-posts__viewport" data-carousel-viewport>'
+        . preg_replace('/<div class="grid/', '<div data-carousel-track class="grid', $grid_html, 1)
+        . '</div><div class="pkde-features__controls"><div class="pkde-features__dots" data-carousel-dots data-label="' . esc_attr__('Go to position', 'sage') . '"></div></div></div>';
+}
+
+echo $grid_html;
+?>
     <?php if ($view_all_under) : ?>
-        <?php echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => $posts_layout === 'panel' ? __('View all', 'sage') : $view_all_label, 'link' => $posts_layout !== 'panel'])->render(); ?>
+        <?php echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => $look === 'panel' ? __('View all', 'sage') : $view_all_label, 'link' => $look !== 'panel'])->render(); ?>
     <?php endif; ?>
     <?php echo \App\pkde_loop_theme_content_close($theme); ?>
 </div>
