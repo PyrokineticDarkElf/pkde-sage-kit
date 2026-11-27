@@ -86,7 +86,7 @@ function Edit({ attributes, setAttributes }) {
           <SelectControl
             label={__('Card look', 'sage')}
             value={cardLook || ''}
-            options={[{ value: '', label: __('The shop\'s card', 'sage') }, { value: 'tiles', label: __('Tiles: picture inset, SKU, bold price, full-width button', 'sage') }, { value: 'centred', label: __('Centred: picture tile, name, price and a rounded button', 'sage') }]}
+            options={[{ value: '', label: __('The site\'s default card', 'sage') }, { value: 'plain', label: __('The shop\'s standard card', 'sage') }, { value: 'tiles', label: __('Tiles: picture inset, SKU, bold price, full-width button', 'sage') }, { value: 'centred', label: __('Centred: picture tile, name, price and a rounded button', 'sage') }]}
             onChange={(value) => setAttributes({ cardLook: value })}
           />
         </PanelBody>

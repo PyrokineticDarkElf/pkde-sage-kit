@@ -80,7 +80,8 @@ function Edit({ attributes, setAttributes }) {
               label={__('Card look', 'sage')}
               value={look}
               options={[
-                { value: '', label: __('Picture, title and text', 'sage') },
+                { value: '', label: __('The site\'s default card', 'sage') },
+                { value: 'plain', label: __('Picture, title and text', 'sage') },
                 { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') },
                 { value: 'overlay', label: __('Picture behind the text, under a dark tint', 'sage') },
                 { value: 'label', label: __('Tall picture with a coloured label: title and category', 'sage') },

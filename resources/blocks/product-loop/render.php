@@ -75,7 +75,7 @@ if (! empty($attributes['viewAll']) && function_exists('wc_get_page_permalink'))
 }
 
 $loop_layout = in_array($attributes['layout'] ?? 'grid', ['grid', 'rail', 'feature', 'intro'], true) ? $attributes['layout'] : 'grid';
-$look = in_array($attributes['cardLook'] ?? '', ['tiles', 'centred'], true) ? $attributes['cardLook'] : ''; // Tiles: a white card with the picture inset, a SKU pill, a bold price, a full-width button. Centred: the picture in a white tile, the name, price and a rounded button centred under it
+$look = \App\card_look_for('product-loop', (string) ($attributes['cardLook'] ?? ''), ['tiles', 'centred']); // Tiles: a white card with the picture inset, a SKU pill, a bold price, a full-width button. Centred: the picture in a white tile, the name, price and a rounded button centred under it
 $tiles = $look === 'tiles';
 // "View all" as a tab under the products (a pill, or pinned to the Section's bottom edge) instead of the link beside the heading
 $tab_mode = in_array($attributes['viewAllTab'] ?? '', ['tab', 'pinned', 'link'], true) && $view_all_url !== '';

@@ -107,7 +107,8 @@
       "enum": [
         "",
         "tiles",
-        "centred"
+        "centred",
+        "plain"
       ],
       "default": ""
     },

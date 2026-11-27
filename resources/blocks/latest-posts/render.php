@@ -84,7 +84,7 @@ $posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 
 // label). The older layout values panel, overlay and label still work: they mean the grid with that look.
 $arrangement = in_array($posts_layout, ['feature', 'list', 'rail'], true) ? $posts_layout : 'cards';
 $look = in_array($arrangement, ['cards', 'rail'], true)
-    ? (in_array($attributes['cardLook'] ?? '', ['panel', 'overlay', 'label'], true) ? $attributes['cardLook'] : (in_array($posts_layout, ['panel', 'overlay', 'label'], true) ? $posts_layout : ''))
+    ? \App\card_look_for('latest-posts', in_array($posts_layout, ['panel', 'overlay', 'label'], true) && ! in_array($attributes['cardLook'] ?? '', ['panel', 'overlay', 'label', 'plain'], true) ? $posts_layout : (string) ($attributes['cardLook'] ?? ''), ['panel', 'overlay', 'label'])
     : '';
 // A look puts "View all" under the grid, centred, instead of beside the heading
 $view_all_under = $look !== '' && ! empty($view_all_url) && $source !== 'manual';
