@@ -17,16 +17,23 @@ if ($phones === [] && $emails === [] && $places === []) {
     return;
 }
 ?>
-<div <?php echo get_block_wrapper_attributes(['class' => 'pkde-block pkde-site-contact']); ?>>
+<?php
+$row = ! empty($attributes['row']);
+// In a row the email comes first, then the phone, then the address (the order of a contact line: write, call, visit)
+$order = $row ? ['emails', 'phones', 'places'] : ['phones', 'emails', 'places'];
+$groups = ['phones' => $phones, 'emails' => $emails, 'places' => $places];
+$components = [
+    'phones' => '<x-site-phone :index="$i" :label="$label" />',
+    'emails' => '<x-site-email :index="$i" :label="$label" />',
+    'places' => '<x-site-address :index="$i" :label="$label" />',
+];
+?>
+<div <?php echo get_block_wrapper_attributes(['class' => 'pkde-block pkde-site-contact' . ($row ? ' pkde-site-contact--row' : '')]); ?>>
     <ul class="pkde-site-contact__list">
-        <?php foreach ($phones as $i => $phone) : ?>
-            <li><?php echo \Illuminate\Support\Facades\Blade::render('<x-site-phone :index="$i" :label="$label" />', ['i' => $i, 'label' => count($phones) > 1]); ?></li>
-        <?php endforeach; ?>
-        <?php foreach ($emails as $i => $email) : ?>
-            <li><?php echo \Illuminate\Support\Facades\Blade::render('<x-site-email :index="$i" :label="$label" />', ['i' => $i, 'label' => count($emails) > 1]); ?></li>
-        <?php endforeach; ?>
-        <?php foreach ($places as $i => $place) : ?>
-            <li><?php echo \Illuminate\Support\Facades\Blade::render('<x-site-address :index="$i" :label="$label" />', ['i' => $i, 'label' => count($places) > 1]); ?></li>
+        <?php foreach ($order as $group) : ?>
+            <?php foreach ($groups[$group] as $i => $unused) : ?>
+                <li><?php echo \Illuminate\Support\Facades\Blade::render($components[$group], ['i' => $i, 'label' => count($groups[$group]) > 1]); ?></li>
+            <?php endforeach; ?>
         <?php endforeach; ?>
     </ul>
 </div>

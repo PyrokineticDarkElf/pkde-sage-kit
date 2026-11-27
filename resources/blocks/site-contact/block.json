@@ -24,6 +24,10 @@
     "showAddresses": {
       "type": "boolean",
       "default": true
+    },
+    "row": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

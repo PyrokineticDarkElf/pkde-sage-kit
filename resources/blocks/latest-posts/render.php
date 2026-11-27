@@ -85,7 +85,7 @@ $view_all_under = $posts_layout === 'panel' && ! empty($view_all_url) && $source
 $header_view_all = $view_all_under ? null : $view_all_url;
 // Panel layout option: the "View all" tab hangs from the section's bottom edge
 $pinned = $view_all_under && ! empty($attributes['pinViewAll']);
-$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}" . ($pinned ? ' pkde-posts--pinned' : '')))));
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}" . ($pinned ? ' has-pinned-tab' : '')))));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>
@@ -98,7 +98,7 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
     ])->render(); ?>
     <?php echo view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style, 'emptyMessage' => $empty_message])->render(); ?>
     <?php if ($view_all_under) : ?>
-        <p class="pkde-posts__more"><a class="pkde-posts__tab" href="<?php echo esc_url($view_all_url); ?>"><?php echo esc_html(__('View all', 'sage')); ?> <span aria-hidden="true">&rsaquo;</span></a></p>
+        <?php echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => __('View all', 'sage')])->render(); ?>
     <?php endif; ?>
     <?php echo \App\pkde_loop_theme_content_close($theme); ?>
 </div>

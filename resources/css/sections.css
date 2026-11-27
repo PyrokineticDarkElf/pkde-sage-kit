@@ -502,7 +502,10 @@
 .pkde-tai--ratio-wide .pkde-placeholder { --pkde-placeholder-ratio: 16 / 9; }
 .pkde-feature__media .pkde-placeholder { --pkde-placeholder-ratio: 4 / 3; }
 .pkde-tai__mosaic .pkde-placeholder { height: 100%; aspect-ratio: auto; }
-.pkde-gallery--contain img { object-fit: contain; padding: 0.75rem; }
+.pkde-gallery--centered :is(h2, p:not(.pkde-tab-row)) { text-align: center; margin-inline: auto; }
+.pkde-gallery--contain img { object-fit: contain; }
+.pkde-gallery--contain .grid > div { padding: 0.75rem; background-color: var(--section-card-bg, #fff); box-shadow: 0 0 0 var(--pkde-border-thin, 1px) var(--section-card-border, transparent); } /* each logo in a white card */
+.pkde-gallery--contain .grid > div .pkde-placeholder { border-radius: calc(var(--pkde-radius-lg, 1rem) / 2); }
 .wp-block-sage-gallery .pkde-placeholder { height: 100%; aspect-ratio: auto; }
 /* feature grid: numbered steps and big numbers */
 .pkde-features--steps .pkde-features__grid { counter-reset: pkde-step; }

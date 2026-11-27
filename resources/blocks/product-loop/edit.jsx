@@ -34,7 +34,7 @@ function Preview({ attributes }) {
 }
 
 function Edit({ attributes, setAttributes }) {
-  const { limit, columns, source, orderby, order, categories, excludeCategories, heading, description, viewAll, layout } = attributes;
+  const { limit, columns, source, orderby, order, categories, excludeCategories, heading, description, viewAll, layout, viewAllTab, cardLook } = attributes;
   const available = useProductCategories();
   const blockProps = useBlockProps();
 
@@ -74,6 +74,20 @@ function Edit({ attributes, setAttributes }) {
           <TextControl label={__('Heading', 'sage')} value={heading} onChange={(value) => setAttributes({ heading: value })} help={__('Leave empty for no heading.', 'sage')} />
           <TextareaControl label={__('Description', 'sage')} value={description} onChange={(value) => setAttributes({ description: value })} />
           <ToggleControl label={__('Show a "View all products" link', 'sage')} checked={!!viewAll} onChange={(value) => setAttributes({ viewAll: value })} />
+          {viewAll && (
+            <SelectControl
+              label={__('Show the link as', 'sage')}
+              value={viewAllTab || ''}
+              options={[{ value: '', label: __('A link beside the heading', 'sage') }, { value: 'tab', label: __('A "Shop all" pill under the products', 'sage') }, { value: 'pinned', label: __('A "Shop all" tab on the bottom edge of the section', 'sage') }]}
+              onChange={(value) => setAttributes({ viewAllTab: value })}
+            />
+          )}
+          <SelectControl
+            label={__('Card look', 'sage')}
+            value={cardLook || ''}
+            options={[{ value: '', label: __('The shop\'s card', 'sage') }, { value: 'tiles', label: __('Tiles: picture inset, SKU, bold price, full-width button', 'sage') }]}
+            onChange={(value) => setAttributes({ cardLook: value })}
+          />
         </PanelBody>
         <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>

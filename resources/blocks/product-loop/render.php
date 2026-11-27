@@ -69,19 +69,29 @@ if (! empty($attributes['viewAll']) && function_exists('wc_get_page_permalink'))
 }
 
 $loop_layout = in_array($attributes['layout'] ?? 'grid', ['grid', 'rail', 'feature', 'intro'], true) ? $attributes['layout'] : 'grid';
-echo '<div ' . get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($loop_layout === 'grid' ? '' : " pkde-products pkde-products--{$loop_layout}")))) . '>';
+$tiles = ($attributes['cardLook'] ?? '') === 'tiles'; // the Tiles card look: a white card with the picture inset, a SKU pill, a bold price and a full-width button
+// "View all" as a tab under the products (a pill, or pinned to the Section's bottom edge) instead of the link beside the heading
+$tab_mode = in_array($attributes['viewAllTab'] ?? '', ['tab', 'pinned'], true) && $view_all_url !== '';
+$loop_classes = trim(($loop_layout === 'grid' && ! $tiles ? '' : 'pkde-products') . ($loop_layout === 'grid' ? '' : " pkde-products--{$loop_layout}") . ($tiles ? ' pkde-products--tiles' : '') . ($tab_mode && $attributes['viewAllTab'] === 'pinned' ? ' has-pinned-tab' : ''));
+echo '<div ' . get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($loop_classes !== '' ? " {$loop_classes}" : '')))) . '>';
 echo \App\pkde_loop_theme_content_open($theme);
 echo view('pkde-kit::partials.blocks.section-header', [
     'heading' => $heading,
     'description' => (string) ($attributes['description'] ?? ''),
-    'viewAllUrl' => $view_all_url,
+    'viewAllUrl' => $tab_mode ? null : $view_all_url,
     'viewAllLabel' => __('View all products', 'sage'),
     'themed' => (bool) $theme,
 ])->render();
 // the card reads its style from this bridge (partials/blocks/product-grid.blade.php explains why); reset after, so it cannot leak into a later render
 $GLOBALS['pkde_product_card_style'] = $card_style;
+$GLOBALS['pkde_product_card_look'] = $tiles ? 'tiles' : '';
 echo do_shortcode($shortcode . ']');
 $GLOBALS['pkde_product_card_style'] = null;
+$GLOBALS['pkde_product_card_look'] = null;
+
+if ($tab_mode) {
+    echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => __('Shop all', 'sage')])->render();
+}
 echo \App\pkde_loop_theme_content_close($theme);
 echo '</div>';
 

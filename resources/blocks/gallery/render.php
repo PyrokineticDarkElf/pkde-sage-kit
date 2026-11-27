@@ -41,7 +41,10 @@ $aspect_class = match ($aspect_ratio) {
 
 $placeholders = ! $images ? max(0, min(12, (int) ($attributes['placeholders'] ?? 0))) : 0;
 $contain = ($attributes['fit'] ?? 'cover') === 'contain';
-$wrapper_attributes = get_block_wrapper_attributes($contain ? ['class' => 'pkde-gallery--contain'] : []);
+// An optional "View all" tab under the pictures (the block's link text, address and tab setting); pinned, it hangs from the Section's bottom edge
+$tab = in_array($attributes['linkTab'] ?? '', ['tab', 'pinned'], true) && trim((string) ($attributes['linkText'] ?? '')) !== '' && trim((string) ($attributes['linkUrl'] ?? '')) !== '';
+$classes = trim(($contain ? 'pkde-gallery--contain' : '') . (! empty($attributes['centered']) ? ' pkde-gallery--centered' : '') . ($tab && $attributes['linkTab'] === 'pinned' ? ' has-pinned-tab' : ''));
+$wrapper_attributes = get_block_wrapper_attributes($classes !== '' ? ['class' => $classes] : []);
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php if ($heading) : ?>
@@ -95,4 +98,7 @@ $wrapper_attributes = get_block_wrapper_attributes($contain ? ['class' => 'pkde-
     <?php else : ?>
         <p class="mt-6 text-center text-[color:var(--section-muted,var(--color-neutral-600))]"><?php esc_html_e('No images selected yet.', 'sage'); ?></p>
     <?php endif; ?>
+    <?php if ($tab) {
+        echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => esc_url_raw($attributes['linkUrl']), 'label' => $attributes['linkText']])->render();
+    } ?>
 </div>

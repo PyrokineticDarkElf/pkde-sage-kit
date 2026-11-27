@@ -1,6 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, RichText, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
-import { PanelBody, Button, RangeControl, SelectControl, ToggleControl, Placeholder } from '@wordpress/components';
+import { PanelBody, Button, RangeControl, SelectControl, TextControl, ToggleControl, Placeholder } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
@@ -39,6 +39,19 @@ function Edit({ attributes, setAttributes }) {
             help={__('Clicking an image opens it enlarged, with its own prev/next/close controls.', 'sage')}
             checked={enableLightbox}
             onChange={(value) => setAttributes({ enableLightbox: value })}
+          />
+        </PanelBody>
+        <PanelBody title={__('Heading', 'sage')} initialOpen={false}>
+          <ToggleControl label={__('Centre the heading and text', 'sage')} checked={!!attributes.centered} onChange={(value) => setAttributes({ centered: value })} />
+        </PanelBody>
+        <PanelBody title={__('"View all" link (optional)', 'sage')} initialOpen={false}>
+          <TextControl label={__('Text', 'sage')} value={attributes.linkText || ''} onChange={(value) => setAttributes({ linkText: value })} />
+          <TextControl label={__('Address', 'sage')} value={attributes.linkUrl || ''} onChange={(value) => setAttributes({ linkUrl: value })} />
+          <SelectControl
+            label={__('Show it as', 'sage')}
+            value={attributes.linkTab || ''}
+            options={[{ value: '', label: __('No link', 'sage') }, { value: 'tab', label: __('A pill under the pictures', 'sage') }, { value: 'pinned', label: __('A tab on the bottom edge of the section', 'sage') }]}
+            onChange={(value) => setAttributes({ linkTab: value })}
           />
         </PanelBody>
       </InspectorControls>

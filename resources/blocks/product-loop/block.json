@@ -90,6 +90,23 @@
         "intro"
       ],
       "default": "grid"
+    },
+    "viewAllTab": {
+      "type": "string",
+      "enum": [
+        "",
+        "tab",
+        "pinned"
+      ],
+      "default": ""
+    },
+    "cardLook": {
+      "type": "string",
+      "enum": [
+        "",
+        "tiles"
+      ],
+      "default": ""
     }
   },
   "supports": {

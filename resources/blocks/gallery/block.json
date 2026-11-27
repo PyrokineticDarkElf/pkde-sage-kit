@@ -51,6 +51,27 @@
         "contain"
       ],
       "default": "cover"
+    },
+    "linkText": {
+      "type": "string",
+      "default": ""
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "linkTab": {
+      "type": "string",
+      "enum": [
+        "",
+        "tab",
+        "pinned"
+      ],
+      "default": ""
+    },
+    "centered": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

@@ -16,6 +16,8 @@
   // card look this always had. See app.css's .pkde-section :where(article,
   // .woocommerce ul.products > .product) rule for what the marker class does.
   $cardStyle = $GLOBALS['pkde_product_card_style'] ?? 'white';
+  // The Tiles look of a Product Loop block (also bridged via $GLOBALS): a star on a featured product and the SKU under the title
+  $tiles = ($GLOBALS['pkde_product_card_look'] ?? '') === 'tiles';
 @endphp
 
 <li @php(wc_product_class(trim('pkde-product-card group relative flex flex-col gap-3 ' . ($cardStyle !== 'white' ? "pkde-card-{$cardStyle}" : '')), $product))>
@@ -26,6 +28,12 @@
     @php(do_action('woocommerce_before_shop_loop_item_title'))
 
     @include('pkde-kit::partials.product-badges', ['links' => $badgeLinks])
+
+    @if ($tiles && $product->is_featured())
+      <span class="pkde-badge pkde-badge--star" role="img" aria-label="{{ __('Featured product', 'sage') }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M10 1.8l2.5 5.1 5.6.8-4 4 .9 5.6L10 14.7l-5 2.6.9-5.6-4-4 5.6-.8L10 1.8z" /></svg>
+      </span>
+    @endif
 
     {{-- The picture link repeats the title link below it: hidden from assistive tech and the tab order (axe link-name). --}}
     <a aria-hidden="true" tabindex="-1" href="{{ get_permalink($productId) }}" class="block">
@@ -53,6 +61,10 @@
       </a>
     </h2>
     @php(do_action('woocommerce_shop_loop_item_title'))
+
+    @if ($tiles && $product->get_sku() !== '')
+      <span class="pkde-product-card__sku">{{ __('SKU:', 'sage') }} {{ $product->get_sku() }}</span>
+    @endif
 
     @if ($ratingPosition === 'below_title')
       @include('pkde-kit::partials.card-rating', ['position' => $ratingPosition])

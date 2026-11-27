@@ -5,7 +5,7 @@
   "title": "CTA",
   "category": "widgets",
   "icon": "megaphone",
-  "description": "A call-to-action section — heading, text, and up to two buttons. Two styles: a full section, or a compact banner strip. Optionally with a logo or picture beside the text.",
+  "description": "A call-to-action section \u2014 heading, text, and up to two buttons. Two styles: a full section, or a compact banner strip. Optionally with a logo or picture beside the text.",
   "keywords": [
     "cta",
     "call to action",
@@ -21,7 +21,8 @@
         "banner",
         "split",
         "boxed",
-        "link"
+        "link",
+        "promo"
       ]
     },
     "theme": {
@@ -93,6 +94,10 @@
     "placeholder": {
       "type": "boolean",
       "default": false
+    },
+    "badge": {
+      "type": "string",
+      "default": ""
     }
   },
   "supports": {

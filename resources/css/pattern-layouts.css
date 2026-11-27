@@ -67,6 +67,25 @@
 .pkde-posts--feature .grid > article:not(:first-child) { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 1rem; align-items: start; }
 .pkde-posts--feature .grid > article:not(:first-child) :is(p, .pkde-excerpt) { display: none; }
 .pkde-posts--list .grid { grid-template-columns: 1fr; gap: 0; }
+/* CTA, Promo style: badge, title, button and a small picture in one slim row; alone in a Section it makes a slim band */
+.wp-block-sage-section:has(> .pkde-cta--promo:only-child) { padding-block: var(--pkde-cta-promo-padding, 1.25rem); }
+.pkde-cta--promo { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
+.pkde-cta--promo .pkde-cta__text { flex: 1 1 18rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.75rem; padding: 0; }
+.pkde-cta--promo .pkde-cta__title { margin: 0; font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 800; text-transform: uppercase; line-height: 1.1; }
+.pkde-cta__badge.pkde-cta__badge.pkde-cta__badge {
+  padding: 0.4rem 1rem;
+  border-radius: var(--pkde-radius-md, 0.5rem);
+  background: var(--section-button-bg, currentColor);
+  color: var(--section-button-text, #fff);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pkde-cta--promo .pkde-cta__button { text-transform: uppercase; font-weight: 800; }
+.pkde-cta--promo .pkde-cta__media { flex: none; min-height: 0; width: clamp(9rem, 18vw, 15rem); overflow: hidden; border-radius: var(--pkde-radius-lg, 1rem); }
+.pkde-cta--promo .pkde-cta__media :is(img, .pkde-placeholder) { display: block; width: 100%; height: 5.5rem; min-height: 0; aspect-ratio: auto; object-fit: cover; border-radius: 0; }
 .pkde-posts--list.pkde-posts--list.pkde-posts--list.pkde-posts--list.pkde-posts--list .grid > article {
   display: block;
   padding: 1.25rem 0;
@@ -218,15 +237,17 @@
   text-transform: uppercase;
   color: var(--section-card-heading, inherit);
 }
-.pkde-posts__more { margin: 2rem 0 0; text-align: center; }
-.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab { /* repeated: the section's link rules are this specific */
+/* The "View all" tab under a loop's grid (Recent Posts Panel, Product Loop, Image Gallery): a pill in the section's button colours; with the block's "pin" setting (class has-pinned-tab)
+   a tab that hangs from the section's bottom edge, which then loses its bottom padding. A site's own colours: --pkde-tab-bg and --pkde-tab-text. */
+.pkde-tab-row { margin: 2rem 0 0; text-align: center; }
+.pkde-tab.pkde-tab.pkde-tab.pkde-tab.pkde-tab { /* repeated: the section's link rules are this specific */
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.75rem;
   border-radius: 999px;
-  background: var(--section-button-bg, currentColor);
-  color: var(--section-button-text, #fff);
+  background: var(--pkde-tab-bg, var(--section-button-bg, currentColor));
+  color: var(--pkde-tab-text, var(--section-button-text, #fff));
   border: var(--pkde-border-thin, 1px) solid var(--section-button-border, transparent);
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -234,15 +255,55 @@
   text-decoration: none;
 }
 
-/* Panel layout, "View all" pinned: the tab hangs from the section's bottom edge in the card colours (the section loses its bottom padding) */
-.wp-block-sage-section.wp-block-sage-section:has(.pkde-posts--pinned) { padding-bottom: 0; }
-.pkde-posts--pinned .pkde-posts__more { margin-bottom: 0; }
-.pkde-posts--pinned .pkde-posts__more { margin-top: 3rem; line-height: 0; }
-.pkde-posts--pinned .pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab {
+.wp-block-sage-section.wp-block-sage-section:has(.has-pinned-tab) { padding-bottom: 0; }
+.has-pinned-tab .pkde-tab-row { margin: 3rem 0 0; line-height: 0; }
+.has-pinned-tab .pkde-tab.pkde-tab.pkde-tab.pkde-tab.pkde-tab {
   border-radius: 1rem 1rem 0 0;
   border: 0;
   padding: 1rem 2.25rem;
   line-height: 1.4;
-  background: var(--section-card-bg, #fff);
-  color: var(--section-card-heading, inherit);
 }
+
+/* The editor's text alignment classes: the library's patterns use them, and a page that does not load the core block styles (the gallery) still centres */
+.has-text-align-center { text-align: center; }
+.has-text-align-left { text-align: left; }
+.has-text-align-right { text-align: right; }
+
+/* Product loop, Tiles card look: a white card with the picture inset, a New badge and a star hanging from the top edge, the SKU as a pill, a bold price, a full-width button.
+   Colours are the section's: the card's own, the accent for New and the button, the card heading colour for the star and the text. */
+.pkde-products--tiles .woocommerce ul.products > li.product {
+  padding: 1.25rem;
+  border-radius: var(--pkde-radius-xl, 1.5rem);
+  box-shadow: 0 0 0 var(--pkde-border-thin, 1px) var(--section-card-border, transparent), 0 0.5rem 1.25rem rgb(0 0 0 / 0.12);
+}
+.pkde-products--tiles .pkde-product-card__media { overflow: visible; border-radius: 0; background: transparent; }
+.pkde-products--tiles .pkde-product-card__media > a > * { border-radius: calc(var(--pkde-radius-lg, 1rem) / 2); overflow: hidden; }
+.pkde-products--tiles .pkde-badge { top: -1.25rem; border-radius: 0 0 0.4rem 0.4rem; padding: 0.55rem 0.8rem; font-size: 0.8125rem; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; }
+.pkde-products--tiles .pkde-badge--new { right: 2.75rem; left: auto; background: var(--section-accent, #1f7a4d); color: var(--section-bg, #fff); }
+.pkde-products--tiles .pkde-badge--sale { left: 0; }
+.pkde-products--tiles .pkde-badge--star { position: absolute; top: -1.25rem; right: 0; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; background: var(--section-card-heading, #b3123a); color: var(--section-card-bg, #fff); }
+.pkde-products--tiles .pkde-badge--star svg { width: 1.1rem; height: 1.1rem; }
+.pkde-product-card__sku { align-self: flex-start; padding: 0.25rem 0.8rem; border-radius: 999px; background: color-mix(in srgb, var(--section-card-heading, currentColor) 12%, transparent); color: var(--section-card-text, inherit); font-size: 0.8125rem; line-height: 1.3; }
+.pkde-products--tiles .pkde-product-card__body > div.text-sm { font-size: 1.5rem; font-weight: 800; line-height: 1.2; opacity: 1; color: var(--section-card-heading, inherit); }
+.pkde-products--tiles .pkde-product-card__title a { color: var(--section-card-heading, inherit); }
+.pkde-products--tiles .pkde-product-actions { margin-top: 0.25rem; }
+.pkde-products--tiles .pkde-product-actions :is(a.button, button.button) { display: block; width: 100%; padding: 0.7rem 1rem; border-radius: 0.5rem; background: var(--section-accent, #1f7a4d); color: var(--section-bg, #fff); border-color: transparent; text-align: center; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+
+/* Product loop, row that scrolls: the row runs on to the screen's edges, the cards start at the content edge, four fill the content width */
+.pkde-products--rail { container-type: inline-size; }
+.wp-block-sage-section:has(.pkde-products--rail) { overflow-x: clip; }
+.pkde-products--rail .woocommerce ul.products {
+  --pkde-rail-inset: calc((100vw - 100cqw) / 2);
+  margin-inline: calc(-1 * var(--pkde-rail-inset));
+  padding-inline: var(--pkde-rail-inset);
+  scroll-padding-inline: var(--pkde-rail-inset);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, currentColor 40%, transparent) transparent;
+}
+@container (min-width: 60rem) {
+  .pkde-products--rail .woocommerce ul.products > li.product { flex-basis: calc((100cqw - 3 * 1.25rem) / 4); }
+}
+.pkde-products--tiles.pkde-products--rail .woocommerce ul.products { padding-top: 1.75rem; } /* room for the badges that hang from the cards' top edge */
+.pkde-products--tiles > .mb-8 { text-align: center; }
+.pkde-products--tiles > .mb-8 > div { justify-content: center; }
+.pkde-products--tiles > .mb-8 p { margin-inline: auto; }

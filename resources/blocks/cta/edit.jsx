@@ -11,6 +11,7 @@ const STYLE_OPTIONS = [
   { label: __('Split (text beside a picture)', 'sage'), value: 'split' },
   { label: __('Boxed (a card in the section)', 'sage'), value: 'boxed' },
   { label: __('Link (one bold link with a circled arrow)', 'sage'), value: 'link' },
+  { label: __('Promo (badge, title, button and a small picture in one row)', 'sage'), value: 'promo' },
 ];
 
 const BUTTON_STYLE_OPTIONS = [
@@ -35,6 +36,7 @@ function Edit({ attributes, setAttributes }) {
     imageUrl,
     imageId,
     imageAlt,
+    badge,
   } = attributes;
 
   const isBanner = style === 'banner';
@@ -58,6 +60,7 @@ function Edit({ attributes, setAttributes }) {
             options={STYLE_OPTIONS}
             onChange={(value) => setAttributes({ style: value })}
           />
+          {style === 'promo' && <TextControl label={__('Badge', 'sage')} value={badge || ''} onChange={(value) => setAttributes({ badge: value })} />}
         </PanelBody>
         <PanelBody title={__('Logo or picture (optional)', 'sage')} initialOpen={false}>
           <MediaUploadCheck>

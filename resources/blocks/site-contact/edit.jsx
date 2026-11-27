@@ -18,6 +18,7 @@ function Edit({ attributes, setAttributes }) {
           <ToggleControl label={__('Phone numbers', 'sage')} checked={attributes.showPhones} onChange={(value) => setAttributes({ showPhones: value })} />
           <ToggleControl label={__('Email addresses', 'sage')} checked={attributes.showEmails} onChange={(value) => setAttributes({ showEmails: value })} />
           <ToggleControl label={__('Addresses', 'sage')} checked={attributes.showAddresses} onChange={(value) => setAttributes({ showAddresses: value })} />
+          <ToggleControl label={__('In one centred row, with icons', 'sage')} checked={attributes.row} onChange={(value) => setAttributes({ row: value })} />
         </PanelBody>
         <PanelBody title={__('Site details', 'sage')} initialOpen={false}>
           <p>{__('This block shows the details set once for the whole site, so there is nothing to type here.', 'sage')}</p>

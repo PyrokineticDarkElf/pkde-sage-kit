@@ -39,6 +39,24 @@ if ($style === 'link') {
     return;
 }
 
+// The `promo` layout: a slim band in one row: a badge, the title, one button and a small picture. The heading is the title; no supporting text.
+if ($style === 'promo') {
+    $badge = trim((string) ($attributes['badge'] ?? ''));
+    $picture = ($slot_id || $slot_url || ! empty($attributes['placeholder']))
+        ? \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium_large', ['loading' => 'lazy', 'class' => 'pkde-cta__img'], ! empty($attributes['placeholder']))
+        : '';
+    echo '<div ' . get_block_wrapper_attributes(['class' => 'pkde-block pkde-cta pkde-cta--promo' . ($theme ? " theme-{$theme}" : '')]) . '>'
+        . '<div class="pkde-cta__text">'
+        . ($badge !== '' ? '<span class="pkde-cta__badge">' . esc_html($badge) . '</span>' : '')
+        . ($heading !== '' ? '<h2 class="pkde-cta__title">' . wp_kses_post($heading) . '</h2>' : '')
+        . '</div>'
+        . (($primary_text !== '' && $primary_url !== '') ? '<a href="' . esc_url($primary_url) . '" class="' . esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))) . ' pkde-cta__button no-underline">' . esc_html($primary_text) . '</a>' : '')
+        . ($picture !== '' ? '<div class="pkde-cta__media">' . $picture . '</div>' : '')
+        . '</div>';
+
+    return;
+}
+
 // Two more layouts: `split` (the text beside a picture that fills its half of the panel and takes the panel's corners) and `boxed` (a card in the section, in the
 // section's card colours). The picture of a split is a real photograph that is cropped, not the logo of the banner.
 if (in_array($style, ['split', 'boxed'], true)) {
