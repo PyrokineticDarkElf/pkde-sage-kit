@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * The global call-to-action band (WP-100, tier 3). The structure is the kit's; the content is the site's, from config/pkde-sections.php
+ * The global call-to-action band (tier 3). The structure is the kit's; the content is the site's, from config/pkde-sections.php
  * (['cta-band' => ['text' => ..., 'buttonText' => ..., 'buttonUrl' => ..., 'logo' => url or attachment id, 'logoAlt' => ..., 'theme' => 'brand-slate']]).
  * The page carries no copy of it. Without a declaration the block prints nothing (the editor, over REST, says why).
  */

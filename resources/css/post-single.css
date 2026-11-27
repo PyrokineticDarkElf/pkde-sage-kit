@@ -1,5 +1,5 @@
 /**
- * The blog single (partials/content-single, tcs's layout as the kit default, owner via MGR-66): a header, a prominent featured image, a reading column
+ * The blog single (partials/content-single, a site's layout as the kit default): a header, a prominent featured image, a reading column
  * with the contents list beside it, then share, previous/next, the author, related and recent posts and the tags. A site changes the look with these
  * variables on :root, never by copying the view or restyling the classes:
  *

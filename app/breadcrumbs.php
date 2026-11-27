@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Breadcrumbs the KIT owns (owner via the manager, MGR-77 parity): the same separator and labels on every site, whatever its Rank Math settings.
+ * Breadcrumbs the KIT owns: the same separator and labels on every site, whatever its Rank Math settings.
  *
  *   - Rank Math's trail is used (and its BreadcrumbList schema stays), but its settings and labels are forced to the standard through
  *     `rank_math/frontend/breadcrumb/settings` and `/strings`: the " / " separator, the "Home" label, the current page as the last crumb, ancestors
@@ -69,7 +69,7 @@ function deepest_term(array $terms, callable $depth): ?object
 
 /**
  * Puts a product's category path into its trail: Rank Math only adds one when its "primary taxonomy" setting for products is set, and that is a
- * per-site wp-admin setting the kit does not control, so a single product's trail was "Home / Product" (tcs, TCS-112; before it was WooCommerce's
+ * per-site wp-admin setting the kit does not control, so a single product's trail was "Home / Product" (a site; before it was WooCommerce's
  * "Home / Wall Clocks / Modern Wall Clocks / Product"). The crumbs [label, url] of the path go in front of the last crumb (the product), unless the trail
  * already has them. Pure.
  *

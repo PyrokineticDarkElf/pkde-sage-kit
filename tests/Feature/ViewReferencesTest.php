@@ -236,13 +236,13 @@ it('ships the phone picker without a third-party host: self-hosted utils, a dyna
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('.wpcf7 .iti');
 });
 
-it('does not force every block stylesheet to load (on-demand block assets stay on, TCS-87)', function () {
+it('does not force every block stylesheet to load (on-demand block assets stay on)', function () {
     foreach (kitSourceFiles() as $file) {
         expect(file_get_contents($file))->not->toMatch("/add_filter\\(\\s*'should_load_separate_core_block_assets'/");
     }
 });
 
-it('puts the page gutter in the content grid tracks, not in padding on every child (MGR-62)', function () {
+it('puts the page gutter in the content grid tracks, not in padding on every child', function () {
     $root = dirname(__DIR__, 2);
     $css = file_get_contents("$root/resources/css/kit.css");
 
@@ -262,7 +262,7 @@ it('ships a cached oEmbed helper that never fetches a non-http URL and remembers
         ->and($helpers)->toContain('set_transient($key, $html, $html === \'\' ? 10 * MINUTE_IN_SECONDS : 12 * HOUR_IN_SECONDS)');
 });
 
-it('guards every block render.php against a direct request, and the shop page content against drafts and passwords (MGR-67)', function () {
+it('guards every block render.php against a direct request, and the shop page content against drafts and passwords', function () {
     $root = dirname(__DIR__, 2);
     $unguarded = [];
     foreach (glob("$root/resources/blocks/*/render.php") as $file) {
@@ -275,7 +275,7 @@ it('guards every block render.php against a direct request, and the shop page co
         ->and(file_get_contents("$root/app/View/Composers/ProductArchive.php"))->toContain("post_password_required(\$page)")->toContain("\$page->post_status !== 'publish'");
 });
 
-it('shows the editor canvas at the page width: the Section rules and the wide page template come from files the theme imports (MGR-62 editor parity)', function () {
+it('shows the editor canvas at the page width: the Section rules and the wide page template come from files the theme imports (editor parity)', function () {
     $root = dirname(__DIR__, 2);
     $kit = file_get_contents("$root/resources/css/kit.css");
     $measure = file_get_contents("$root/resources/css/page-measure.css");
@@ -308,7 +308,7 @@ it('themes the page header band with variables instead of hard-coded neutral cla
         ->and(file_get_contents("$root/bin/generate-theme-tokens.mjs"))->toContain('page header band');
 });
 
-it('draws the product card action row from classes: one aligned row for the button and View basket, level cards, a layout class a site can reuse (tcs)', function () {
+it('draws the product card action row from classes: one aligned row for the button and View basket, level cards, a layout class a site can reuse', function () {
     $root = dirname(__DIR__, 2);
     $view = file_get_contents("$root/resources/views/woocommerce/content-product.blade.php");
     $css = file_get_contents("$root/resources/css/shop-pages.css");

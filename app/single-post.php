@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The blog single (tcs's layout as the kit default, owner via MGR-66): helpers for resources/views/partials/content-single and its parts. Pure
+ * The blog single (a site's layout as the kit default): helpers for resources/views/partials/content-single and its parts. Pure
  * where it can be (the schema and the share links are built from plain values), so a test needs no WordPress.
  *
  * Sections can be switched off one by one with `pkde_kit/single_show` (bool $show, string $section, ?WP_Post $post); the sections are

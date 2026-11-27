@@ -3,7 +3,7 @@
 namespace App;
 
 /**
- * Reads a shop request's filter arguments before any product query runs (WP-96, C): which declared groups it names, which values exist, whether it is
+ * Reads a shop request's filter arguments before any product query runs (C): which declared groups it names, which values exist, whether it is
  * within the caps, and what its one canonical URL is. Pure: WordPress only enters through the two callables, so it is tested without it.
  *
  * The answers:

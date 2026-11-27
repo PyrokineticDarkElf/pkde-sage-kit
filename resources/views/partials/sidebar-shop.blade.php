@@ -10,7 +10,7 @@
   Shared by the shop page and every product taxonomy archive (category,
   tag, brand) so the filter set lives in one place.
 
-  Per-term counts (\App\ShopFilterCounts, WP-96) are faceted, not
+  Per-term counts (\App\ShopFilterCounts) are faceted, not
   sitewide: the number beside an option is what the grid shows after choosing
   that option alone in its group, on top of every other applied choice, the
   archive, the price and the sale/new views.
@@ -91,7 +91,7 @@
     @endforeach
     </div>
 
-    {{-- Nothing is sent until "Apply filters" (WP-89): a tick only changes the form. The button is a plain submit, so the form works without JavaScript; with
+    {{-- Nothing is sent until "Apply filters": a tick only changes the form. The button is a plain submit, so the form works without JavaScript; with
          it the button shows how many choices differ from what is applied now. "Reset" is a link to the archive without the form's choices when some are
          applied, else a native reset button (back to the rendered, unfiltered state, no request). --}}
     @php($filterQuery = \App\ShopFilters::currentQuery())

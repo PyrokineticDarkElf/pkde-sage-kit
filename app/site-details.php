@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Site details in the theme (WP-106): the helper `site_detail()`, the formatting the components, blocks and shortcodes share, and the shortcodes. The values come from the platform's
- * `site-details` module (Settings > Site details); a site without that module keeps working: the data is built from its `client_*` options, the way the footer always read them; and so does a site whose Site details are not filled in yet (a bump never removes a phone number: TPL-277).
+ * Site details in the theme: the helper `site_detail()`, the formatting the components, blocks and shortcodes share, and the shortcodes. The values come from the platform's
+ * `site-details` module (Settings > Site details); a site without that module keeps working: the data is built from its `client_*` options, the way the footer always read them; and so does a site whose Site details are not filled in yet (a bump never removes a phone number).
  * Pure functions where they can be (the unit tests load this file without WordPress); the Blade components in resources/views/components and the blocks sage/site-contact,
  * sage/site-socials and sage/site-hours print them.
  */
@@ -160,7 +160,7 @@ function site_social_list(array $socials): array
 const SITE_LEGACY_GROUPS = ['phones', 'emails', 'locations', 'socials'];
 
 /**
- * The details with the old `client_*` values filled in wherever Site details has nothing for a group (TPL-277): a bump to a kit that reads Site details must never remove a phone
+ * The details with the old `client_*` values filled in wherever Site details has nothing for a group: a bump to a kit that reads Site details must never remove a phone
  * number, an email, an address or a profile that the site's old options still hold, even before `site-details-migrate.php apply` has run. A group Site details does hold is
  * never touched.
  *
@@ -200,7 +200,7 @@ function site_details_legacy(): array
 }
 
 /**
- * All the details the site shows: the platform module's merged values, with the old `client_*` options filling any group Site details does not hold yet (TPL-277); or the old
+ * All the details the site shows: the platform module's merged values, with the old `client_*` options filling any group Site details does not hold yet; or the old
  * options alone when the module is not loaded.
  */
 function site_details_data(): array
@@ -247,7 +247,7 @@ function site_locations(): array
 }
 
 /**
- * Whether the header shows the phone number and the social icons (the optional slot, WP-106). OFF by default (the footer always shows them); a site switches it on with
+ * Whether the header shows the phone number and the social icons (the optional slot). OFF by default (the footer always shows them); a site switches it on with
  * `add_filter('pkde_kit/header_site_details', '__return_true')`.
  */
 function site_header_details(): bool

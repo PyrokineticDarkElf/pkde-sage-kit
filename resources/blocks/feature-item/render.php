@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * One feature of a feature grid (WP-100). An icon (drawn in the section's icon colour) or a picture, a heading, a text, an optional link.
+ * One feature of a feature grid. An icon (drawn in the section's icon colour) or a picture, a heading, a text, an optional link.
  *
  * @var array $attributes
  */

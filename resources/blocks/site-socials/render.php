@@ -4,7 +4,7 @@ if (! defined('ABSPATH')) {
     exit; // never run when requested directly
 }
 
-/** Social links block (WP-106): the social profiles of Site details as icon links, in the section's colours. Nothing to type. */
+/** Social links block: the social profiles of Site details as icon links, in the section's colours. Nothing to type. */
 if (\App\social_links() === []) {
     return;
 }

@@ -1,6 +1,6 @@
 <?php
 
-// The pattern bank (WP-108 B): every pattern is "Family: Variant", has its family's one category, is built from kit and curated core blocks only, its attributes are the blocks' own,
+// The pattern bank: every pattern is "Family: Variant", has its family's one category, is built from kit and curated core blocks only, its attributes are the blocks' own,
 // its outer Section is locked to content, and nothing in it is lorem ipsum or a link off the site. The editor side (0 invalid blocks as Editor and as Administrator) and the look
 // (3 themes x 3 shapes x 2 widths) are proved on the template stack.
 require_once dirname(__DIR__, 2) . '/app/patterns.php';

@@ -1,4 +1,4 @@
-# The kit's motion system (WP-103)
+# The kit's motion system
 
 Subtle, consistent, never in the way of the first paint: a few named timings, one reveal on scroll, one card zoom, a hover and a press state, a smooth accordion, and a site switch.
 
@@ -36,7 +36,7 @@ Movement on hover (the lift, the card image zoom) applies only for a pointer tha
 - **New Sections reveal by default**; existing Sections keep what they have (a Section saved without the setting stays as it is). Turning the toggle off stores an empty value, so it stays off.
 
 ## Other behaviour
-Slider and carousel arrows and dots jump instead of sliding for visitors who prefer reduced motion; the dots animate `transform`, not `width`; no `transition: all`; accordion items, FAQ rows and the Details block open smoothly where the browser can animate to the content's height (`interpolate-size`, from tcs).
+Slider and carousel arrows and dots jump instead of sliding for visitors who prefer reduced motion; the dots animate `transform`, not `width`; no `transition: all`; accordion items, FAQ rows and the Details block open smoothly where the browser can animate to the content's height (`interpolate-size`).
 
 ## What not to animate
 The page on load, the LCP, the hero, sliders and the first section; prices, the basket and checkout; form errors; parallax or scroll-jacking; anything that loops over 5 seconds without a pause; layout properties; the product gallery (it keeps CLS 0).

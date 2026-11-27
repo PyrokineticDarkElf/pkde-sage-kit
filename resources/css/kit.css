@@ -27,7 +27,7 @@
 @import "./sections.css";
 @import "./pattern-layouts.css";
 
-/* Concentric cards (WP-108): a card's corner radius and padding. An image or other media INSET in a padded card takes the radius minus the padding, so its corners sit
+/* Concentric cards: a card's corner radius and padding. An image or other media INSET in a padded card takes the radius minus the padding, so its corners sit
    concentric with the card's (0 when the padding is as large as the radius, and 0 everywhere in the sharp preset); a FLUSH (edge to edge) picture takes the card's radius on the
    corners it shares with the card. A site sets either token in its own CSS. */
 :root {
@@ -125,7 +125,7 @@
    * element's own genuinely-available width, never a raw viewport unit, and
    * the gutter is part of the track sizing — one definition, not two.
    *
-   * MGR-62: the page measure is one token pair, `--container-content` and `--page-gutter`, the header's. The wide track is the measure
+   * the page measure is one token pair, `--container-content` and `--page-gutter`, the header's. The wide track is the measure
    * (the header's content width: `--container-content` less two gutters, or the container less two gutters on a narrow screen); the
    * content track is the prose reading width (`--content-grid-width`, 48rem, never wider than the measure); the outer tracks take the rest.
    * The gutter is therefore in the TRACKS, not in padding on each child: a child's box is its track, so text, images, borders and
@@ -226,7 +226,7 @@
     outline-offset: 2px;
   }
 
-  /* A kit block's "Button style" (WP-109) for a site that declares no `buttons`: secondary is the outline button, text a label on an underline in the section's button
+  /* A kit block's "Button style" for a site that declares no `buttons`: secondary is the outline button, text a label on an underline in the section's button
      colour. A site that declares `buttons` draws all three from the generated variables instead (generated/section-themes.css). */
   .pkde-btn.pkde-btn--secondary {
     background-color: var(--pkde-theme-alt-btn-bg);
@@ -875,14 +875,14 @@
     opacity: 1;
   }
 
-  /* The gallery has its final height from the first paint (WP-91, TPL-181; bb product page: layout shift 0.30 on a phone, 0.09 on a desktop).
+  /* The gallery has its final height from the first paint (a site product page: layout shift 0.30 on a phone, 0.09 on a desktop).
      WooCommerce prints every picture stacked at full width with the whole gallery at opacity 0, then its script (on window load) turns them
      into one picture and a row of thumbnails: the page below jumped up by three pictures' height and the LCP picture stayed invisible until
      then. So: (1) show the gallery from the start (the inline opacity:0 is WooCommerce's, hence !important); (2) until the script has built the
      viewport, show the first picture only; (3) the viewport is as high as the picture, whatever its shape (flexslider sets an inline height
-     later; a fixed 4:3 here clipped square pictures, tcs TCS-131, 2026.11.19; --pkde-gallery-ratio forces a ratio only for a site that wants one);
+     later; a fixed 4:3 here clipped square pictures, tcs2026.11.19; --pkde-gallery-ratio forces a ratio only for a site that wants one);
      (3b) but for the instant between the script building the viewport and setting that inline height, the viewport has no height of its own and takes
-     every stacked picture's height (bb: 14,000 px, a layout shift of 0.25 to 0.67 on a throttled load, TPL-244): so until the inline height is there it is
+     every stacked picture's height (a site: 14,000 px, a layout shift of 0.25 to 0.67 on a throttled load): so until the inline height is there it is
      the ratio of the picture the kit shows, 4:3, or the site's --pkde-gallery-ratio; (4) keep room for the thumbnail row until it exists. */
   .woocommerce div.product .woocommerce-product-gallery {
     opacity: 1 !important;
@@ -1016,7 +1016,7 @@
  * directly rather than assuming, after getting caught by exactly this once
  * already in this same file.
  *
- * The look is variables (TPL-196, from jsd's workaround; defaults are the look below): --pkde-form-columns (2 from 640px; 1 for a single column),
+ * The look is variables (from a site's workaround; defaults are the look below): --pkde-form-columns (2 from 640px; 1 for a single column),
  * --pkde-form-gap, --pkde-form-label-size / -weight / -color / -gap, --pkde-form-field-border / -radius / -bg, --pkde-form-focus / -focus-ring,
  * --pkde-form-submit-bg / -color / -radius / -hover-bg / -hover-color. A dark theme redefines the colours under its own selector.
  */
@@ -1144,7 +1144,7 @@ iframe:focus-visible {
 }
 
 /**
- * An Image block placed directly in a Grid block fills its cell (BB-49, from bb): without this the cell is as tall as the grid row but the
+ * An Image block placed directly in a Grid block fills its cell: without this the cell is as tall as the grid row but the
  * picture keeps its own height, so photographs in a grid look shorter than their neighbours. The crop stays the block's own Scale setting
  * (object-fit comes from the block). Unlayered on purpose, like the accordion rules above: WordPress core's `.wp-block-image img { height: auto }`
  * is unlayered too, and a layered rule would lose to it. A site that wants the old look overrides it in its own CSS.

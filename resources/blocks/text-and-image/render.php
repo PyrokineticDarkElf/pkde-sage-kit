@@ -5,7 +5,7 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Text and image block (WP-100): the text side is InnerBlocks ($content), the picture side one image or a three-picture mosaic.
+ * Text and image block: the text side is InnerBlocks ($content), the picture side one image or a three-picture mosaic.
  *
  * @var array $attributes
  * @var string $content the rendered inner blocks
@@ -27,7 +27,7 @@ if ($image_id || $image_url) {
     }
 }
 
-// A pattern's empty picture slot: one frame, or the three of the mosaic, until the editor chooses pictures (WP-108 B).
+// A pattern's empty picture slot: one frame, or the three of the mosaic, until the editor chooses pictures.
 if ($images === [] && ! empty($attributes['placeholder'])) {
     $frame = '<span class="pkde-placeholder" role="img" aria-label="' . esc_attr__('Picture placeholder: choose a picture', 'sage') . '"></span>';
     $images = array_fill(0, (int) $attributes['placeholder'] === 3 ? 3 : 1, $frame);

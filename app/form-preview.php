@@ -3,7 +3,7 @@
 namespace App;
 
 /**
- * The block editor's preview of a Contact Form 7 form (WP-100): a Shortcode or Paragraph block that holds only `[contact-form-7 ...]` shows the real form in the canvas
+ * The block editor's preview of a Contact Form 7 form: a Shortcode or Paragraph block that holds only `[contact-form-7 ...]` shows the real form in the canvas
  * (resources/js/form-preview.jsx asks this route), not the raw shortcode. Display only: scripts and the Turnstile widget are removed from the markup, no CF7 script is loaded
  * in the canvas, and the preview is inert, so nothing is submitted and no Turnstile request goes out. Only `contact-form-7` shortcodes are answered; any other text gets an
  * empty answer. Anyone who can edit posts may ask (an Editor sees the forms an Administrator inserted).
@@ -37,7 +37,7 @@ if (! function_exists('add_action')) {
     return; // outside WordPress (the unit tests)
 }
 
-// WP-105 phase 1: pkde/platform's `cf7-editor-preview` module registers this route when it is on (PKDE_PLATFORM_CF7_EDITOR_PREVIEW); this copy is the fallback.
+// pkde/platform's `cf7-editor-preview` module registers this route when it is on (PKDE_PLATFORM_CF7_EDITOR_PREVIEW); this copy is the fallback.
 if (! defined('PKDE_PLATFORM_CF7_EDITOR_PREVIEW')) {
     add_action('rest_api_init', function () {
         register_rest_route('pkde/v1', '/form-preview', [

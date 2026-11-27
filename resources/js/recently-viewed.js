@@ -1,4 +1,4 @@
-// Recently viewed products (app/woocommerce/recently-viewed.php, TPL-134). The page carries no visitor data: a product page has an empty marker
+// Recently viewed products (app/woocommerce/recently-viewed.php). The page carries no visitor data: a product page has an empty marker
 // (data-pkde-recent-view = its own id) and a placeholder box (data-pkde-recent). This file keeps the list in the browser's localStorage (first-party,
 // no cookie), merges it into the account when the visitor is logged in, and fills the box with the next batch from the kit's endpoint.
 // Storage that cannot be read or written (private mode, blocked) just means no list: nothing breaks.

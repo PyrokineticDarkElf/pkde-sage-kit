@@ -1,5 +1,5 @@
 {{--
-  Feature grid (WP-100). Props: $wrapper (block wrapper attributes, escaped), $eyebrow, $heading, $intro, $content (the rendered feature items).
+  Feature grid. Props: $wrapper (block wrapper attributes, escaped), $eyebrow, $heading, $intro, $content (the rendered feature items).
 --}}
 <div {!! $wrapper !!}>
   @if ($heading !== '' || $intro !== '' || $eyebrow !== '')

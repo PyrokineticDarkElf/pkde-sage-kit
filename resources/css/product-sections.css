@@ -1,11 +1,11 @@
 /**
- * The product page's "more products" sections (partials/product-section, app/woocommerce/product-sections.php, MGR-79) and the page's H2 scale.
+ * The product page's "more products" sections (partials/product-section, app/woocommerce/product-sections.php) and the page's H2 scale.
  *
  * Variables (set in the site's CSS, never by rewriting the rules):
  *   --pkde-product-h2-font / -size / -weight / -leading / -tracking   every H2 on the product page: the tabs' headings (Description, Additional
  *                                       information, Reviews), the sections' titles and WooCommerce's own Related/Upsells heading. Defaults: the
  *                                       display font, 1.5rem, --pkde-shop-heading-weight (600), 1.25, normal. A site points them at its heading
- *                                       scale (tcs: its theme.json h2 size). Tailwind's reset makes a bare H2 body-sized, which is what the
+ *                                       scale (a site: its theme.json h2 size). Tailwind's reset makes a bare H2 body-sized, which is what the
  *                                       Description, Additional information and Related headings were before.
  *   --pkde-product-section-gap          space above each section (4rem)
  *   --pkde-carousel-gap                 gap between cards (--pkde-shop-gap, 1.5rem)

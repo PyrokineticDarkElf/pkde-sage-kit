@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 
 import { SECTION_THEME_OPTIONS, CARD_BUTTON_OPTIONS } from '@generated/section-compat.js';
 
-// The "Card colour" and "Card button colour" settings of every block with cards (WP-100): Auto follows the section the block sits in; otherwise one of the site's Brand
+// The "Card colour" and "Card button colour" settings of every block with cards: Auto follows the section the block sits in; otherwise one of the site's Brand
 // themes, which re-themes only the cards from that theme's own colours; the button colour is limited to the colours that work on the chosen card (generated with the palette).
 export function CardColourPanel({ attributes, setAttributes }) {
   const { cardTheme = '', cardButton = '' } = attributes;

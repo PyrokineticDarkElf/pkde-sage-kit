@@ -1,5 +1,5 @@
 /**
- * Site details (components, blocks, shortcodes; WP-106): they take their colours from the section they sit in (--pkde-ink, --pkde-body, --pkde-link of the Brand section theme,
+ * Site details (components, blocks, shortcodes): they take their colours from the section they sit in (--pkde-ink, --pkde-body, --pkde-link of the Brand section theme,
  * with plain-page fallbacks), so the same block is right in "Brand Sage (light)" and in "Brand Slate". A site changes the spacing with --pkde-site-gap.
  */
 .pkde-site-contact__list {

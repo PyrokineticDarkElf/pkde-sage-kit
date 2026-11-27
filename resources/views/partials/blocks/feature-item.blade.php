@@ -1,5 +1,5 @@
 {{--
-  One feature (WP-100). Props: $icon (inline SVG or ''), $image (an <img> or ''), $heading, $text, $linkText, $linkUrl. With a link and no link text the
+  One feature. Props: $icon (inline SVG or ''), $image (an <img> or ''), $heading, $text, $linkText, $linkUrl. With a link and no link text the
   whole heading is the link; with link text a "Learn more" style link follows the text.
 --}}
 <div class="pkde-feature">

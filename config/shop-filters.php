@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The kit's defaults for the shop filters (WP-96). A site declares its own filters in config/shop-filters.php in its theme; Acorn merges the two, the site's
+ * The kit's defaults for the shop filters. A site declares its own filters in config/shop-filters.php in its theme; Acorn merges the two, the site's
  * keys winning. Every key is documented in docs/woocommerce-filtering.md and docs/examples/shop-filters.php.
  *
  * 'groups' => null means "no declaration": the filters the kit always had, in this order: price, category, tags, brand (when the taxonomy exists), then

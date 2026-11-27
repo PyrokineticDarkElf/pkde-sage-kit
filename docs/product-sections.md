@@ -1,6 +1,6 @@
 # The product page: upsells, cross-sells, related, and the add-to-basket feedback
 
-(Kit 2026.11.07.11, MGR-79.) The kit supplies all of this; a site sets variables and filters, it does not copy views.
+(Kit 2026.11.07.11.) The kit supplies all of this; a site sets variables and filters, it does not copy views.
 
 ## Sections under the product
 

@@ -53,7 +53,7 @@ function cached_oembed(string $url, array $args = []): string
 /**
  * The site's contact details that are set, keyed email / phone / address, each with its value and a link (mailto:, tel:, or the map link / null for the address). Shared by the
  * footer and the Contact page. The values are Site details (Settings > Site details, the platform's site-details module: the FIRST phone, email and address); a site without
- * the module reads its `client_*` options, as it always did (WP-106).
+ * the module reads its `client_*` options, as it always did.
  */
 function contact_lines(): array
 {
@@ -162,7 +162,7 @@ function block_image(int $id, ?string $url, string $alt, string $size, array $at
 }
 
 /**
- * block_image(), or a neutral placeholder picture when there is none and the block asks for one (`placeholder` on a block of a pattern, WP-108 B): a pattern cannot carry a
+ * block_image(), or a neutral placeholder picture when there is none and the block asks for one (`placeholder` on a block of a pattern): a pattern cannot carry a
  * site's own pictures, so it draws a frame in the section's colours until the editor chooses one. Without `placeholder` nothing changes: empty stays empty.
  */
 function block_media(int $id, ?string $url, string $alt, string $size, array $attributes = [], bool $placeholder = false): string
@@ -275,7 +275,7 @@ function is_faceted_request(array $query): bool
 }
 
 /**
- * The Product schema offers with the prices a shopper SEES (WP-91, S-1): Rank Math prints the stored price, so a shop that displays prices with tax
+ * The Product schema offers with the prices a shopper SEES (S-1): Rank Math prints the stored price, so a shop that displays prices with tax
  * (or without) while it stores them the other way round showed one price on the page and another in the markup. Offer: price, and the price and
  * valueAddedTaxIncluded of its priceSpecification. AggregateOffer: lowPrice and highPrice. A price that is null is left as Rank Math printed it.
  *
@@ -368,7 +368,7 @@ function category_menu_image(int $termId): string
  * Stored page content (rendered once at import time, or typed in the editor) keeps root-relative upload URLs.
  * Make the <img> sources absolute on output so EWWW can serve WebP for them too.
  */
-// WP-105 phase 1: pkde/platform's `media` module does this now (it defines PKDE_PLATFORM_MEDIA); while it is on, this copy is skipped, and PKDE_PLATFORM_DISABLE=media brings it back.
+// pkde/platform's `media` module does this now (it defines PKDE_PLATFORM_MEDIA); while it is on, this copy is skipped, and PKDE_PLATFORM_DISABLE=media brings it back.
 if (! defined('PKDE_PLATFORM_MEDIA')) {
     add_filter('the_content', static fn(string $content): string => preg_replace(
         '#(<img\b[^>]*\ssrc=")(/app/uploads/)#',
@@ -398,7 +398,7 @@ add_filter('get_custom_logo_image_attributes', static function (array $attribute
  * this ships; regenerate existing ones with `wp media regenerate --only-missing`. Opt out with
  * add_filter('pkde_png_to_webp', '__return_false'); the server's image editor must support WebP (WordPress checks).
  */
-if (! defined('PKDE_PLATFORM_MEDIA')) { // WP-105 phase 1: the platform's `media` module does this when it is on
+if (! defined('PKDE_PLATFORM_MEDIA')) { // the platform's `media` module does this when it is on
     add_filter('image_editor_output_format', static fn(array $formats): array => apply_filters('pkde_png_to_webp', true) ? png_output_formats($formats) : $formats);
     add_filter('wp_editor_set_quality', static fn($quality, $mime) => apply_filters('pkde_png_to_webp', true) ? webp_quality((int) $quality, (string) $mime) : $quality, 10, 2);
 }
@@ -419,7 +419,7 @@ function catalog_visibility_clause(): array
  * The views tried, in order, for one result card in partials/post-grid (search, post-type archives): a site's `partials/card-{type}`, then its
  * `partials/content-{type}`, then the kit's card. `content-page`, `content-page-wide`, `content-single` and `content-search` are the kit's own
  * page and single views (the kit's views root is on every theme's view finder), so `partials.content-page` always resolves and printed a whole
- * page for every page in the results (BP-78); a post type with one of those names never tries `partials/content-{type}`.
+ * page for every page in the results; a post type with one of those names never tries `partials/content-{type}`.
  *
  * @return list<string>
  */
@@ -443,7 +443,7 @@ function strip_image_size(string $url): string
 }
 
 /**
- * An image given as a URL, printed through the media library when it is one of its files (TPL-193, from tcs TCS-84): an upload or a resized copy of one gets its
+ * An image given as a URL, printed through the media library when it is one of its files: an upload or a resized copy of one gets its
  * width and height (no layout shift), srcset and sizes; any other URL stays a plain lazy <img>. The URL may be site-relative ("/app/uploads/x.jpg"). Empty URL: ''.
  *
  * @param  array<string, string>  $attributes  extra attributes (class, sizes, alt)
@@ -479,14 +479,14 @@ require_once __DIR__ . '/breadcrumbs.php';
 require_once __DIR__ . '/tile-image.php';
 
 /**
- * The ID of the Contact Form 7 form tagged with a lookup key (TPL-186, WP-83), 0 when no form has it. The key lives on the form post as meta
+ * The ID of the Contact Form 7 form tagged with a lookup key, 0 when no form has it. The key lives on the form post as meta
  * `_pkde_form_key`, so a theme finds its form without relying on the title (a rename never breaks it) or on an ID (IDs differ between staging and
  * production). `contact` is the standard key of the contact page's form; a site may add its own. bin/deploy/cf7-form-key.php (pkde-deploy) tags the
  * forms of an existing site; bin/setup tags a new site's. Cached for the request.
  */
 function form_id(string $key = 'contact'): int
 {
-    // WP-105 phase 1: pkde/platform's `cf7-form-key` module answers (same meta key, same result); this is the fallback when it is off.
+    // pkde/platform's `cf7-form-key` module answers (same meta key, same result); this is the fallback when it is off.
     if (defined('PKDE_PLATFORM_CF7_FORM_KEY') && function_exists('App\\MuPlugins\\cf7_form_id')) {
         return \App\MuPlugins\cf7_form_id($key);
     }
@@ -520,7 +520,7 @@ function form_shortcode(string $key = 'contact'): string
 }
 
 /**
- * The padding classes of a page's content wrapper (TPL-278). A page of prose breathes (4rem above and below); a page that starts or ends with a full-width
+ * The padding classes of a page's content wrapper. A page of prose breathes (4rem above and below); a page that starts or ends with a full-width
  * Section, Group or band owns its own spacing, so the wrapper adds none there (it showed a band of the page background between the header and the first
  * section). A block is full-width when it carries `align: full`, is a Section (always full), or is a block that is always printed full (the CTA band).
  * `$blocks` is `parse_blocks()` output; empty blocks (whitespace between blocks) are skipped.
@@ -535,7 +535,7 @@ function page_content_padding(array $blocks): string
 }
 
 /**
- * The one server-side cap on the text of a card (TPL-280): plain text (tags stripped, entities decoded, so Blade's {{ }} does not escape them twice), at most
+ * The one server-side cap on the text of a card: plain text (tags stripped, entities decoded, so Blade's {{ }} does not escape them twice), at most
  * `pkde_kit/card_text_words` words (default 40, a safety cap so the HTML stays small and a reader without CSS is not flooded). It is not the visible limit: the
  * CSS clamps the text to a number of lines (resources/css/clamp.css), and the clamp draws the ellipsis. A card never carries a word count of its own.
  */

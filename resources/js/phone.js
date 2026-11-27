@@ -61,6 +61,6 @@ if (config) {
   const inputs = [...document.querySelectorAll('.wpcf7 input[type="tel"]')];
 
   if (inputs.length) attach(inputs);
-  // pkde/platform's phone-e164 module pushes generate_lead itself (WP-105 phase 1) and says so with `lead`: then this copy stays off, so the event is never sent twice.
+  // pkde/platform's phone-e164 module pushes generate_lead itself and says so with `lead`: then this copy stays off, so the event is never sent twice.
   if (!config.lead) document.addEventListener('wpcf7mailsent', dataLayerPush);
 }

@@ -1,6 +1,6 @@
 <?php
 
-// app/single-post.php (the blog single's helpers, MGR-66): the schema and the share links are built from plain values, so no WordPress is needed.
+// app/single-post.php (the blog single's helpers): the schema and the share links are built from plain values, so no WordPress is needed.
 require_once dirname(__DIR__, 2) . '/app/single-post.php';
 
 use function App\article_schema;
@@ -80,7 +80,7 @@ it('links the byline to the author archive only while it exists, in the meta, th
     expect(file_get_contents("$root/app/single-post.php"))->toContain("'disable_author_archives'")->toContain("'pkde_kit/author_archives'");
 });
 
-it('keeps the kit\'s title look only for a theme with no H1 style, and lets a site skip the header per page (WP-99 A; was MGR-77)', function () use ($root) {
+it('keeps the kit\'s title look only for a theme with no H1 style, and lets a site skip the header per page', function () use ($root) {
     $css = file_get_contents("$root/resources/css/page-header.css");
     $view = file_get_contents("$root/resources/views/partials/page-header.blade.php");
 

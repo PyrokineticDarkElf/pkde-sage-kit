@@ -1,5 +1,5 @@
 /**
- * Add-to-basket states (resources/js/add-to-basket.js, MGR-79): a button that is working shows a spinner and cannot be pressed again; once the
+ * Add-to-basket states (resources/js/add-to-basket.js): a button that is working shows a spinner and cannot be pressed again; once the
  * product is in the basket it shows a check mark (and, for a plain text button, the word "Added") for a few seconds, and WooCommerce's "View
  * basket" link appears beside it.
  *

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Contact Form 7 forms are found by a stable key, not by title or ID (TPL-186). WordPress is stood in for by two global functions.
+ * Contact Form 7 forms are found by a stable key, not by title or ID. WordPress is stood in for by two global functions.
  */
 use function App\form_id;
 use function App\form_shortcode;

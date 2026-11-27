@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Sale and New badges of a product (tcs's, as the kit's, owner via the manager, MGR-77): one partial, `partials/product-badges`, for the card
+ * The Sale and New badges of a product (a site's, as the kit's): one partial, `partials/product-badges`, for the card
  * and the product page, one look (`.pkde-badge`, the --pkde-badge-* variables in resources/css/shop-pages.css), one rule for "New".
  *
  *   - Sale: the product is on sale. New: among the N newest products (4, `pkde_kit/recent_counts`), or, when `pkde_kit/new_badge_days` is above 0,

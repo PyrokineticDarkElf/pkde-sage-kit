@@ -63,7 +63,7 @@ A site that moves to `buttons` and wants its pages to stay as they are:
 3. Delete the site's own button rules that the declaration now draws, but **keep the layout properties they carried**: `margin`, `justify-self`, `align-self`, `flex`, `width` and `min-width` of the button (for example `margin: 0` on the single product's Add to basket and `justify-self: start` on the contact form's submit): move those declarations into a rule of their own.
 4. Regenerate, then compare every button on the home page, a product, a category, the basket, the checkout and the contact page at 1440 and 390 before and after.
 
-That is tcs's: text buttons everywhere except the product page's Add to basket and the contact form's submit (a solid ink pill), the filters and the basket left as the kit has them. On tcs.test it reproduces every button, hover included.
+That is a site's: text buttons everywhere except the product page's Add to basket and the contact form's submit (a solid ink pill), the filters and the basket left as the kit has them. On a site.test it reproduces every button, hover included.
 
 ## What the generator does for each surface
 
@@ -84,7 +84,7 @@ The output is CSS variables on each surface: `--btn-primary-bg`, `-text`, `-bord
 - The kit's buttons carry `.pkde-btn` (primary), `.pkde-btn-alt` or `.pkde-btn--secondary`, and `.pkde-btn--text`. The Hero and CTA blocks have a **Button style** (primary, secondary, text) for each button; `App\button_classes('text')` is the helper for a view.
 - The core **Button block** has the block styles **Solid** (the default), **Outline** and **Text**. An Editor picks the style only (no colour, size, radius or spacing controls); an Administrator keeps all of them.
 - WooCommerce's buttons (loop and single add to cart, basket, checkout, place order, the cart and checkout blocks, coupon and update-basket), Contact Form 7's submit, the comment form, the filter Apply (primary) and Reset (text) and the header's `nav-cta` link are drawn from the same variables. Controls that are not brand buttons (the carousel arrows, the view toggle, the pagination, the accordion triggers, the header icons) keep their own look.
-- The rules are generated into `generated/section-themes.css` and stand one level above the older per-component rules (no `!important`). A site's own CSS for a button, such as tcs's `.product-card__action a`, should be deleted once the declaration gives the same look.
+- The rules are generated into `generated/section-themes.css` and stand one level above the older per-component rules (no `!important`). A site's own CSS for a button, such as a site's `.product-card__action a`, should be deleted once the declaration gives the same look.
 
 ## Backward compatibility
 

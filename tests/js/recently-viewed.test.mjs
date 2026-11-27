@@ -1,4 +1,4 @@
-// The pure parts of resources/js/recently-viewed.js (TPL-134): the module wires the page only when a document exists, so Node can import it.
+// The pure parts of resources/js/recently-viewed.js: the module wires the page only when a document exists, so Node can import it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseIds, recordView } from '../../resources/js/recently-viewed.js';

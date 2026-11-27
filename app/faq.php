@@ -3,7 +3,7 @@
 namespace App;
 
 /**
- * The FAQ block's shared pieces (WP-102): the markup of one question, the group-mode content, and ONE FAQPage JSON-LD per page that every FAQ block adds to.
+ * The FAQ block's shared pieces: the markup of one question, the group-mode content, and ONE FAQPage JSON-LD per page that every FAQ block adds to.
  *
  * Group mode reads the FAQs from the platform's `faq` module (`App\MuPlugins\faqs_for_groups()`: the post type pkde_faq, grouped by pkde_faq_group, in each group's own
  * order). The older hand-typed mode (Accordion Item blocks inside the FAQ block) still renders, through the same markup and the same schema; it is deprecated.
@@ -54,7 +54,7 @@ function faq_entities(array $pairs): array
  */
 function faq_page_entities(array $add = [], bool $reset = false): array
 {
-    // WP-105 phase 1: pkde/platform's `faq` module owns the page's FAQ schema when it is on (PKDE_PLATFORM_FAQ_SCHEMA); this is the fallback.
+    // pkde/platform's `faq` module owns the page's FAQ schema when it is on (PKDE_PLATFORM_FAQ_SCHEMA); this is the fallback.
     if (defined('PKDE_PLATFORM_FAQ_SCHEMA')) {
         return \App\MuPlugins\faq_page_entities($add, $reset);
     }

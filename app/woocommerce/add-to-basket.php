@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add-to-basket feedback (MGR-79). On a fast, cached site the click on "Add to basket" used to look dead for a second or two and people clicked
+ * Add-to-basket feedback. On a fast, cached site the click on "Add to basket" used to look dead for a second or two and people clicked
  * again. resources/js/add-to-basket.js now gives every add-to-basket button a busy state (aria-busy, no second click, a spinner), then an
  * "Added" state with WooCommerce's "View basket" link, and says both in a polite live region. This file prints that region and the strings.
  *

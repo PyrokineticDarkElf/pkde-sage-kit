@@ -1,5 +1,5 @@
 {{--
-  The Hero block's split and text-only layouts (WP-100). No panel of its own: the colours are the --section-* roles of the Brand section theme
+  The Hero block's split and text-only layouts. No panel of its own: the colours are the --section-* roles of the Brand section theme
   the hero sits in (resources/css/sections.css), so the same hero is light in "Brand Sage (light)" and dark in "Brand Slate".
   Props: $wrapper (the block wrapper attributes, escaped), $layout (split|text), $eyebrow, $heading, $level (1-4), $body, $buttonText/$buttonUrl,
          $secondaryText/$secondaryUrl, $image (an <img> from \App\block_image(), split only).

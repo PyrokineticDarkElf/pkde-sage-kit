@@ -27,7 +27,7 @@ $slot_url = (string) ($attributes['imageUrl'] ?? '');
 // A logo or picture beside (banner) or above (section) the text: a plain image that keeps its shape, never cropped.
 $slot = ($slot_id || $slot_url || ! empty($attributes['placeholder'])) ? \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'medium', ['loading' => 'lazy', 'class' => 'pkde-cta-slot' . ($is_banner ? '' : ' mx-auto mb-6')], ! empty($attributes['placeholder'])) : '';
 
-// Two more layouts (WP-108 B): `split` (the text beside a picture that fills its half of the panel and takes the panel's corners) and `boxed` (a card in the section, in the
+// Two more layouts: `split` (the text beside a picture that fills its half of the panel and takes the panel's corners) and `boxed` (a card in the section, in the
 // section's card colours). The picture of a split is a real photograph that is cropped, not the logo of the banner.
 if (in_array($style, ['split', 'boxed'], true)) {
     $buttons = '';

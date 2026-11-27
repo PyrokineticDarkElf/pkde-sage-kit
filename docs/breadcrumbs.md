@@ -1,4 +1,4 @@
-# Breadcrumbs (the kit owns them, MGR-77 parity)
+# Breadcrumbs (the kit owns them)
 
 The trail is the same on every site, whatever its Rank Math settings: `Home / Blog / Category / Post title`, with " / " between the crumbs.
 

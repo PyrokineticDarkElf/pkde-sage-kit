@@ -1,5 +1,5 @@
 {{--
-  Testimonials (WP-100). Props: $wrapper (block wrapper attributes, escaped), $layout (carousel|strip|panel), $eyebrow, $heading, $quotes (list of
+  Testimonials. Props: $wrapper (block wrapper attributes, escaped), $layout (carousel|strip|panel), $eyebrow, $heading, $quotes (list of
   quote/name/role/rating), $stars (show the rating). The carousel is the kit's Embla carousel (resources/js/carousel.js: data-carousel*).
 --}}
 @php

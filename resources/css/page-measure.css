@@ -1,5 +1,5 @@
 /**
- * The Section block's content measure and gutter: the header's, by default (MGR-62, ADR 0008 amended).
+ * The Section block's content measure and gutter: the header's, by default (ADR 0008 amended).
  *
  * WordPress sizes a constrained layout's children with the theme.json `layout.contentSize` (a 48rem reading width on the template), and pads
  * a Section with the `gutter` spacing preset, so a Section's content used to be narrower than the header, the page header and the footer,

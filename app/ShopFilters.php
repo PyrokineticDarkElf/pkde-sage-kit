@@ -3,7 +3,7 @@
 namespace App;
 
 /**
- * The shop filters (WP-96): which groups a site declares (config/shop-filters.php, merged over the kit's defaults), the validated state of this request, and
+ * The shop filters: which groups a site declares (config/shop-filters.php, merged over the kit's defaults), the validated state of this request, and
  * the sidebar's query keys. The counts are ShopFilterCounts; the request checks (caps, canonical URL) are ShopFilterRequest.
  *
  * With no declaration the groups are the ones the kit always had: price, category, tags, brand (when the taxonomy exists), every global attribute.

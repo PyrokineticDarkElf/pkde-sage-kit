@@ -1,4 +1,4 @@
-# Recently viewed products (kit 2026.11.07.12, TPL-134 / MGR-65)
+# Recently viewed products (kit 2026.11.07.12)
 
 Opt-in: `add_filter('pkde_kit/recently_viewed', '__return_true');` (a shop's `app/filters.php`). Off by default.
 

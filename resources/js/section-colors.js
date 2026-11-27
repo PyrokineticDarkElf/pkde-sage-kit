@@ -1,4 +1,4 @@
-// Section themes in the editor (WP-100): inside a Group or Section styled "Brand <Label>", every block's colour picker lists the colours that
+// Section themes in the editor: inside a Group or Section styled "Brand <Label>", every block's colour picker lists the colours that
 // are readable on that section FIRST (the ones its matrix uses, then any swatch with 4.5:1 on its background); the rest of the palette follows,
 // so nothing is taken away, and an Administrator still has the full picker. The list per theme is generated with the palette
 // (resources/js/generated/section-compat.js, from bin/generate-theme-tokens.mjs).

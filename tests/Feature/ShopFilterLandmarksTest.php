@@ -1,7 +1,7 @@
 <?php
 
 /**
- * WP-99 E (TPL-203): the filter panel is one <search> landmark named by its own <h2>; the recently viewed box is an <aside> outside it; the "Read more about" /
+ *: the filter panel is one <search> landmark named by its own <h2>; the recently viewed box is an <aside> outside it; the "Read more about" /
  * "About" label in a term toggle's <summary> is a <span>, not a heading (a <summary> is a button, its children are presentational).
  */
 $root = dirname(__DIR__, 2);

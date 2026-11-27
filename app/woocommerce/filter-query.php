@@ -3,7 +3,7 @@
 /**
  * Wires the sidebar shop filters (see ShopFilters.php) into the main product
  * query. (The migration of the earlier filter_product_cat[] / filter_product_tag[]
- * array URLs onto sage_filter_* was dropped in 2026.11.19.1, TPL-185.)
+ * array URLs onto sage_filter_* was dropped in 2026.11.19.1.)
  *
  * This file is loaded from app/woocommerce.php only after WooCommerce has
  * confirmed it is active.
@@ -12,7 +12,7 @@
 namespace App;
 
 /**
- * A request that carries sage_filter_* arguments is checked before ANY product query runs (WP-96, C): too many values or groups, or only unknown values,
+ * A request that carries sage_filter_* arguments is checked before ANY product query runs (C): too many values or groups, or only unknown values,
  * is a 404 with no query and no filter UI; a request that is valid but not canonical (values unsorted or repeated, an unknown parameter or value dropped, a bad
  * price) is a 301 to its one canonical URL, so identical choices share one URL and one page-cache entry. See App\ShopFilterRequest.
  */

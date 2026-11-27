@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TPL-193 (from the tcs and bb copies of two kit views): category tiles render URL images through the media library and never list "Uncategorized"; the product
+ * (from the two sites copies of two kit views): category tiles render URL images through the media library and never list "Uncategorized"; the product
  * card's picture takes its fit and its `sizes` from a variable and a filter instead of a copy of the view.
  */
 $root = dirname(__DIR__, 2);
@@ -40,7 +40,7 @@ it('styles the category tiles from variables with stable class hooks, and import
         expect($css)->toContain("var($variable");
     }
 
-    // the defaults are the kit's earlier look: 2 and 4 columns, gaps 1.5rem and 2.5rem, 4 / 3, rounded 1rem, zoom 1.03 (the shared --pkde-zoom-scale, 300ms since WP-103), a 1.125rem semibold title
+    // the defaults are the kit's earlier look: 2 and 4 columns, gaps 1.5rem and 2.5rem, 4 / 3, rounded 1rem, zoom 1.03 (the shared --pkde-zoom-scale, 300ms since), a 1.125rem semibold title
     expect($css)->toContain('var(--pkde-tile-cols-lg, 4)')->toContain('var(--pkde-tile-aspect, 4 / 3)')->toContain('var(--pkde-tile-radius, var(--pkde-card-radius))')->toContain('var(--pkde-tile-hover-scale, var(--pkde-zoom-scale))')
         ->and($view)->toContain('class="pkde-tiles"')->toContain('pkde-tile__media')->toContain('pkde-tile__title')->toContain("apply_filters('pkde_kit/tile_image_size', 'medium_large')")
         ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./category-tiles.css";');

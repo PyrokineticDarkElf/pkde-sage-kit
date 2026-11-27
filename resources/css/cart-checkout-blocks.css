@@ -1,5 +1,5 @@
 /**
- * The Cart and Checkout BLOCKS in the kit's look (TPL-131). WooCommerce creates the Cart and Checkout pages with its blocks (WooCommerce 8.3 and
+ * The Cart and Checkout BLOCKS in the kit's look. WooCommerce creates the Cart and Checkout pages with its blocks (WooCommerce 8.3 and
  * later), so a site made from the template has them unless it converts them to shortcodes; the kit styled only the shortcode pages
  * (shop-pages.css). The blocks keep their own layout (items left, summary right, the page measure from shop-pages.css); this only gives their
  * buttons, fields and summary card the same look as the shortcode pages, from the same tokens:

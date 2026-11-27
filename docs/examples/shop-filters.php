@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A shop's filter declaration (WP-96). Copy this file to config/shop-filters.php in the site's theme (Acorn reads the theme's config/ directory) and delete
+ * A shop's filter declaration. Copy this file to config/shop-filters.php in the site's theme (Acorn reads the theme's config/ directory) and delete
  * what the shop does not need. Without the file the kit shows its defaults: price, category, tags, brand (when it has products), every global attribute.
  * Every key is optional; docs/woocommerce-filtering.md in the kit explains each one.
  */

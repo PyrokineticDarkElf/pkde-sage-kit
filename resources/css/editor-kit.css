@@ -1,5 +1,5 @@
 /**
- * The kit's block and component styles in the block editor canvas (WP-90). A theme's resources/css/editor.css imports THIS file (one line, in place of
+ * The kit's block and component styles in the block editor canvas. A theme's resources/css/editor.css imports THIS file (one line, in place of
  * editor-width.css, which it contains) so every kit block looks in the canvas as it does on the page: the product loop's grid, the shop cards, the
  * Section measure, the buttons. Until now the canvas got only the page width (editor-width.css) and the theme's own site.css, so the product loop, whose
  * list is rendered by the server into the canvas, was a plain stack of cards 1232px wide (a 5622px tall block at 1600px wide).

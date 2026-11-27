@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The page header's optional intro line (owner via the manager, MGR-77): a short paragraph under the H1.
+ * The page header's optional intro line: a short paragraph under the H1.
  *
  *   - the posts page (Settings > Reading > Posts page): that page's EXCERPT (written in the page's Excerpt box); nothing when it is empty;
  *   - a category, tag or other term archive: the term's description, EXCEPT on a product term whose "Read more about X" toggle already prints
@@ -61,7 +61,7 @@ function page_header_intro(?array $ctx = null): string
 
 /**
  * Does the theme style the H1 itself (theme.json styles.elements.h1 with a font size, or the same set in the Site Editor)? When it does, the title band's H1 takes the
- * theme's H1 style like any H1 in the content (WP-99 A, owner 2026-11-19). When it does not, an H1 would fall back to the browser's body-sized default (Tailwind's
+ * theme's H1 style like any H1 in the content (owner 2026-11-19). When it does not, an H1 would fall back to the browser's body-sized default (Tailwind's
  * reset removes the heading sizes), so the band keeps the kit's own title look (resources/css/page-header.css). Filter: pkde_kit/page_title_follows_theme (bool).
  */
 function page_title_follows_theme(): bool

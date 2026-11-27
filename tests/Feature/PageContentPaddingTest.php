@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A page that starts or ends with a full-width block has no padding there (TPL-278); prose keeps it.
+ * A page that starts or ends with a full-width block has no padding there; prose keeps it.
  */
 use function App\page_content_padding;
 

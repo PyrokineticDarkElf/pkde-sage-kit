@@ -1,7 +1,7 @@
 <?php
 
 /**
- * "Apply filters" and "Reset" on the shop filter form (WP-89): a tick only changes the form, the choices are sent once, and Reset goes back to the archive
+ * "Apply filters" and "Reset" on the shop filter form: a tick only changes the form, the choices are sent once, and Reset goes back to the archive
  * without them. The pure parts run here; the markup, the script and the stylesheet are read as files so a stray auto-submit or a missing hook fails.
  */
 require_once dirname(__DIR__, 2) . '/app/ShopFilters.php';

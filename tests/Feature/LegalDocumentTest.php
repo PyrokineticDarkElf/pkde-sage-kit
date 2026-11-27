@@ -1,6 +1,6 @@
 <?php
 
-// app/legal.php (WP-104): the dates line and the contents list of a legal document; plain values, no WordPress. The view is proved in a browser on the template stack.
+// app/legal.php: the dates line and the contents list of a legal document; plain values, no WordPress. The view is proved in a browser on the template stack.
 require_once dirname(__DIR__, 2) . '/app/TableOfContents.php';
 require_once dirname(__DIR__, 2) . '/app/legal.php';
 
@@ -51,7 +51,7 @@ it('ships the view, the styles and the print rules, loaded from the package', fu
         ->and(file_get_contents("$root/composer.json"))->toContain('app/legal.php');
 });
 
-it('keeps accents, dashes, CJK and emoji intact and raises no deprecation (TPL-260)', function () {
+it('keeps accents, dashes, CJK and emoji intact and raises no deprecation', function () {
     foreach (['sanitize_title' => fn($t) => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $t), '-')), '__' => fn($t) => $t] as $name => $impl) {
         if (! function_exists($name)) {
             $GLOBALS['pkde_stub_' . $name] = $impl;

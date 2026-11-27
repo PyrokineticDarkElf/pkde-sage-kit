@@ -1,6 +1,6 @@
 <?php
 
-// app/woocommerce/page-cache.php: a page that prints something personal is marked uncacheable (MGR-76).
+// app/woocommerce/page-cache.php: a page that prints something personal is marked uncacheable.
 require_once dirname(__DIR__, 2) . '/app/woocommerce/page-cache.php';
 
 use function App\no_page_cache;

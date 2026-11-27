@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The standard shop archive (from tcs, MGR-77): one markup and one stylesheet for every site, changed through hooks and --pkde-shop-* variables,
+ * The standard shop archive: one markup and one stylesheet for every site, changed through hooks and --pkde-shop-* variables,
  * never copied. These checks read the files, so a rename or a stray site colour fails here.
  */
 $root = dirname(__DIR__, 2);
@@ -49,14 +49,14 @@ it('takes the page header\'s space from variables and keeps a site\'s paragraph 
         ->and($view)->toContain('page-header__inner')->not->toContain('py-14');
 });
 
-it('keeps a Section that holds only the Shop products block from stacking its padding and block gap above the filters (tcs Shop page)', function () use ($root) {
+it('keeps a Section that holds only the Shop products block from stacking its padding and block gap above the filters (a site Shop page)', function () use ($root) {
     $css = file_get_contents("$root/resources/css/shop-pages.css");
 
     expect($css)->toContain('.wp-block-sage-section:has(> .wp-block-sage-shop-products):not(:has(> :not(.wp-block-sage-shop-products, .wp-block-hidden-desktop.wp-block-hidden-tablet.wp-block-hidden-mobile)))', 'padding-top: 0;', 'margin-block-start: 0;')
         ->and($css)->toContain('ul.products.products[class]');
 });
 
-it('keeps the filter lists from showing a scrollbar they do not need, and keeps the scroll for long lists (owner, bb)', function () use ($root) {
+it('keeps the filter lists from showing a scrollbar they do not need, and keeps the scroll for long lists (owner)', function () use ($root) {
     $css = file_get_contents("$root/resources/css/shop-pages.css");
     $rule = substr($css, strpos($css, '#shop-recent ul {'), 760);
 
@@ -98,7 +98,7 @@ it('puts the card\'s star rating where the site wants it in DOM order (default a
         ->and(file_get_contents("$root/docs/woocommerce-templates.md"))->toContain('pkde_kit/card_rating_position', 'above_button', 'below_title', 'above_title');
 });
 
-it('lets a site colour the stars with one variable and honours the Product Loop block\'s column count (MGR-78)', function () {
+it('lets a site colour the stars with one variable and honours the Product Loop block\'s column count', function () {
     $root = dirname(__DIR__, 2);
     $shop = file_get_contents("$root/resources/css/shop-pages.css");
     $kit = file_get_contents("$root/resources/css/kit.css");
@@ -108,7 +108,7 @@ it('lets a site colour the stars with one variable and honours the Product Loop 
         ->and($kit)->toContain('.woocommerce.columns-4 ul.products { grid-template-columns: repeat(4, minmax(0, 1fr)); }', '.woocommerce.columns-2 ul.products');
 });
 
-it('draws one rule under the term description, none above it (WP-77)', function () use ($root) {
+it('draws one rule under the term description, none above it', function () use ($root) {
     $css = preg_replace('~/\*.*?\*/~s', '', file_get_contents("$root/resources/css/shop-pages.css"));
 
     expect($css)->toMatch('/\.pkde-term-description \{[^}]*border-bottom: var\(--pkde-border-thin\) solid var\(--pkde-shop-line/s')

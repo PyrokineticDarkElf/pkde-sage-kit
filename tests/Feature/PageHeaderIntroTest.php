@@ -110,7 +110,7 @@ it('never hands the intro to the view as a composer method (Acorn passes public 
         ->and($composer)->not->toMatch('/function\s+with\s*\(/');
 });
 
-it('calls the two page header actions around the title, so a site can decorate the band without a copy of the view (TPL-196)', function () {
+it('calls the two page header actions around the title, so a site can decorate the band without a copy of the view', function () {
     $GLOBALS['pkde_test_actions'] = [
         'pkde_kit/page_header_start' => [fn($title) => print '<i class="sigil" data-title="' . $title . '"></i>'],
         'pkde_kit/page_header_after_title' => [fn($title) => print '<hr class="rule">'],
@@ -127,7 +127,7 @@ it('calls the two page header actions around the title, so a site can decorate t
     expect($plain)->not->toContain('sigil')->not->toContain('class="rule"');
 });
 
-it('lets the title follow the theme\'s H1 when the theme defines one, and keeps the kit\'s title look when it does not (WP-99 A)', function () {
+it('lets the title follow the theme\'s H1 when the theme defines one, and keeps the kit\'s title look when it does not', function () {
     unset($GLOBALS['pkde_test_h1_size']);
     $none = render_page_header(['title' => 'Shop', 'intro' => '']);
     expect($none)->toContain('<h1 class="mt-3 max-w-3xl pkde-page-title--kit">')->not->toContain('text-4xl');

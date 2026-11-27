@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The declaration of shop filters (WP-96, A): each entry resolved in full, a source that is not usable left out, and the exact clause flag the counts rely on.
+ * The declaration of shop filters (A): each entry resolved in full, a source that is not usable left out, and the exact clause flag the counts rely on.
  */
 use App\ShopFilterCounts;
 use App\ShopFilters;
@@ -55,7 +55,7 @@ it('takes only the flagged filter clauses out of a tax query, whatever else the 
         ->and(ShopFilterCounts::withoutOurClauses([]))->toBe([]);
 });
 
-/** TPL-257 (tcs staging): on a search the counts' base query must be answered by Relevanssi like the main one, or every count is 0 and a search with no filter shows no groups. */
+/**: on a search the counts' base query must be answered by Relevanssi like the main one, or every count is 0 and a search with no filter shows no groups. */
 it('flags the counts base query for Relevanssi on a search, and only then', function () {
     expect(App\ShopFilterCounts::searchBaseArgs(['s' => 'clock', 'post_type' => ['product']], true))->toBe(['s' => 'clock', 'post_type' => ['product'], 'relevanssi' => true])
         ->and(App\ShopFilterCounts::searchBaseArgs(['s' => 'clock'], false))->toBe(['s' => 'clock'])      // no Relevanssi: WordPress's own search, unchanged
@@ -66,7 +66,7 @@ it('flags the counts base query for Relevanssi on a search, and only then', func
     expect($source)->toContain('searchBaseArgs($vars, function_exists(\'relevanssi_do_query\'))', 'pkde_kit/filter_counts_base_args');
 });
 
-/** TPL-262 (tcs, kit .7): the counts were still LOW beside the grid on a big search, and a bump kept serving the old cached counts. */
+/** (a site, kit .7): the counts were still LOW beside the grid on a big search, and a bump kept serving the old cached counts. */
 it('lifts Relevanssi\'s hit limit for the counts base set, so every hit is counted before the choices narrow it', function () {
     expect(App\ShopFilterCounts::offFilter())->toBe('off');
 

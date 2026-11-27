@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The blog archives and the shop archive views are the kit's (MGR-77): a theme without a file of that name gets these, and the blog pages
+ * The blog archives and the shop archive views are the kit's: a theme without a file of that name gets these, and the blog pages
  * paginate with numbers in the shop's look. The tests read the files.
  */
 $root = dirname(__DIR__, 2);
@@ -35,7 +35,7 @@ it('adds its views directory to the view finder itself (Sage lists the kit views
 /**
  * A theme WITHOUT archive-product.blade.php must still get the kit's, rendered by NAME (so the ProductArchive composer, bound to that name, runs).
  * Laravel binds `view.finder` as a non-shared service, so Sage's finder and the view factory's finder are two objects: both must hold the kit's
- * directory. Kit 2026.11.05.1 put it on Sage's only, and /shop/ answered 500 "Undefined variable $shopPageContent" (tcs, 2026-11-05).
+ * directory. Kit 2026.11.05.1 put it on Sage's only, and /shop/ answered 500 "Undefined variable $shopPageContent" (a site, 2026-11-05).
  */
 it('puts the kit views on every view finder, so a theme without archive-product still renders the kit view by name', function () use ($root) {
     $theme = realpath(sys_get_temp_dir()) . '/pkde-theme-' . bin2hex(random_bytes(4));
@@ -79,7 +79,7 @@ it('pads the Shop page notices row only under the page header or when there is a
         ->and($page)->toMatch('/@else\s+@include\(.pkde-kit::partials\.woocommerce-notices.\)/');
 });
 
-it('never lets a page in the search results resolve to the kit\'s page view (BP-78)', function () {
+it('never lets a page in the search results resolve to the kit\'s page view', function () {
     $root = dirname(__DIR__, 2);
 
     expect(\App\post_card_views('page'))->toBe(['partials.card-page', 'pkde-kit::partials.content'])
@@ -90,7 +90,7 @@ it('never lets a page in the search results resolve to the kit\'s page view (BP-
         ->and(file_get_contents("$root/resources/views/partials/post-grid.blade.php"))->toContain('\\App\\post_card_views(get_post_type())')->not->toContain("'partials.content-' .");
 });
 
-it('sets the 404 numeral size in CSS and hides the live search helper sentence (TCS-114)', function () {
+it('sets the 404 numeral size in CSS and hides the live search helper sentence', function () {
     $root = dirname(__DIR__, 2);
 
     expect(file_get_contents("$root/resources/css/page-header.css"))->toContain('p.pkde-404-numeral {', 'var(--pkde-404-numeral-size, 6rem)')

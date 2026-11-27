@@ -1,7 +1,7 @@
 <?php
 
 /**
- * An Image block directly in a Grid fills its cell (BB-49), and the earlier filter_product_* migration is gone (TPL-185).
+ * An Image block directly in a Grid fills its cell, and the earlier filter_product_* migration is gone.
  */
 $root = dirname(__DIR__, 2);
 

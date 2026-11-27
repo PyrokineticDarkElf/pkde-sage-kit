@@ -1,5 +1,5 @@
 /**
- * One global button system (WP-109): `buttons` in config/brand-palette.json declares the site's three buttons once,
+ * One global button system: `buttons` in config/brand-palette.json declares the site's three buttons once,
  *
  *   "buttons": {
  *     "primary":   { "style": "solid",   "colour": "accent" },
@@ -168,7 +168,7 @@ export function resolveButtonsFor(surface, declaration, { resolver, ratio, bestN
         notes.push(`${where}: no ${colour} step reaches ${THRESHOLD.surface}:1 against the surface and a readable label; the ${label} keeps its fill and gets a ${lab} edge.`);
         return { style, bg: colour, text: lab, border: lab };
       }
-      // a declared label colour (tcs's grey Apply button) is kept where it reads on the fill, else the palette's white or black
+      // a declared label colour (a site's grey Apply button) is kept where it reads on the fill, else the palette's white or black
       const text = labelColour !== undefined && r(labelColour, fill) >= THRESHOLD.label ? labelColour : labelOn(fill);
       return { style, bg: fill, text, border: fill };
     }

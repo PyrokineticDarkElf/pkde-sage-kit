@@ -1,5 +1,5 @@
 {{--
-  Product categories as a row of chips (WP-108 B): the category names as pill links with their product counts. Props: $terms, $labels, $extra, $emptyMessage.
+  Product categories as a row of chips: the category names as pill links with their product counts. Props: $terms, $labels, $extra, $emptyMessage.
 --}}
 @if (! empty($terms))
   <ul class="pkde-chips">

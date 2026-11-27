@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The editor's preview of a Contact Form 7 form (WP-100): only a Shortcode or Paragraph that holds nothing but a [contact-form-7 ...] shortcode is answered.
+ * The editor's preview of a Contact Form 7 form: only a Shortcode or Paragraph that holds nothing but a [contact-form-7 ...] shortcode is answered.
  */
 use function App\form_preview_shortcode;
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Where the star rating sits in the kit's product card (owner via the manager, MGR-77): by default just above the add-to-cart button, under the title and
+ * Where the star rating sits in the kit's product card: by default just above the add-to-cart button, under the title and
  * the price, in DOM order, so the reading order and the visual order are the same (a site used to move it with CSS `order`, which reorders only what
  * the eye sees). `pkde_kit/card_rating_position` (string) changes it:
  *

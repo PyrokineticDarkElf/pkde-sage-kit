@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The block editor canvas gets the kit's block styles (WP-90): a theme's editor.css imports resources/css/editor-kit.css, which is kit.css whole plus the
+ * The block editor canvas gets the kit's block styles: a theme's editor.css imports resources/css/editor-kit.css, which is kit.css whole plus the
  * editor page width. Until then the product loop's server-rendered list was a plain stack of cards in the canvas.
  */
 $root = dirname(__DIR__, 2);

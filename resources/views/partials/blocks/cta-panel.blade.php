@@ -1,5 +1,5 @@
 {{--
-  The CTA block's split and boxed layouts (WP-108 B). Props: $wrapper (block wrapper attributes, escaped), $heading, $content, $buttons (HTML of the buttons, built in render.php),
+  The CTA block's split and boxed layouts. Props: $wrapper (block wrapper attributes, escaped), $heading, $content, $buttons (HTML of the buttons, built in render.php),
   $picture (split only: an <img> or the placeholder).
 --}}
 <div {!! $wrapper !!}>

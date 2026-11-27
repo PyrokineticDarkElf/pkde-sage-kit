@@ -3,7 +3,7 @@
 namespace App;
 
 /**
- * The block settings that move things (WP-103): "On hover: Lift" and "When scrolled into view: Fade up" (the Animation panel, resources/js/animation.jsx). They live only in the
+ * The block settings that move things: "On hover: Lift" and "When scrolled into view: Fade up" (the Animation panel, resources/js/animation.jsx). They live only in the
  * block comment; the page gets the classes here when it renders, and the motion itself is CSS (resources/css/motion.css) plus the small reveal script (resources/js/motion.js).
  * A saved block's HTML never changes, so removing a setting never breaks a block, and the settings saved on any block keep rendering.
  *

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The one server-side cap on card text (TPL-280): plain text, entities decoded once, at most 40 words (the filter changes it), no "Continued". WordPress is
+ * The one server-side cap on card text: plain text, entities decoded once, at most 40 words (the filter changes it), no "Continued". WordPress is
  * stood in for by the few functions the helper calls.
  */
 use function App\card_text;
@@ -52,7 +52,7 @@ it('takes the cap from the pkde_kit/card_text_words filter, and 0 means no cap',
     $GLOBALS['pkde_test_filters'] = [];
 });
 
-it('clamps only a WooCommerce review in the testimonials: the block wrapper carries pkde-quotes--reviews for the reviews source and the typed copy is not in the shared stylesheet (TPL-282)', function () {
+it('clamps only a WooCommerce review in the testimonials: the block wrapper carries pkde-quotes--reviews for the reviews source and the typed copy is not in the shared stylesheet', function () {
     $root = dirname(__DIR__, 2);
     $render = file_get_contents($root . '/resources/blocks/quotes/render.php');
     $css = file_get_contents($root . '/resources/css/clamp.css');
@@ -63,7 +63,7 @@ it('clamps only a WooCommerce review in the testimonials: the block wrapper carr
         ->and($css)->not->toContain('.pkde-feature__text');
 });
 
-it('scrolls a WooCommerce review instead of cutting it (TPL-284): a max height in lines, overflow-y auto, no line clamp, and the box is made focusable by a script', function () {
+it('scrolls a WooCommerce review instead of cutting it: a max height in lines, overflow-y auto, no line clamp, and the box is made focusable by a script', function () {
     $root = dirname(__DIR__, 2);
     $css = file_get_contents($root . '/resources/css/clamp.css');
     $js = file_get_contents($root . '/resources/js/quote-scroll.js');
@@ -78,7 +78,7 @@ it('scrolls a WooCommerce review instead of cutting it (TPL-284): a max height i
         ->and(file_get_contents($root . '/app/faq.php'))->toContain('text-[color:var(--section-icon,var(--color-neutral-400))]');
 });
 
-it('keeps the related and recent post excerpt to one line by default, whatever the site-wide excerpt token says (TPL-285)', function () {
+it('keeps the related and recent post excerpt to one line by default, whatever the site-wide excerpt token says', function () {
     $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/clamp.css');
 
     expect($css)->toContain('.pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, 1); }')

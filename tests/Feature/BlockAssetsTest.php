@@ -12,7 +12,7 @@ it('moves core\'s early variation-styles enqueue to the footer only for a classi
         ->and(block_variation_styles_in_footer(true, false))->toBeFalse();
 });
 
-it('does it after global-styles exists, and never turns separate block assets off again (TCS-87, EL-13)', function () {
+it('does it after global-styles exists, and never turns separate block assets off again', function () {
     $root = dirname(__DIR__, 2);
     $source = file_get_contents("$root/app/block-assets.php");
 

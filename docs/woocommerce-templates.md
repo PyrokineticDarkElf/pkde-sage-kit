@@ -99,9 +99,9 @@ Social profiles: the footer prints round icon links through `pkde-kit::partials.
 
 ## Search: Relevanssi with live results (optional)
 
-tcs and bb carried the same product search, so it lives in the kit. Everything is inert until a site asks for it:
+two sites carried the same product search, so it lives in the kit. Everything is inert until a site asks for it:
 
-1. Require the plugins: `wpackagist-plugin/relevanssi` (^4.28) and `wpackagist-plugin/relevanssi-live-ajax-search` (^2.6). **Both sites use the FREE editions** (tcs and bb); Relevanssi Premium works the same. Nothing in the kit needs Premium.
+1. Require the plugins: `wpackagist-plugin/relevanssi` (^4.28) and `wpackagist-plugin/relevanssi-live-ajax-search` (^2.6). **Both sites use the FREE editions** (two sites); Relevanssi Premium works the same. Nothing in the kit needs Premium.
 2. Run `bash bin/deploy/wp.sh eval-file bin/deploy/relevanssi-settings.php` (pkde-deploy) once per environment (after a deploy): products only, the SKU and every product taxonomy indexed, AND between words with an OR fallback, partial words, titles weighing five times the body, no excerpts, searches logged without IP addresses, hidden and noindex products excluded; it rebuilds the index.
 3. Print the form where you want it: `@include('pkde-kit::partials.product-search', ['id' => 'site-search'])` (the header bar), or use the header panel below. `$id` keeps two copies on a page apart.
 
@@ -110,11 +110,11 @@ What the kit does for you (`app/search.php`, `resources/css/live-search.css`): R
 ## Header options (opt-in)
 
 * **Search icon and panel.** `add_filter('pkde_kit/header_search', '__return_true')` (in the theme's `app/filters.php`) turns on a search icon in the header bar that opens a panel under it, with the product search and its live results, instead of an inline field in a menu that has no room for one. The menu panel closes first, the cursor goes into the field, Escape closes the panel and returns focus to the icon. The template's header includes `pkde-kit::partials.header-search` for the icon and the panel; a site with its own header includes the same partial twice (`['part' => 'button']` and `['part' => 'panel']`).
-* **Mobile-menu breakpoint.** The menu leaves the bar for the menu button below Tailwind's `sm` breakpoint (640px) by default. A site with a long menu moves it: `add_filter('pkde_kit/nav_breakpoint', fn () => 'xl')` (`sm`, `md`, `lg`, `xl` or `2xl`; bb needs `xl`, 1280px). The classes come from `App\nav_classes()`, written out as literal strings so Tailwind generates them.
+* **Mobile-menu breakpoint.** The menu leaves the bar for the menu button below Tailwind's `sm` breakpoint (640px) by default. A site with a long menu moves it: `add_filter('pkde_kit/nav_breakpoint', fn () => 'xl')` (`sm`, `md`, `lg`, `xl` or `2xl`; a site needs `xl`, 1280px). The classes come from `App\nav_classes()`, written out as literal strings so Tailwind generates them.
 
 ## The standard shop archive
 
-One layout for every site (it was tcs's, MGR-77): the title, the notices, the term's description in a closed "Read more about X" toggle, then the filters in a
+One layout for every site (it was a site's): the title, the notices, the term's description in a closed "Read more about X" toggle, then the filters in a
 column beside the results (stacked below 1024px). A site does not copy the partials; it changes the look with variables and the details with hooks, and
 its `archive-product.blade.php` is three lines:
 
@@ -125,7 +125,7 @@ its `archive-product.blade.php` is three lines:
 @endsection
 ```
 
-Markup (BEM, so a site targets it without the `woocommerce` class, which the list deliberately does not carry, TCS-72): `.shop-archive`,
+Markup (BEM, so a site targets it without the `woocommerce` class, which the list deliberately does not carry): `.shop-archive`,
 `.shop-archive__filters`, `.shop-archive__filters-title`, `.shop-archive__results`, and the toggle `details.pkde-term-description`. The styles are
 `resources/css/shop-pages.css`.
 
@@ -163,7 +163,7 @@ Markup (BEM, so a site targets it without the `woocommerce` class, which the lis
 The toggle is printed once, above the layout; the copy WooCommerce would print inside the product list is removed there. A site view that calls
 `woocommerce_content()` without these partials still gets the toggle inside the list (`App\term_toggle()`).
 
-## Sale and New badges, and the category tile image (MGR-77)
+## Sale and New badges, and the category tile image
 
 `partials/product-badges` is the one place the Sale and New badges are drawn: the kit's card includes it, and a site's own card includes it too
 (`@include('pkde-kit::partials.product-badges', ['product' => $product])` inside the picture's box, which is `position: relative`; `'links' => true|false` to force
@@ -182,7 +182,7 @@ links, otherwise archives and searches link to `?sage_view=sale|new` and curated
 
 **Where the star rating sits in the card** (kit 2026.11.07.6): `pkde_kit/card_rating_position` (filter, string): `above_button` (default: after the title, the price and the short description, directly above the action row), `below_title` (after the title, before the price) or `above_title` (before the title, the older look). The rating is printed in that place in the markup, so the reading and tab order match what the eye sees; a site does not reorder it with CSS `order`. In the `above_button` position the stars and the button stay together at the card's bottom (`.pkde-product-card__rating--above-button`); a card without a rating keeps the button there on its own. A site that copies the card prints the rating where it wants and needs no option.
 
-## Product structured data (WP-91)
+## Product structured data
 
 Rank Math writes the Product schema; the kit (`app/woocommerce/product-schema.php`, filter `rank_math/snippet/rich_snippet_product_entity`) makes it match the shop. Nothing is invented: each part appears only when the store has the data.
 
@@ -196,10 +196,10 @@ Rank Math writes the Product schema; the kit (`app/woocommerce/product-schema.ph
 The kit shows the gallery from the first paint and keeps its viewport as high as the picture, so the page below does not jump when WooCommerce's script
 builds the slider (kit.css, "The gallery has its final height from the first paint"). The viewport follows the picture whatever its shape (square,
 3:2, 4:3). A site that wants every slide forced to one ratio sets `--pkde-gallery-ratio` (for example `1` or `4 / 3`) on `:root` or on the gallery and
-gives its slide images the same ratio; leave it unset otherwise. Kit 2026.11.19 shipped a fixed 4:3 here, which clipped square pictures (tcs, TCS-131);
-2026.11.19.3 removes it. For the instant between the script building the viewport and setting its inline height, the viewport has no height of its own and took every stacked picture's height (bb: 14,000 px, a layout shift of 0.25 to 0.67 on a throttled load, TPL-244); until that inline height is there it is now the ratio of the picture the kit shows (4:3), or the site's `--pkde-gallery-ratio`, which also sets the pictures' ratio. A site that shows its pictures at another ratio in its own CSS (tcs: square) sets `--pkde-gallery-ratio: 1` to match.
+gives its slide images the same ratio; leave it unset otherwise. Kit 2026.11.19 shipped a fixed 4:3 here, which clipped square pictures;
+2026.11.19.3 removes it. For the instant between the script building the viewport and setting its inline height, the viewport has no height of its own and took every stacked picture's height (a site: 14,000 px, a layout shift of 0.25 to 0.67 on a throttled load); until that inline height is there it is now the ratio of the picture the kit shows (4:3), or the site's `--pkde-gallery-ratio`, which also sets the pictures' ratio. A site that shows its pictures at another ratio in its own CSS (a site: square) sets `--pkde-gallery-ratio: 1` to match.
 
-## Category tiles: the look is variables (TPL-195)
+## Category tiles: the look is variables
 
 The "tiles" layout of the Product Categories block prints `.pkde-tiles` > `.pkde-tile` > `a.pkde-tile__media` (the picture) + `h3.pkde-tile__title`. Its look is the
 `--pkde-tile-*` variables of `resources/css/category-tiles.css` (columns from 40rem and 64rem, gaps, the picture's aspect, corners and background, how the picture
@@ -207,7 +207,7 @@ sits in its box, the hover zoom, and the name's size, weight, line height, spaci
 a copy of the view; the defaults are the kit's own look. The picture's WordPress size is the filter `pkde_kit/tile_image_size` (default `medium_large`).
 
 ```css
-/* bb: three tall tiles, a centred serif name (measured against bb's own tiles: the same tile height, 538.7 px, and the same type) */
+/* a site: three tall tiles, a centred serif name (measured against a site's own tiles: the same tile height, 538.7 px, and the same type) */
 :root {
   --pkde-tile-cols-sm: 3; --pkde-tile-cols-lg: 3; --pkde-tile-gap-x: 2rem; --pkde-tile-gap-y: 3rem;
   --pkde-tile-aspect: 4 / 5; --pkde-tile-radius: 1.75rem; --pkde-tile-bg: var(--color-sage-200);
@@ -217,6 +217,6 @@ a copy of the view; the defaults are the kit's own look. The picture's WordPress
 }
 ```
 
-A site with a different design keeps its own CSS on the hooks (tcs: square tiles, `contain` pictures with padding, small uppercase names are variables too; its numbering
+A site with a different design keeps its own CSS on the hooks (a site: square tiles, `contain` pictures with padding, small uppercase names are variables too; its numbering
 counter, border on hover and lift are rules on `.pkde-tile`). Specificity: the kit's rules are unlayered with a single class, so a site rule with one class that
 comes later in the cascade wins.

@@ -1,6 +1,6 @@
 <?php
 
-// app/shape.php (WP-108 A): the theme.json fragment of the shape tokens; the CSS side is tested with the generator (tests/js) and proved on the template stack.
+// app/shape.php: the theme.json fragment of the shape tokens; the CSS side is tested with the generator (tests/js) and proved on the template stack.
 require_once dirname(__DIR__, 2) . '/app/shape.php';
 
 use function App\shape_theme_json;

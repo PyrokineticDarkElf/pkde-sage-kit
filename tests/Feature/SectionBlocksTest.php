@@ -1,7 +1,7 @@
 <?php
 
 /**
- * WP-100 phase 2 (prototype): the section blocks (hero layouts, text and image, feature grid, testimonials, CTA image slot, the global CTA band), the
+ * (prototype): the section blocks (hero layouts, text and image, feature grid, testimonials, CTA image slot, the global CTA band), the
  * declaration file of the global blocks, the icon set, the patterns and the About starter. No attribute of an existing block is removed or changed.
  */
 $root = dirname(__DIR__, 2);
@@ -15,7 +15,7 @@ it('keeps every attribute the hero and the CTA already had, with the same defaul
         ->and(array_keys($hero))->toContain('buttonText', 'buttonUrl', 'imageUrl', 'imageId', 'imageAlt', 'theme')
         ->and($hero['layout']['default'])->toBe('overlay') // the full-width image with its overlay stays the default
         ->and($hero['imageSide']['default'])->toBe('right')
-        ->and($hero['imageFit']['default'])->toBe('cover') // TPL-250: a hero saved before the option crops exactly as before
+        ->and($hero['imageFit']['default'])->toBe('cover') // a hero saved before the option crops exactly as before
         ->and($hero['headingLevel']['default'])->toBe(2);
 
     $cta = $block('cta')['attributes'];
@@ -154,7 +154,7 @@ it('turns a block\'s Card colour and Card button colour into a class and a style
     }
 });
 
-it('previews every server-rendered kit block live in the editor instead of a placeholder box (WP-100 trial)', function () use ($root) {
+it('previews every server-rendered kit block live in the editor instead of a placeholder box (trial)', function () use ($root) {
     foreach (['product-categories', 'brands', 'recent-products', 'best-selling-products', 'featured-products', 'latest-posts', 'featured-posts', 'entry-grid'] as $block) {
         $edit = file_get_contents("$root/resources/blocks/$block/edit.jsx");
 
@@ -166,14 +166,14 @@ it('previews every server-rendered kit block live in the editor instead of a pla
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("'/wp/v2/block-renderer/'", 'wc_load_cart()'); // product cards need the cart in the preview request
 });
 
-it('gives the site-wide CTA band a full default alignment, so the editor canvas shows it as wide as the page does (TPL-246)', function () {
+it('gives the site-wide CTA band a full default alignment, so the editor canvas shows it as wide as the page does', function () {
     $block = json_decode(file_get_contents(dirname(__DIR__, 2) . '/resources/blocks/cta-band/block.json'), true);
 
     expect($block['supports']['align'])->toBe(['full'])
         ->and($block['attributes']['align'])->toBe(['type' => 'string', 'default' => 'full']); // the page prints alignfull itself; without the attribute the canvas wrapper was content width
 });
 
-it('lets a split hero show the whole picture instead of cropping it (TPL-250, a cut-out on a transparent background)', function () use ($root) {
+it('lets a split hero show the whole picture instead of cropping it (a cut-out on a transparent background)', function () use ($root) {
     $render = file_get_contents("$root/resources/blocks/hero/render.php");
     $css = file_get_contents("$root/resources/css/sections.css");
 

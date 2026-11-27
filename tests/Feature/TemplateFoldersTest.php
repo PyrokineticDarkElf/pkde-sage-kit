@@ -54,7 +54,7 @@ it('registers on the hierarchy filters before Acorn, from the package autoload',
         ->and($composer)->toContain('app/template-folders.php');
 });
 
-/** TPL-251: el overrides only archive-product and lost its category layout, because the kit's taxonomy-product_cat came first. */
+/** el overrides only archive-product and lost its category layout, because the kit's taxonomy-product_cat came first. */
 it('lets a site\'s own archive-product serve the product taxonomies instead of the kit\'s taxonomy views', function () {
     $hierarchy = ['taxonomy-product_cat-solar.php', 'shop/taxonomy-product_cat-solar.php', 'taxonomy-product_cat.php', 'shop/taxonomy-product_cat.php', 'archive-product.php', 'shop/archive-product.php', 'taxonomy.php', 'index.php'];
     $site = fn(array $has) => fn(string $view) => in_array($view, $has, true);

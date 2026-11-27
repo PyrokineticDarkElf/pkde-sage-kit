@@ -22,7 +22,7 @@ class KitServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // The shop filters' defaults; a site's own config/shop-filters.php wins key by key (WP-96).
+        // The shop filters' defaults; a site's own config/shop-filters.php wins key by key.
         $this->mergeConfigFrom(dirname(__DIR__) . '/config/shop-filters.php', 'shop-filters');
     }
 

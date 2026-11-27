@@ -6,7 +6,7 @@ import { dispatch, select as dataSelect, subscribe, useSelect } from '@wordpress
 import { __ } from '@wordpress/i18n';
 import { editorSetting } from './editor-settings.js';
 
-// Motion in the editor (WP-103). The two settings are block attributes registered in app/blocks.php; app/motion.php adds their classes to the page and the motion itself is CSS
+// Motion in the editor. The two settings are block attributes registered in app/blocks.php; app/motion.php adds their classes to the page and the motion itself is CSS
 // (motion.css) plus the reveal script. Who sees what:
 //  - Administrators (the editor setting `pkdeMotionPanel`): the full Animation panel on every block, as before (hover lift, reveal);
 //  - everyone else: ONE "Reveal on scroll" toggle, on Section and the kit's section blocks only (`pkdeMotionBlocks`);
@@ -78,7 +78,7 @@ addFilter('editor.BlockListBlock', 'sage/animation-preview', createHigherOrderCo
   return <BlockListBlock {...props} className={[props.className, ...classes].filter(Boolean).join(' ')} />;
 }, 'withAnimationPreview'));
 
-// NEW Sections reveal on scroll by default (the owner's decision, WP-103), and existing Sections keep what they have. A default in block.json cannot do that: WordPress leaves an
+// NEW Sections reveal on scroll by default (the owner's decision), and existing Sections keep what they have. A default in block.json cannot do that: WordPress leaves an
 // attribute out of the saved comment when it equals the default, so every Section already on a page would turn the reveal on. Instead, once the editor has loaded, a Section
 // that appears with the setting never set (a new one from the inserter, a pattern, a paste) gets "Fade up"; a Section that was in the content at load, or whose setting was
 // ever set (an empty value means "off"), is left alone. The guard rails (never the hero or the first block) are applied by the page, not here.

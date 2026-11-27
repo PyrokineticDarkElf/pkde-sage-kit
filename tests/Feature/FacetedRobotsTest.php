@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Faceted URLs are noindex, follow (WP-91, TPL-175): one rule (is_faceted_request), and the X-Robots-Tag header, the wp_robots tag and
+ * Faceted URLs are noindex, follow: one rule (is_faceted_request), and the X-Robots-Tag header, the wp_robots tag and
  * Rank Math's robots meta all use it. The rule and Rank Math's answer run here; the three hooks need WordPress, so they are read from the file.
  */
 use function App\faceted_rank_math_robots;
@@ -31,7 +31,7 @@ it('sends the header, the wp_robots tag and Rank Math\'s robots, each from the r
 use function App\schema_offer_prices;
 use function App\shipping_details_schema;
 
-it('puts the displayed price in the Product offer, the price specification and the aggregate range (WP-91, S-1)', function () {
+it('puts the displayed price in the Product offer, the price specification and the aggregate range (S-1)', function () {
     $offer = ['@type' => 'Offer', 'price' => '45.00', 'priceSpecification' => ['price' => '45.00', 'priceCurrency' => 'GBP', 'valueAddedTaxIncluded' => 'false']];
 
     expect(schema_offer_prices($offer, '54.00', null, null, true))

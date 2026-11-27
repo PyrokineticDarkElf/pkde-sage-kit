@@ -1,5 +1,5 @@
 /**
- * Section themes (WP-100): one SOLID and one LIGHT theme per palette colour, each a role matrix of CSS variables
+ * Section themes: one SOLID and one LIGHT theme per palette colour, each a role matrix of CSS variables
  * (--section-bg, -heading, -text, -muted, -link, -button-bg, -button-text, -button-alt-bg, -button-alt-text, -icon, -border), plus a
  * dark-mode matrix applied under the site's `.dark` class. Pure functions (no file access, no process.exit): the generator
  * (bin/generate-theme-tokens.mjs) calls them and writes the files; tests/js/section-themes.test.mjs calls them directly.
@@ -16,7 +16,7 @@
 import { wcagContrast, toRgb, shade, steps } from './color-math.mjs';
 import { resolveButtonsFor, BUTTON_CONTEXTS, TYPE_CASES, TYPE_SIZES, TYPE_FONTS } from './buttons.mjs';
 
-// Optional roles (WP-108 A): written to the CSS only where a theme declares them, so a palette without them generates exactly what it did before.
+// Optional roles: written to the CSS only where a theme declares them, so a palette without them generates exactly what it did before.
 //   buttonRing       the filled button's inset ring (falls back to buttonBorder, as before); `transparent` for no ring
 //   buttonHoverText  the filled button's label on hover and keyboard focus (without it the label keeps its colour)
 //   buttonStyle      "filled" (default) or "underline": a text button, no fill or ring or radius, an underline of --pkde-button-underline-width in the buttonBorder colour
@@ -33,7 +33,7 @@ export const THRESHOLD = { text: 4.5, heading: 3, muted: 4.5, link: 4.5, buttonT
 const HIGHLIGHT_APART = 1.5;
 // ...and it keeps the hue: the near-white (50, 100) and near-black (900, 950) ends of a ramp are not tried, only the exact colour and the steps 200 to 800 around it.
 // A colour is WEAK when its best text colour barely clears AA (under this ratio) and no palette colour can serve as a heading or link on it:
-// the matrix then has one readable text colour and nothing else to draw with. bb sage (4.66), the template's accent and stone, js and cs stone.
+// the matrix then has one readable text colour and nothing else to draw with. a site sage (4.66), the template's accent and stone, js and cs stone.
 export const WEAK_BELOW = 5.2;
 const OPACITY_STEPS = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95];
 
@@ -189,7 +189,7 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     // The button's edge: invisible (its own colour) unless the button barely shows against the section (under 3:1), then the label colour, so its shape is visible.
     const buttonBorder = (ratio(buttonBg, bgRef) ?? 21) < THRESHOLD.buttonSurface ? buttonText : buttonBg;
 
-    // the decorative colour (small rules, dividers and the kit's icons; TPL-279, TPL-281): a brand highlight at 3:1; the icon role defaults to it, a declared `icon` still wins
+    // the decorative colour (small rules, dividers and the kit's icons): a brand highlight at 3:1; the icon role defaults to it, a declared `icon` still wins
     const accent = highlightFor(bgRef, ownerName, { solid, min: THRESHOLD.accent, textRef: text }) ?? pick(3) ?? text;
 
     return {
@@ -296,7 +296,7 @@ export function createBuilder(colors, { buttons: buttonsDecl = null } = {}) {
     return result;
   }
 
-  /** The three variants on a surface and the section and card button roles they imply (WP-109): the roles are outputs of the one declaration. */
+  /** The three variants on a surface and the section and card button roles they imply: the roles are outputs of the one declaration. */
   function buttonOutputs(bgRef, cardBgRef, where) {
     const helpers = { resolver, ratio, bestNeutral };
     const btn = resolveButtonsFor(bgRef, buttonsDecl, helpers, where);
@@ -552,7 +552,7 @@ function globalButtonCss(decl, page, resolver) {
   const names = Object.keys(decl.variants);
   const looks = Object.fromEntries(names.map((name) => [name, variantLook(decl, name)]));
 
-  out.push('/**', ' * One global button system (WP-109): `buttons` in config/brand-palette.json, resolved for every surface below. Every button of the site is drawn from these variables.', ' */', ':root {');
+  out.push('/**', ' * One global button system: `buttons` in config/brand-palette.json, resolved for every surface below. Every button of the site is drawn from these variables.', ' */', ':root {');
   for (const name of names) {
     out.push(`  --btn-${name}-border-width: ${looks[name].bw};`, `  --btn-${name}-radius: ${looks[name].radius};`);
     if (looks[name].padding !== null) out.push(`  --btn-${name}-padding: ${looks[name].padding};`);

@@ -62,7 +62,7 @@ it('draws the list card from the same markup: image left, details and the action
         ->and($card)->toContain('pkde-product-actions pkde-product-actions--default');
 });
 
-it('turns View basket into an icon button the height of the add-to-cart button, named View basket, with a focus ring (TCS-103)', function () {
+it('turns View basket into an icon button the height of the add-to-cart button, named View basket, with a focus ring', function () {
     $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
     $card = file_get_contents(dirname(__DIR__, 2) . '/resources/views/woocommerce/content-product.blade.php');
 
@@ -71,7 +71,7 @@ it('turns View basket into an icon button the height of the add-to-cart button, 
         ->and($css)->toContain('.pkde-product-actions > a.added_to_cart::before')
         ->and($css)->toContain('.pkde-product-actions > a.added_to_cart:focus-visible')
         ->and($css)->toContain('flex: 0 0 2.5rem;')
-        // the short description goes through the one card helper (TPL-280): tags stripped, entities decoded once (CardTextTest), a server cap, then the CSS clamp
+        // the short description goes through the one card helper: tags stripped, entities decoded once (CardTextTest), a server cap, then the CSS clamp
         ->and($card)->toContain('\\App\\card_text((string) $product->get_short_description())')
         ->and($card)->not->toContain('wp_trim_words');
 });

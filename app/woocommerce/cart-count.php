@@ -1,14 +1,14 @@
 <?php
 
 /**
- * The header's basket count, kept live (owner, TPL-147). The site's header prints cart_count_html() inside its badge, and the badge carries
+ * The header's basket count, kept live (owner). The site's header prints cart_count_html() inside its badge, and the badge carries
  * `data-pkde-cart-badge`. The count is registered as a WooCommerce cart fragment, so WooCommerce's own add-to-cart script swaps in the new number
  * after every AJAX add to basket (product cards, related products); resources/js/cart-count.js does the same after a change on the basket page,
  * which WooCommerce's cart script does not. The count is empty at 0 and the badge hides itself then (shop-pages.css), so it appears at the
  * first add without a reload. The header names its link with visually hidden text (not aria-label), so the count is part of the link's
- * accessible name: "Cart" when empty, "Cart, 2 items" (TPL-148).
+ * accessible name: "Cart" when empty, "Cart, 2 items".
  *
- * Cache-safe (MGR-76): the page always prints the EMPTY count; the browser fills it in (resources/js/cart-badge.js), so the page cache can keep serving
+ * Cache-safe: the page always prints the EMPTY count; the browser fills it in (resources/js/cart-badge.js), so the page cache can keep serving
  * visitors who have a basket. See docs/page-cache.md.
  */
 
@@ -32,7 +32,7 @@ function cart_count_markup(int $count): string
 
 /**
  * The count element for a PAGE: always the EMPTY one, the same for every visitor, so a page the page cache stores never carries anyone's basket
- * (MGR-76). The number is filled in by the browser (resources/js/cart-badge.js) from the basket cookie and WooCommerce's fragments, and by
+ *. The number is filled in by the browser (resources/js/cart-badge.js) from the basket cookie and WooCommerce's fragments, and by
  * WooCommerce's add-to-cart script after an AJAX add. Only the fragment (an AJAX answer, never cached) passes $live = true for the visitor's real count.
  */
 function cart_count_html(bool $live = false): string

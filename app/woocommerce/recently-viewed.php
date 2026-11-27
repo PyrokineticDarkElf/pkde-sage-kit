@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Recently viewed products (MGR-65, TPL-134). Opt-in: `add_filter('pkde_kit/recently_viewed', '__return_true')`.
+ * Recently viewed products. Opt-in: `add_filter('pkde_kit/recently_viewed', '__return_true')`.
  *
  * The pages stay cache-safe: a product page prints only an empty marker with the product's own id, and the box (the shop sidebar prints it, or
  * `recently_viewed_box()` anywhere) is an empty, hidden placeholder, the same for every visitor. resources/js/recently-viewed.js does the rest:

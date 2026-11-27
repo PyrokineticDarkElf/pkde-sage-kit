@@ -1,5 +1,5 @@
 {{--
-  The blog single (tcs's layout, the kit default - owner via MGR-66): header (breadcrumbs, category pills, title, meta), the featured image as a
+  The blog single (a site's layout, the kit default): header (breadcrumbs, category pills, title, meta), the featured image as a
   prominent hero, the text with its contents rail, then tags, share, the author box, previous/next, related and recent posts, and the Article schema.
   A site does NOT copy this view: it changes the look with the --pkde-post-* variables (resources/css/post-single.css), switches a section off with
   the pkde_kit/single_show filter, and adds to it with the pkde_kit/single_* actions. All of it: docs/blog-single.md.

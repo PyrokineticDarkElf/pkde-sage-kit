@@ -1,4 +1,4 @@
-# Site details in the theme (WP-106)
+# Site details in the theme
 
 The business's phone numbers, emails, addresses, opening hours and social profiles are set ONCE (Settings > Site details, the platform's `site-details` module, seeded from the site's `config/pkde-site-details.php`) and read everywhere from there. A site without the platform module keeps working: the kit reads its old `client_*` options the same way the footer always did.
 

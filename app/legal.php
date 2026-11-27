@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The legal document view (WP-104, the platform's `legal` module makes the post type): the line under the title and the table of contents.
+ * The legal document view (the platform's `legal` module makes the post type): the line under the title and the table of contents.
  * Pure functions; resources/views/single-pkde_legal.blade.php prints them.
  */
 
