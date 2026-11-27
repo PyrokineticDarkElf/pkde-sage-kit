@@ -43,8 +43,11 @@ $placeholders = ! $images ? max(0, min(12, (int) ($attributes['placeholders'] ??
 $contain = ($attributes['fit'] ?? 'cover') === 'contain';
 // An optional "View all" tab under the pictures (the block's link text, address and tab setting); pinned, it hangs from the Section's bottom edge
 $tab = in_array($attributes['linkTab'] ?? '', ['tab', 'pinned'], true) && trim((string) ($attributes['linkText'] ?? '')) !== '' && trim((string) ($attributes['linkUrl'] ?? '')) !== '';
-$classes = trim(($contain ? 'pkde-gallery--contain' : '') . (! empty($attributes['centered']) ? ' pkde-gallery--centered' : '') . ($tab && $attributes['linkTab'] === 'pinned' ? ' has-pinned-tab' : ''));
-$wrapper_attributes = get_block_wrapper_attributes($classes !== '' ? ['class' => $classes] : []);
+$row = ! empty($attributes['row']);
+$classes = trim(($contain ? 'pkde-gallery--contain' : '') . ($row ? ' pkde-gallery--row' : '') . (! empty($attributes['flush']) ? ' pkde-gallery--flush' : '') . (! empty($attributes['centered']) ? ' pkde-gallery--centered' : '') . ($tab && $attributes['linkTab'] === 'pinned' ? ' has-pinned-tab' : ''));
+$wrapper_args = $classes !== '' ? ['class' => $classes] : [];
+$row && $wrapper_args['style'] = '--pkde-gallery-cols:' . $columns;
+$wrapper_attributes = get_block_wrapper_attributes($wrapper_args);
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php if ($heading) : ?>
@@ -54,6 +57,7 @@ $wrapper_attributes = get_block_wrapper_attributes($classes !== '' ? ['class' =>
         <p class="mt-2 max-w-2xl text-[color:var(--section-muted,var(--color-neutral-600))]"><?php echo wp_kses_post($description); ?></p>
     <?php endif; ?>
 
+    <?php ob_start(); ?>
     <?php if ($placeholders) : ?>
         <div class="<?php echo ($heading || $description) ? 'mt-6 ' : ''; ?>grid grid-cols-2 gap-4 sm:grid-cols-3 <?php echo $column_class; ?>">
             <?php for ($i = 0; $i < $placeholders; $i++) : ?>
@@ -98,6 +102,19 @@ $wrapper_attributes = get_block_wrapper_attributes($classes !== '' ? ['class' =>
     <?php else : ?>
         <p class="mt-6 text-center text-[color:var(--section-muted,var(--color-neutral-600))]"><?php esc_html_e('No images selected yet.', 'sage'); ?></p>
     <?php endif; ?>
+    <?php
+    $pictures = (string) ob_get_clean();
+
+if ($row && str_contains($pictures, '<div class="')) {
+    // The row that loops is the same carousel as the other rows (resources/js/carousel.js): a viewport around the grid, the grid its track. It goes round, and moves by itself when Autoplay is on.
+    $pictures = '<div class="pkde-gallery__carousel" data-carousel data-carousel-loop="true" data-carousel-autoplay="' . (! empty($attributes['autoplay']) ? 'true' : 'false') . '" data-carousel-autoplay-delay="3000"><div class="pkde-gallery__viewport" data-carousel-viewport>'
+        . preg_replace('/<div class="((?:mt-6 )?)grid /', '<div data-carousel-track class="$1grid ', $pictures, 1) . '</div>'
+        . (! empty($attributes['autoplay']) ? '<div class="pkde-features__controls"><button type="button" class="pkde-features__pause" data-carousel-autoplay-toggle data-label-pause="' . esc_attr__('Pause the slideshow', 'sage') . '" data-label-play="' . esc_attr__('Start the slideshow', 'sage') . '" aria-label="' . esc_attr__('Pause the slideshow', 'sage') . '"><span class="pkde-features__pause-pause" aria-hidden="true">&#10074;&#10074;</span><span class="pkde-features__pause-play" aria-hidden="true">&#9654;</span></button></div>' : '')
+        . '</div>';
+}
+
+echo $pictures;
+?>
     <?php if ($tab) {
         echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => esc_url_raw($attributes['linkUrl']), 'label' => $attributes['linkText']])->render();
     } ?>

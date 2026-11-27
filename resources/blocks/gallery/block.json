@@ -72,6 +72,18 @@
     "centered": {
       "type": "boolean",
       "default": false
+    },
+    "row": {
+      "type": "boolean",
+      "default": false
+    },
+    "flush": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

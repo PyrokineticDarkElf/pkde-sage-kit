@@ -418,7 +418,7 @@
 .pkde-posts--label .grid > article > div.absolute { display: none; }
 .pkde-posts--label .grid > article .pkde-card__media { order: 1; border-radius: 0; }
 .pkde-posts--label .grid > article .pkde-card__media :is(div, img, .pkde-placeholder) { aspect-ratio: 4 / 5; border-radius: 0; }
-.pkde-posts--label .grid > article .pkde-card__body { order: 2; flex: 0 0 auto; padding: 1.5rem 2rem 0.75rem; }
+.pkde-posts--label .grid > article .pkde-card__body { order: 2; flex: 1 1 auto; padding: 1.5rem 2rem 0.75rem; } /* the body takes the spare height: the category pill under it sits at the bottom of every card */
 .pkde-posts--label .grid > article > a.absolute { position: static; order: 3; align-self: flex-start; margin: 0 0 1.5rem 2rem; padding: 0.35rem 1.1rem; border-radius: 999px; background: color-mix(in srgb, currentColor 22%, transparent); color: inherit; backdrop-filter: none; font-size: 0.875rem; font-weight: 600; }
 .pkde-posts--label.pkde-posts--label.pkde-posts--label.pkde-posts--label.pkde-posts--label .grid > article :is(.entry-title, .entry-title a) { color: inherit; text-decoration: none; font-size: clamp(1.25rem, 2vw, 1.6rem); font-weight: 800; line-height: 1.2; }
 .pkde-posts--label .grid > article :is(.pkde-meta, .entry-summary, .pkde-card__more) { display: none; }
@@ -444,11 +444,12 @@
 .pkde-accordion--bars h2 { text-align: center; }
 .pkde-accordion--bars > div > div:first-child:not(.columns-1) { margin-inline: auto; text-align: center; }
 .pkde-accordion--bars.pkde-accordion--bars.pkde-accordion--bars details { margin-bottom: 1rem; padding: 0; border: 0; }
-.pkde-accordion--bars.pkde-accordion--bars.pkde-accordion--bars details > summary { padding: 1rem 1.5rem; background: color-mix(in srgb, var(--section-bg, #374151) 86%, #000); color: var(--section-heading, #fff); font-size: 1.125rem; }
+.pkde-accordion--bars.pkde-accordion--bars.pkde-accordion--bars details > summary { padding: 1rem 1.5rem; background: var(--section-card-heading, #374151); color: var(--section-card-bg, #fff); font-size: 1.125rem; } /* the card's heading colour and its own colour: a contrast pair in every section */
 .pkde-accordion--bars details > summary svg { display: none; }
 .pkde-accordion--bars details > summary::after { content: ""; flex: none; width: 0.55rem; height: 0.55rem; margin-inline-end: 0.25rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-0.15rem) rotate(45deg); transition: transform 0.2s; }
 .pkde-accordion--bars details[open] > summary::after { transform: translateY(0.1rem) rotate(225deg); }
-.pkde-accordion--bars details > div { margin: 0; padding: 1.25rem 1.5rem; background: #fff; color: #1f2937; }
+.pkde-accordion--bars details > div { margin: 0; padding: 1.25rem 1.5rem; background: var(--section-card-bg, #fff); color: var(--section-card-text, #1f2937); }
+.pkde-accordion--bars .columns-1 { border-top: 0; } /* no rule above the bars */
 
 /* A picture slot that is a background (a hero, a picture card, an overlay post card): a full-size landscape scene, so the empty slot is easy to tell from a flat colour. It fills the slot (slice). */
 .wp-block-sage-hero:not(.pkde-hero--split) .pkde-placeholder,
@@ -481,3 +482,21 @@
 @container (min-width: 60rem) {
   .pkde-posts--rail .pkde-posts__viewport > .grid > article { flex-basis: calc((100cqw - 2 * 2rem) / 3); }
 }
+
+/* Image Gallery, row that loops (logos): the pictures in a carousel that goes round (and can move by itself), running to the screen's edges like the other rows: the first card starts at the content
+   edge, the number of Columns fill the content width. Flush: no padding in the cards. */
+.pkde-gallery--row { container-type: inline-size; }
+.wp-block-sage-section:has(.pkde-gallery--row) { overflow-x: clip; }
+.pkde-gallery--row .pkde-gallery__viewport { overflow-x: auto; margin-right: calc((100cqw - 100vw) / 2); }
+.pkde-gallery--row [data-carousel-ready] .pkde-gallery__viewport {
+  overflow: visible;
+  clip-path: inset(-2rem 0 -2rem calc((100cqw - 100vw) / 2));
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+}
+.pkde-gallery--row .pkde-gallery__viewport > .grid { display: flex; gap: 1rem; }
+.pkde-gallery--row .pkde-gallery__viewport > .grid > div { flex: 0 0 min(14rem, 60%); }
+@container (min-width: 48rem) {
+  .pkde-gallery--row .pkde-gallery__viewport > .grid > div { flex-basis: calc((100cqw - (var(--pkde-gallery-cols, 4) - 1) * 1rem) / var(--pkde-gallery-cols, 4)); }
+}
+.pkde-gallery--flush .grid > div { --pkde-logo-pad: 0px; }
