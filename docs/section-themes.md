@@ -113,3 +113,5 @@ Lettering (letter spacing, weight, case) is the site's own CSS or the button's b
 
 ## Role classes
 A section also matches a **role class** that is the same on every site: `is-style-role-brand`, `-accent`, `-black`, `-white`, and `-light` for the light theme of the first three (white has none). The generated rule of each theme lists both classes (`.is-style-brand-sage, .is-style-role-brand`), so markup copied from one site takes the brand of the site it lands on; the kit's descendant rules key on either class. A colour with no role (a palette's extra colours) has no role class. The role classes are not block styles: the Styles panel is unchanged.
+
+**Exporting a theme:** `npm run theme:export` in a site's theme folder (after `theme:generate`) writes one plain `pkde-theme.css` (the tokens on `:root`, the section themes with their role selectors, the font tokens), which re-skins anything written on role classes, for example the previews of the pattern library. A site's package.json carries `"theme:export": "node vendor/pkde/sage-kit/bin/theme-export.mjs"`.
