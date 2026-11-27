@@ -608,3 +608,20 @@ test('role classes: every theme of a role also matches .is-style-role-<role>[-li
   assert.ok(kitCss.includes(':is([class*="is-style-brand-"], [class*="is-style-role-"])'));
   assert.ok(!/(^|[^(,] )\[class\*="is-style-brand-"\]/m.test(kitCss), 'no rule keys on the brand class alone');
 });
+
+test('theme:export writes one plain stylesheet: tokens on :root, the section themes with their role selectors, no Tailwind directives (and says so when nothing is generated)', () => {
+  const r = run(sagePalette);
+  assert.equal(r.status, 0, r.stderr);
+  const exporter = fileURLToPath(new URL('../../bin/theme-export.mjs', import.meta.url));
+  const out = join(r.theme, 'pkde-theme.css');
+  const done = spawnSync('node', [exporter, '--theme-dir', r.theme, '--out', out], { encoding: 'utf8' });
+  assert.equal(done.status, 0, done.stderr);
+  const css = readFileSync(out, 'utf8');
+  assert.match(css, /:root \{[^}]*--color-sage-600:/s);
+  assert.ok(css.includes('.is-style-brand-sage, .is-style-role-brand {'));
+  assert.doesNotMatch(css, /@theme|@source/);
+  assert.match(css, /@font-face \{ font-family: "Poppins"/);
+  const empty = spawnSync('node', [exporter, '--theme-dir', join(r.theme, 'nothing-here'), '--out', join(r.theme, 'x.css')], { encoding: 'utf8' });
+  assert.notEqual(empty.status, 0);
+  assert.match(empty.stderr, /run npm run theme:generate first/);
+});
