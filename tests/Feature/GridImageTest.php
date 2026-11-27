@@ -6,7 +6,7 @@
 $root = dirname(__DIR__, 2);
 
 it('fills the grid cell with an image block, in unlayered CSS so core\'s img rule does not win', function () use ($root) {
-    $css = file_get_contents("$root/resources/css/kit.css");
+    $css = kit_source("$root", 'css');
     // the accordion item rule is the first unlayered rule of the file; the grid rule must come after it
     $after = substr($css, (int) strpos($css, '.pkde-section .wp-block-sage-accordion-item {'));
 

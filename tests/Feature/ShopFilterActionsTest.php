@@ -30,7 +30,7 @@ it('resets to the archive without the form\'s choices and the page number, and k
 });
 
 it('does not send a request per tick: the change handler no longer submits the form', function () use ($root) {
-    $kit = file_get_contents("$root/resources/js/kit.js");
+    $kit = kit_source("$root", 'js');
     $own = file_get_contents("$root/resources/js/shop-filters.js");
 
     expect($kit)->not->toContain('requestSubmit')
@@ -63,7 +63,7 @@ it('styles the buttons from theme tokens, with a focus ring, and never disables 
         ->and($css)->toContain('position: sticky')
         ->and($css)->toContain('[data-pending="0"]')
         ->and($css)->not->toContain('pointer-events')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./shop-filter-actions.css"');
+        ->and(kit_source("$root", 'css'))->toContain('@import "./shop-filter-actions.css"');
 });
 
 it('keeps Apply and Reset reachable on a desktop: only the filter groups scroll inside the floating column, the bar stays out of the scroller (2026.11.18.1)', function () use ($root) {

@@ -27,7 +27,7 @@ it('keeps the sticky column layout with the <search> as the flex child, and the 
     expect($css)->toContain('.shop-archive__filters > search,')->toContain('.shop-archive__filters > search {')
         // the plain display rule comes before the sticky media query, so the flex rule inside it wins
         ->and(strpos($css, ".shop-archive__filters > search {\n  display: block"))->toBeLessThan(strpos($css, '@media (min-width: 1024px) and (min-height: 820px)'))
-        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('[data-filter-follow]')
+        ->and(kit_source("$root", 'js'))->toContain('[data-filter-follow]')
         // the recently viewed list keeps the look it had inside the panel (its list rules and the utility classes the panel carried)
         ->and($css)->toContain('#shop-recent ul')
         ->and(file_get_contents("$root/resources/views/partials/shop-archive-body.blade.php"))->toContain('id="shop-recent"', '[&_ul]:text-sm', '[&_a]:text-neutral-600');

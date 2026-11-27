@@ -42,7 +42,7 @@ it('saves the choice in the browser only, never in the HTML, and applies it befo
         ->and($php)->toContain("apply_filters('pkde_kit/shop_view_toggle', true)")
         ->and($js)->toContain("localStorage.setItem(KEY, view)")
         ->and($js)->toContain('catch')
-        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain("import './shop-view.js';")
+        ->and(kit_source("$root", 'js'))->toContain("import './shop-view.js';")
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("woocommerce/view-toggle.php");
 });
 

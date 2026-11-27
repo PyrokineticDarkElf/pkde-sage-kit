@@ -88,7 +88,7 @@ development, the same limitation as the ToC scroll-spy noted in
 
 ## Shop polish: stars, equal cards, category accordion, basket and checkout (`resources/css/shop-pages.css`)
 
-All CSS, imported by `kit.css`; the tokens are the kit's own (neutral, brand and their `-fg` text colours), so a site's palette carries through.
+All CSS, imported by `kit-shop.css` (a site with a shop imports that file after `kit.css`; see below); the tokens are the kit's own (neutral, brand and their `-fg` text colours), so a site's palette carries through.
 
 * **Rating stars.** WooCommerce prints "Rated 5.00 out of 5" and relies on its star font, which the kit does not load. `.star-rating` is now five mask-drawn stars (`--pkde-star` sets the size), amber-700 on a neutral-200 track (5.0:1 against white), filled to the rating by WooCommerce's own inline width. The element keeps `role="img"` and its `aria-label`; the words are only hidden visually.
 * **Equal-height product cards.** The card's text block grows and the button area sits at the bottom of every card in a row; "View cart" (`a.added_to_cart`) after an AJAX add is a text link next to the button, not a second black pill.
@@ -172,7 +172,6 @@ links, otherwise archives and searches link to `?sage_view=sale|new` and curated
 * **When New shows:** the N newest products (4; `pkde_kit/recent_counts` changes the counts per post type) or, with `pkde_kit/new_badge_days` above 0 (filter, `int $days`, `string $postType`), the products published within that many days. The `?sage_view=new` list follows the same rule. Sale: the product is on sale.
 * **Markup and filter:** `.pkde-badge.pkde-badge--sale|new`; `pkde_kit/product_badges` (list of badges, product) adds, removes or reorders a badge.
 * **Look, on `:root`** (each with a kit-token fallback): `--pkde-badge-sale-bg`, `--pkde-badge-sale-fg`, `--pkde-badge-new-bg`, `--pkde-badge-new-fg`, `--pkde-badge-radius` (999px), `--pkde-badge-size` (0.625rem), `--pkde-badge-weight` (600), `--pkde-badge-tracking` (0.14em), `--pkde-badge-padding`, `--pkde-badge-top`, `--pkde-badge-inset`.
-* **Category tile image:** `\App\category_tile_image($attachmentId, $url, $alt, $class, $sizes)` renders a tile photo through the media library (width, height, srcset, sizes; an attachment id, or the URL of an original or a resized upload) and falls back to a plain lazy `<img>`; pair it with `\App\category_menu_image($termId)` for the most popular product's photograph. The kit's own tiles are unchanged; a site's own tile design calls the helper.
 
 **The grid has a fixed column count** (kit 2026.11.06.6 or later): 4 from 1280px, 3 from 640px, 2 below, the same on every site. It no longer follows the results width, the gap, the root font size or the filter column, and WooCommerce's own "products per row" class (`columns-4`) and a site's rules for it do not change it. At 1440 a card is 216px wide (4 columns, 24px gap, the 240px filter column), at 1024 it is 211px (3 columns). A site that wants another count sets `--pkde-shop-columns`.
 
@@ -220,3 +219,17 @@ a copy of the view; the defaults are the kit's own look. The picture's WordPress
 A site with a different design keeps its own CSS on the hooks (a site: square tiles, `contain` pictures with padding, small uppercase names are variables too; its numbering
 counter, border on hover and lift are rules on `.pkde-tile`). Specificity: the kit's rules are unlayered with a single class, so a site rule with one class that
 comes later in the cascade wins.
+
+
+## The shop's CSS and JS are opt-in: `kit-shop.css` and `kit-shop.js`
+`kit.css` and `kit.js` no longer carry the shop. A site that sells (WooCommerce is required) imports the two shop files after the kit's:
+
+```css
+@import "../../vendor/pkde/sage-kit/resources/css/kit.css";
+@import "../../vendor/pkde/sage-kit/resources/css/kit-shop.css";
+```
+```js
+import '../../vendor/pkde/sage-kit/resources/js/kit.js';
+import '../../vendor/pkde/sage-kit/resources/js/kit-shop.js';
+```
+The template's `app.css` and `app.js` have both lines commented out; `bin/setup` uncomments them on the shop path. A site with no shop ships none of it: the built CSS is smaller by the shop's rules. The block editor's stylesheet (`editor-kit.css`) imports both, so a shop block looks right in the canvas either way. The shop's PHP helpers are in `app/woocommerce/helpers.php`.

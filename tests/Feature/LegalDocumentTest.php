@@ -47,7 +47,7 @@ it('ships the view, the styles and the print rules, loaded from the package', fu
     expect($view)->toContain('_pkde_legal_effective', 'legal_toc', 'pkde-kit::partials.breadcrumbs', 'pkde-kit::partials.toc')
         ->and($view)->not->toContain('revisions')->and($view)->not->toContain('wp_get_post_revisions') // no public version history
         ->and($css)->toContain('@media print', 'attr(href)', '.banner', '.content-info')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./legal.css";')
+        ->and(kit_source("$root", 'css'))->toContain('@import "./legal.css";')
         ->and(file_get_contents("$root/composer.json"))->toContain('app/legal.php');
 });
 

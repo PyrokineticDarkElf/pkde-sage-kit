@@ -67,7 +67,7 @@ it('keeps the single post layout in one kit view with documented hooks, sections
 
     expect($css)->not->toContain('--wp--preset')->not->toMatch('/#[0-9a-f]{3,8}\b/i')
         ->and($view)->toContain('post-hero', 'post-body', 'post-rail', 'post-after', 'application/ld+json', "class_exists('RankMath')")
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./post-single.css";')
+        ->and(kit_source("$root", 'css'))->toContain('@import "./post-single.css";')
         ->and(file_exists("$root/resources/views/single.blade.php"))->toBeTrue()
         ->and(file_exists("$root/resources/views/page.blade.php"))->toBeTrue();
 });

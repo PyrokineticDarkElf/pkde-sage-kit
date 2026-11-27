@@ -35,7 +35,7 @@ it('paints a themed section from its roles and lets core blocks follow it, below
         ->and(preg_replace('~/\*.*?\*/~s', '', $css))->toMatch('/\.has-text-color \{\s*color: var\(--section-text\) !important;/')
         // kit blocks that colour themselves, and blocks with their own link colour, are left alone
         ->and($css)->toContain('.pkde-section', 'article', '.has-link-color', '[class*="wp-elements-"]')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./section-themes.css";');
+        ->and(kit_source("$root", 'css'))->toContain('@import "./section-themes.css";');
 });
 
 it('puts a section\'s descendant rules one level above a site\'s generic .page-content colour rules, and makes Outline a true outline', function () use ($root) {

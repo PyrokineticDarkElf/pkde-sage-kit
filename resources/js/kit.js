@@ -1,15 +1,8 @@
-import './add-to-basket.js';
-import './cart-badge.js';
-import './cart-count.js';
 import './carousel.js';
 import './lightbox.js';
 import './motion.js';
 import './phone.js';
-import './product-carousel.js';
 import './quote-scroll.js';
-import './recently-viewed.js';
-import './shop-filters.js';
-import './shop-view.js';
 
 const toc = document.querySelector('[data-toc]');
 
@@ -122,23 +115,6 @@ if (navToggle) {
   }
 }
 
-const filterToggle = document.querySelector('[data-filter-toggle]');
-
-if (filterToggle) {
-  const panel = document.getElementById(filterToggle.getAttribute('aria-controls'));
-
-  if (panel) {
-    filterToggle.addEventListener('click', () => {
-      const expanded = filterToggle.getAttribute('aria-expanded') === 'true';
-
-      filterToggle.setAttribute('aria-expanded', String(!expanded));
-      panel.classList.toggle('hidden', expanded);
-      // the recently viewed box sits outside the filters' landmark and follows the panel (partials/shop-archive-body)
-      document.querySelectorAll('[data-filter-follow]').forEach((el) => el.classList.toggle('hidden', expanded));
-    });
-  }
-}
-
 // Generic modal. Any [data-modal-trigger="id"] opens the element #id; a [data-modal-close] inside it, a click on the backdrop
 // (the #id element itself) or Escape closes it. Focus moves into the dialog when it opens and returns to the trigger when it
 // closes, and the page behind does not scroll. The markup is the site's: give the #id element role="dialog", aria-modal="true"
@@ -170,14 +146,6 @@ document.querySelectorAll('[data-modal-trigger]').forEach((trigger) => {
   });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-  });
-});
-
-document.querySelectorAll('[data-shop-filters]').forEach((form) => {
-  form.addEventListener('submit', () => {
-    form.querySelectorAll('[data-price-input]').forEach((input) => {
-      if (input.value === '') input.removeAttribute('name');
-    });
   });
 });
 

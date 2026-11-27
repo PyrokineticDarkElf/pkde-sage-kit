@@ -119,7 +119,7 @@ it('sizes the Section block like the header by default: unlayered, from the cont
 });
 
 it('imports the shop CSS from kit.css and keeps the rating stars readable', function () {
-    $kit = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $kit = kit_source(dirname(__DIR__, 2), 'css');
     $shop = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
 
     expect($kit)->toContain('@import "./shop-pages.css";')
@@ -163,7 +163,7 @@ it('gives the social links list a stable class a site can scope rules around, an
 });
 
 it('has no white stripe between Sections, a drawn zoom button, four-across related products and a drawn review star picker', function () {
-    $kit = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $kit = kit_source(dirname(__DIR__, 2), 'css');
     $shop = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
 
     expect($kit)->toContain('.prose-content > .wp-block-sage-section')
@@ -206,7 +206,7 @@ it('ships the optional Relevanssi live search: filters, results template, form, 
         ->and(file_get_contents("$root/resources/live-search/search-results.php"))->toContain("pkde-kit::partials.live-search-results")
         ->and(file_get_contents("$root/resources/views/partials/product-search.blade.php"))->toContain('data-rlvlive="true"')
         ->and(file_get_contents("$root/resources/views/partials/product-search.blade.php"))->toContain('name="post_type" value="product"')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./live-search.css";')
+        ->and(kit_source("$root", 'css'))->toContain('@import "./live-search.css";')
         ->and(file_exists("$root/bin/relevanssi-settings.php"))->toBeTrue();
 });
 
@@ -217,14 +217,14 @@ it('has an opt-in header search whose icon and panel are wired by kit.js', funct
     expect($partial)->toContain('\App\header_search_enabled()')
         ->and($partial)->toContain('data-search-toggle')
         ->and($partial)->toContain('aria-controls="header-search-panel"')
-        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('[data-search-toggle]');
+        ->and(kit_source("$root", 'js'))->toContain('[data-search-toggle]');
 });
 
 it('ships the phone picker without a third-party host: self-hosted utils, a dynamic import, inert without the platform module', function () {
     $root = dirname(__DIR__, 2);
     $js = file_get_contents("$root/resources/js/phone.js");
 
-    expect(file_get_contents("$root/resources/js/kit.js"))->toContain("import './phone.js';")
+    expect(kit_source("$root", 'js'))->toContain("import './phone.js';")
         ->and($js)->toContain('window.pkdePhone')
         ->and($js)->toContain("import('intl-tel-input')")
         ->and($js)->toContain("loadUtils: () => import('intl-tel-input/utils')")
@@ -233,7 +233,7 @@ it('ships the phone picker without a third-party host: self-hosted utils, a dyna
         ->and($js)->toContain("event: 'generate_lead'")
         ->and($js)->not->toMatch('~https?://~i')
         ->and($js)->not->toMatch('/jsdelivr|unpkg|cdnjs/i')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('.wpcf7 .iti');
+        ->and(kit_source("$root", 'css'))->toContain('.wpcf7 .iti');
 });
 
 it('does not force every block stylesheet to load (on-demand block assets stay on)', function () {
@@ -244,7 +244,7 @@ it('does not force every block stylesheet to load (on-demand block assets stay o
 
 it('puts the page gutter in the content grid tracks, not in padding on every child', function () {
     $root = dirname(__DIR__, 2);
-    $css = file_get_contents("$root/resources/css/kit.css");
+    $css = kit_source("$root", 'css');
 
     expect($css)->toContain('--content-grid-measure: min(calc(var(--container-content, 80rem) - 2 * var(--page-gutter, 1.5rem)), calc(100% - 2 * var(--page-gutter, 1.5rem)));')
         ->and($css)->toContain('--content-grid-width: min(48rem, var(--content-grid-measure));')
@@ -277,7 +277,7 @@ it('guards every block render.php against a direct request, and the shop page co
 
 it('shows the editor canvas at the page width: the Section rules and the wide page template come from files the theme imports (editor parity)', function () {
     $root = dirname(__DIR__, 2);
-    $kit = file_get_contents("$root/resources/css/kit.css");
+    $kit = kit_source("$root", 'css');
     $measure = file_get_contents("$root/resources/css/page-measure.css");
     $editor = file_get_contents("$root/resources/css/editor-width.css");
 
@@ -300,7 +300,7 @@ it('themes the page header band with variables instead of hard-coded neutral cla
         expect($css)->toContain("--pkde-page-header-$name:");
     }
 
-    expect(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./page-header.css";')
+    expect(kit_source("$root", 'css'))->toContain('@import "./page-header.css";')
         ->and($view)->not->toContain('bg-neutral-50')
         ->and($view)->not->toContain('border-neutral-200')
         ->and($view)->not->toContain('text-neutral-950')

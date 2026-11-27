@@ -41,7 +41,7 @@ it('registers the count as a cart fragment, hides an empty badge in CSS and refr
         ->and(file_get_contents("$root/resources/css/shop-pages.css"))->toContain('[data-pkde-cart-badge]:has(> .pkde-cart-count:empty)')
         ->and(file_get_contents("$root/resources/js/cart-count.js"))->toContain("'updated_cart_totals wc_cart_emptied'")
         ->and(file_get_contents("$root/resources/js/cart-count.js"))->toContain("'span.pkde-cart-count'")
-        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain("import './cart-count.js';");
+        ->and(kit_source("$root", 'js'))->toContain("import './cart-count.js';");
 });
 
 // the page always prints the EMPTY count; only the fragment (an AJAX answer) carries the visitor's number.

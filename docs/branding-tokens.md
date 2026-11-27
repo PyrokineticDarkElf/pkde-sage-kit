@@ -39,7 +39,7 @@ Section themes (name/alias): brand/alpha, accent/bravo, campaign-green/charlie
 ```
 
 **Three colours minimum, always** — `brand` and `accent` alone don't leave enough variety for the
-[section-theming system](section-theming.md) to be worth anything, so the wizard won't let you
+[section theme](section-themes.md) system to be worth anything, so the wizard won't let you
 finish the colour loop until at least one extra is given, and the generator itself refuses fewer
 than three regardless of how it's invoked (`bin/generate-theme-tokens.mjs`'s own
 `MINIMUM_COLORS` check, not just wizard UX).
@@ -192,7 +192,7 @@ It generates/updates six files:
   `text-campaign-green-700`, and `border-accent-300`, and makes the colours available to the
   WordPress editor via `wordpressThemeJson()`.
 - **`resources/css/generated/section-themes.css`** — one re-themeable "section" per colour,
-  `.theme-{name}`/`.theme-{alias}` — see [Section theming](section-theming.md).
+  `.theme-{name}`/`.theme-{alias}` — see [Section themes](section-themes.md).
 - **`card-themes.css` is no longer generated.** It held two opt-in card recolour variants per colour
   (`.theme-{name} .pkde-card-tinted`/`.pkde-card-bold`) that no view, block or site used. A site that
   still has the committed file and imports it keeps working; delete the import and the file.

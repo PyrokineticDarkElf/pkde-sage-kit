@@ -162,5 +162,5 @@ it('uses that clause in every query that lists or counts products for visitors (
     expect(file_get_contents("$root/app/ShopFilterCounts.php"))->toContain('$wp_query->query_vars')->not->toContain('catalog_visibility_clause');
 
     // wc_get_products() takes the visibility as an argument instead of a tax_query: the category menu image must not come from a hidden product
-    expect(file_get_contents("$root/app/helpers.php"))->toContain("'visibility' => 'catalog'");
+    expect(file_get_contents("$root/app/woocommerce/helpers.php"))->toContain("'visibility' => 'catalog'");
 });

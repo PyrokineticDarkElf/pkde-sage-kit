@@ -33,6 +33,7 @@
       "app/form-preview.php",
       "app/block-assets.php",
       "app/woocommerce.php",
+      "app/woocommerce/helpers.php",
       "app/search.php",
       "app/template-folders.php",
       "app/helpers.php"

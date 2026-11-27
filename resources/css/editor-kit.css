@@ -4,8 +4,9 @@
  * Section measure, the buttons. Until now the canvas got only the page width (editor-width.css) and the theme's own site.css, so the product loop, whose
  * list is rendered by the server into the canvas, was a plain stack of cards 1232px wide (a 5622px tall block at 1600px wide).
  *
- * It is kit.css whole, not a slice: the kit's styles are all scoped by class (the front end's own header and footer markup does not exist in the canvas), and
+ * It is kit.css and kit-shop.css whole, not a slice (the canvas needs the shop blocks' styles even on a site whose front end leaves kit-shop.css out): the kit's styles are all scoped by class (the front end's own header and footer markup does not exist in the canvas), and
  * one file cannot fall behind the front end. The editor interface itself (toolbars, sidebars) is outside the canvas iframe and is not touched.
  */
 @import "./kit.css";
+@import "./kit-shop.css";
 @import "./editor-width.css";

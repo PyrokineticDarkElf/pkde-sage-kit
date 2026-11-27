@@ -7,7 +7,7 @@ it('prints the contents closed and shows the list on a wide screen by CSS, and t
     $root = dirname(__DIR__, 2);
     $view = file_get_contents($root . '/resources/views/partials/toc.blade.php');
     $css = file_get_contents($root . '/resources/css/post-single.css');
-    $js = file_get_contents($root . '/resources/js/kit.js');
+    $js = kit_source($root, 'js');
 
     expect($view)->toContain('<details class="post-toc__details">')->not->toContain('post-toc__details" open')
         ->and($css)->toContain('.post-toc__details:not([open])::details-content')->toContain('content-visibility: visible')

@@ -5,7 +5,7 @@
  * (real Chrome, throttled: a site layout shift 0.30 to 0 on a phone, 0.09 to 0 on a desktop); this keeps the four rules from being edited away.
  */
 it('shows the gallery at once, one picture before the script, a viewport as high as the picture and room for the thumbnails', function () {
-    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $css = kit_source(dirname(__DIR__, 2), 'css');
     $gallery = '.woocommerce div.product .woocommerce-product-gallery';
 
     expect($css)->toContain("$gallery {\n    opacity: 1 !important;")
@@ -30,7 +30,7 @@ it('gives the first hero the LCP attributes, and the category and brand cards a 
 });
 
 it('gives the viewport a box for the instant before the script sets its height, from the picture ratio the kit shows', function () {
-    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/kit.css');
+    $css = kit_source(dirname(__DIR__, 2), 'css');
     $gallery = '.woocommerce div.product .woocommerce-product-gallery';
 
     // until FlexSlider's inline height is there the viewport is 4:3 (or the site's ratio): without it the stacked pictures made it 14,000 px tall for a moment

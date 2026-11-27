@@ -64,8 +64,8 @@ it('draws a carousel with real buttons, a labelled region and nothing that needs
 
     expect($view)->toContain('<section', 'aria-labelledby=', '<h2 id=', 'data-pkde-carousel-prev', 'data-pkde-carousel-next', 'aria-label="{{ $prevLabel }}"', 'type="button"', 'data-pkde-carousel-nav hidden')
         ->and($css)->toContain('scroll-snap-type: x mandatory', 'scroll-snap-align: start', 'prefers-reduced-motion: reduce', '--pkde-product-h2-size', '--pkde-product-h2-font')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('product-sections.css', 'add-to-basket.css')
-        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('add-to-basket.js', 'product-carousel.js');
+        ->and(kit_source("$root", 'css'))->toContain('product-sections.css', 'add-to-basket.css')
+        ->and(kit_source("$root", 'js'))->toContain('add-to-basket.js', 'product-carousel.js');
 });
 
 it('shows a busy state that respects reduced motion and keeps the button out of `disabled`', function () use ($root) {

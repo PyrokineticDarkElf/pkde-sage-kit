@@ -130,7 +130,7 @@ it('reads only section roles in the new blocks\' CSS, with a plain-page fallback
     }
 
     expect($css)->not->toMatch('/#[0-9a-f]{3,6}\b(?!.*var)/i') // no hard-coded colour of its own
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./sections.css";');
+        ->and(kit_source("$root", 'css'))->toContain('@import "./sections.css";');
 });
 
 it('turns a block\'s Card colour and Card button colour into a class and a style, and ignores anything that is not in the generated lists', function () use ($root) {

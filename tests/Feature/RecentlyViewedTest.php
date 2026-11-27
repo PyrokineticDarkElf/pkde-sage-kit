@@ -42,8 +42,8 @@ it('keeps the page the same for every visitor: an empty marker and an empty hidd
         ->and($php)->toContain("REQUEST_METHOD'] ?? '') !== 'POST'", 'HTTP_SEC_FETCH_SITE', "update_user_meta(get_current_user_id(), '_pkde_recently_viewed'")
         ->and($php)->not->toContain('setcookie', 'wp_create_nonce')
         ->and(file_get_contents("$root/resources/views/partials/shop-archive-body.blade.php"))->toContain('\App\recently_viewed_box()')
-        ->and(file_get_contents("$root/resources/js/kit.js"))->toContain('recently-viewed.js')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('recently-viewed.css')
+        ->and(kit_source("$root", 'js'))->toContain('recently-viewed.js')
+        ->and(kit_source("$root", 'css'))->toContain('recently-viewed.css')
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/recently-viewed.php');
 });
 
@@ -60,5 +60,5 @@ it('gives the Cart and Checkout blocks the shortcode pages\' look from the same 
 
     expect($css)->toContain('.wc-block-cart__submit-button', '.wc-block-components-checkout-place-order-button', 'var(--color-brand-600)', 'var(--color-brand-600-fg)', 'border-radius: var(--pkde-radius-full)', 'outline: 2px solid var(--color-brand-600)')
         ->and($css)->not->toMatch('/#[0-9a-f]{3,6}\b/i')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('cart-checkout-blocks.css');
+        ->and(kit_source("$root", 'css'))->toContain('cart-checkout-blocks.css');
 });

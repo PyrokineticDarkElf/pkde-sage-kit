@@ -14,7 +14,7 @@ it('ships one editor stylesheet that holds kit.css and the editor page width', f
 });
 
 it('keeps the product loop grid rules in kit.css, which the editor stylesheet imports', function () use ($root) {
-    $kit = file_get_contents("$root/resources/css/kit.css");
+    $kit = kit_source("$root", 'css');
 
     expect($kit)->toContain('.woocommerce ul.products')
         ->and($kit)->toContain('.woocommerce.columns-4 ul.products');

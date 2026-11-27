@@ -14,11 +14,7 @@ class Post extends Composer
     protected static $views = [
         'pkde-kit::partials.page-header',
         'pkde-kit::partials.content',
-        // the same views under their old, un-namespaced names (a site's own copy, or a view found through the kit's fallback path)
-        'partials.page-header',
-        'partials.content',
         'pkde-kit::partials.content-*',
-        'partials.content-*',
     ];
 
     /**

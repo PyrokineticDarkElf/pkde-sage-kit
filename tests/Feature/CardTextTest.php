@@ -74,7 +74,7 @@ it('scrolls a WooCommerce review instead of cutting it: a max height in lines, o
         ->and($css)->not->toContain('.pkde-quotes--reviews .pkde-quote blockquote { --pkde-lines')
         ->and($js)->toContain('box.tabIndex = 0')->toContain("'role', 'region'")->toContain('data-pkde-more')
         ->and($quote)->toContain('data-pkde-label')
-        ->and(file_get_contents($root . '/resources/js/kit.js'))->toContain("import './quote-scroll.js'")
+        ->and(kit_source($root, 'js'))->toContain("import './quote-scroll.js'")
         ->and(file_get_contents($root . '/app/faq.php'))->toContain('text-[color:var(--section-icon,var(--color-neutral-400))]');
 });
 

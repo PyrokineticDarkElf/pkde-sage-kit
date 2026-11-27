@@ -77,7 +77,7 @@ it('ships the components, the three blocks, the styles and the shortcodes, loade
     expect($source)->toContain("add_shortcode('site_phone'", "add_shortcode('site_email'", "add_shortcode('site_address'", "add_shortcode('site_hours'", 'antispambot')
         ->and(file_get_contents("$root/src/KitServiceProvider.php"))->toContain('anonymousComponentPath')
         ->and(file_get_contents("$root/composer.json"))->toContain('app/site-details.php')
-        ->and(file_get_contents("$root/resources/css/kit.css"))->toContain('@import "./site-details.css";')
+        ->and(kit_source("$root", 'css'))->toContain('@import "./site-details.css";')
         ->and(file_get_contents("$root/resources/views/components/site-email.blade.php"))->toContain('antispambot');
 });
 

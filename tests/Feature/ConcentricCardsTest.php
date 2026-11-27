@@ -4,7 +4,7 @@
 $root = dirname(__DIR__, 2);
 
 it('defines the card radius and padding tokens and the inset and flush helpers', function () use ($root) {
-    $css = file_get_contents("$root/resources/css/kit.css");
+    $css = kit_source("$root", 'css');
 
     expect($css)->toContain('--pkde-card-radius: var(--radius-2xl);', '--pkde-card-padding: 1rem;')
         ->and($css)->toMatch('/\.pkde-card__media--inset \{\s*border-radius: max\(0px, calc\(var\(--pkde-card-radius\) - var\(--pkde-card-padding\)\)\);/')
