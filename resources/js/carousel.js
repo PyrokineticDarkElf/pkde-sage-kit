@@ -35,7 +35,11 @@ document.querySelectorAll('[data-carousel]').forEach((root) => {
     ? Autoplay({ delay: autoplayDelay, stopOnInteraction: false, stopOnMouseEnter: true, stopOnFocusIn: true })
     : null;
 
-  const emblaApi = EmblaCarousel(viewport, { loop, align: 'start' }, autoplay ? [autoplay] : []);
+  // `data-carousel-duration`: how long a move takes (Embla's duration, 25 by default; a larger number is slower)
+  const duration = Number(root.dataset.carouselDuration) || 25;
+
+  root.setAttribute('data-carousel-ready', ''); // CSS: without script the row simply scrolls sideways
+  const emblaApi = EmblaCarousel(viewport, { loop, align: 'start', duration }, autoplay ? [autoplay] : []);
 
   const toggle = root.querySelector('[data-carousel-autoplay-toggle]');
 
@@ -68,6 +72,21 @@ document.querySelectorAll('[data-carousel]').forEach((root) => {
 
   const prevButton = root.querySelector('[data-carousel-prev]');
   const nextButton = root.querySelector('[data-carousel-next]');
+  // An empty [data-carousel-dots] holder gets one dot per scroll position, made here, because how many positions there are depends on how many cards fit
+  const dotHolder = root.querySelector('[data-carousel-dots]');
+  const makeDots = () => {
+    if (!dotHolder) return;
+    dotHolder.hidden = emblaApi.scrollSnapList().length < 2; // everything fits: nothing to move to
+    dotHolder.replaceChildren(...emblaApi.scrollSnapList().map((_, index) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('data-carousel-dot', '');
+      dot.setAttribute('aria-label', `${dotHolder.dataset.label || 'Go to position'} ${index + 1}`);
+      dot.innerHTML = '<span class="pkde-dot"></span>';
+      return dot;
+    }));
+  };
+  makeDots();
   const dots = Array.from(root.querySelectorAll('[data-carousel-dot]'));
 
   // A visitor who asked for less motion gets the next slide at once, not a slide: the second argument is Embla's "jump".
@@ -83,5 +102,17 @@ document.querySelectorAll('[data-carousel]').forEach((root) => {
 
     emblaApi.on('select', setActiveDot);
     setActiveDot();
+
+    if (dotHolder) {
+      // a resize can change how many positions there are: make the dots again
+      emblaApi.on('reInit', () => {
+        makeDots();
+        const fresh = Array.from(root.querySelectorAll('[data-carousel-dot]'));
+        fresh.forEach((dot, index) => dot.addEventListener('click', () => emblaApi.scrollTo(index, prefersReducedMotion)));
+        dots.length = 0;
+        dots.push(...fresh);
+        setActiveDot();
+      });
+    }
   }
 });

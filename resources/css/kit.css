@@ -301,6 +301,12 @@
     font-weight: 700;
     margin-top: 1.5em;
   }
+  /* The space above a heading is for a heading that follows other text. One that opens a Section, a block or a card has none: the container already pads it, and a block's own
+     header (Recent Posts, the feature grid ...) or a card's title would otherwise start 1.5em lower than its neighbours. */
+  .prose-content :is(.wp-block-sage-section, .pkde-block, .wp-block-sage-latest-posts, article, .pkde-card) :is(h1, h2, h3, h4):first-child,
+  .prose-content article :is(h1, h2, h3, h4) {
+    margin-top: 0;
+  }
   .prose-content h1 { font-size: 2rem; }
   .prose-content h2 { font-size: 1.5rem; }
   .prose-content h3 { font-size: 1.25rem; }

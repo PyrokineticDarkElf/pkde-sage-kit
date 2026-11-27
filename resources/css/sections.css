@@ -536,22 +536,50 @@
 }
 .pkde-features--stats .pkde-feature__title { font-size: clamp(2rem, 4vw, 3.5rem); }
 
-/* Feature grid, People style: picture cards (badge, name, job title) in a row that scrolls sideways, an optional link under it. The card takes the section's card colours
-   like the boxed style does. Variables: --pkde-people-card-width (14rem), --pkde-features-gap, --pkde-feature-radius. */
+/* Feature grid, People style: picture cards (badge, name, job title) in a row. The first N cards (the Columns setting) fill the page's content width exactly; the row goes on
+   past the content edge to the edge of the screen (overflow visible there, clipped by the Section) and scrolls sideways. The card takes the section's card colours like the
+   boxed style does. Variables: --pkde-features-gap, --pkde-feature-radius. */
+.pkde-features--people {
+  container-type: inline-size;
+}
+.wp-block-sage-section:has(.pkde-features--people) {
+  overflow-x: clip;
+}
 .pkde-features--people .pkde-features__grid {
-  display: flex;
-  gap: var(--pkde-features-gap, 1.25rem);
-  overflow-x: auto;
-  padding-bottom: 0.75rem;
+  --pkde-people-gap: var(--pkde-features-gap, 1.25rem);
+  --pkde-people-card: min(80cqw, 16rem); /* a phone: one card and a bit of the next */
+  display: block;
+  overflow-x: auto; /* without script the row scrolls sideways */
+  margin-right: calc((100cqw - 100vw) / 2); /* the row runs on to the screen's right edge */
   scroll-snap-type: x proximity;
   scrollbar-width: thin;
+}
+.pkde-features--people [data-carousel-ready] .pkde-features__grid,
+.pkde-features--people [data-carousel-ready].pkde-features__grid {
+  overflow: hidden; /* the carousel moves the track: no scroll bar */
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+}
+.pkde-features--people .pkde-features__track {
+  display: flex;
+  gap: var(--pkde-people-gap);
+}
+@container (min-width: 40rem) {
+  .pkde-features--people .pkde-features__grid {
+    --pkde-people-card: calc((100cqw - var(--pkde-people-gap)) / 2);
+  }
+}
+@container (min-width: 60rem) {
+  .pkde-features--people .pkde-features__grid {
+    --pkde-people-card: calc((100cqw - (var(--pkde-features-cols, 4) - 1) * var(--pkde-people-gap)) / var(--pkde-features-cols, 4));
+  }
 }
 .pkde-features--people .pkde-features__grid:focus-visible {
   outline: 2px solid var(--pkde-accent, currentColor);
   outline-offset: 2px;
 }
 .pkde-features--people .pkde-feature {
-  flex: 0 0 var(--pkde-people-card-width, 14rem);
+  flex: 0 0 var(--pkde-people-card);
   scroll-snap-align: start;
   overflow: hidden;
   border: var(--pkde-border-thin) solid var(--pkde-line);
@@ -561,6 +589,51 @@
 .pkde-features--people .pkde-feature__media {
   margin-bottom: 0;
 }
+/* the carousel's controls: dots in the middle under the row, arrows and a pause button when they are switched on */
+.pkde-features__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+.pkde-features__dots {
+  display: flex;
+  justify-content: center;
+}
+.pkde-features__dots button,
+.pkde-features__arrow,
+.pkde-features__pause {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--pkde-radius-full, 9999px);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.pkde-features__arrow,
+.pkde-features__pause {
+  width: 2rem;
+  height: 2rem;
+  border: var(--pkde-border-thin, 1px) solid currentColor;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.pkde-features__pause { font-size: 0.625rem; }
+.pkde-features__pause-play { display: none; }
+.pkde-features__pause[data-paused] .pkde-features__pause-pause { display: none; }
+.pkde-features__pause[data-paused] .pkde-features__pause-play { display: inline; }
+.pkde-features__dots button .pkde-dot { background: currentColor; opacity: 0.35; }
+.pkde-features__dots button[data-active] .pkde-dot { opacity: 1; }
+.pkde-features__dots button:focus-visible,
+.pkde-features__arrow:focus-visible,
+.pkde-features__pause:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .pkde-features--people .pkde-feature__media img,
 .pkde-features--people .pkde-feature__media .pkde-placeholder {
   aspect-ratio: 4 / 5;

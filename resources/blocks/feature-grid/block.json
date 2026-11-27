@@ -77,6 +77,35 @@
     "linkUrl": {
       "type": "string",
       "default": ""
+    },
+    "loop": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": false
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 5000
+    },
+    "speed": {
+      "type": "string",
+      "enum": [
+        "slow",
+        "normal",
+        "fast"
+      ],
+      "default": "normal"
+    },
+    "showDots": {
+      "type": "boolean",
+      "default": true
+    },
+    "showArrows": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

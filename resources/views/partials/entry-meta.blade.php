@@ -14,7 +14,7 @@
 --}}
 @php($cardStyle ??= 'white')
 <p @class([
-  'text-sm',
+  'pkde-meta text-sm',
   'text-neutral-600' => $cardStyle === 'white',
   'text-[color:var(--pkde-card-content)] opacity-75' => $cardStyle !== 'white',
 ])>
@@ -23,8 +23,10 @@
   </time>
   {{-- No author link when the author has no display name: an empty link has no accessible name (axe link-name). --}}
   @if (get_the_author() !== '')
-    <span aria-hidden="true">&middot;</span>
-    <span>{{ __('By', 'sage') }}</span>
+    <span class="pkde-meta__sep" aria-hidden="true">&middot;</span>
+    <span class="pkde-meta__by">{{ __('By', 'sage') }}</span>
+    {{-- The author's initial in a circle: shown by the Recent Posts "panel" layout only (no gravatar request). --}}
+    <span class="pkde-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr((string) get_the_author(), 0, 1)) }}</span>
     @php($authorClasses = ['p-author h-card font-medium', 'text-neutral-700 hover:text-neutral-900' => $cardStyle === 'white', 'text-[color:var(--pkde-card-content)] hover:text-[color:var(--pkde-card-accent)]' => $cardStyle !== 'white'])
     {{-- The byline links to the author's archive while it exists (\App\byline_links_to_archive(): Rank Math can switch author archives off). --}}
     @if (\App\byline_links_to_archive())

@@ -53,7 +53,7 @@
     @endif
   </a>
 
-  <div class="flex flex-1 flex-col gap-3 px-1 pt-5">
+  <div class="pkde-card__body flex flex-1 flex-col gap-3 px-1 pt-5">
     <header>
       <h2 class="entry-title pkde-card__title font-display text-xl font-semibold leading-snug tracking-[-0.02em]">
         <a href="{{ get_permalink() }}" class="text-[color:var(--pkde-card-content)] transition hover:text-[color:var(--pkde-card-accent)]">
@@ -70,7 +70,7 @@
     {{-- The text is capped once on the server (App\card_excerpt) and clamped to a number of lines by the CSS (resources/css/clamp.css); no "Continued" suffix. --}}
     <p class="entry-summary pkde-card__excerpt text-sm text-[color:var(--pkde-card-content)] opacity-75">{{ \App\card_excerpt() }}</p>
 
-    <a href="{{ get_permalink() }}" class="mt-auto inline-flex items-center gap-2 pt-2 text-sm font-semibold text-[color:var(--pkde-card-content)] transition hover:text-[color:var(--pkde-card-accent)]">
+    <a href="{{ get_permalink() }}" class="pkde-card__more mt-auto inline-flex items-center gap-2 pt-2 text-sm font-semibold text-[color:var(--pkde-card-content)] transition hover:text-[color:var(--pkde-card-accent)]">
       {{ __('Read more', 'sage') }} <span aria-hidden="true">&rarr;</span>
     </a>
   </div>

@@ -142,3 +142,94 @@
   --section-heading: var(--color-white);
   --section-text: var(--color-white);
 }
+
+/* Latest posts, Panel layout: the picture on top, the text in a panel in the section's card colours (title, excerpt, an author with an initial in a circle, Read more), the heading centred,
+   "View all" as a pill under the grid. The category shows as a pill on the picture; the New badge is left off, the date too: this card is about the story and who wrote it. */
+.pkde-avatar { display: none; }
+.pkde-posts--panel > :first-child { text-align: center; }
+.pkde-posts--panel > :first-child > div { justify-content: center; }
+.pkde-posts--panel > :first-child p { margin-inline: auto; }
+.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel .grid > article { /* repeated: the section's card rules are this specific */
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--pkde-feature-radius, var(--pkde-card-radius, 1rem));
+  background: var(--section-card-bg, var(--pkde-card-background, #fff));
+  color: var(--section-card-text, var(--pkde-card-content, inherit));
+}
+.pkde-posts--panel .grid > article > div.absolute { display: none; }
+.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel .grid > article > a.absolute { /* the category: a pill over the picture, the card's heading colour with the card's own colour as text, so it reads on any picture and in any theme */
+  background: var(--section-card-heading, #1f2937);
+  color: var(--section-card-bg, #fff);
+  border: 0;
+  backdrop-filter: none;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.pkde-posts--panel .grid > article .pkde-card__media,
+.pkde-posts--panel .grid > article .pkde-card__media * { border-radius: 0; } /* the card's own corners round the picture's top; its bottom edge meets the panel square */
+.pkde-posts--panel .grid > article .pkde-card__body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "title title" "excerpt excerpt" "author more";
+  grid-template-rows: auto 1fr auto; /* the text row takes the spare height: the author and Read more sit on the card's bottom edge, in every card of the row */
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+.pkde-posts--panel .grid > article header { display: contents; }
+.pkde-posts--panel .grid > article .entry-title {
+  grid-area: title;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.pkde-posts--panel .grid > article .entry-title a { color: var(--section-card-heading, var(--pkde-card-content, inherit)); }
+.pkde-posts--panel .grid > article .entry-summary { grid-area: excerpt; align-self: start; opacity: 1; color: var(--section-card-text, inherit); }
+.pkde-posts--panel .grid > article .pkde-meta { grid-area: author; display: flex; align-items: center; gap: 0.625rem; color: var(--section-card-text, inherit); }
+.pkde-posts--panel .grid > article .pkde-meta :is(time, .pkde-meta__sep, .pkde-meta__by) { display: none; }
+.pkde-posts--panel .grid > article .pkde-meta a { color: inherit; text-decoration: none; }
+.pkde-posts--panel .grid > article .pkde-avatar {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--section-card-heading, currentColor);
+  color: var(--section-card-bg, #fff);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.pkde-posts--panel .grid > article .pkde-card__more {
+  grid-area: more;
+  justify-self: end;
+  margin: 0;
+  padding: 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--section-card-heading, inherit);
+}
+.pkde-posts__more { margin: 2rem 0 0; text-align: center; }
+.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab { /* repeated: the section's link rules are this specific */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  background: var(--section-button-bg, currentColor);
+  color: var(--section-button-text, #fff);
+  border: var(--pkde-border-thin, 1px) solid var(--section-button-border, transparent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+}

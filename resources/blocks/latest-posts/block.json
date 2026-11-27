@@ -64,7 +64,8 @@
       "enum": [
         "cards",
         "feature",
-        "list"
+        "list",
+        "panel"
       ],
       "default": "cards"
     }

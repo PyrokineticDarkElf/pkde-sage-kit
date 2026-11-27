@@ -79,7 +79,10 @@ if ($source === 'manual') {
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
-$posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list'], true) ? $attributes['layout'] : 'cards';
+$posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list', 'panel'], true) ? $attributes['layout'] : 'cards';
+// the Panel layout puts "View all" under the grid, centred, instead of beside the heading
+$view_all_under = $posts_layout === 'panel' && ! empty($view_all_url) && $source !== 'manual';
+$header_view_all = $view_all_under ? null : $view_all_url;
 $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}"))));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
@@ -87,10 +90,13 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
     <?php echo view('pkde-kit::partials.blocks.section-header', [
         'heading' => $attributes['heading'] ?? __('Recent Posts', 'sage'),
         'description' => $attributes['description'] ?? '',
-        'viewAllUrl' => $view_all_url,
+        'viewAllUrl' => $header_view_all,
         'viewAllLabel' => $view_all_label,
         'themed' => (bool) $theme,
     ])->render(); ?>
     <?php echo view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style, 'emptyMessage' => $empty_message])->render(); ?>
+    <?php if ($view_all_under) : ?>
+        <p class="pkde-posts__more"><a class="pkde-posts__tab" href="<?php echo esc_url($view_all_url); ?>"><?php echo esc_html(__('View all', 'sage')); ?> <span aria-hidden="true">&rsaquo;</span></a></p>
+    <?php endif; ?>
     <?php echo \App\pkde_loop_theme_content_close($theme); ?>
 </div>

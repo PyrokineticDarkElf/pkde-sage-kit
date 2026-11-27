@@ -28,4 +28,13 @@ echo view('pkde-kit::partials.blocks.feature-grid', [
     'linkText' => (string) ($attributes['linkText'] ?? ''),
     'linkUrl' => (string) ($attributes['linkUrl'] ?? ''),
     'scrolls' => $variant === 'people',
+    // the People style is the kit's Embla carousel (js/carousel.js): the settings travel as data attributes
+    'carousel' => $variant === 'people' ? [
+        'loop' => ! empty($attributes['loop']),
+        'autoplay' => ! empty($attributes['autoplay']),
+        'delay' => max(1000, min(30000, (int) ($attributes['autoplayDelay'] ?? 5000))),
+        'duration' => ['slow' => 45, 'normal' => 25, 'fast' => 12][$attributes['speed'] ?? 'normal'] ?? 25,
+        'dots' => ($attributes['showDots'] ?? true) !== false,
+        'arrows' => ! empty($attributes['showArrows']),
+    ] : null,
 ])->render();

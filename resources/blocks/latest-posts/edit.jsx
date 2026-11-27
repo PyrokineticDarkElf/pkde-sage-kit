@@ -61,7 +61,7 @@ function Edit({ attributes, setAttributes }) {
             value={count}
             onChange={(value) => setAttributes({ count: value })}
           />
-          <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
+          <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }, { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
           <SelectControl
             label={__('Post type', 'sage')}
             value={postType}
