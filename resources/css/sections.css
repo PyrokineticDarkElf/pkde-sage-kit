@@ -556,7 +556,8 @@
 }
 .pkde-features--people [data-carousel-ready] .pkde-features__grid,
 .pkde-features--people [data-carousel-ready].pkde-features__grid {
-  overflow: hidden; /* the carousel moves the track: no scroll bar */
+  overflow: visible; /* the carousel moves the track: no scroll bar. What shows is cut by clip-path: the row's own box on the right (it already runs to the screen edge), the screen's edge on the left, so the cards scrolled past the content edge stay in view */
+  clip-path: inset(-2rem 0 -2rem calc((100cqw - 100vw) / 2));
   cursor: grab;
   touch-action: pan-y pinch-zoom;
 }
@@ -578,6 +579,7 @@
   outline: 2px solid var(--pkde-accent, currentColor);
   outline-offset: 2px;
 }
+.pkde-features--people .pkde-feature:last-child { margin-inline-end: calc((100vw - 100cqw) / 2); } /* the end of the row: the last card stops at the content edge, as the first one starts there */
 .pkde-features--people .pkde-feature {
   flex: 0 0 var(--pkde-people-card);
   scroll-snap-align: start;
