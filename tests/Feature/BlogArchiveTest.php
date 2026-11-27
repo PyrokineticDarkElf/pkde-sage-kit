@@ -19,7 +19,7 @@ it('supplies a default view for every blog and shop archive', function () use ($
 it('paginates with numbers, arrows and aria-current instead of Older and Newer links', function () use ($root) {
     $grid = file_get_contents("$root/resources/views/partials/post-grid.blade.php");
     $pagination = file_get_contents("$root/resources/views/partials/pagination.blade.php");
-    $css = file_get_contents("$root/resources/css/shop-pages.css");
+    $css = file_get_contents("$root/resources/css/shop-pages.css") . file_get_contents(dirname(__DIR__, 2) . '/resources/css/pagination.css');
 
     expect($grid)->toContain('partials.pagination')->not->toContain('get_next_posts_link')->not->toContain('get_previous_posts_link')
         ->and($pagination)->toContain('paginate_links(', "'type' => 'list'", 'prev_text', 'next_text', 'pkde-pagination', 'aria-label')

@@ -1,0 +1,49 @@
+/**
+ * The blog's numbered pagination (partials/pagination.blade.php prints <nav class="pkde-pagination"> around paginate_links()): one centred row of round pills, the same
+ * look as the shop's (shop-pages.css). The pills read the shop's variables with kit-token fallbacks, so a site that sets --pkde-shop-line, -radius, -surface, -ink or
+ * -accent restyles both. The kit's generic pagination is a flex container, which would shrink the list to one item wide here. The previous and next links hold a
+ * screen-reader label beside the arrow, so the pills are the direct a / span.
+ */
+.pkde-pagination {
+  display: block;
+  width: 100%;
+  margin-top: 3rem;
+}
+.pkde-pagination ul.page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pkde-pagination ul.page-numbers li {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.pkde-pagination :where(a.page-numbers, span.page-numbers) {
+  display: grid;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: var(--pkde-border-thin) solid var(--pkde-shop-line, var(--color-neutral-200));
+  border-radius: var(--pkde-shop-radius, var(--pkde-radius-full));
+  background: var(--pkde-shop-surface, var(--color-white));
+  color: var(--pkde-shop-ink, var(--color-neutral-950));
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.pkde-pagination .page-numbers.current,
+.pkde-pagination a.page-numbers:hover {
+  background: var(--pkde-shop-ink, var(--color-neutral-950));
+  border-color: var(--pkde-shop-ink, var(--color-neutral-950));
+  color: var(--pkde-shop-surface, var(--color-white));
+}
+.pkde-pagination a.page-numbers:focus-visible {
+  outline: 2px solid var(--pkde-shop-accent, var(--color-brand-600));
+  outline-offset: 2px;
+}
