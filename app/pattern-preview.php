@@ -5,7 +5,7 @@
  * `development`; anywhere else, and for a slug or brand key that is not [a-z0-9-]+, it is a plain 404, so it can never run on staging or production.
  *
  * The slug is looked up in the kit's resources/patterns/<slug>.php, then in the pattern library folder named by the PKDE_PATTERNS_DIR environment variable
- * (that folder holds <family>/<slug>.html). With `brand`, `../dist/brands/<key>.css` of that folder (the library's build output) is printed after the theme CSS, so the
+ * (that folder holds <family>/<slug>.html). With `brand`, `../themes/<key>.css` of that folder (a site theme file in the library's themes/ folder) is printed after the theme CSS, so the
  * pattern shows in that site's colours. The page is wp_head(), the theme's CSS and JS, the pattern's blocks through do_blocks(), wp_footer(): no site header or footer.
  */
 
@@ -55,10 +55,10 @@ function pattern_preview_markup(string $slug, ?string $library = null, ?string $
     return null;
 }
 
-/** The CSS text of a brand of the library (<patterns folder>/../dist/brands/<key>.css), or '' when there is none or the key is not a plain key. */
+/** The CSS text of a brand of the library (<patterns folder>/../themes/<key>.css), or '' when there is none or the key is not a plain key. */
 function pattern_preview_brand_css(string $brand, ?string $library = null): string
 {
-    $file = $brand !== '' && pattern_preview_key_ok($brand) && $library !== null ? realpath($library . "/../dist/brands/{$brand}.css") : false;
+    $file = $brand !== '' && pattern_preview_key_ok($brand) && $library !== null ? realpath($library . "/../themes/{$brand}.css") : false;
 
     return $file !== false && is_file($file) ? (string) file_get_contents($file) : '';
 }

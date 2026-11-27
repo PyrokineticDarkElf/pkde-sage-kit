@@ -11,20 +11,20 @@ use function App\pattern_preview_markup;
 
 beforeEach(function () {
     $this->library = sys_get_temp_dir() . '/pkde-patterns-' . bin2hex(random_bytes(4));
-    // the library: <root>/patterns/<family>/<slug>.html and <root>/dist/brands/<key>.css; PKDE_PATTERNS_DIR is the patterns folder
+    // the library: <root>/patterns/<family>/<slug>.html and <root>/themes/<key>.css; PKDE_PATTERNS_DIR is the patterns folder
     mkdir($this->library . '/patterns/hero', 0777, true);
-    mkdir($this->library . '/dist/brands', 0777, true);
+    mkdir($this->library . '/themes', 0777, true);
     $this->patterns = $this->library . '/patterns';
     file_put_contents($this->library . '/patterns/hero/library-hero.html', '<!-- wp:paragraph --><p>From the library</p><!-- /wp:paragraph -->');
-    file_put_contents($this->library . '/dist/brands/acme.css', ':root { --brand: 1; }');
-    file_put_contents($this->library . '/dist/secret.css', 'SECRET');
+    file_put_contents($this->library . '/themes/acme.css', ':root { --brand: 1; }');
+    file_put_contents($this->library . '/secret.css', 'SECRET');
 });
 
 afterEach(function () {
-    foreach (['/dist/brands/acme.css', '/dist/secret.css', '/patterns/hero/library-hero.html'] as $file) {
+    foreach (['/themes/acme.css', '/secret.css', '/patterns/hero/library-hero.html'] as $file) {
         @unlink($this->library . $file);
     }
-    foreach (['/dist/brands', '/dist', '/patterns/hero', '/patterns', ''] as $dir) {
+    foreach (['/themes', '/patterns/hero', '/patterns', ''] as $dir) {
         @rmdir($this->library . $dir);
     }
 });
