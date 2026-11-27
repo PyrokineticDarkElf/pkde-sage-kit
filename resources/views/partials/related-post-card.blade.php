@@ -12,6 +12,6 @@
     <p class="pkde-related__title font-display text-sm font-semibold leading-snug text-neutral-900 transition group-hover:text-brand-700">
       {{ get_the_title() }}
     </p>
-    <p class="pkde-related__excerpt mt-1 text-xs text-neutral-500">{{ \App\card_excerpt() }}</p>
+    <p class="pkde-related__excerpt mt-1 text-xs text-neutral-600">{{ \App\card_excerpt() }}</p>
   </div>
 </a>

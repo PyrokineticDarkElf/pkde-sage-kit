@@ -26,7 +26,7 @@
 @php($chips = \App\ShopFilters::activeChips($filterAction))
 @if ($chips)
   <div class="mb-4 rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-4">
-    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ __('Active filters', 'sage') }}</p>
+    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-600">{{ __('Active filters', 'sage') }}</p>
     <ul class="mt-3 flex flex-wrap gap-2">
       @foreach ($chips as $chip)
         <li class="list-none">
@@ -36,7 +36,7 @@
         </li>
       @endforeach
     </ul>
-    <a href="{{ $filterAction }}" class="mt-3 inline-flex text-xs font-medium text-neutral-500 transition hover:text-neutral-950">{{ __('Clear all filters', 'sage') }}</a>
+    <a href="{{ $filterAction }}" class="mt-3 inline-flex text-xs font-medium text-neutral-600 transition hover:text-neutral-950">{{ __('Clear all filters', 'sage') }}</a>
   </div>
 @endif
 <button
@@ -66,10 +66,10 @@
       @if ($group['type'] === 'range')
         <div class="rounded-2xl border-(length:--pkde-border-thin) border-neutral-200 p-5">
           <fieldset class="grid gap-3">
-            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ $group['label'] }}</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-600">{{ $group['label'] }}</p>
             <div class="grid grid-cols-2 gap-2">
-              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Min', 'sage') }}<input type="number" name="min_price" value="{{ esc_attr(is_scalar($_GET['min_price'] ?? null) ? (string) $_GET['min_price'] : '') }}" min="0" step="0.01" placeholder="0" data-price-input class="w-full rounded-xl border-(length:--pkde-border-thin) border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
-              <label class="grid gap-1 text-xs text-neutral-500">{{ __('Max', 'sage') }}<input type="number" name="max_price" value="{{ esc_attr(is_scalar($_GET['max_price'] ?? null) ? (string) $_GET['max_price'] : '') }}" min="0" step="0.01" placeholder="Any" data-price-input class="w-full rounded-xl border-(length:--pkde-border-thin) border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
+              <label class="grid gap-1 text-xs text-neutral-600">{{ __('Min', 'sage') }}<input type="number" name="min_price" value="{{ esc_attr(is_scalar($_GET['min_price'] ?? null) ? (string) $_GET['min_price'] : '') }}" min="0" step="0.01" placeholder="0" data-price-input class="w-full rounded-xl border-(length:--pkde-border-thin) border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
+              <label class="grid gap-1 text-xs text-neutral-600">{{ __('Max', 'sage') }}<input type="number" name="max_price" value="{{ esc_attr(is_scalar($_GET['max_price'] ?? null) ? (string) $_GET['max_price'] : '') }}" min="0" step="0.01" placeholder="Any" data-price-input class="w-full rounded-xl border-(length:--pkde-border-thin) border-neutral-300 px-3 py-2 text-sm text-neutral-900"></label>
             </div>
           </fieldset>
         </div>

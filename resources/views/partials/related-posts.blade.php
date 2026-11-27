@@ -15,7 +15,7 @@
 
 @if ($related && $related->have_posts())
   <div>
-    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">{{ __('Related posts', 'sage') }}</p>
+    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-600">{{ __('Related posts', 'sage') }}</p>
     <div class="mt-3 space-y-4">
       @while ($related->have_posts()) @php($related->the_post())
         @include('pkde-kit::partials.related-post-card')

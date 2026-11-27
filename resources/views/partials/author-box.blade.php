@@ -8,7 +8,7 @@
   <div class="flex items-center gap-3">
     {!! get_avatar($authorId, 64, '', '', ['class' => 'rounded-(--pkde-radius-full)']) !!}
     <div>
-      <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">{{ __('Written by', 'sage') }}</p>
+      <p class="text-xs font-semibold uppercase tracking-wide text-neutral-600">{{ __('Written by', 'sage') }}</p>
       @if (\App\byline_links_to_archive())
         <a href="{{ get_author_posts_url($authorId) }}" class="font-display text-base font-bold text-neutral-900 hover:text-neutral-600">{{ get_the_author() }}</a>
       @else

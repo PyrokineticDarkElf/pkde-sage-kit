@@ -15,7 +15,7 @@
 @php($cardStyle ??= 'white')
 <p @class([
   'text-sm',
-  'text-neutral-500' => $cardStyle === 'white',
+  'text-neutral-600' => $cardStyle === 'white',
   'text-[color:var(--pkde-card-content)] opacity-75' => $cardStyle !== 'white',
 ])>
   <time class="dt-published" datetime="{{ get_post_time('c', true) }}">

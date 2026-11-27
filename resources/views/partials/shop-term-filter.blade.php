@@ -64,16 +64,16 @@
 {{-- A group none of whose options can be reached from here (and none selected) renders nothing, so the sidebar has no empty filter cards. --}}
 @if (count($terms) && (array_sum($counts) > 0 || $selected))
   <fieldset class="space-y-3">
-    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500">{{ $heading }}</p>
+    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-neutral-600">{{ $heading }}</p>
     <ul class="grid gap-2 text-sm">
       @foreach ($terms as $term)
         @php($isCurrent = in_array($term->slug, $selected, true))
         @php($count = $counts[$term->term_id] ?? 0)
         <li @if (($depth[$term->term_id] ?? 0) > 0) style="padding-inline-start: {{ ($depth[$term->term_id] ?? 0) * 1.25 }}rem" @endif>
-          <label class="group flex cursor-pointer items-center gap-2.5 transition hover:text-neutral-950 {{ $count === 0 && ! $isCurrent ? 'text-neutral-500' : 'text-neutral-700' }}">
+          <label class="group flex cursor-pointer items-center gap-2.5 transition hover:text-neutral-950 {{ $count === 0 && ! $isCurrent ? 'text-neutral-600' : 'text-neutral-700' }}">
             <input type="checkbox" name="{{ $queryKey }}[]" value="{{ $term->slug }}" @checked($isCurrent) class="h-4 w-4 shrink-0 rounded-sm border-neutral-300 text-neutral-950 focus:ring-neutral-950">
             <span>{{ $term->name }}</span>
-            <span class="text-xs text-neutral-500">{{ $count }}</span>
+            <span class="text-xs text-neutral-600">{{ $count }}</span>
           </label>
         </li>
       @endforeach

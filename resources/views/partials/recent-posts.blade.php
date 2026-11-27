@@ -14,7 +14,7 @@
 @endphp
 @if ($recent && $recent->have_posts())
   <div class="post-recent">
-    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">{{ __('Recent posts', 'sage') }}</p>
+    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-600">{{ __('Recent posts', 'sage') }}</p>
     <div class="mt-3 space-y-4">
       @while ($recent->have_posts()) @php($recent->the_post())
         @include('pkde-kit::partials.related-post-card')

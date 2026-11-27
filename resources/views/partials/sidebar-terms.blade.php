@@ -5,7 +5,7 @@
 
 @if (! is_wp_error($terms) && count($terms))
   <div>
-    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">{{ $heading }}</p>
+    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-600">{{ $heading }}</p>
     <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-3 text-sm">
       @foreach ($terms as $term)
         <li class="m-0 list-none">
