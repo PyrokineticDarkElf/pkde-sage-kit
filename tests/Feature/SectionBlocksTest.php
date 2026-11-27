@@ -100,7 +100,7 @@ it('ships a locked pattern for every prototype block and an About page starter',
     $files = glob("$root/resources/patterns/*.php");
     $by = fn(string $slug) => array_values(array_filter($files, fn($file) => str_contains(file_get_contents($file), "Slug: $slug")))[0] ?? null;
 
-    foreach (['pkde/hero-split' => 'sage/hero', 'pkde/text-and-image' => 'sage/text-and-image', 'pkde/feature-grid' => 'sage/feature-grid', 'pkde/testimonials' => 'sage/quotes', 'pkde/cta' => 'sage/cta', 'pkde/page-about' => 'sage/text-and-image'] as $slug => $block) {
+    foreach (['pkde/hero-split' => 'sage/hero', 'pkde/text-and-image' => 'sage/text-and-image', 'pkde/features-cards' => 'sage/feature-grid', 'pkde/testimonials-cards' => 'sage/quotes', 'pkde/cta-split' => 'sage/cta', 'pkde/page-about' => 'sage/text-and-image'] as $slug => $block) {
         $file = $by($slug);
         expect($file)->not->toBeNull($slug);
         $source = file_get_contents($file);

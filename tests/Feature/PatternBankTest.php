@@ -1,6 +1,6 @@
 <?php
 
-// The pattern bank: every pattern is "Family: Variant", has its family's one category, is built from kit and curated core blocks only, its attributes are the blocks' own,
+// The starter set (the other patterns live in the pkde-patterns library): every pattern is "Family: Variant", has its family's one category, is built from kit and curated core blocks only, its attributes are the blocks' own,
 // its outer Section is locked to content, and nothing in it is lorem ipsum or a link off the site. The editor side (0 invalid blocks as Editor and as Administrator) and the look
 // (3 themes x 3 shapes x 2 widths) are proved on the template stack.
 require_once dirname(__DIR__, 2) . '/app/patterns.php';
@@ -38,9 +38,9 @@ function pkdeSections(): array
     return array_filter(pkdeBank(), fn($entry) => $entry[0]['categories'] !== 'pkde-pages');
 }
 
-it('has the 36 patterns of the catalogue, one family each, named "Family: Variant", slugs unique and the earlier ones kept', function () {
+it('ships exactly the starter set, one family each, named "Family: Variant", slugs unique', function () {
     $families = \App\pattern_families();
-    $perFamily = [];
+    $slugs = array_values(array_map(fn($entry) => $entry[0]['slug'], pkdeBank()));
 
     foreach (pkdeSections() as [$header]) {
         expect($header['categories'])->toStartWith('pkde-')->and($header['categories'])->not->toContain(',');
@@ -48,18 +48,10 @@ it('has the 36 patterns of the catalogue, one family each, named "Family: Varian
         expect($families)->toHaveKey($family)
             ->and($header['title'])->toStartWith($families[$family] . ': ')
             ->and($header['slug'])->toStartWith('pkde/');
-        $perFamily[$family] = ($perFamily[$family] ?? 0) + 1;
     }
 
-    ksort($perFamily);
-    $expected = ['hero' => 4, 'featured-products' => 4, 'categories' => 3, 'latest-posts' => 3, 'features' => 3, 'text-image' => 3, 'testimonials' => 3, 'cta' => 4, 'faq' => 2, 'contact' => 3, 'stats' => 2, 'logos' => 2];
-    ksort($expected);
-    $slugs = array_map(fn($entry) => $entry[0]['slug'], pkdeBank());
-
-    expect($perFamily)->toBe($expected)
-        ->and(array_sum($perFamily))->toBe(36)
-        ->and(array_unique($slugs))->toHaveCount(count($slugs))
-        ->and($slugs)->toContain('pkde/cta', 'pkde/feature-grid', 'pkde/hero-split', 'pkde/testimonials', 'pkde/text-and-image', 'pkde/page-about');
+    expect($slugs)->toEqualCanonicalizing(['pkde/hero-split', 'pkde/page-about', 'pkde/contact-beside-form', 'pkde/faq-one-column', 'pkde/cta-split', 'pkde/features-cards', 'pkde/testimonials-cards', 'pkde/text-and-image'])
+        ->and(array_unique($slugs))->toHaveCount(count($slugs));
 });
 
 it('builds every pattern from kit and curated core blocks, with the blocks\' own attributes, in a Section locked to content', function () {
