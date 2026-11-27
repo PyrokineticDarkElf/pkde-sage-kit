@@ -47,6 +47,7 @@ function Edit({ attributes, setAttributes }) {
             options={[
               { value: 'cards', label: __('Cards (name and count over the photo)', 'sage') },
               { value: 'tiles', label: __('Tiles (large photo, name beneath)', 'sage') },
+              { value: 'labelled', label: __('Picture cards with a coloured name bar', 'sage') },
               { value: 'chips', label: __('Chips (the names in a row)', 'sage') },
             ]}
             onChange={(value) => setAttributes({ layout: value })}
@@ -79,7 +80,7 @@ function Edit({ attributes, setAttributes }) {
             ))}
           </PanelBody>
         )}
-        {layout === 'tiles' && (
+        {(layout === 'tiles' || layout === 'labelled') && (
           <PanelBody title={__('Extra tiles', 'sage')} initialOpen={false}>
             {extra.map((tile, index) => (
               <div key={index} style={{ marginBottom: 16, paddingBottom: 8, borderBottom: '1px solid #ddd' }}>

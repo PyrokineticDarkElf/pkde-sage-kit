@@ -15,6 +15,7 @@ const LAYOUT_OPTIONS = [
   { value: 'overlay', label: __('Full-width image, text over it', 'sage') },
   { value: 'split', label: __('Split: text beside the image', 'sage') },
   { value: 'text', label: __('Text only', 'sage') },
+  { value: 'tinted', label: __('Full-width picture under a colour tint, text on the left', 'sage') },
 ];
 
 const BUTTON_STYLE_OPTIONS = [
@@ -29,7 +30,7 @@ function Edit({ attributes, setAttributes }) {
     heading, content, buttonText, buttonUrl, imageUrl, imageId, imageAlt, theme,
     layout, imageSide, imageFit, eyebrow, secondaryButtonText, secondaryButtonUrl, headingLevel, buttonStyle, secondaryButtonStyle,
   } = attributes;
-  const overlay = layout !== 'split' && layout !== 'text';
+  const overlay = !['split', 'text', 'tinted'].includes(layout);
 
   const blockProps = useBlockProps({
     className: overlay
@@ -146,6 +147,12 @@ function Edit({ attributes, setAttributes }) {
                 </div>
               )}
             </div>
+            {layout === 'tinted' && (
+              <div className="pkde-hero__bg">
+                {imageUrl ? <img src={imageUrl} alt={imageAlt} /> : null}
+                {mediaButton(imageUrl ? __('Replace the background picture', 'sage') : __('Add the background picture', 'sage'), 'mt-2')}
+              </div>
+            )}
             {layout === 'split' && (
               <div className="pkde-split__media">
                 {imageUrl ? <img src={imageUrl} alt={imageAlt} /> : null}

@@ -9,7 +9,7 @@ import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 import { ServerPreview } from '../../js/server-preview.jsx';
 
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, postType, categoryId, layout, pinViewAll, source = 'latest' } = attributes;
+  const { heading, description, count, postType, categoryId, layout, pinViewAll, headingTab, source = 'latest' } = attributes;
   const blockProps = useBlockProps();
 
   const categories = useSelect(
@@ -61,7 +61,8 @@ function Edit({ attributes, setAttributes }) {
             value={count}
             onChange={(value) => setAttributes({ count: value })}
           />
-          <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }, { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
+          <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }, { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') }, { value: 'overlay', label: __('Picture behind the text, under a dark tint', 'sage') }, { value: 'label', label: __('Tall picture with a coloured label: title and category', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
+          <ToggleControl label={__('Heading as a tab hanging from the top of the section', 'sage')} checked={!!headingTab} onChange={(value) => setAttributes({ headingTab: value })} />
           {layout === 'panel' && (
             <ToggleControl label={__('Pin "View all" to the bottom of the section', 'sage')} checked={!!pinViewAll} onChange={(value) => setAttributes({ pinViewAll: value })} />
           )}

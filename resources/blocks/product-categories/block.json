@@ -36,7 +36,8 @@
       "enum": [
         "cards",
         "tiles",
-        "chips"
+        "chips",
+        "labelled"
       ]
     },
     "include": {

@@ -39,6 +39,22 @@ if ($style === 'link') {
     return;
 }
 
+// The `picture` layout: a rounded card with a picture behind the text, under a tint of the section's colour: the heading, a line of text and one button, left aligned.
+if ($style === 'picture') {
+    $picture = ($slot_id || $slot_url || ! empty($attributes['placeholder']))
+        ? \App\block_media($slot_id, $slot_url, (string) ($attributes['imageAlt'] ?? ''), 'large', ['loading' => 'lazy', 'class' => 'pkde-cta__img'], ! empty($attributes['placeholder']))
+        : '';
+    echo '<div ' . get_block_wrapper_attributes(['class' => 'pkde-block pkde-cta pkde-cta--picture' . ($theme ? " theme-{$theme}" : '')]) . '>'
+        . ($picture !== '' ? '<div class="pkde-cta__bg" aria-hidden="true">' . $picture . '</div>' : '')
+        . '<div class="pkde-cta__text">'
+        . ($heading !== '' ? '<h2 class="pkde-cta__title">' . wp_kses_post($heading) . '</h2>' : '')
+        . ($content !== '' ? '<p class="pkde-cta__line">' . wp_kses_post($content) . '</p>' : '')
+        . (($primary_text !== '' && $primary_url !== '') ? '<div class="pkde-actions"><a href="' . esc_url($primary_url) . '" class="' . esc_attr(\App\button_classes((string) ($attributes['buttonStyle'] ?? 'primary'))) . ' no-underline">' . esc_html($primary_text) . '</a></div>' : '')
+        . '</div></div>';
+
+    return;
+}
+
 // The `promo` layout: a slim band in one row: a badge, the title, one button and a small picture. The heading is the title; no supporting text.
 if ($style === 'promo') {
     $badge = trim((string) ($attributes['badge'] ?? ''));

@@ -5,7 +5,7 @@
   "title": "Accordion",
   "category": "widgets",
   "icon": "list-view",
-  "description": "A stack of collapsible items — add an Accordion Item block for each one.",
+  "description": "A stack of collapsible items \u2014 add an Accordion Item block for each one.",
   "keywords": [
     "accordion",
     "collapse",
@@ -36,6 +36,14 @@
     "singleColumn": {
       "type": "boolean",
       "default": false
+    },
+    "look": {
+      "type": "string",
+      "enum": [
+        "",
+        "bars"
+      ],
+      "default": ""
     }
   },
   "supports": {

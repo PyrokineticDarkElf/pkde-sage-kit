@@ -165,9 +165,9 @@
 /* Latest posts, Panel layout: the picture on top, the text in a panel in the section's card colours (title, excerpt, an author with an initial in a circle, Read more), the heading centred,
    "View all" as a pill under the grid. The category shows as a pill on the picture; the New badge is left off, the date too: this card is about the story and who wrote it. */
 .pkde-avatar { display: none; }
-.pkde-posts--panel > :first-child { text-align: center; }
-.pkde-posts--panel > :first-child > div { justify-content: center; }
-.pkde-posts--panel > :first-child p { margin-inline: auto; }
+.pkde-posts--panel > :first-child, .pkde-posts--overlay > :first-child, .pkde-posts--label > :first-child { text-align: center; }
+.pkde-posts--panel > :first-child > div, .pkde-posts--overlay > :first-child > div, .pkde-posts--label > :first-child > div { justify-content: center; }
+.pkde-posts--panel > :first-child p, .pkde-posts--overlay > :first-child p, .pkde-posts--label > :first-child p { margin-inline: auto; }
 .pkde-posts--panel.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel.pkde-posts--panel .grid > article { /* repeated: the section's card rules are this specific */
   display: flex;
   flex-direction: column;
@@ -316,3 +316,135 @@
 .pkde-products--tiles > .mb-8 { text-align: center; }
 .pkde-products--tiles > .mb-8 > div { justify-content: center; }
 .pkde-products--tiles > .mb-8 p { margin-inline: auto; }
+
+/* Hero, Tinted layout: a picture across the whole width of the screen under a tint of the section's colour, the text on the left at the page width. Alone in a Section it takes the
+   Section's whole height (no padding of the Section's own). */
+.wp-block-sage-section:has(> .pkde-hero--tinted:only-child) { padding-block: 0; overflow-x: clip; }
+.pkde-hero--tinted { position: relative; isolation: isolate; display: flex; align-items: center; min-height: 26rem; padding-block: clamp(4rem, 9vw, 8rem); }
+.pkde-hero--tinted .pkde-hero__bg { position: absolute; inset: 0; z-index: -1; margin-inline: calc(50% - 50vw); }
+.pkde-hero--tinted .pkde-hero__bg :is(img, .pkde-placeholder) { display: block; width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; object-fit: cover; border-radius: 0; }
+.pkde-hero--tinted .pkde-hero__bg::after { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--section-bg, #1f2937) 82%, transparent); }
+.pkde-hero--tinted .pkde-hero__copy { max-width: 48rem; }
+.pkde-hero--tinted .pkde-hero__title { font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.1; }
+
+/* A heading as a tab hanging from the Section's top edge (the block's "Heading as a tab" setting): the Section loses its top padding, the heading takes the accent colour */
+.wp-block-sage-section.wp-block-sage-section:has(.has-heading-tab) { padding-top: 0; }
+.pkde-heading-tab { margin-bottom: 2rem; text-align: center; }
+.pkde-heading-tab > div { justify-content: center; }
+.pkde-heading-tab.pkde-heading-tab.pkde-heading-tab.pkde-heading-tab.pkde-heading-tab h2 {
+  display: inline-block;
+  margin: 0;
+  padding: 1.25rem 3rem 1.5rem;
+  border-radius: 0 0 var(--pkde-radius-md, 0.75rem) var(--pkde-radius-md, 0.75rem);
+  background: var(--pkde-tab-bg, var(--section-accent, #1f2937));
+  color: var(--pkde-tab-text, var(--section-bg, #fff));
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.pkde-heading-tab p { margin-inline: auto; }
+
+/* "View all" as a plain link with an arrow (Recent Posts overlay and label layouts, Product Loop's link setting) */
+.pkde-tab.pkde-tab--link.pkde-tab--link.pkde-tab--link.pkde-tab--link.pkde-tab--link {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--section-text, inherit);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.pkde-tab--link span { color: var(--section-accent, currentColor); }
+
+/* Product loop, Centred card look (a sale row): the picture in a white tile with a Sale badge in its corner, the name in the accent colour, the price and the old price, a rounded button.
+   The card itself has no box: it takes the section's colour. */
+.pkde-products--centred.pkde-products--centred.pkde-products--centred.pkde-products--centred.pkde-products--centred .woocommerce ul.products > li.product {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  --section-card-button-bg: var(--section-accent, #1f7a4d); /* the section's card button rules read these: the button takes the accent, whatever rule wins */
+  --section-card-button-text: var(--section-bg, #fff);
+  --section-card-button-border: var(--section-accent, #1f7a4d);
+}
+.pkde-products--centred > .mb-8 { text-align: center; }
+.pkde-products--centred > .mb-8 > div { justify-content: center; }
+.pkde-products--centred > .mb-8 p { margin-inline: auto; }
+.pkde-products--centred .pkde-product-card__media { border-radius: var(--pkde-radius-lg, 1rem); background: #fff; }
+.pkde-products--centred .pkde-badge--sale { top: 0; right: 0; left: auto; padding: 0.7rem 0.95rem; border-radius: 0 0 0 var(--pkde-radius-md, 0.75rem); background: var(--section-accent, #c1121f); color: var(--section-bg, #fff); font-size: 0.9375rem; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; }
+.pkde-products--centred .pkde-product-card__title a { color: var(--section-accent, inherit); font-weight: 700; }
+.pkde-products--centred .pkde-product-card__body > div.text-sm { font-size: 1.5rem; font-weight: 800; line-height: 1.2; opacity: 1; color: var(--section-heading, inherit); }
+.pkde-products--centred .price del { margin-inline-start: 0.4rem; font-size: 0.85em; font-weight: 600; opacity: 0.5; }
+.pkde-products--centred .price ins { text-decoration: none; }
+.pkde-products--centred.pkde-products--centred.pkde-products--centred.pkde-products--centred.pkde-products--centred .pkde-product-actions :is(a.button, button.button) { display: block; width: 100%; padding: 0.9rem 1rem; border-radius: 999px; background: var(--section-accent, #1f7a4d); color: var(--section-bg, #fff); border-color: transparent; text-align: center; font-weight: 700; }
+
+/* Recent Posts, Overlay layout: the picture fills the card under a dark tint, the title and a line of text on top, Read more at the bottom. The category and badges are left off. */
+.pkde-posts--overlay.pkde-posts--overlay.pkde-posts--overlay.pkde-posts--overlay.pkde-posts--overlay .grid > article {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 28rem;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--pkde-radius-xl, 1.5rem);
+  background: #111;
+  box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.2);
+  color: #fff;
+}
+.pkde-posts--overlay .grid > article > :is(a.absolute, div.absolute) { display: none; }
+.pkde-posts--overlay .grid > article .pkde-card__media { position: absolute; inset: 0; z-index: 0; border-radius: 0; }
+.pkde-posts--overlay .grid > article .pkde-card__media :is(div, img, .pkde-placeholder) { width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; border-radius: 0; }
+.pkde-posts--overlay .grid > article .pkde-card__media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0.35) 55%, rgb(0 0 0 / 0.6)); }
+.pkde-posts--overlay .grid > article .pkde-card__body { position: relative; z-index: 1; flex: 1; padding: 2rem; }
+.pkde-posts--overlay.pkde-posts--overlay.pkde-posts--overlay.pkde-posts--overlay.pkde-posts--overlay .grid > article :is(.entry-title, .entry-title a, .entry-summary, .pkde-card__more) { color: #fff; opacity: 1; }
+.pkde-posts--overlay .grid > article .entry-title a { text-decoration: none; }
+.pkde-posts--overlay .grid > article .entry-title { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; }
+.pkde-posts--overlay .grid > article .pkde-meta { display: none; }
+.pkde-posts--overlay .grid > article .pkde-card__more { margin-top: auto; }
+
+/* Recent Posts, Label layout: a tall picture over a coloured label with the title and the category as a pill (a case study, a project) */
+.pkde-posts--label.pkde-posts--label.pkde-posts--label.pkde-posts--label.pkde-posts--label .grid > article {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--pkde-radius-xl, 1.5rem);
+  background: var(--section-accent, #f59e0b);
+  color: var(--section-bg, #fff);
+}
+.pkde-posts--label .grid > article > div.absolute { display: none; }
+.pkde-posts--label .grid > article .pkde-card__media { order: 1; border-radius: 0; }
+.pkde-posts--label .grid > article .pkde-card__media :is(div, img, .pkde-placeholder) { aspect-ratio: 4 / 5; border-radius: 0; }
+.pkde-posts--label .grid > article .pkde-card__body { order: 2; flex: 0 0 auto; padding: 1.5rem 2rem 0.75rem; }
+.pkde-posts--label .grid > article > a.absolute { position: static; order: 3; align-self: flex-start; margin: 0 0 1.5rem 2rem; padding: 0.35rem 1.1rem; border-radius: 999px; background: color-mix(in srgb, currentColor 22%, transparent); color: inherit; backdrop-filter: none; font-size: 0.875rem; font-weight: 600; }
+.pkde-posts--label.pkde-posts--label.pkde-posts--label.pkde-posts--label.pkde-posts--label .grid > article :is(.entry-title, .entry-title a) { color: inherit; text-decoration: none; font-size: clamp(1.25rem, 2vw, 1.6rem); font-weight: 800; line-height: 1.2; }
+.pkde-posts--label .grid > article :is(.pkde-meta, .entry-summary, .pkde-card__more) { display: none; }
+
+/* Product categories, labelled picture cards: the picture with the name in a bar in the accent colour along the bottom, three across */
+.pkde-tiles-labelled { --pkde-tile-cols-sm: 2; --pkde-tile-cols-lg: 3; --pkde-tile-gap-y: 1.5rem; }
+.pkde-tiles-labelled .pkde-tile { display: flex; flex-direction: column; overflow: hidden; border-radius: var(--pkde-radius-lg, 1rem); background: var(--section-accent, #1f2937); }
+.pkde-tiles-labelled .pkde-tile__media { --pkde-tile-radius: 0; border-radius: 0; }
+.pkde-tiles-labelled.pkde-tiles-labelled.pkde-tiles-labelled .pkde-tile__title { margin: 0; padding: 1rem 1.25rem; color: var(--section-bg, #fff); font-weight: 700; text-align: left; }
+.pkde-tiles-labelled.pkde-tiles-labelled.pkde-tiles-labelled.pkde-tiles-labelled .pkde-tile__title a { color: inherit; text-decoration: none; }
+
+/* CTA, Picture card style: a picture behind the text under a tint of the section's colour, rounded, the text on the left */
+.pkde-cta--picture { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--pkde-radius-lg, 1rem); padding: clamp(1.5rem, 4vw, 2.5rem); min-height: 16rem; display: flex; align-items: center; }
+.pkde-cta--picture .pkde-cta__bg { position: absolute; inset: 0; z-index: -1; }
+.pkde-cta--picture .pkde-cta__bg :is(img, .pkde-placeholder) { display: block; width: 100%; height: 100%; min-height: 0; aspect-ratio: auto; object-fit: cover; border-radius: 0; }
+.pkde-cta--picture { color: var(--section-card-bg, #fff); }
+.pkde-cta--picture .pkde-cta__bg::after { content: ""; position: absolute; inset: 0; background: color-mix(in srgb, var(--section-card-heading, #1f2937) 80%, transparent); } /* the card's heading colour is the tint, the card's own colour the text: a contrast pair in every section */
+.pkde-cta--picture.pkde-cta--picture.pkde-cta--picture.pkde-cta--picture.pkde-cta--picture.pkde-cta--picture :is(.pkde-cta__title, .pkde-cta__line) { color: var(--section-card-bg, #fff); }
+.pkde-cta--picture .pkde-cta__text { padding: 0; max-width: 34rem; }
+
+/* Accordion, Bars look: each question is a filled bar with a chevron, the open answer sits on white under it; the heading is centred */
+.pkde-accordion--bars h2 { text-align: center; }
+.pkde-accordion--bars > div > div:first-child:not(.columns-1) { margin-inline: auto; text-align: center; }
+.pkde-accordion--bars.pkde-accordion--bars.pkde-accordion--bars details { margin-bottom: 1rem; padding: 0; border: 0; }
+.pkde-accordion--bars.pkde-accordion--bars.pkde-accordion--bars details > summary { padding: 1rem 1.5rem; background: color-mix(in srgb, var(--section-bg, #374151) 86%, #000); color: var(--section-heading, #fff); font-size: 1.125rem; }
+.pkde-accordion--bars details > summary svg { display: none; }
+.pkde-accordion--bars details > summary::after { content: ""; flex: none; width: 0.55rem; height: 0.55rem; margin-inline-end: 0.25rem; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-0.15rem) rotate(45deg); transition: transform 0.2s; }
+.pkde-accordion--bars details[open] > summary::after { transform: translateY(0.1rem) rotate(225deg); }
+.pkde-accordion--bars details > div { margin: 0; padding: 1.25rem 1.5rem; background: #fff; color: #1f2937; }

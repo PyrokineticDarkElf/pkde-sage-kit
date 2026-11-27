@@ -1,6 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InnerBlocks, RichText, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, ToggleControl } from '@wordpress/components';
+import { PanelBody, RangeControl, SelectControl, ToggleControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { Fragment } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -15,7 +15,7 @@ const TEMPLATE = [
 ];
 
 function Edit({ attributes, setAttributes, clientId }) {
-  const { heading, description, columnThreshold, theme, cardStyle, singleColumn } = attributes;
+  const { heading, description, columnThreshold, theme, cardStyle, singleColumn, look } = attributes;
   // Unlike Hero (always a panel), the rounded/padded look is conditional —
   // see accordion/render.php's own comment on the same choice.
   const blockProps = useBlockProps({
@@ -41,6 +41,7 @@ function Edit({ attributes, setAttributes, clientId }) {
     <>
       <InspectorControls>
         <PanelBody title={__('Layout', 'sage')}>
+          <SelectControl label={__('Look', 'sage')} value={look || ''} options={[{ value: '', label: __('Ruled rows with a plus', 'sage') }, { value: 'bars', label: __('Filled bars with a chevron, the answer on white', 'sage') }]} onChange={(value) => setAttributes({ look: value })} />
           <ToggleControl label={__('One column', 'sage')} help={__('The heading above and every question in a single column.', 'sage')} checked={!!singleColumn} onChange={(value) => setAttributes({ singleColumn: value })} />
           <RangeControl
             label={__('Switch to columns above', 'sage')}

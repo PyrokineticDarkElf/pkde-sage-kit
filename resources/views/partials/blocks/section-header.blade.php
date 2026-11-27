@@ -19,6 +19,7 @@
 
   Props: $heading (string), $description (string, optional),
          $viewAllUrl (string|null), $viewAllLabel (string),
+         $tab (bool, optional) the heading as a tab hanging from the Section's top edge (resources/css/pattern-layouts.css),
          $themed (bool, optional, default false) — true when the calling
          block's own render.php applied App\pkde_loop_theme_classes() to its
          wrapper, so this heading/description/link need the same
@@ -26,7 +27,7 @@
          CTA use instead of the plain-white-page neutral palette below —
          see App\pkde_loop_theme_classes()'s own comment (app/blocks.php).
 --}}
-<div class="mb-8">
+<div @class(['mb-8', 'pkde-heading-tab' => $tab ?? false])>
   <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
     @if (trim((string) $heading) !== '')
       <h2 @class([

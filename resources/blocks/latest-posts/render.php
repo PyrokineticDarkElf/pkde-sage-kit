@@ -79,13 +79,13 @@ if ($source === 'manual') {
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
 $card_style = \App\pkde_sanitize_card_style($attributes['cardStyle'] ?? 'white');
-$posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list', 'panel'], true) ? $attributes['layout'] : 'cards';
+$posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 'list', 'panel', 'overlay', 'label'], true) ? $attributes['layout'] : 'cards';
 // the Panel layout puts "View all" under the grid, centred, instead of beside the heading
-$view_all_under = $posts_layout === 'panel' && ! empty($view_all_url) && $source !== 'manual';
+$view_all_under = in_array($posts_layout, ['panel', 'overlay', 'label'], true) && ! empty($view_all_url) && $source !== 'manual';
 $header_view_all = $view_all_under ? null : $view_all_url;
 // Panel layout option: the "View all" tab hangs from the section's bottom edge
 $pinned = $view_all_under && ! empty($attributes['pinViewAll']);
-$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}" . ($pinned ? ' has-pinned-tab' : '')))));
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}" . ($pinned ? ' has-pinned-tab' : '') . (! empty($attributes['headingTab']) ? ' has-heading-tab' : '')))));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>
@@ -94,11 +94,12 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
         'description' => $attributes['description'] ?? '',
         'viewAllUrl' => $header_view_all,
         'viewAllLabel' => $view_all_label,
+        'tab' => ! empty($attributes['headingTab']),
         'themed' => (bool) $theme,
     ])->render(); ?>
     <?php echo view('pkde-kit::partials.blocks.post-grid', ['query' => $query, 'cardStyle' => $card_style, 'emptyMessage' => $empty_message])->render(); ?>
     <?php if ($view_all_under) : ?>
-        <?php echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => __('View all', 'sage')])->render(); ?>
+        <?php echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => $posts_layout === 'panel' ? __('View all', 'sage') : $view_all_label, 'link' => $posts_layout !== 'panel'])->render(); ?>
     <?php endif; ?>
     <?php echo \App\pkde_loop_theme_content_close($theme); ?>
 </div>

@@ -16,7 +16,7 @@ if (! taxonomy_exists('product_cat')) {
 }
 
 $count = max(0, (int) ($attributes['count'] ?? 0));
-$layout = in_array($attributes['layout'] ?? 'cards', ['tiles', 'chips'], true) ? $attributes['layout'] : 'cards';
+$layout = in_array($attributes['layout'] ?? 'cards', ['tiles', 'chips', 'labelled'], true) ? $attributes['layout'] : 'cards';
 
 // Optional selection. With none of these set the block behaves exactly as it always did (every non-empty category, optionally
 // limited by "Number of categories"): existing pages are unchanged.
@@ -54,7 +54,7 @@ $categories_page = get_page_by_path('categories');
 $view_all_url = $categories_page && ! is_page($categories_page->ID) ? get_permalink($categories_page) : '';
 
 $theme = sanitize_html_class($attributes['theme'] ?? '');
-$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, \App\pkde_loop_theme_classes($theme)));
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($layout === 'labelled' ? ' pkde-tiles-labelled' : ''))));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>
@@ -66,7 +66,7 @@ $wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attri
         'themed' => (bool) $theme,
     ])->render(); ?>
     <?php echo view(match ($layout) {
-        'tiles' => 'pkde-kit::partials.blocks.category-tiles', 'chips' => 'pkde-kit::partials.blocks.category-chips', default => 'pkde-kit::partials.blocks.category-cards',
+        'tiles', 'labelled' => 'pkde-kit::partials.blocks.category-tiles', 'chips' => 'pkde-kit::partials.blocks.category-chips', default => 'pkde-kit::partials.blocks.category-cards',
     }, [
         'terms' => $terms,
         'labels' => $labels,

@@ -25,11 +25,17 @@ $include = array_values(array_filter(array_map('sanitize_title', (array) ($attri
 $exclude = array_values(array_filter(array_map('sanitize_title', (array) ($attributes['excludeCategories'] ?? []))));
 
 $featured = ($attributes['source'] ?? 'all') === 'featured';
+$on_sale = ($attributes['source'] ?? 'all') === 'onsale';
 $shortcode = sprintf('[products limit="%d" columns="%d" orderby="%s" order="%s"', $limit, $columns, $orderby, $order);
 
 // the products marked "This is a featured product" (WooCommerce's own visibility setting of [products])
 if ($featured) {
     $shortcode .= ' visibility="featured"';
+}
+
+// the products with a sale price (WooCommerce's own on_sale setting of [products])
+if ($on_sale) {
+    $shortcode .= ' on_sale="true"';
 }
 
 if ($include) {
@@ -69,16 +75,18 @@ if (! empty($attributes['viewAll']) && function_exists('wc_get_page_permalink'))
 }
 
 $loop_layout = in_array($attributes['layout'] ?? 'grid', ['grid', 'rail', 'feature', 'intro'], true) ? $attributes['layout'] : 'grid';
-$tiles = ($attributes['cardLook'] ?? '') === 'tiles'; // the Tiles card look: a white card with the picture inset, a SKU pill, a bold price and a full-width button
+$look = in_array($attributes['cardLook'] ?? '', ['tiles', 'centred'], true) ? $attributes['cardLook'] : ''; // Tiles: a white card with the picture inset, a SKU pill, a bold price, a full-width button. Centred: the picture in a white tile, the name, price and a rounded button centred under it
+$tiles = $look === 'tiles';
 // "View all" as a tab under the products (a pill, or pinned to the Section's bottom edge) instead of the link beside the heading
-$tab_mode = in_array($attributes['viewAllTab'] ?? '', ['tab', 'pinned'], true) && $view_all_url !== '';
-$loop_classes = trim(($loop_layout === 'grid' && ! $tiles ? '' : 'pkde-products') . ($loop_layout === 'grid' ? '' : " pkde-products--{$loop_layout}") . ($tiles ? ' pkde-products--tiles' : '') . ($tab_mode && $attributes['viewAllTab'] === 'pinned' ? ' has-pinned-tab' : ''));
+$tab_mode = in_array($attributes['viewAllTab'] ?? '', ['tab', 'pinned', 'link'], true) && $view_all_url !== '';
+$loop_classes = trim(($loop_layout === 'grid' && $look === '' ? '' : 'pkde-products') . ($loop_layout === 'grid' ? '' : " pkde-products--{$loop_layout}") . ($look !== '' ? " pkde-products--{$look}" : '') . (! empty($attributes['headingTab']) ? ' has-heading-tab' : '') . ($tab_mode && $attributes['viewAllTab'] === 'pinned' ? ' has-pinned-tab' : ''));
 echo '<div ' . get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($loop_classes !== '' ? " {$loop_classes}" : '')))) . '>';
 echo \App\pkde_loop_theme_content_open($theme);
 echo view('pkde-kit::partials.blocks.section-header', [
     'heading' => $heading,
     'description' => (string) ($attributes['description'] ?? ''),
     'viewAllUrl' => $tab_mode ? null : $view_all_url,
+    'tab' => ! empty($attributes['headingTab']),
     'viewAllLabel' => __('View all products', 'sage'),
     'themed' => (bool) $theme,
 ])->render();
@@ -100,7 +108,7 @@ if ($loop_layout === 'rail' && str_contains($products_html, '<ul class="products
 echo $products_html;
 
 if ($tab_mode) {
-    echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => __('Shop all', 'sage')])->render();
+    echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => $attributes['viewAllTab'] === 'link' ? __('View more', 'sage') : __('Shop all', 'sage'), 'link' => $attributes['viewAllTab'] === 'link'])->render();
 }
 echo \App\pkde_loop_theme_content_close($theme);
 echo '</div>';

@@ -5,6 +5,9 @@
          $secondaryText/$secondaryUrl, $image (an <img> from \App\block_image(), split only).
 --}}
 <div {!! $wrapper !!}>
+  @if ($layout === 'tinted' && $image !== '')
+    <div class="pkde-hero__bg" aria-hidden="true">{!! $image !!}</div>
+  @endif
   <div @class(['pkde-hero__grid', 'pkde-split' => $layout === 'split' && $image !== ''])>
     <div class="pkde-hero__copy">
       @if ($eyebrow !== '')

@@ -25,7 +25,7 @@ $theme = sanitize_html_class($attributes['theme'] ?? '');
 
 // Split and text-only layouts: colours come from the Brand section theme the hero sits in (no panel of its own), the markup from a view.
 // The default layout, the full-width image with its overlay, is the markup below, unchanged.
-$layout = in_array($attributes['layout'] ?? 'overlay', ['split', 'text'], true) ? $attributes['layout'] : 'overlay';
+$layout = in_array($attributes['layout'] ?? 'overlay', ['split', 'text', 'tinted'], true) ? $attributes['layout'] : 'overlay';
 
 if ($layout !== 'overlay') {
     $image_side = ($attributes['imageSide'] ?? 'right') === 'left' ? 'left' : 'right';
@@ -33,7 +33,7 @@ if ($layout !== 'overlay') {
     $image_fit = ($attributes['imageFit'] ?? 'cover') === 'contain' ? ' pkde-hero--fit-contain' : '';
     $hero_image = '';
 
-    if ($layout === 'split' && ($image_id || $image_url || ! empty($attributes['placeholder']))) {
+    if (in_array($layout, ['split', 'tinted'], true) && ($image_id || $image_url || ! empty($attributes['placeholder']))) {
         $first = \App\next_hero_slide_number() === 1;
         $hero_image = \App\block_media($image_id, $image_url, $image_alt, 'large', ['sizes' => '(min-width: 1024px) 50vw, 100vw'] + ($first ? ['loading' => 'eager', 'fetchpriority' => 'high'] : ['loading' => 'lazy']), ! empty($attributes['placeholder']));
     }

@@ -46,7 +46,7 @@ $item_count = count(array_filter(
 // rounded/padded "panel" treatment is entirely conditional, not just the
 // theme-{name} class within it.
 $wrapper_attributes = get_block_wrapper_attributes([
-    'class' => $theme ? "rounded-4xl pkde-section theme-{$theme} p-6 sm:p-8 lg:p-10" : '',
+    'class' => trim(($theme ? "rounded-4xl pkde-section theme-{$theme} p-6 sm:p-8 lg:p-10" : '') . (($attributes['look'] ?? '') === 'bars' ? ' pkde-accordion--bars' : '')),
 ]);
 ?>
 <div <?php echo $wrapper_attributes; ?>>

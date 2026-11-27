@@ -12,6 +12,7 @@ const STYLE_OPTIONS = [
   { label: __('Boxed (a card in the section)', 'sage'), value: 'boxed' },
   { label: __('Link (one bold link with a circled arrow)', 'sage'), value: 'link' },
   { label: __('Promo (badge, title, button and a small picture in one row)', 'sage'), value: 'promo' },
+  { label: __('Picture card (a picture behind the text, under a tint)', 'sage'), value: 'picture' },
 ];
 
 const BUTTON_STYLE_OPTIONS = [

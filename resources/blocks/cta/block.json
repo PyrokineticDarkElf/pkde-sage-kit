@@ -22,7 +22,8 @@
         "split",
         "boxed",
         "link",
-        "promo"
+        "promo",
+        "picture"
       ]
     },
     "theme": {

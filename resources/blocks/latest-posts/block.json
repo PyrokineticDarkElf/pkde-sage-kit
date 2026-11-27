@@ -65,11 +65,17 @@
         "cards",
         "feature",
         "list",
-        "panel"
+        "panel",
+        "overlay",
+        "label"
       ],
       "default": "cards"
     },
     "pinViewAll": {
+      "type": "boolean",
+      "default": false
+    },
+    "headingTab": {
       "type": "boolean",
       "default": false
     }

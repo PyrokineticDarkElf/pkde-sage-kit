@@ -34,7 +34,7 @@ function Preview({ attributes }) {
 }
 
 function Edit({ attributes, setAttributes }) {
-  const { limit, columns, source, orderby, order, categories, excludeCategories, heading, description, viewAll, layout, viewAllTab, cardLook } = attributes;
+  const { limit, columns, source, orderby, order, categories, excludeCategories, heading, description, viewAll, layout, viewAllTab, cardLook, headingTab } = attributes;
   const available = useProductCategories();
   const blockProps = useBlockProps();
 
@@ -42,7 +42,7 @@ function Edit({ attributes, setAttributes }) {
     <>
       <InspectorControls>
         <PanelBody title={__('Products', 'sage')}>
-          <SelectControl label={__('Show', 'sage')} value={source || 'all'} options={[{ value: 'all', label: __('Products, by category and order', 'sage') }, { value: 'featured', label: __('Only featured products', 'sage') }]} onChange={(value) => setAttributes({ source: value })} help={__('Featured products are the ones marked "This is a featured product" in the product editor.', 'sage')} />
+          <SelectControl label={__('Show', 'sage')} value={source || 'all'} options={[{ value: 'all', label: __('Products, by category and order', 'sage') }, { value: 'featured', label: __('Only featured products', 'sage') }, { value: 'onsale', label: __('Only products on sale', 'sage') }]} onChange={(value) => setAttributes({ source: value })} help={__('Featured products are the ones marked "This is a featured product" in the product editor.', 'sage')} />
           <RangeControl label={__('Number of products', 'sage')} min={1} max={48} value={limit} onChange={(value) => setAttributes({ limit: value })} />
           <RangeControl label={__('Columns', 'sage')} min={1} max={6} value={columns} onChange={(value) => setAttributes({ columns: value })} />
           <SelectControl label={__('Layout', 'sage')} value={layout || 'grid'} options={[{ value: 'grid', label: __('Grid', 'sage') }, { value: 'rail', label: __('Row that scrolls', 'sage') }, { value: 'feature', label: __('One large card beside a list', 'sage') }, { value: 'intro', label: __('Heading beside the products', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
@@ -78,14 +78,15 @@ function Edit({ attributes, setAttributes }) {
             <SelectControl
               label={__('Show the link as', 'sage')}
               value={viewAllTab || ''}
-              options={[{ value: '', label: __('A link beside the heading', 'sage') }, { value: 'tab', label: __('A "Shop all" pill under the products', 'sage') }, { value: 'pinned', label: __('A "Shop all" tab on the bottom edge of the section', 'sage') }]}
+              options={[{ value: '', label: __('A link beside the heading', 'sage') }, { value: 'tab', label: __('A "Shop all" pill under the products', 'sage') }, { value: 'pinned', label: __('A "Shop all" tab on the bottom edge of the section', 'sage') }, { value: 'link', label: __('A "View more" link with an arrow under the products', 'sage') }]}
               onChange={(value) => setAttributes({ viewAllTab: value })}
             />
           )}
+          <ToggleControl label={__('Heading as a tab hanging from the top of the section', 'sage')} checked={!!headingTab} onChange={(value) => setAttributes({ headingTab: value })} />
           <SelectControl
             label={__('Card look', 'sage')}
             value={cardLook || ''}
-            options={[{ value: '', label: __('The shop\'s card', 'sage') }, { value: 'tiles', label: __('Tiles: picture inset, SKU, bold price, full-width button', 'sage') }]}
+            options={[{ value: '', label: __('The shop\'s card', 'sage') }, { value: 'tiles', label: __('Tiles: picture inset, SKU, bold price, full-width button', 'sage') }, { value: 'centred', label: __('Centred: picture tile, name, price and a rounded button', 'sage') }]}
             onChange={(value) => setAttributes({ cardLook: value })}
           />
         </PanelBody>
