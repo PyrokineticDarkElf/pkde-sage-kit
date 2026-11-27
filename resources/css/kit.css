@@ -83,11 +83,8 @@
    * .pkde-section :where(article, .woocommerce ul.products > .product)
    * below), reframed as tokens instead of hardcoded white/neutral-950 so
    * "white" is just what these three variables happen to say by default,
-   * not a special case — generated/card-themes.css overrides them the same
-   * way generated/section-themes.css overrides --pkde-theme-* above, but
-   * only for a card actually marked .pkde-card-tinted/.pkde-card-bold (see
-   * that file's own comment, buildCardThemesCss() in
-   * bin/generate-theme-tokens.mjs, and docs/planning/themed-cards-reference.md).
+   * not a special case; a site's own rule on a marker class (.pkde-card-tinted,
+   * .pkde-card-bold) can override them, the kit no longer generates any.
    */
   --pkde-card-background: var(--color-white);
   --pkde-card-content: var(--color-neutral-950);
@@ -260,10 +257,8 @@
    * Reads --pkde-card-* rather than hardcoding white/neutral-950 directly —
    * :root's own defaults just above give every card this exact white
    * surface by default (the `cardStyle` attribute's "White" option, and the
-   * only behaviour that existed before card-themes.css did), but a card
-   * additionally marked .pkde-card-tinted/.pkde-card-bold picks up that
-   * variant's own generated override instead (buildCardThemesCss() in
-   * bin/generate-theme-tokens.mjs, docs/planning/themed-cards-reference.md).
+   * only behaviour there is now), but a site's own rule on a marker class
+   * can override the variables for a card marked with it.
    * Category/Brand cards (partials/blocks/category-cards.blade.php,
    * brand-cards.blade.php) deliberately aren't included here — a Category
    * card's text overlays its own image with a built-in dark gradient, and a
@@ -962,8 +957,7 @@
  * there's no PHP-level "pass a $cardStyle prop down" available the way
  * accordion-layout.blade.php's own heading/description gets one. Instead,
  * App\pkde_card_style_wrapper_open() wraps the *parent* block's own inner
- * content in one `.pkde-card-{style}` marker div — buildCardThemesCss()'s
- * generated `.theme-{name} .pkde-card-{style}` rule sets the --pkde-card-*
+ * content in one `.pkde-card-{style}` marker div; a site's own `.pkde-card-{style}` rule can set the --pkde-card-*
  * custom properties there, and every descendant (every Accordion Item
  * inside it) picks them up automatically via ordinary CSS inheritance, no
  * per-item coordination needed at all.

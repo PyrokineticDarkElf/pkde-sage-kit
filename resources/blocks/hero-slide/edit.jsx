@@ -10,14 +10,6 @@ import { PanelBody, TextControl, SelectControl, Button } from '@wordpress/compon
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
-import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
-
-// Generated fresh from the actual palette — see hero/edit.jsx's own comment
-// on this same import for why it's not a hardcoded list here.
-const THEME_OPTIONS = GENERATED_THEME_OPTIONS.map((option) => ({
-  value: option.value,
-  label: option.value ? option.label : __('Default', 'sage'),
-}));
 
 const HEADING_LEVEL_OPTIONS = [
   { value: 'h1', label: __('H1 (page title, use on one slide only)', 'sage') },
@@ -39,15 +31,6 @@ function Edit({ attributes, setAttributes }) {
   return (
     <>
       <InspectorControls>
-        <PanelBody title={__('Section theme', 'sage')}>
-          <SelectControl
-            label={__('Theme', 'sage')}
-            value={theme}
-            options={THEME_OPTIONS}
-            onChange={(value) => setAttributes({ theme: value })}
-            help={__('Re-skins this slide’s background, text, and button colours at once.', 'sage')}
-          />
-        </PanelBody>
         <PanelBody title={__('Heading', 'sage')}>
           <SelectControl
             label={__('Heading level', 'sage')}

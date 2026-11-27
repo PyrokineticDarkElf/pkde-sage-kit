@@ -3,16 +3,14 @@
  * Generate Tailwind v4 colour tokens from any number of named client colours
  * (minimum 3 — see MINIMUM_COLORS below), plus one re-themeable "section"
  * per colour (buildSectionThemesCss) for skinning a whole block/section at
- * once via a `theme-{name}` or `theme-{alias}` class, and two opt-in "card"
- * recolour variants per section (buildCardThemesCss).
+ * once via a `theme-{name}` or `theme-{alias}` class.
  *
  * Every colour can carry a `role` ("brand"/"accent"/"black"/"white" — see
  * ROLES below) decoupling *what a colour is called* from *what part it
  * plays* (buildCss's --color-action/--color-highlight, and which colour a
  * `card` pointer defaults to), and a `styles` object (background/content/
  * highlight/buttons/border/card) computed once and never touched again —
- * see backfillStyles()'s own comment, and docs/planning/themed-cards-reference.md
- * for the full design this implements.
+ * see backfillStyles()'s own comment.
  *
  * Usage:
  *   node bin/generate-theme-tokens.mjs \
@@ -50,7 +48,6 @@ const rootDirectory = path.resolve(themeDirectory, '../../../..');
 const configPath = path.join(rootDirectory, 'config/brand-palette.json');
 const outputPath = path.join(themeDirectory, 'resources/css/generated/brand-tokens.css');
 const sectionThemesOutputPath = path.join(themeDirectory, 'resources/css/generated/section-themes.css');
-const cardThemesOutputPath = path.join(themeDirectory, 'resources/css/generated/card-themes.css');
 const themeJsonPath = path.join(themeDirectory, 'theme.json');
 const themeOptionsOutputPath = path.join(themeDirectory, 'resources/js/generated/theme-options.js');
 const themeOptionsPhpOutputPath = path.join(themeDirectory, 'resources/generated/theme-options.php');
@@ -193,8 +190,7 @@ function validatePalette(colors) {
  * one "white". If neither is set (the common case: a fresh palette, or an
  * older one from before this existed), auto-adds plain #000000/#ffffff
  * defaults — a client can hand-edit their hex later (a warm near-black, a
- * cream near-white) exactly the way any other colour gets hand-tuned, per
- * docs/planning/themed-cards-reference.md.
+ * cream near-white) exactly the way any other colour gets hand-tuned.
  */
 function ensureNeutralRoles(colors) {
   const names = new Set(colors.map((color) => color.name));
@@ -260,15 +256,14 @@ function pickHighlight(hueColor, background, preferred) {
  * config/brand-palette.json is never recomputed or overwritten by a later
  * run, only ever backfilled for a colour that's missing it entirely (a
  * newly-added palette colour, or the first time this ever runs on an older
- * palette). See docs/planning/themed-cards-reference.md's "Proposed design"
- * for the full rationale, and pickNeutral() above for why content/button/
+ * palette). See pickNeutral() above for why content/button/
  * card colours are chosen by measured contrast rather than assumed.
  *
  * `card` — the one pointer field, not a shade reference like the others —
  * names another colour by its real `name`; whichever block/render.php reads
- * it resolves that colour's *own* `styles` wholesale for a themed card (see
- * buildCardThemesCss below). Always exactly one hop: a card never chases
- * whatever its own `card` might in turn point to.
+ * it resolves that colour's *own* `styles` wholesale for a themed card.
+ * Always exactly one hop: a card never chases whatever its own `card` might
+ * in turn point to.
  *
  * `buttonPrimaryText` always borrows the *content* rule of whichever colour
  * actually provides `buttonPrimaryBackground`, rather than guessing a shade
@@ -520,66 +515,6 @@ function buildSectionThemesCss(colors) {
       `  --pkde-theme-alt-btn-text: ${value(s.buttonSecondaryText)};`,
       `  --pkde-theme-alt-btn-border: ${value(s.buttonSecondaryText)};`,
       `  --pkde-theme-border: ${value(s.border)};`,
-      '}',
-      '',
-    );
-  });
-
-  return lines.join('\n');
-}
-
-/**
- * Two opt-in "card" recolour variants per palette colour — `.pkde-card-tinted`
- * and `.pkde-card-bold` — for any card marked with one of those classes
- * while sitting inside a themed section (`.theme-{name}`/`.theme-{alias}`,
- * see buildSectionThemesCss above). Cards don't carry a theme class
- * themselves, so these are descendant selectors, not standalone ones — see
- * docs/planning/themed-cards-reference.md's "Proposed design" for the full
- * rationale.
- *
- * - **Tinted**: a much lighter step (50) of the *same* colour as its
- *   section, with dark neutral text — safe for any hue, since every
- *   colour's own step 50 sits at the same ~0.97 lightness regardless of hue
- *   (shadeLightness above). Computed the same way regardless of `styles`.
- * - **Bold**: resolves `styles.card` — a real colour name — and borrows
- *   *that* colour's own `styles.background`/`content`/`highlight` wholesale,
- *   one hop, never chasing whatever that colour's own `card` might in turn
- *   point to. `styles.card` defaults to whichever of role:black/role:white
- *   measured better against this colour's own background (backfillStyles()
- *   above), but is a completely ordinary field — hand-edit it in
- *   config/brand-palette.json to point a theme's cards at any other colour
- *   in the palette instead.
- */
-function buildCardThemesCss(colors) {
-  const lines = [
-    '/**',
-    ' * Generated by bin/generate-theme-tokens.mjs from config/brand-palette.json.',
-    ' * Do not edit directly — edit each colour\'s own `styles.card` in',
-    ' * config/brand-palette.json instead, then regenerate.',
-    ' */',
-  ];
-
-  colors.forEach((color, index) => {
-    const alias = POSITIONAL_ALIASES[index];
-    const baseSelectors = alias ? [`.theme-${color.name}`, `.theme-${alias}`] : [`.theme-${color.name}`];
-    const cardColor = colors.find((candidate) => candidate.name === color.styles.card) ?? color;
-
-    const tintedSelectors = baseSelectors.map((selector) => `${selector} .pkde-card-tinted`);
-    lines.push(`${tintedSelectors.join(',\n')} {`);
-    lines.push(
-      `  --pkde-card-background: var(--color-${color.name}-50);`,
-      `  --pkde-card-content: var(--color-neutral-950);`,
-      `  --pkde-card-accent: var(--color-${color.name}-600);`,
-      '}',
-      '',
-    );
-
-    const boldSelectors = baseSelectors.map((selector) => `${selector} .pkde-card-bold`);
-    lines.push(`${boldSelectors.join(',\n')} {`);
-    lines.push(
-      `  --pkde-card-background: var(--color-${cardColor.styles.background});`,
-      `  --pkde-card-content: var(--color-${cardColor.styles.content});`,
-      `  --pkde-card-accent: var(--color-${cardColor.styles.highlight});`,
       '}',
       '',
     );
@@ -988,7 +923,6 @@ const sectionThemesPhp = buildSectionThemesPhp(sectionThemes, palette.colors);
 const editorData = buildEditorData(palette.colors, sectionThemes, paletteSwatches(palette.colors));
 const editorPalettesPhp = buildEditorPalettesPhp(editorData, keepSwatches.filter((swatch) => !swatch.editorVisible).map((swatch) => swatch.slug));
 const sectionCompatJs = buildSectionCompatJs(editorData);
-const cardThemesCss = buildCardThemesCss(palette.colors);
 const themeOptions = buildThemeOptions(palette.colors);
 const headerOptions = buildHeaderOptions(header);
 // --check compares the parsed palette, not the text, so a tool that re-saves theme.json in another layout (json.dump, an editor's
@@ -1014,7 +948,6 @@ if (options.check) {
   const stale = [
     [rel(outputPath), upToDate(outputPath, css)],
     [rel(sectionThemesOutputPath), upToDate(sectionThemesOutputPath, sectionThemesCss)],
-    [rel(cardThemesOutputPath), upToDate(cardThemesOutputPath, cardThemesCss)],
     [rel(themeOptionsOutputPath), upToDate(themeOptionsOutputPath, themeOptions.js)],
     [rel(themeOptionsPhpOutputPath), upToDate(themeOptionsPhpOutputPath, themeOptions.php)],
     [rel(headerOptionsOutputPath), upToDate(headerOptionsOutputPath, headerOptions)],
@@ -1040,7 +973,7 @@ if ((contrastProblems.length || contrastNotes.length) && !options.dryRun) {
   process.stderr.write(`Warning, colour contrast:\n${[...contrastProblems, ...contrastNotes].map((line) => `  - ${line}`).join('\n')}\n`);
 }
 if (options.dryRun) {
-  process.stdout.write(`${css}\n/* --- ${path.basename(sectionThemesOutputPath)} --- */\n\n${sectionThemesCss}\n/* --- ${path.basename(cardThemesOutputPath)} --- */\n\n${cardThemesCss}`);
+  process.stdout.write(`${css}\n/* --- ${path.basename(sectionThemesOutputPath)} --- */\n\n${sectionThemesCss}`);
   process.exit(0);
 }
 
@@ -1052,7 +985,6 @@ fs.mkdirSync(path.dirname(headerOptionsOutputPath), { recursive: true });
 fs.writeFileSync(configPath, `${JSON.stringify(palette, null, 2)}\n`);
 fs.writeFileSync(outputPath, css);
 fs.writeFileSync(sectionThemesOutputPath, sectionThemesCss);
-fs.writeFileSync(cardThemesOutputPath, cardThemesCss);
 fs.writeFileSync(themeOptionsOutputPath, themeOptions.js);
 fs.writeFileSync(themeOptionsPhpOutputPath, themeOptions.php);
 fs.writeFileSync(headerOptionsOutputPath, headerOptions);

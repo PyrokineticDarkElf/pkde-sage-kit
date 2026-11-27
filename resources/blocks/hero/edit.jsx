@@ -10,19 +10,6 @@ import { PanelBody, TextControl, SelectControl, Button } from '@wordpress/compon
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
-import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
-
-// Generated fresh from config/brand-palette.json by bin/generate-theme-tokens.mjs
-// every time it runs (i.e. every bin/setup run) — labelled with each colour's
-// own real name ("Coral"), not a generic positional alias, and always exactly
-// as many entries as the palette actually has. A hardcoded list here used to
-// cap out at 6 generic entries (alpha–foxtrot) regardless of how many colours
-// the palette actually had — silently wrong the moment a client build (like
-// this template's own default palette) has more than 6.
-const THEME_OPTIONS = GENERATED_THEME_OPTIONS.map((option) => ({
-  value: option.value,
-  label: option.value ? option.label : __('Default', 'sage'),
-}));
 
 const LAYOUT_OPTIONS = [
   { value: 'overlay', label: __('Full-width image, text over it', 'sage') },
@@ -100,17 +87,6 @@ function Edit({ attributes, setAttributes }) {
             />
           )}
         </PanelBody>
-        {overlay && (
-          <PanelBody title={__('Section theme', 'sage')}>
-            <SelectControl
-              label={__('Theme', 'sage')}
-              value={theme}
-              options={THEME_OPTIONS}
-              onChange={(value) => setAttributes({ theme: value })}
-              help={__('Re-skins this section’s background, text, and button colours at once.', 'sage')}
-            />
-          </PanelBody>
-        )}
         <PanelBody title={__('Buttons', 'sage')}>
           <TextControl label={__('Button text', 'sage')} value={buttonText} onChange={(value) => setAttributes({ buttonText: value })} />
           <TextControl label={__('Button URL', 'sage')} value={buttonUrl} onChange={(value) => setAttributes({ buttonUrl: value })} />

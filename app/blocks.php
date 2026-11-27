@@ -80,9 +80,7 @@ function pkde_loop_theme_content_close(string $theme): string
 }
 
 /**
- * Validates a loop block's `cardStyle` attribute against the styles
- * card-themes.css actually generates (`buildCardThemesCss()` in
- * bin/generate-theme-tokens.mjs) — 'white' (the plain default, no marker
+ * Validates a loop block's `cardStyle` attribute: 'white' (the plain default, no marker
  * class needed at all), 'tinted', or 'bold'. Falls back to 'white' for
  * anything else, the same defensive pattern sanitize_html_class() already
  * gives `theme` elsewhere in this file, since $attributes ultimately comes
@@ -102,9 +100,8 @@ function pkde_sanitize_card_style(string $cardStyle): string
  * receive a PHP prop the way a template include can. `--pkde-card-*` are
  * ordinary CSS custom properties, which cascade to every descendant
  * automatically — so wrapping the *parent* block's inner content in this
- * one marker div is enough for `buildCardThemesCss()`'s generated
- * `.theme-{name} .pkde-card-{style}` rule to set the right values for every
- * Accordion Item inside it, with no per-item coordination needed at all.
+ * one marker div is enough for a `.pkde-card-{style}` rule (a site's own, the kit no longer
+ * generates any) to set the right values for every Accordion Item inside it.
  * Returns '' from both for 'white' (the plain default — every --pkde-card-*
  * token already has a :root fallback for exactly this case, see app.css),
  * so a caller can echo these unconditionally regardless of cardStyle.

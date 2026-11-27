@@ -1,23 +1,15 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl, TextControl, TextareaControl, Placeholder, Button } from '@wordpress/components';
+import { PanelBody, RangeControl, SelectControl, TextControl, TextareaControl, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
-import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
 import { CategoryField, useProductCategories } from '../../js/product-category-fields.jsx';
 import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 import { ServerPreview } from '../../js/server-preview.jsx';
 
-// Generated fresh from the actual palette — see hero/edit.jsx's own comment
-// on this same import for why it's not a hardcoded list here.
-const THEME_OPTIONS = GENERATED_THEME_OPTIONS.map((option) => ({
-  value: option.value,
-  label: option.value ? option.label : __('Default', 'sage'),
-}));
-
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, theme, layout, include, exclude, labels, extra } = attributes;
+  const { heading, description, count, layout, include, exclude, labels, extra } = attributes;
   const blockProps = useBlockProps();
   const available = useProductCategories();
 
@@ -100,15 +92,6 @@ function Edit({ attributes, setAttributes }) {
             <Button variant="secondary" onClick={() => setAttributes({ extra: [...extra, { label: '', url: '', image: '', alt: '' }] })}>{__('Add a tile', 'sage')}</Button>
           </PanelBody>
         )}
-        <PanelBody title={__('Section theme', 'sage')}>
-          <SelectControl
-            label={__('Theme', 'sage')}
-            value={theme}
-            options={THEME_OPTIONS}
-            onChange={(value) => setAttributes({ theme: value })}
-            help={__('Re-skins this section’s background and text colours to match a palette colour.', 'sage')}
-          />
-        </PanelBody>
         <CardColourPanel attributes={attributes} setAttributes={setAttributes} />
       </InspectorControls>
 

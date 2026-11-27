@@ -326,33 +326,7 @@ self-contained against any background on their own (a Category card's text overl
 with a built-in dark gradient; a Brand card is either a bare logo image or a name centered in its
 own `bg-neutral-100` box), so the white-surface treatment would only get in the way.
 
-**Post/product cards can also go beyond plain white, via `cardStyle` ('white'/'tinted'/'bold', the
-five loop blocks that also have a `theme` attribute — not Product Categories/Brands, see above)** —
-`docs/planning/themed-cards-reference.md`'s "Proposed design" fully implemented. `--pkde-card-background`/
-`-content`/`-accent` (`app.css`'s `:root`, reproducing today's plain white card exactly) replace the
-hardcoded `white`/`neutral-950` the card-surface rule above used to have baked in directly; a card
-additionally marked `.pkde-card-tinted`/`.pkde-card-bold` picks up `buildCardThemesCss()`'s generated
-`.theme-{name} .pkde-card-{style}` override instead (`bin/generate-theme-tokens.mjs`, a sibling to
-`buildSectionThemesCss()`). **Tinted** is the same colour as its section at step `50` (dark neutral
-text — safe for any hue, since step 50 sits at the same ~0.97 lightness regardless of hue). **Bold**
-resolves that colour's own `styles.card` (`config/brand-palette.json` — see `branding-tokens.md`'s
-"Section theme roles and styles") and borrows *that* colour's entire `styles` wholesale, one hop —
-`styles.card` defaults to whichever of the auto-added `black`/`white` neutral colours measures better
-WCAG contrast against this colour's own background (not assumed — every `styles` field on every
-colour is chosen the same contrast-aware way, not just cards; see `branding-tokens.md`), but is a
-completely ordinary, hand-editable field — point it at any other palette colour instead and
-regenerate. Cards don't carry a `theme-{name}` class themselves, so `cardStyle` only ever does
-anything paired with a `theme` also being set — the Inspector Control's own help text says as much.
-Getting `cardStyle` down to the actual card element needed two different plumbing mechanisms
-depending on the block: `partials/blocks/post-grid.blade.php` passes it as an ordinary Blade
-`@include` prop; `partials/blocks/product-grid.blade.php` bridges it through a `$GLOBALS` entry
-instead, since `wc_get_template_part()` (WooCommerce's own template loader, used for product cards)
-has no `$args` parameter to pass data through in this WooCommerce version — see that file's own
-comment. `partials/entry-meta.blade.php` (the date/author line under a post card's title) also reads
-the same `$cardStyle` — a real, confirmed-not-theoretical contrast bug, not a defensive guess:
-its original `text-neutral-500`/`text-neutral-700` is legible on a plain white card but genuinely low
-contrast against a saturated `bold` card background, the same problem the title/excerpt/price text
-would have had before those were switched onto `--pkde-card-content`/`-accent`.
+**Post/product cards read `--pkde-card-background`/`-content`/`-accent`** (`app.css`'s `:root`, a plain white card by default) instead of hardcoded `white`/`neutral-950`. The `cardStyle` attribute ('white'/'tinted'/'bold') is still read, and 'tinted'/'bold' still add a `.pkde-card-tinted`/`.pkde-card-bold` marker class, but the kit no longer generates any rule for them (the editor no longer offers the setting): a site that wants them writes its own.
 
 **Category and Brand cards are two different partials, not one shared one with a mode flag** —
 `category-cards.blade.php` (Product Categories block, also on the seeded Categories page) overlays the

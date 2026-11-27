@@ -6,8 +6,7 @@
   // other consumer of this partial (the blog archive, front page, a plain
   // page's the_content()) doesn't pass one, so 'white' — no marker class,
   // the plain card look this always had — is the correct default there.
-  // See app.css's .pkde-section :where(article, ...) rule and
-  // docs/planning/themed-cards-reference.md for what the marker class does.
+  // See app.css's .pkde-section :where(article, ...) rule for what the marker class does.
   $cardStyle ??= 'white';
 @endphp
 

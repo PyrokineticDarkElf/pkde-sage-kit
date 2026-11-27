@@ -518,7 +518,7 @@ test('eyebrows carry the brand highlight (4.5:1, a step of the same hue where th
   const declared = run(sagePalette.map((c) => (c.name === 'slate' ? { ...c, styles: { eyebrow: 'blush-200' } } : c)));
   assert.equal(declared.status, 0, declared.stderr);
   assert.match(block(declared.css, '.is-style-brand-slate'), /--section-eyebrow: var\(--color-blush-200\);/);
-  assert.match(block(declared.css, '.has-card-theme-brand-slate') || declared.read('resources/css/generated/card-themes.css'), /--section-card-eyebrow/);
+  assert.match(block(declared.css, '.has-card-theme-brand-slate'), /--section-card-eyebrow/);
 });
 
 test('theme:check fails a declared eyebrow under 4.5:1 and a declared accent under 3:1, and every autofilled eyebrow and accent of a varied palette passes', () => {

@@ -193,24 +193,18 @@ It generates/updates six files:
   WordPress editor via `wordpressThemeJson()`.
 - **`resources/css/generated/section-themes.css`** — one re-themeable "section" per colour,
   `.theme-{name}`/`.theme-{alias}` — see [Section theming](section-theming.md).
-- **`resources/css/generated/card-themes.css`** — two opt-in card recolour variants per colour,
-  `.theme-{name} .pkde-card-tinted`/`.pkde-card-bold` — see
-  [`resources/blocks/README.md`](../resources/blocks/README.md)'s "Post/product cards can also go
-  beyond plain white" and "Section theme roles and styles" below for the full rationale. Tinted is
-  always the same colour as its own section, a shade lighter; Bold borrows whichever colour the
-  section's own `styles.card` points at (see below) wholesale.
+- **`card-themes.css` is no longer generated.** It held two opt-in card recolour variants per colour
+  (`.theme-{name} .pkde-card-tinted`/`.pkde-card-bold`) that no view, block or site used. A site that
+  still has the committed file and imports it keeps working; delete the import and the file.
 - **`resources/js/generated/theme-options.js`** and **`resources/generated/theme-options.php`** —
   the same `{value, label}` list (client-facing names like "Campaign Green", not raw slugs), once
-  for any themed block's `edit.jsx` (`THEME_OPTIONS`, imported by `hero/edit.jsx`, `cta/edit.jsx`,
-  and `hero-slide/edit.jsx`) and once for PHP (`bin/generate-demo-content.php`'s per-colour
-  Hero/CTA/Hero Slide demo sections). Before these existed, each themed block's editor UI
-  hardcoded its own `THEME_OPTIONS` array — correct only by coincidence for whatever colour count
-  the block happened to be written against, silently capped (6 generic `alpha`–`foxtrot` entries)
-  the moment a real palette had more colours than that. Any new block that adds a `theme` select
-  should import from `theme-options.js` rather than writing its own list, for the same reason.
+  for JavaScript and once for PHP (`bin/generate-demo-content.php`'s per-colour Hero/CTA/Hero Slide
+  demo sections). The block editors no longer offer a Section theme setting (a Section block's role
+  classes replace it); the `theme` attribute is still read by the blocks' `render.php`, so existing
+  pages keep their colours.
 
-`npm run theme:check` (from this theme's own root) verifies all five generated files (the three CSS
-files plus the two theme-options files) are actually in sync with `config/brand-palette.json` —
+`npm run theme:check` (from this theme's own root) verifies the generated files (the CSS
+files, the theme-options files and the PHP lists) are actually in sync with `config/brand-palette.json` —
 useful in CI or before a commit, since nothing else catches a hand-edited generated file or a
 config change nobody regenerated for.
 
@@ -278,8 +272,7 @@ and `card` is a plain `{colourName}-{step}` reference to an already-generated Ta
 `"black-950"` → `--color-black-950`) — there's no separate value vocabulary to learn beyond what
 `brand-tokens.css` already produces. `card` is the one pointer field: a bare colour *name* (no
 step), naming another entry in `colors[]` whose *entire* `styles` object gets borrowed, one hop,
-for this colour's `.pkde-card-bold` variant (`buildCardThemesCss()`) — it never chases whatever
-that colour's own `card` might in turn point to.
+for a card of this colour — it never chases whatever that colour's own `card` might in turn point to.
 
 **Computed once, left alone forever after.** The generator only ever fills in a `styles` object for
 a colour that doesn't have one yet — an existing one, however it got there (auto-computed last run,

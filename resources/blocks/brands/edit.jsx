@@ -1,21 +1,13 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl, TextControl, TextareaControl, Placeholder } from '@wordpress/components';
+import { PanelBody, RangeControl, TextControl, TextareaControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import metadata from './block.json';
-import { THEME_OPTIONS as GENERATED_THEME_OPTIONS } from '@generated/theme-options.js';
 import { ServerPreview } from '../../js/server-preview.jsx';
 
-// Generated fresh from the actual palette — see hero/edit.jsx's own comment
-// on this same import for why it's not a hardcoded list here.
-const THEME_OPTIONS = GENERATED_THEME_OPTIONS.map((option) => ({
-  value: option.value,
-  label: option.value ? option.label : __('Default', 'sage'),
-}));
-
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, theme } = attributes;
+  const { heading, description, count } = attributes;
   const blockProps = useBlockProps();
 
   return (
@@ -41,15 +33,6 @@ function Edit({ attributes, setAttributes }) {
             max={12}
             value={count}
             onChange={(value) => setAttributes({ count: value })}
-          />
-        </PanelBody>
-        <PanelBody title={__('Section theme', 'sage')}>
-          <SelectControl
-            label={__('Theme', 'sage')}
-            value={theme}
-            options={THEME_OPTIONS}
-            onChange={(value) => setAttributes({ theme: value })}
-            help={__('Re-skins this section’s background and text colours to match a palette colour.', 'sage')}
           />
         </PanelBody>
       </InspectorControls>

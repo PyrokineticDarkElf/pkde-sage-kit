@@ -13,7 +13,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const GENERATED = ['brand-tokens.css', 'section-themes.css', 'card-themes.css'];
+const GENERATED = ['brand-tokens.css', 'section-themes.css'];
 
 const plain = (text) => text.replace(/@theme(?: static)? \{/g, ':root {').replace(/^@source inline\(.*\);?$/gm, '');
 const familyOf = (font) => (typeof font === 'string' ? font : font?.family ?? '');

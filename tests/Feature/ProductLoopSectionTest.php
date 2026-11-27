@@ -23,7 +23,7 @@ it('gives the Product Loop block a section heading, description, "View all" link
         ->and($render)->toContain("\$GLOBALS['pkde_product_card_style'] = \$card_style;", "\$GLOBALS['pkde_product_card_style'] = null;")
         ->and(strpos($render, "= \$card_style;"))->toBeLessThan(strpos($render, 'do_shortcode($shortcode'))
         ->and(strpos($render, 'do_shortcode($shortcode'))->toBeLessThan(strpos($render, "= null;"))
-        ->and($edit)->toContain('heading', 'viewAll', 'cardStyle', 'THEME_OPTIONS');
+        ->and($edit)->toContain('heading', 'viewAll');
 });
 
 it('hides Recent Products and Best Selling Products from the inserter but keeps them registered', function () use ($root) {
