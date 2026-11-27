@@ -85,9 +85,19 @@ echo view('pkde-kit::partials.blocks.section-header', [
 // the card reads its style from this bridge (partials/blocks/product-grid.blade.php explains why); reset after, so it cannot leak into a later render
 $GLOBALS['pkde_product_card_style'] = $card_style;
 $GLOBALS['pkde_product_card_look'] = $tiles ? 'tiles' : '';
-echo do_shortcode($shortcode . ']');
+$products_html = do_shortcode($shortcode . ']');
 $GLOBALS['pkde_product_card_style'] = null;
 $GLOBALS['pkde_product_card_look'] = null;
+
+if ($loop_layout === 'rail' && str_contains($products_html, '<ul class="products')) {
+    // The row that scrolls is the same carousel as the People row (resources/js/carousel.js): the shop's wrapper is its viewport, the list its track, and the dots are made by the script
+    $products_html = preg_replace('/<div class="woocommerce /', '<div data-carousel-viewport class="woocommerce ', $products_html, 1);
+    $products_html = preg_replace('/<ul class="products/', '<ul data-carousel-track class="products', $products_html, 1);
+    $products_html = '<div class="pkde-products__carousel" data-carousel data-carousel-loop="false">' . $products_html
+        . '<div class="pkde-features__controls"><div class="pkde-features__dots" data-carousel-dots data-label="' . esc_attr__('Go to position', 'sage') . '"></div></div></div>';
+}
+
+echo $products_html;
 
 if ($tab_mode) {
     echo view('pkde-kit::partials.blocks.view-all-tab', ['url' => $view_all_url, 'label' => __('Shop all', 'sage')])->render();

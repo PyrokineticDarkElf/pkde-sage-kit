@@ -526,3 +526,7 @@
     color: var(--color-brand-700);
   }
 }
+
+/* WooCommerce prints a screen-reader-text span inside every add-to-cart button's card (the "describedby" text): without its own stylesheet it takes up room */
+.screen-reader-text { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; white-space: nowrap; }
+.screen-reader-text:focus { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; }

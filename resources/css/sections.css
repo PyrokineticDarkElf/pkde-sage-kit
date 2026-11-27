@@ -504,8 +504,15 @@
 .pkde-tai__mosaic .pkde-placeholder { height: 100%; aspect-ratio: auto; }
 .pkde-gallery--centered :is(h2, p:not(.pkde-tab-row)) { text-align: center; margin-inline: auto; }
 .pkde-gallery--contain img { object-fit: contain; }
-.pkde-gallery--contain .grid > div { padding: 0.75rem; background-color: var(--section-card-bg, #fff); box-shadow: 0 0 0 var(--pkde-border-thin, 1px) var(--section-card-border, transparent); } /* each logo in a white card */
-.pkde-gallery--contain .grid > div .pkde-placeholder { border-radius: calc(var(--pkde-radius-lg, 1rem) / 2); }
+.pkde-gallery--contain .grid > div {
+  --pkde-logo-radius: var(--pkde-radius-lg, 1rem);
+  --pkde-logo-pad: 0.75rem;
+  padding: var(--pkde-logo-pad);
+  border-radius: var(--pkde-logo-radius);
+  background-color: var(--section-card-bg, #fff);
+  box-shadow: 0 0 0 var(--pkde-border-thin, 1px) var(--section-card-border, transparent);
+} /* each logo in a white card */
+.pkde-gallery--contain .grid > div :is(.pkde-placeholder, img) { border-radius: max(0px, calc(var(--pkde-logo-radius) - var(--pkde-logo-pad))); } /* inner radius = outer radius - padding */
 .wp-block-sage-gallery .pkde-placeholder { height: 100%; aspect-ratio: auto; }
 /* feature grid: numbered steps and big numbers */
 .pkde-features--steps .pkde-features__grid { counter-reset: pkde-step; }
