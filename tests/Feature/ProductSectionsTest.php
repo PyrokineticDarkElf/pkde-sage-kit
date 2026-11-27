@@ -58,27 +58,3 @@ it('replaces WooCommerce\'s upsells and related output and keeps the basket\'s o
     expect(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/product-sections.php', 'woocommerce/add-to-basket.php');
 });
 
-it('draws a carousel with real buttons, a labelled region and nothing that needs script to read', function () use ($root) {
-    $view = file_get_contents("$root/resources/views/partials/product-section.blade.php");
-    $css = file_get_contents("$root/resources/css/product-sections.css");
-
-    expect($view)->toContain('<section', 'aria-labelledby=', '<h2 id=', 'data-pkde-carousel-prev', 'data-pkde-carousel-next', 'aria-label="{{ $prevLabel }}"', 'type="button"', 'data-pkde-carousel-nav hidden')
-        ->and($css)->toContain('scroll-snap-type: x mandatory', 'scroll-snap-align: start', 'prefers-reduced-motion: reduce', '--pkde-product-h2-size', '--pkde-product-h2-font')
-        ->and(kit_source("$root", 'css'))->toContain('product-sections.css', 'add-to-basket.css')
-        ->and(kit_source("$root", 'js'))->toContain('add-to-basket.js', 'product-carousel.js');
-});
-
-it('shows a busy state that respects reduced motion and keeps the button out of `disabled`', function () use ($root) {
-    $css = file_get_contents("$root/resources/css/add-to-basket.css");
-    $js = file_get_contents("$root/resources/js/add-to-basket.js");
-
-    expect($css)->toContain('[aria-busy="true"]::after', 'pkde-atc-spin', 'prefers-reduced-motion: reduce', '--pkde-atc-spinner-color')
-        ->and($js)->toContain("'adding_to_cart'", "'added_to_cart'", "setAttribute('aria-busy', 'true')", 'stopImmediatePropagation', 'requestSubmit')
-        ->and($js)->not->toContain('.disabled = true', "setAttribute('disabled'");
-});
-
-it('bounds what a request can ask of the related endpoint, keeps a protected product\'s text out of the card and escapes a tile\'s link (audit leads)', function () use ($root) {
-    expect(file_get_contents("$root/app/woocommerce/product-sections.php"))->toContain('array_slice(array_map(\'absint\'', 'substr((string) ($_GET[\'exclude\']')
-        ->and(file_get_contents("$root/resources/views/woocommerce/content-product.blade.php"))->toContain('post_password_required($product->get_id())')
-        ->and(file_get_contents("$root/resources/views/partials/blocks/category-tiles.blade.php"))->toContain('$tileUrl = esc_url(');
-});

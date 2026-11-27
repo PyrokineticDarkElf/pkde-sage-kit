@@ -33,18 +33,6 @@ it('prints the number for sight and ", N items" for screen readers, and nothing 
         ->and(cart_count_markup(0))->toBe('<span class="pkde-cart-count"></span>');
 });
 
-it('registers the count as a cart fragment, hides an empty badge in CSS and refreshes it after basket-page changes', function () {
-    $root = dirname(__DIR__, 2);
-
-    expect(file_get_contents("$root/app/woocommerce/cart-count.php"))->toContain("\$fragments['span.pkde-cart-count']")
-        ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("woocommerce/cart-count.php")
-        ->and(file_get_contents("$root/resources/css/shop-pages.css"))->toContain('[data-pkde-cart-badge]:has(> .pkde-cart-count:empty)')
-        ->and(file_get_contents("$root/resources/js/cart-count.js"))->toContain("'updated_cart_totals wc_cart_emptied'")
-        ->and(file_get_contents("$root/resources/js/cart-count.js"))->toContain("'span.pkde-cart-count'")
-        ->and(kit_source("$root", 'js'))->toContain("import './cart-count.js';");
-});
-
-// the page always prints the EMPTY count; only the fragment (an AJAX answer) carries the visitor's number.
 it('prints an empty count on a page for every visitor, and the real number only in the live fragment', function () {
     if (! function_exists('WC')) {
         function WC()

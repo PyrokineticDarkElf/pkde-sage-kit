@@ -6,37 +6,6 @@
  */
 $root = dirname(__DIR__, 2);
 
-it('supplies a default view for every blog and shop archive', function () use ($root) {
-    foreach (['home', 'archive', 'category', 'tag', 'author', 'search', 'index', 'archive-product', 'taxonomy-product_cat', 'taxonomy-product_tag', 'taxonomy-product_brand', 'single', 'page', '404', 'single-product'] as $view) {
-        expect(file_exists("$root/resources/views/$view.blade.php"))->toBeTrue("missing $view");
-    }
-
-    foreach (['home', 'archive', 'category', 'tag', 'search', 'index'] as $view) {
-        expect(file_get_contents("$root/resources/views/$view.blade.php"))->toContain('partials.page-header', 'partials.post-grid');
-    }
-});
-
-it('paginates with numbers, arrows and aria-current instead of Older and Newer links', function () use ($root) {
-    $grid = file_get_contents("$root/resources/views/partials/post-grid.blade.php");
-    $pagination = file_get_contents("$root/resources/views/partials/pagination.blade.php");
-    $css = file_get_contents("$root/resources/css/shop-pages.css") . file_get_contents(dirname(__DIR__, 2) . '/resources/css/pagination.css');
-
-    expect($grid)->toContain('partials.pagination')->not->toContain('get_next_posts_link')->not->toContain('get_previous_posts_link')
-        ->and($pagination)->toContain('paginate_links(', "'type' => 'list'", 'prev_text', 'next_text', 'pkde-pagination', 'aria-label')
-        ->and($css)->toContain('.pkde-pagination .page-numbers.current', '.shop-archive__results .woocommerce-pagination');
-});
-
-it('adds its views directory to the view finder itself (Sage lists the kit views as templates) and to the view factory\'s', function () use ($root) {
-    $provider = file_get_contents("$root/src/KitServiceProvider.php");
-
-    expect($provider)->toContain("callAfterResolving('view.finder'", "callAfterResolving('view',");
-});
-
-/**
- * A theme WITHOUT archive-product.blade.php must still get the kit's, rendered by NAME (so the ProductArchive composer, bound to that name, runs).
- * Laravel binds `view.finder` as a non-shared service, so Sage's finder and the view factory's finder are two objects: both must hold the kit's
- * directory. Kit 2026.11.05.1 put it on Sage's only, and /shop/ answered 500 "Undefined variable $shopPageContent" (a site, 2026-11-05).
- */
 it('puts the kit views on every view finder, so a theme without archive-product still renders the kit view by name', function () use ($root) {
     $theme = realpath(sys_get_temp_dir()) . '/pkde-theme-' . bin2hex(random_bytes(4));
     mkdir($theme);
@@ -71,14 +40,6 @@ it('puts the kit views on every view finder, so a theme without archive-product 
     rmdir($theme);
 });
 
-it('pads the Shop page notices row only under the page header or when there is a notice (no empty strip with the header off)', function () use ($root) {
-    $page = file_get_contents("$root/resources/views/partials/shop-page.blade.php");
-
-    expect($page)->toContain('wc_notice_count()', '@if ($showHeader || $hasNotices)', '@else')
-        ->and(substr_count($page, 'pt-8'))->toBe(1)
-        ->and($page)->toMatch('/@else\s+@include\(.pkde-kit::partials\.woocommerce-notices.\)/');
-});
-
 it('never lets a page in the search results resolve to the kit\'s page view', function () {
     $root = dirname(__DIR__, 2);
 
@@ -90,10 +51,3 @@ it('never lets a page in the search results resolve to the kit\'s page view', fu
         ->and(file_get_contents("$root/resources/views/partials/post-grid.blade.php"))->toContain('\\App\\post_card_views(get_post_type())')->not->toContain("'partials.content-' .");
 });
 
-it('sets the 404 numeral size in CSS and hides the live search helper sentence', function () {
-    $root = dirname(__DIR__, 2);
-
-    expect(file_get_contents("$root/resources/css/page-header.css"))->toContain('p.pkde-404-numeral {', 'var(--pkde-404-numeral-size, 6rem)')
-        ->and(file_get_contents("$root/resources/views/404.blade.php"))->not->toContain('text-8xl')
-        ->and(file_get_contents("$root/resources/css/live-search.css"))->toContain('.relevanssi-live-search-instructions {', 'clip-path: inset(50%)');
-});

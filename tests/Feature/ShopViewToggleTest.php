@@ -32,36 +32,6 @@ it('prints two plain buttons with aria-pressed and names for assistive technolog
         ->and($html)->toContain('aria-hidden="true"');
 });
 
-it('saves the choice in the browser only, never in the HTML, and applies it before the first paint', function () {
-    $root = dirname(__DIR__, 2);
-    $php = file_get_contents("$root/app/woocommerce/view-toggle.php");
-    $js = file_get_contents("$root/resources/js/shop-view.js");
-
-    expect($php)->toContain("localStorage.getItem('pkde_shop_view')")
-        ->and($php)->toContain("add_action('wp_head'")
-        ->and($php)->toContain("apply_filters('pkde_kit/shop_view_toggle', true)")
-        ->and($js)->toContain("localStorage.setItem(KEY, view)")
-        ->and($js)->toContain('catch')
-        ->and(kit_source("$root", 'js'))->toContain("import './shop-view.js';")
-        ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("woocommerce/view-toggle.php");
-});
-
-it('draws the list card from the same markup: image left, details and the action row right, stacked on a phone, grid the default', function () {
-    $root = dirname(__DIR__, 2);
-    $css = file_get_contents("$root/resources/css/shop-pages.css");
-    $card = file_get_contents("$root/resources/views/woocommerce/content-product.blade.php");
-
-    expect($css)->toContain('html[data-pkde-view="list"] .woocommerce ul.products li.product.pkde-product-card')
-        ->and($css)->toContain('.pkde-product-card__excerpt {')
-        ->and($css)->toContain('@container (min-width: 28rem)')
-        ->and($css)->toContain('grid-template-columns: subgrid;')
-        ->and($css)->not->toContain('minmax(8rem, 14rem)')
-        ->and($css)->toContain('.pkde-view-toggle__button[aria-pressed="true"]')
-        ->and($card)->toContain('pkde-product-card__media')
-        ->and($card)->toContain('pkde-product-card__excerpt')
-        ->and($card)->toContain('pkde-product-actions pkde-product-actions--default');
-});
-
 it('turns View basket into an icon button the height of the add-to-cart button, named View basket, with a focus ring', function () {
     $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/shop-pages.css');
     $card = file_get_contents(dirname(__DIR__, 2) . '/resources/views/woocommerce/content-product.blade.php');

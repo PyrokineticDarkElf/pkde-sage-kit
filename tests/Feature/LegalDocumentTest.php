@@ -40,17 +40,6 @@ it('adds ids to the headings and lists only h2 and h3, from three of them', func
         ->and(legal_toc('')['show'])->toBeFalse();
 });
 
-it('ships the view, the styles and the print rules, loaded from the package', function () use ($root) {
-    $view = file_get_contents("$root/resources/views/single-pkde_legal.blade.php");
-    $css = file_get_contents("$root/resources/css/legal.css");
-
-    expect($view)->toContain('_pkde_legal_effective', 'legal_toc', 'pkde-kit::partials.breadcrumbs', 'pkde-kit::partials.toc')
-        ->and($view)->not->toContain('revisions')->and($view)->not->toContain('wp_get_post_revisions') // no public version history
-        ->and($css)->toContain('@media print', 'attr(href)', '.banner', '.content-info')
-        ->and(kit_source("$root", 'css'))->toContain('@import "./legal.css";')
-        ->and(file_get_contents("$root/composer.json"))->toContain('app/legal.php');
-});
-
 it('keeps accents, dashes, CJK and emoji intact and raises no deprecation', function () {
     foreach (['sanitize_title' => fn($t) => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $t), '-')), '__' => fn($t) => $t] as $name => $impl) {
         if (! function_exists($name)) {

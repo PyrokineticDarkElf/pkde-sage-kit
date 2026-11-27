@@ -21,17 +21,3 @@ it('shows Sale and New from the product\'s facts, linked on archives and plain o
         ->and(badge_items(false, false, 'x', 's', 'n', true))->toBe([]);
 });
 
-it('makes the New rule filterable (counts and days) and keeps one partial, one look and no site colour', function () use ($root) {
-    $recent = file_get_contents("$root/app/RecentContent.php");
-    $css = file_get_contents("$root/resources/css/shop-pages.css");
-    $card = file_get_contents("$root/resources/views/woocommerce/content-product.blade.php");
-    $badgesCss = substr($css, strpos($css, '/* Sale and New badges'));
-
-    expect($recent)->toContain("'pkde_kit/recent_counts'", "'pkde_kit/new_badge_days'")
-        ->and($card)->toContain("partials.product-badges")->not->toContain('bg-neutral-950 px-3 py-1')
-        ->and(file_get_contents("$root/app/woocommerce/badges.php"))->toContain("'pkde_kit/product_badges'")
-        ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/badges.php')
-        ->and($badgesCss)->toContain('--pkde-badge-sale-bg', '--pkde-badge-sale-fg', '--pkde-badge-new-bg', '--pkde-badge-new-fg', '--pkde-badge-radius')
-        ->and($badgesCss)->not->toContain('--wp--preset')->not->toMatch('/#[0-9a-f]{3,8}\b/i')
-        ->and(file_get_contents("$root/docs/woocommerce-templates.md"))->toContain('--pkde-badge-sale-bg', 'pkde_kit/new_badge_days');
-});

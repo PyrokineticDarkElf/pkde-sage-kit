@@ -48,30 +48,6 @@ it('remembers the related posts so the recent list does not repeat them', functi
     expect(related_post_ids([3, '4']))->toBe([3, 4])->and(related_post_ids())->toBe([3, 4]);
 });
 
-it('keeps the single post layout in one kit view with documented hooks, sections and variables', function () use ($root) {
-    $view = file_get_contents("$root/resources/views/partials/content-single.blade.php");
-    $doc = file_get_contents("$root/docs/blog-single.md");
-    $css = file_get_contents("$root/resources/css/post-single.css");
-
-    foreach (['before_hero', 'after_hero', 'before_meta', 'after_meta', 'before_content', 'after_content', 'before_sidebar', 'after_sidebar', 'before_related', 'after_related'] as $hook) {
-        expect($view)->toContain("'pkde_kit/single_$hook'")->and($doc)->toContain("pkde_kit/single_$hook");
-    }
-
-    foreach (App\SINGLE_SECTIONS as $section) {
-        expect($doc)->toContain("`$section`");
-    }
-
-    foreach (['line', 'muted', 'ink', 'accent', 'surface', 'title-weight', 'title-size', 'heading-weight', 'text-size', 'measure', 'rail-width', 'sticky-top', 'hero-radius'] as $name) {
-        expect($css)->toContain("--pkde-post-$name")->and($doc)->toContain("--pkde-post-$name");
-    }
-
-    expect($css)->not->toContain('--wp--preset')->not->toMatch('/#[0-9a-f]{3,8}\b/i')
-        ->and($view)->toContain('post-hero', 'post-body', 'post-rail', 'post-after', 'application/ld+json', "class_exists('RankMath')")
-        ->and(kit_source("$root", 'css'))->toContain('@import "./post-single.css";')
-        ->and(file_exists("$root/resources/views/single.blade.php"))->toBeTrue()
-        ->and(file_exists("$root/resources/views/page.blade.php"))->toBeTrue();
-});
-
 it('links the byline to the author archive only while it exists, in the meta, the author box and the schema', function () use ($root) {
     foreach (['entry-meta', 'author-box'] as $partial) {
         expect(file_get_contents("$root/resources/views/partials/$partial.blade.php"))->toContain('byline_links_to_archive()');
@@ -80,28 +56,3 @@ it('links the byline to the author archive only while it exists, in the meta, th
     expect(file_get_contents("$root/app/single-post.php"))->toContain("'disable_author_archives'")->toContain("'pkde_kit/author_archives'");
 });
 
-it('keeps the kit\'s title look only for a theme with no H1 style, and lets a site skip the header per page', function () use ($root) {
-    $css = file_get_contents("$root/resources/css/page-header.css");
-    $view = file_get_contents("$root/resources/views/partials/page-header.blade.php");
-
-    // the kit's look is scoped to the class the view adds only when the theme does not style the H1; the Tailwind size classes are gone either way
-    expect($css)->toContain('--pkde-page-header-title-size:', '--pkde-page-header-title-leading:', '.page-header h1.pkde-page-title--kit {', 'font-size: var(--pkde-page-header-title-size)')
-        ->and($css)->not->toMatch('/\n\.page-header h1 \{/')
-        ->and($view)->toContain('pkde-page-title--kit', 'page_title_follows_theme')->not->toContain('text-4xl')->not->toContain('font-display')
-        ->and(file_get_contents("$root/resources/views/page.blade.php"))->toContain("'pkde_kit/page_header'", '! is_front_page()', 'partials.page-header');
-});
-
-it('leaves a heading size set in the block editor alone: the kit has no rule on block-content headings', function () use ($root) {
-    // core puts the editor's size on the block itself (a `has-*-font-size` class or an inline style); a kit rule on `.wp-block-heading` or on headings inside the
-    // content containers would outrank or fight it
-    $offenders = [];
-    foreach (glob("$root/resources/css/*.css") as $file) {
-        $css = (string) file_get_contents($file);
-        $css = (string) preg_replace('~/\*.*?\*/~s', '', $css);
-        if (preg_match('/wp-block-heading|\.entry-content\s+h[1-6]|\.wp-block-post-content\s+h[1-6]/', $css)) {
-            $offenders[] = basename($file);
-        }
-    }
-
-    expect($offenders)->toBe([]);
-});

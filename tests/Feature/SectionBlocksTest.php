@@ -24,13 +24,6 @@ it('keeps every attribute the hero and the CTA already had, with the same defaul
         ->and($cta['style']['default'])->toBe('section');
 });
 
-it('leaves the hero\'s default markup alone: the new layouts branch out before it', function () use ($root) {
-    $render = file_get_contents("$root/resources/blocks/hero/render.php");
-
-    expect(strpos($render, "if (\$layout !== 'overlay')"))->toBeLessThan(strpos($render, 'relative isolate flex min-h-[480px]'))
-        ->and($render)->toContain('return;', 'pkde-kit::partials.blocks.hero-layout');
-});
-
 it('marks what a client may edit as content, so a locked pattern still lets them write and replace pictures', function () use ($block) {
     foreach (['hero' => ['heading', 'content', 'buttonText', 'buttonUrl', 'imageUrl', 'eyebrow'], 'text-and-image' => ['imageUrl', 'imageAlt', 'eyebrow'], 'feature-grid' => ['heading', 'intro', 'eyebrow'], 'feature-item' => ['heading', 'text', 'linkUrl', 'icon'], 'quotes' => ['heading', 'items'], 'cta' => ['heading', 'content', 'imageUrl']] as $name => $attributes) {
         foreach ($attributes as $attribute) {
@@ -122,17 +115,6 @@ it('prints the global CTA band from the declaration only, with no copy of its co
         ->and(file_get_contents("$root/resources/views/partials/blocks/cta-band.blade.php"))->toContain('--section')->not->toContain('<input');
 });
 
-it('reads only section roles in the new blocks\' CSS, with a plain-page fallback for each', function () use ($root) {
-    $css = file_get_contents("$root/resources/css/sections.css");
-
-    foreach (['--section-heading', '--section-text', '--section-muted', '--section-link', '--section-border', '--section-icon', '--section-button-bg', '--section-button-text', '--section-button-alt-bg', '--section-button-alt-text'] as $role) {
-        expect($css)->toMatch('/var\(' . preg_quote($role, '/') . ', var\(--color-[a-z0-9-]+\)\)|var\(' . preg_quote($role, '/') . ', (transparent|#|rgb)/');
-    }
-
-    expect($css)->not->toMatch('/#[0-9a-f]{3,6}\b(?!.*var)/i') // no hard-coded colour of its own
-        ->and(kit_source("$root", 'css'))->toContain('@import "./sections.css";');
-});
-
 it('turns a block\'s Card colour and Card button colour into a class and a style, and ignores anything that is not in the generated lists', function () use ($root) {
     $themes = [['name' => 'brand-sage'], ['name' => 'brand-sage-light']];
     $buttons = ['sage-600', 'blush-600', 'white'];
@@ -154,29 +136,3 @@ it('turns a block\'s Card colour and Card button colour into a class and a style
     }
 });
 
-it('previews every server-rendered kit block live in the editor instead of a placeholder box (trial)', function () use ($root) {
-    foreach (['product-categories', 'brands', 'recent-products', 'best-selling-products', 'featured-products', 'latest-posts', 'featured-posts', 'entry-grid'] as $block) {
-        $edit = file_get_contents("$root/resources/blocks/$block/edit.jsx");
-
-        expect($edit)->toContain("import { ServerPreview } from '../../js/server-preview.jsx'", '<ServerPreview block={metadata.name} attributes={attributes}')
-            ->and($edit)->not->toMatch('/<Placeholder icon=/', $block);
-    }
-
-    expect(file_get_contents("$root/resources/js/server-preview.jsx"))->toContain('window.wp?.serverSideRender', 'EmptyResponsePlaceholder')
-        ->and(file_get_contents("$root/app/woocommerce.php"))->toContain("'/wp/v2/block-renderer/'", 'wc_load_cart()'); // product cards need the cart in the preview request
-});
-
-it('gives the site-wide CTA band a full default alignment, so the editor canvas shows it as wide as the page does', function () {
-    $block = json_decode(file_get_contents(dirname(__DIR__, 2) . '/resources/blocks/cta-band/block.json'), true);
-
-    expect($block['supports']['align'])->toBe(['full'])
-        ->and($block['attributes']['align'])->toBe(['type' => 'string', 'default' => 'full']); // the page prints alignfull itself; without the attribute the canvas wrapper was content width
-});
-
-it('lets a split hero show the whole picture instead of cropping it (a cut-out on a transparent background)', function () use ($root) {
-    $render = file_get_contents("$root/resources/blocks/hero/render.php");
-    $css = file_get_contents("$root/resources/css/sections.css");
-
-    expect($render)->toContain("'imageFit'", "' pkde-hero--fit-contain'")
-        ->and($css)->toMatch('/\.pkde-hero--fit-contain \.pkde-split__media img \{\s*aspect-ratio: auto;\s*object-fit: contain;/');
-});

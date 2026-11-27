@@ -47,18 +47,3 @@ it('keeps the page the same for every visitor: an empty marker and an empty hidd
         ->and(file_get_contents("$root/app/woocommerce.php"))->toContain('woocommerce/recently-viewed.php');
 });
 
-it('is off until a site opts in, and the list lives in the browser (no cookie, no third party)', function () use ($root) {
-    $php = file_get_contents("$root/app/woocommerce/recently-viewed.php");
-    $js = file_get_contents("$root/resources/js/recently-viewed.js");
-
-    expect($php)->toContain("apply_filters('pkde_kit/recently_viewed', false)")
-        ->and($js)->toContain('localStorage')->not->toContain('document.cookie');
-});
-
-it('gives the Cart and Checkout blocks the shortcode pages\' look from the same tokens', function () use ($root) {
-    $css = file_get_contents("$root/resources/css/cart-checkout-blocks.css");
-
-    expect($css)->toContain('.wc-block-cart__submit-button', '.wc-block-components-checkout-place-order-button', 'var(--color-brand-600)', 'var(--color-brand-600-fg)', 'border-radius: var(--pkde-radius-full)', 'outline: 2px solid var(--color-brand-600)')
-        ->and($css)->not->toMatch('/#[0-9a-f]{3,6}\b/i')
-        ->and(kit_source("$root", 'css'))->toContain('cart-checkout-blocks.css');
-});

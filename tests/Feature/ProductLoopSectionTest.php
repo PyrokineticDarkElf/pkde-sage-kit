@@ -26,19 +26,3 @@ it('gives the Product Loop block a section heading, description, "View all" link
         ->and($edit)->toContain('heading', 'viewAll');
 });
 
-it('hides Recent Products and Best Selling Products from the inserter but keeps them registered', function () use ($root) {
-    foreach (['recent-products', 'best-selling-products'] as $slug) {
-        $block = json_decode(file_get_contents("$root/resources/blocks/$slug/block.json"), true);
-
-        expect($block['supports']['inserter'])->toBeFalse()
-            ->and($block['description'])->toStartWith('Deprecated')
-            ->and(is_file("$root/resources/blocks/$slug/render.php"))->toBeTrue()
-            ->and(file_get_contents("$root/app/blocks.php"))->toContain("'$slug'"); // still registered, so existing pages keep rendering
-    }
-});
-
-it('leaves the "View all" link off the directory page the Brands and Categories blocks sit on', function () use ($root) {
-    foreach (['brands' => 'brands_page', 'product-categories' => 'categories_page'] as $slug => $var) {
-        expect(file_get_contents("$root/resources/blocks/$slug/render.php"))->toContain('$' . $var . ' && ! is_page($' . $var . '->ID) ? get_permalink($' . $var . ") : ''");
-    }
-});

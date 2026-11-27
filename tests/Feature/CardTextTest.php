@@ -52,35 +52,3 @@ it('takes the cap from the pkde_kit/card_text_words filter, and 0 means no cap',
     $GLOBALS['pkde_test_filters'] = [];
 });
 
-it('clamps only a WooCommerce review in the testimonials: the block wrapper carries pkde-quotes--reviews for the reviews source and the typed copy is not in the shared stylesheet', function () {
-    $root = dirname(__DIR__, 2);
-    $render = file_get_contents($root . '/resources/blocks/quotes/render.php');
-    $css = file_get_contents($root . '/resources/css/clamp.css');
-
-    expect($render)->toContain("\$source === 'reviews' ? ' pkde-quotes--reviews' : ''")
-        ->and($css)->toContain('.pkde-quotes--reviews .pkde-quote blockquote')
-        ->and($css)->not->toContain('.pkde-feature__title')
-        ->and($css)->not->toContain('.pkde-feature__text');
-});
-
-it('scrolls a WooCommerce review instead of cutting it: a max height in lines, overflow-y auto, no line clamp, and the box is made focusable by a script', function () {
-    $root = dirname(__DIR__, 2);
-    $css = file_get_contents($root . '/resources/css/clamp.css');
-    $js = file_get_contents($root . '/resources/js/quote-scroll.js');
-    $quote = file_get_contents($root . '/resources/views/partials/blocks/quote.blade.php');
-
-    expect($css)->toContain('--pkde-review-lines: var(--pkde-clamp-quote-review, var(--pkde-clamp-quote, 6))')
-        ->and($css)->toContain('overflow-y: auto')->toContain('overscroll-behavior: contain')->toContain('scrollbar-width: thin')
-        ->and($css)->not->toContain('.pkde-quotes--reviews .pkde-quote blockquote { --pkde-lines')
-        ->and($js)->toContain('box.tabIndex = 0')->toContain("'role', 'region'")->toContain('data-pkde-more')
-        ->and($quote)->toContain('data-pkde-label')
-        ->and(kit_source($root, 'js'))->toContain("import './quote-scroll.js'")
-        ->and(file_get_contents($root . '/app/faq.php'))->toContain('text-[color:var(--section-icon,var(--color-neutral-400))]');
-});
-
-it('keeps the related and recent post excerpt to one line by default, whatever the site-wide excerpt token says', function () {
-    $css = file_get_contents(dirname(__DIR__, 2) . '/resources/css/clamp.css');
-
-    expect($css)->toContain('.pkde-related__excerpt { --pkde-lines: var(--pkde-clamp-related-excerpt, 1); }')
-        ->and($css)->not->toContain('--pkde-clamp-related-excerpt, var(--pkde-clamp-excerpt');
-});

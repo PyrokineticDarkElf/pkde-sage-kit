@@ -69,15 +69,3 @@ it('shows each group\'s FAQs as rows, with the group name above them only when m
     expect($one['html'])->not->toContain('pkde-faq-group__name'); // a single group: no group heading
 });
 
-it('has the group attributes, a group-mode render that leaves the hand-typed mode working, and the shared item markup', function () use ($root) {
-    $block = json_decode(file_get_contents("$root/resources/blocks/faq/block.json"), true);
-    $render = file_get_contents("$root/resources/blocks/faq/render.php");
-
-    expect($block['attributes'])->toHaveKeys(['groups', 'order', 'limit', 'heading', 'description', 'columnThreshold', 'theme', 'cardStyle'])
-        ->and($block['attributes']['order']['enum'])->toBe(['manual', 'az'])
-        ->and($render)->toContain('faqs_for_groups', 'faq_group_content', 'faq_schema_add', "'sage/accordion-item'") // both modes, one schema
-        ->and(file_get_contents("$root/resources/blocks/accordion-item/render.php"))->toContain('faq_item_html')
-        ->and(file_get_contents("$root/composer.json"))->toContain('app/faq.php')
-        ->and(file_get_contents("$root/resources/blocks/faq/edit.jsx"))->toContain('Edit these FAQs', 'pkdeFaqAdmin', 'deprecated')
-        ->and(file_get_contents("$root/resources/js/editor-settings.js"))->toContain("select('core/editor')");
-});

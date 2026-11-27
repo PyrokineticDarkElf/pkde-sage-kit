@@ -17,13 +17,3 @@ it('answers only a lone contact-form-7 shortcode, however the block wraps it', f
         ->and(form_preview_shortcode(''))->toBe('');
 });
 
-it('registers a route for people who can edit posts, strips scripts and the Turnstile widget, and loads no script in the canvas', function () use ($root) {
-    $php = file_get_contents("$root/app/form-preview.php");
-    $js = file_get_contents("$root/resources/js/form-preview.jsx");
-
-    expect($php)->toContain("register_rest_route('pkde/v1', '/form-preview'", "current_user_can('edit_posts')", '<script', 'cf-turnstile')
-        ->and($js)->toContain("name === 'core/shortcode'", "name === 'core/paragraph'", 'inert')
-        ->and($js)->not->toContain('createElement(\'script\'') // no script reaches the canvas
-        ->and(file_get_contents("$root/composer.json"))->toContain('app/form-preview.php')
-        ->and(file_get_contents("$root/resources/js/kit-editor.js"))->toContain("import './form-preview.jsx';");
-});

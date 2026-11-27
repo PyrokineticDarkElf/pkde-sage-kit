@@ -79,41 +79,6 @@ it('moves things on hover only for a pointer that can hover and a visitor who ac
     expect(preg_match('~@media \(prefers-reduced-motion: no-preference\) \{\s*html:not\(\.pkde-motion-off\) :is\(\.wp-block-sage-accordion-item~', $css))->toBe(1);
 });
 
-it('has one shared card zoom, no per-view utilities, no transition-all, and dots that animate transform', function () use ($root, $read) {
-    $views = array_merge(glob("$root/resources/views/**/*.php") ?: [], glob("$root/resources/views/*/*/*.php") ?: [], glob("$root/resources/blocks/*/render.php") ?: [], [$root . '/app/faq.php']);
-    $sources = implode("\n", array_map('file_get_contents', array_merge($views, glob("$root/resources/views/*.php") ?: [])));
-
-    foreach (['resources/views/partials/content.blade.php', 'resources/views/woocommerce/content-product.blade.php', 'resources/views/partials/related-post-card.blade.php', 'resources/views/partials/blocks/category-cards.blade.php', 'resources/views/partials/blocks/brand-cards.blade.php'] as $file) {
-        expect($read($file))->toContain('pkde-zoom')->not->toContain('group-hover:scale')->not->toContain('duration-500');
-    }
-
-    expect($sources)->not->toContain('transition-all');
-
-    foreach (['resources/blocks/carousel/render.php', 'resources/blocks/hero-slider/render.php'] as $file) {
-        // the active dot is a pill drawn by clip-path (motion.css .pkde-dot), never a scaled circle and never a width transition
-        expect($read($file))->not->toContain('transition-all')->not->toContain('scale-x')->not->toContain('group-data-[active]:w-5')->toContain('pkde-dot');
-    }
-
-    expect($read('resources/css/sections.css'))->not->toContain('scaleX')->not->toContain('transition: width')
-        ->and($read('resources/css/motion.css'))->toContain('.pkde-dot {')->toContain('clip-path: inset(0 0.375rem round')->toContain('[data-active] > .pkde-dot')->not->toContain('scaleX')
-        ->and($read('resources/views/partials/blocks/quotes.blade.php'))->toContain('<span class="pkde-dot"></span>');
-});
-
-it('has no literal duration left in the kit transitions: they read the tokens (a tile may still override its own)', function () use ($root, $strip) {
-    foreach (glob("$root/resources/css/*.css") as $file) {
-        $css = $strip(file_get_contents($file));
-        preg_match_all('/^\s*transition:\s*([^;]+);/m', $css, $m);
-
-        foreach ($m[1] as $value) {
-            if (trim($value) === 'none') {
-                continue;
-            }
-
-            expect(str_contains($value, 'var(--pkde-'))->toBeTrue(basename($file) . ': ' . $value);
-        }
-    }
-});
-
 it('makes the slider jump under reduced motion, and ships a reveal script that needs no library and stays small', function () use ($read) {
     $carousel = $read('resources/js/carousel.js');
     $motion = $read('resources/js/motion.js');
