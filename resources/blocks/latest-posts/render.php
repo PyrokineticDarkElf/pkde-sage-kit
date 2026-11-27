@@ -83,7 +83,9 @@ $posts_layout = in_array($attributes['layout'] ?? 'cards', ['cards', 'feature', 
 // the Panel layout puts "View all" under the grid, centred, instead of beside the heading
 $view_all_under = $posts_layout === 'panel' && ! empty($view_all_url) && $source !== 'manual';
 $header_view_all = $view_all_under ? null : $view_all_url;
-$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}"))));
+// Panel layout option: the "View all" tab hangs from the section's bottom edge
+$pinned = $view_all_under && ! empty($attributes['pinViewAll']);
+$wrapper_attributes = get_block_wrapper_attributes(\App\card_wrapper_args($attributes, trim(\App\pkde_loop_theme_classes($theme) . ($posts_layout === 'cards' ? '' : " pkde-posts pkde-posts--{$posts_layout}" . ($pinned ? ' pkde-posts--pinned' : '')))));
 ?>
 <div <?php echo $wrapper_attributes; ?>>
     <?php echo \App\pkde_loop_theme_content_open($theme); ?>

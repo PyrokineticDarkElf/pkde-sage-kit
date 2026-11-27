@@ -68,6 +68,10 @@
         "panel"
       ],
       "default": "cards"
+    },
+    "pinViewAll": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

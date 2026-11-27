@@ -1,6 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, SelectControl, TextControl, TextareaControl } from '@wordpress/components';
+import { PanelBody, RangeControl, SelectControl, ToggleControl, TextControl, TextareaControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
@@ -9,7 +9,7 @@ import { CardColourPanel } from '../../js/card-colour-panel.jsx';
 import { ServerPreview } from '../../js/server-preview.jsx';
 
 function Edit({ attributes, setAttributes }) {
-  const { heading, description, count, postType, categoryId, layout, source = 'latest' } = attributes;
+  const { heading, description, count, postType, categoryId, layout, pinViewAll, source = 'latest' } = attributes;
   const blockProps = useBlockProps();
 
   const categories = useSelect(
@@ -62,6 +62,9 @@ function Edit({ attributes, setAttributes }) {
             onChange={(value) => setAttributes({ count: value })}
           />
           <SelectControl label={__('Layout', 'sage')} value={layout || 'cards'} options={[{ value: 'cards', label: __('Cards', 'sage') }, { value: 'feature', label: __('One large post beside a list', 'sage') }, { value: 'list', label: __('Compact dated list', 'sage') }, { value: 'panel', label: __('Picture with a coloured panel: title, text, author', 'sage') }]} onChange={(value) => setAttributes({ layout: value })} />
+          {layout === 'panel' && (
+            <ToggleControl label={__('Pin "View all" to the bottom of the section', 'sage')} checked={!!pinViewAll} onChange={(value) => setAttributes({ pinViewAll: value })} />
+          )}
           <SelectControl
             label={__('Post type', 'sage')}
             value={postType}

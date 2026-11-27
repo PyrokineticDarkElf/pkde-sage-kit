@@ -233,3 +233,16 @@
   text-transform: uppercase;
   text-decoration: none;
 }
+
+/* Panel layout, "View all" pinned: the tab hangs from the section's bottom edge in the card colours (the section loses its bottom padding) */
+.wp-block-sage-section.wp-block-sage-section:has(.pkde-posts--pinned) { padding-bottom: 0; }
+.pkde-posts--pinned .pkde-posts__more { margin-bottom: 0; }
+.pkde-posts--pinned .pkde-posts__more { margin-top: 3rem; line-height: 0; }
+.pkde-posts--pinned .pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab.pkde-posts__tab {
+  border-radius: 1rem 1rem 0 0;
+  border: 0;
+  padding: 1rem 2.25rem;
+  line-height: 1.4;
+  background: var(--section-card-bg, #fff);
+  color: var(--section-card-heading, inherit);
+}
