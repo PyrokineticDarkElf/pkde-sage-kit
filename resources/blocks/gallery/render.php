@@ -109,7 +109,6 @@ if ($row && str_contains($pictures, '<div class="')) {
     // The row that loops is the same carousel as the other rows (resources/js/carousel.js): a viewport around the grid, the grid its track. It goes round, and moves by itself when Autoplay is on.
     $pictures = '<div class="pkde-gallery__carousel" data-carousel data-carousel-loop="true" data-carousel-autoplay="' . (! empty($attributes['autoplay']) ? 'true' : 'false') . '" data-carousel-autoplay-delay="3000"><div class="pkde-gallery__viewport" data-carousel-viewport>'
         . preg_replace('/<div class="((?:mt-6 )?)grid /', '<div data-carousel-track class="$1grid ', $pictures, 1) . '</div>'
-        . (! empty($attributes['autoplay']) ? '<div class="pkde-features__controls"><button type="button" class="pkde-features__pause" data-carousel-autoplay-toggle data-label-pause="' . esc_attr__('Pause the slideshow', 'sage') . '" data-label-play="' . esc_attr__('Start the slideshow', 'sage') . '" aria-label="' . esc_attr__('Pause the slideshow', 'sage') . '"><span class="pkde-features__pause-pause" aria-hidden="true">&#10074;&#10074;</span><span class="pkde-features__pause-play" aria-hidden="true">&#9654;</span></button></div>' : '')
         . '</div>';
 }
 

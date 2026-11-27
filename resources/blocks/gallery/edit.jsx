@@ -43,7 +43,7 @@ function Edit({ attributes, setAttributes }) {
         </PanelBody>
         <PanelBody title={__('Row', 'sage')} initialOpen={false}>
           <ToggleControl label={__('A row that goes round (a loop)', 'sage')} help={__('The pictures run on to the edges of the screen and go round; drag or swipe.', 'sage')} checked={!!attributes.row} onChange={(value) => setAttributes({ row: value })} />
-          {attributes.row && <ToggleControl label={__('Move by itself', 'sage')} checked={!!attributes.autoplay} onChange={(value) => setAttributes({ autoplay: value })} />}
+          {attributes.row && <ToggleControl label={__('Move by itself (it stops under the pointer, and for visitors who prefer less motion)', 'sage')} checked={!!attributes.autoplay} onChange={(value) => setAttributes({ autoplay: value })} />}
           <ToggleControl label={__('No padding in the cards', 'sage')} checked={!!attributes.flush} onChange={(value) => setAttributes({ flush: value })} />
         </PanelBody>
         <PanelBody title={__('Heading', 'sage')} initialOpen={false}>
